@@ -8,9 +8,6 @@ const MainPage = () => {
         <div class="mainPageFlexBody">
             <MainBody />
         </div>
-        <div class="mainPageFlexFooter">
-            <p>Footer</p>
-        </div>
     </div>
 }
 

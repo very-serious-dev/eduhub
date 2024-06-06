@@ -4,10 +4,10 @@ import MainBodyMessages from "./messages/MainBodyMessages";
 
 const MainBody = () => {
     return <div className="mainBody">
-        <div className="mainArea">
+        <div className="mainBodyColumn1">
             <MainBodyClasses />
         </div>
-        <div className="secondaryArea">
+        <div className="mainBodyColumn2">
             <MainBodyMessages />
             <MainBodyFiles />
         </div>

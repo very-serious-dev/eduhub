@@ -1,5 +1,5 @@
 const MainBodyFiles = () => {
-    return <div className="mainBodyFiles">
+    return <div className="mainBodyFiles card">
         Files
     </div>
 }

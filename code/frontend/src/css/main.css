@@ -1,0 +1,111 @@
+:root {
+    --color-primary: #f5f5fb;
+    --color-secondary: #bdece6;
+    --color-tertiary: #bccef8;
+    --color-accent: #0029a5;
+    --default-font: Arial, Helvetica, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+}
+
+.loginMain {
+    margin-top: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginContainer {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-primary);
+}
+
+.mainPageFlexContainer {
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+}
+
+.mainPageFlexHeader {
+    flex: 0 1 auto;
+    /* The above is shorthand for:
+    flex-grow: 0,
+    flex-shrink: 1,
+    flex-basis: auto
+    */
+}
+
+.mainPageFlexBody {
+    flex: 1 1 auto;
+}
+
+.mainBody {
+    display: flex;
+    flex-flow: row;
+    height: 100%;
+}
+
+.mainBodyColumn1 {
+    flex: 2 1 auto;
+    /* This is both a flex item and a container for 1 subitem */
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.mainBodyColumn2 {
+    flex: 3 1 auto;
+    /* This is both a flex item and a container for 2 subitems */
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+
+.mainBodyClasses {
+    flex: 1 1 auto;
+    background-color: var(--color-primary);
+
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.mainBodyMessages {
+    flex: 1 1 auto;
+    background-color: var(--color-primary);
+}
+
+.mainBodyFiles {
+    flex: 1 1 auto;
+    background-color: var(--color-primary);
+}
+
+.card {
+    padding: 10px; 
+    margin: 8px;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+}
+
+.classCell {
+    height: 100px;
+    flex: 0 1 30%;
+    background-color: var(--color-secondary);
+}
+
+.classCell:hover {
+    background-color: var(--color-tertiary);
+}
+
+.classCell p {
+    font-family: var(--default-font);
+    font-size: 16px;
+    font-weight: bold;
+}

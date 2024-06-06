@@ -1,5 +1,6 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
+from .middleware_auth import AUTH_COOKIE_KEY
 from .models import EPUser, EPUserSession
 
 def handle_login(request):
@@ -23,7 +24,9 @@ def handle_login(request):
             session.user = db_user
             session.token = random_token
             session.save()
-            return JsonResponse({"success": True, "session_token": random_token}, status=201)
+            response = JsonResponse({"success": True}, status=201)
+            response["Set-Cookie"] = AUTH_COOKIE_KEY + "=" + random_token + "; SameSite=Strict; HttpOnly; Path=/"
+            return response
         else:
             return JsonResponse({"error": "Invalid password"}, status=401)    
     else:
