@@ -1,5 +1,5 @@
 const MainBodyMessages = () => {
-    return <div className="mainBodyMessages card">
+    return <div className="mainBodyMessages">
         Messages
     </div>
 }

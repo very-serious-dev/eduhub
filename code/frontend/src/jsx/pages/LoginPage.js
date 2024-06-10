@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import EduAPIFetch from "../../client/EduAPIFetch";
+import LoadingHUD from "../components/LoadingHUD";
 
 const LoginPage = () => {
-
+    const [isLoading, setLoading] = useState(false);
+    const [error, setError] = useState(null)
     const [formUser, setFormUser] = useState("");
     const [formPassword, setFormPassword] = useState("");
 
@@ -18,16 +21,29 @@ const LoginPage = () => {
             }),
             credentials: "include"
         };
-        fetch("http://localhost:8000/api/v1/sessions", options)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success === true) {
-                    navigate("/");
-                }
-            });
+        setLoading(true);
+        setError(null);
+        EduAPIFetch("/api/v1/sessions", options)
+                .then(json => {
+                    setLoading(false);
+                    if (json.success === true) {
+                        navigate("/");
+                    } else {
+                        setError("Se ha producido un error");
+                    }
+                })
+                .catch(error => {
+                    setLoading(false);
+                    if (error.error !== undefined) {
+                        setError(error.error);
+                    } else {
+                        setError("Se ha producido un error")
+                    }
+                })
     }
 
     return <div className="loginMain">
+        <img src="/logo.png" className="loginLogo"/>
         <div className="loginContainer card">
             <form onSubmit={onSubmitLogin}>
                 <div className="formInput">
@@ -44,11 +60,17 @@ const LoginPage = () => {
                     <div className="underline"></div>
                     <label htmlFor="">Contraseña</label>
                 </div>
-                <div className="formSubmit">
+                <div className="formSubmit">                    
                     <input type="submit" value="Login" />
                 </div>
+                { isLoading &&
+                    <div className="loginHUDCentered"><LoadingHUD /></div>
+                }
             </form>
         </div>
+        { error !== null &&
+            <div className="loginErrorContainer card">{error}</div>
+        }
     </div>
 }
 

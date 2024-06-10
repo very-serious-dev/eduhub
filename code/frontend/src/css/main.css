@@ -1,8 +1,13 @@
 :root {
-    --color-primary: #f5f5fb;
+    --color-primary: #f2f2fc;
     --color-secondary: #bdece6;
     --color-tertiary: #bccef8;
     --color-accent: #0029a5;
+    --color-error: #f06161;
+    --color-background: #f8f8fb;
+    --color-background-classes: #dadff988;
+    --color-background-messages: #f9f9bb88;
+    --color-background-files: #f9dff988;
     --default-font: Arial, Helvetica, sans-serif;
 }
 
@@ -14,11 +19,35 @@ html, body {
     margin: 0;
 }
 
-.loginMain {
-    margin-top: 30vh;
+body {
+    background-color: var(--color-background);
+}
+
+/**
+ * Loading HUD page 
+ **/
+
+.loadingMain {
+    margin-top: 40vh;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/**
+ * Login page 
+ **/
+
+.loginMain {
+    margin-top: 20vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.loginLogo {
+    margin-bottom: 60px;
 }
 
 .loginContainer {
@@ -27,6 +56,33 @@ html, body {
     justify-content: center;
     background-color: var(--color-primary);
 }
+
+.loginHUDCentered {
+    width: fit-content;
+    margin-left: 28%;
+}
+
+.loginErrorContainer {
+    width: 40%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-error);
+    font-size: 15px;
+    font-family: var(--default-font);
+}
+
+.card {
+    padding: 10px; 
+    margin: 8px;
+    border-radius: 4px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+}
+
+
+
+/**
+ * Main page 
+ **/
 
 .mainPageFlexContainer {
     display: flex;
@@ -41,6 +97,9 @@ html, body {
     flex-shrink: 1,
     flex-basis: auto
     */
+    display: flex;
+    flex-flow: row;
+    justify-content: flex-start;
 }
 
 .mainPageFlexBody {
@@ -71,28 +130,27 @@ html, body {
 
 .mainBodyClasses {
     flex: 1 1 auto;
-    background-color: var(--color-primary);
-
     display: flex;
     flex-flow: row wrap;
+    margin: 12px;
+    background-color: var(--color-background-classes);
 }
 
 .mainBodyMessages {
     flex: 1 1 auto;
-    background-color: var(--color-primary);
+    margin: 12px;
+    background-color: var(--color-background-messages);
 }
 
 .mainBodyFiles {
     flex: 1 1 auto;
-    background-color: var(--color-primary);
+    margin: 12px;
+    background-color: var(--color-background-files);
 }
 
-.card {
-    padding: 10px; 
-    margin: 8px;
-    border-radius: 4px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
-}
+/**
+ * Main page - classes area 
+ **/
 
 .classCell {
     height: 100px;
@@ -108,4 +166,28 @@ html, body {
     font-family: var(--default-font);
     font-size: 16px;
     font-weight: bold;
+}
+
+/**
+ * Error page
+ **/
+
+.errorPageMain {
+    margin-top: 30vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.generalErrorContainer {
+    width: 60%;
+    display: flex;
+    justify-content: center;
+    background-color: var(--color-primary);
+}
+
+.generalErrorMessage {
+    font-family: var(--default-font);
+    font-size: 16px;
+    text-align: center;
 }
