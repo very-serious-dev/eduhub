@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EduAPIFetch from "../../client/EduAPIFetch";
-import LoadingHUD from "../components/LoadingHUD";
+import LoadingHUD from "../components/common/LoadingHUD";
 
 const LoginPage = () => {
     const [isLoading, setLoading] = useState(false);
@@ -34,11 +34,7 @@ const LoginPage = () => {
                 })
                 .catch(error => {
                     setLoading(false);
-                    if (error.error !== undefined) {
-                        setError(error.error);
-                    } else {
-                        setError("Se ha producido un error")
-                    }
+                    setError(error.error ?? "Se ha producido un error");
                 })
     }
 

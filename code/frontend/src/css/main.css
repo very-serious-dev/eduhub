@@ -15,7 +15,8 @@
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     margin: 0;
 }
 
@@ -72,25 +73,25 @@ body {
 }
 
 .card {
-    padding: 10px; 
+    padding: 10px;
     margin: 8px;
     border-radius: 4px;
     box-shadow: 0 0 20px rgba(0, 0, 0, .15);
 }
 
-
-
 /**
- * Main page 
+ * Main page (some are reused for admin page)
  **/
 
 .mainPageFlexContainer {
+    /* Also admin page */
     display: flex;
     flex-flow: column;
     height: 100vh;
 }
 
 .mainPageFlexHeader {
+    /* Also admin page */
     flex: 0 1 auto;
     /* The above is shorthand for:
     flex-grow: 0,
@@ -100,36 +101,41 @@ body {
     display: flex;
     flex-flow: row;
     justify-content: flex-start;
+    align-items: center;
+}
+
+.headerAdminLinkButtonContainer {
+    margin-left: 2%;
 }
 
 .mainPageFlexBody {
+    /* Also admin page */
     flex: 1 1 auto;
 }
 
 .mainBody {
+    /* Also admin page */
     display: flex;
     flex-flow: row;
     height: 100%;
 }
 
 .mainBodyColumn1 {
-    flex: 2 1 auto;
-    /* This is both a flex item and a container for 1 subitem */
+    width: 25%;
+    height: 100%;
     display: flex;
     flex-flow: column;
-    height: 100%;
 }
 
 .mainBodyColumn2 {
-    flex: 3 1 auto;
-    /* This is both a flex item and a container for 2 subitems */
+    width: 75%;
+    height: 100%;
     display: flex;
     flex-flow: column;
-    height: 100%;
 }
 
 .mainBodyClasses {
-    flex: 1 1 auto;
+    height: 100%;
     display: flex;
     flex-flow: row wrap;
     margin: 12px;
@@ -137,13 +143,13 @@ body {
 }
 
 .mainBodyMessages {
-    flex: 1 1 auto;
+    height: 50%;
     margin: 12px;
     background-color: var(--color-background-messages);
 }
 
 .mainBodyFiles {
-    flex: 1 1 auto;
+    height: 50%;
     margin: 12px;
     background-color: var(--color-background-files);
 }
@@ -166,6 +172,151 @@ body {
     font-family: var(--default-font);
     font-size: 16px;
     font-weight: bold;
+}
+
+/**
+ * Admin page specific
+ */
+
+.adminBodyColumn1 {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.adminColumn1GoBack {
+    flex: 0 1 50px;
+    background-color: var(--color-primary);
+    color: var(--color-accent);
+    display: grid;
+    place-content: center;
+    font-family: var(--default-font);
+    font-size: 18px;
+}
+
+.adminColumn1GoBack:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.adminColumn1MenuItem {
+    flex: 0 1 100px;
+    background-color: var(--color-secondary);
+    display: grid;
+    place-content: center;
+    font-family: var(--default-font);
+    font-size: 22px;
+}
+
+.adminColumn1MenuItem:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.adminBodyColumn2 {
+    width: 75%;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.adminBodyColumn2Content {
+    height: 100%;
+    margin: 12px;
+    background-color: var(--color-primary);
+}
+
+.userCard {
+    position: relative;
+    height: 200px;
+    width: 200px;
+}
+
+.userCardUsername {
+    font-family: var(--default-font);
+    font-size: 16px;
+}
+
+.userCardName {
+    font-family: var(--default-font);
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.userCardTagsContainer {
+    position: absolute;
+    bottom: 0;
+}
+
+.userCardTag {
+    font-family: var(--default-font);
+    font-size: 9px;
+    color: #ffffff;
+    margin-bottom: 10px;
+    padding: 4px;
+    border-radius: 500px;
+    /* https://stackoverflow.com/a/18795153 */
+}
+
+.userCardTagSysAdmin {
+    background-color: #700092;
+}
+
+.userCardTagSchoolLeader {
+    background-color: #dd1313;
+}
+
+.userCardTagTeacher {
+    background-color: #0029a5;
+}
+
+.userCardTagStudent {
+    background-color: #009715;
+}
+
+.adminAddUserCardButton {
+    font-family: var(--default-font);
+    width: 250px;
+    text-align: center;
+    padding: 12px;
+}
+
+.adminAddUserCardButton:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.adminAddUserOverlayBackground {
+    position: fixed;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .2);
+    z-index: 2;
+}
+
+.adminAddUserForm {
+    position: absolute;
+    width: 40%;
+    top: 50%;
+    left: 50%;
+    font-size: 50px;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.adminAddUserFormBackground {
+    background-color: var(--color-background);
+}
+
+.adminAddUserHUDCentered {
+    width: fit-content;
+    margin-left: 42%;
 }
 
 /**

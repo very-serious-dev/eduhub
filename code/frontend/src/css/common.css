@@ -3,78 +3,129 @@
  * https://codepen.io/Metty/pen/NWpzexj
  */
 
-.formInput, .formSubmit {
-    width: 100%;
-    height: 40px;
-    position: relative;
+.formInput,
+.formSubmit {
+  width: 100%;
+  height: 40px;
+  position: relative;
 }
 
-.formInput input{
-    display: block;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    border: none;
-    font-size: 17px;
-    border-bottom: 2px solid rgba(0,0,0, 0.12);
-    margin-top: 15px;
-    background-color: var(--color-secondary);
-    border-radius: 5px;
-}
-  
-.formInput input:focus ~ label,
-.formInput input:valid ~ label{
-    transform: translateY(-23px);
-    font-size: 14px;
-    color: var(--color-accent);
-}
-  
-.formInput label{
-    position: absolute;
-    pointer-events: none;
-    bottom: 10px;
-    font-size: 15px;
-    font-family: var(--default-font);
-    margin-left: 10px;
-    transition: all 0.3s ease;
-}
-  
-.formInput .underline{
-    position: absolute;
-    bottom: 0;
-    height: 2px;
-    width: 100%;
+.formInput input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  margin-top: 15px;
+  background-color: var(--color-secondary);
+  border-radius: 5px;
 }
 
-.formInput .underline:before{
-    position: absolute;
-    content: "";
-    height: 2px;
-    width: 100%;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transform-origin: center;
-    transition: transform 0.3s ease;
-}
-  
-.formInput input:focus ~ .underline:before,
-.formInput input:valid ~ .underline:before{
-    transform: scale(1);
+.formInput input:focus~label,
+.formInput input:valid~label {
+  transform: translateY(-23px);
+  font-size: 14px;
+  color: var(--color-accent);
 }
 
-.formSubmit input{
-    display: block;
-    width: 100%;
-    height: 100%;
-    outline: none;
-    border: none;
-    font-size: 17px;
-    margin-top: 35px;
-    background-color: var(--color-secondary);
+.formInput label {
+  position: absolute;
+  pointer-events: none;
+  bottom: 10px;
+  font-size: 15px;
+  font-family: var(--default-font);
+  margin-left: 10px;
+  transition: all 0.3s ease;
 }
 
-.formSubmit input:hover{
-    background-color: var(--color-tertiary);
+.formInput .underline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+}
+
+.formInput .underline:before {
+  position: absolute;
+  content: "";
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.formInput input:focus~.underline:before,
+.formInput input:valid~.underline:before {
+  transform: scale(1);
+}
+
+.formSubmit input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  margin-top: 35px;
+  background-color: var(--color-secondary);
+}
+
+.formSubmit input:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+/**
+ * Animated button (inspired in form)
+ */
+
+.animatedButtonContainer {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+.animatedButtonContainer button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  font-family: var(--default-font);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.animatedButtonContainer .animatedButtonUnderline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+}
+
+.animatedButtonContainer .animatedButtonUnderline:before {
+  position: absolute;
+  content: "";
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.animatedButtonContainer button:hover~.animatedButtonUnderline:before {
+  transform: scale(1);
+}
+
+.animatedButtonContainer button:hover {
+  color: var(--color-accent);
+  cursor: pointer;
 }
 
 /**
@@ -82,17 +133,18 @@
  * https://loading.io/css/
  */
 
-
 .lds-ellipsis,
 .lds-ellipsis div {
   box-sizing: border-box;
 }
+
 .lds-ellipsis {
   display: inline-block;
   position: relative;
   width: 80px;
   height: 80px;
 }
+
 .lds-ellipsis div {
   position: absolute;
   top: 33.33333px;
@@ -102,46 +154,53 @@
   background: var(--color-accent);
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
+
 .lds-ellipsis div:nth-child(1) {
   left: 8px;
   animation: lds-ellipsis1 0.6s infinite;
 }
+
 .lds-ellipsis div:nth-child(2) {
   left: 8px;
   animation: lds-ellipsis2 0.6s infinite;
 }
+
 .lds-ellipsis div:nth-child(3) {
   left: 32px;
   animation: lds-ellipsis2 0.6s infinite;
 }
+
 .lds-ellipsis div:nth-child(4) {
   left: 56px;
   animation: lds-ellipsis3 0.6s infinite;
 }
+
 @keyframes lds-ellipsis1 {
   0% {
     transform: scale(0);
   }
+
   100% {
     transform: scale(1);
   }
 }
+
 @keyframes lds-ellipsis3 {
   0% {
     transform: scale(1);
   }
+
   100% {
     transform: scale(0);
   }
 }
+
 @keyframes lds-ellipsis2 {
   0% {
     transform: translate(0, 0);
   }
+
   100% {
     transform: translate(24px, 0);
   }
 }
-
-
-

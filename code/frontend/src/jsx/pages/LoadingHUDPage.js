@@ -1,4 +1,4 @@
-import LoadingHUD from "../components/LoadingHUD";
+import LoadingHUD from "../components/common/LoadingHUD";
 
 const LoadingHUDPage = () => {
     return <div className="loadingMain">

@@ -1,8 +1,8 @@
-import { useState, useEffect, useContext } from "react";
-import MainBody from "../components/MainBody";
+import { useState, useEffect } from "react";
+import MainBody from "../components/main/MainBody";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
-import MainHeader from "../components/MainHeader";
+import MainHeader from "../components/main/MainHeader";
 import ErrorPage from "./ErrorPage";
 
 const MainPage = () => {
@@ -32,7 +32,7 @@ const MainPage = () => {
             : isRequestFailed ?
                 <ErrorPage />
                 : <div className="mainPageFlexContainer">
-                    <MainHeader />
+                    <MainHeader showAdminLink={true}/>
                     <MainBody classes={classes} />
                 </div>
 }
