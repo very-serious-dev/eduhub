@@ -7,10 +7,14 @@ def home(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        usersCount = EPUser.objects.all().count()
-        groupsCount = EPGroup.objects.all().count()
-        classesCount = EPClass.objects.all().count()
-        return JsonResponse({"usersCount": usersCount, "groupsCount": groupsCount, "classesCount": classesCount})
+        users_count = EPUser.objects.all().count()
+        classes_count = EPClass.objects.all().count()
+        serialized_groups = []
+        for group in EPGroup.objects.all():
+            serialized_groups.append(group.to_json_obj())
+        return JsonResponse({"usersCount": users_count,
+                             "classesCount": classes_count,
+                             "groups": serialized_groups })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     
@@ -37,6 +41,7 @@ def handle_users(request):
         json_password = body_json.get("password")
         if json_username is None or json_name is None or json_surname is None or json_password is None:
             return JsonResponse({"error": "Falta username, name, surname o password en el cuerpo de la petición"}, status=400)
+        # TO-DO: Validate username; should only contain lowercase letters and dots (.)
         if EPUser.objects.filter(username=json_username).exists():
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
         new_user = EPUser()

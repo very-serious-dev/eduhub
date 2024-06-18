@@ -1,3 +1,11 @@
+.errorColor {
+  color: var(--color-error);
+}
+
+.successColor {
+  color: var(--color-success);
+}
+
 /**
  * Form-related
  * https://codepen.io/Metty/pen/NWpzexj
@@ -61,6 +69,26 @@
 .formInput input:focus~.underline:before,
 .formInput input:valid~.underline:before {
   transform: scale(1);
+}
+
+.formInputRadio {
+  margin: 10px 4px 4px 4px;
+}
+
+.formInputRadio label {
+  font-family: var(--default-font);
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.formInputSelect select {
+  font-family: var(--default-font);
+  font-size: 15px;
+  margin-left: 35px;
+}
+
+.formInputSelect option {
+  font-size: 15px;
 }
 
 .formSubmit input {

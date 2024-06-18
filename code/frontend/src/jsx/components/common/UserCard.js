@@ -16,7 +16,7 @@ const UserCard = (props) => {
         return tags;
     }
 
-    return <div className="card userCard">
+    return <div className="card userCard" key={props.user.username}>
         <div className="userCardUsername">{`${props.user.username}`}</div>
         <div className="userCardName">{`${props.user.name} ${props.user.surname}`}</div>
         <div className="userCardTagsContainer">

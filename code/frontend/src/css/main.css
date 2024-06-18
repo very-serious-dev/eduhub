@@ -4,6 +4,7 @@
     --color-tertiary: #bccef8;
     --color-accent: #0029a5;
     --color-error: #f06161;
+    --color-success: #058f00;
     --color-background: #f8f8fb;
     --color-background-classes: #dadff988;
     --color-background-messages: #f9f9bb88;
@@ -227,6 +228,11 @@ body {
     background-color: var(--color-primary);
 }
 
+.adminUsersList {
+    display: flex;
+    flex-direction: row;
+}
+
 .userCard {
     position: relative;
     height: 200px;
@@ -251,7 +257,8 @@ body {
 
 .userCardTag {
     font-family: var(--default-font);
-    font-size: 9px;
+    font-weight: bolder;
+    font-size: 8px;
     color: #ffffff;
     margin-bottom: 10px;
     padding: 4px;
@@ -275,6 +282,12 @@ body {
     background-color: #009715;
 }
 
+.adminUsersHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 .adminAddUserCardButton {
     font-family: var(--default-font);
     width: 250px;
@@ -285,6 +298,13 @@ body {
 .adminAddUserCardButton:hover {
     cursor: pointer;
     background-color: var(--color-tertiary);
+}
+
+.addUserResultMessage {
+    font-family: var(--default-font);
+    font-size: 22px;
+    font-weight: bolder;
+    margin-left: 6px;
 }
 
 .adminAddUserOverlayBackground {
@@ -300,12 +320,17 @@ body {
     z-index: 2;
 }
 
+.adminAddUserTitle {
+    font-family: var(--default-font);
+    font-size: 34px;
+    margin-left: 10px;
+}
+
 .adminAddUserForm {
     position: absolute;
     width: 40%;
     top: 50%;
     left: 50%;
-    font-size: 50px;
     transform: translate(-50%, -50%);
     z-index: 3;
 }
@@ -317,6 +342,19 @@ body {
 .adminAddUserHUDCentered {
     width: fit-content;
     margin-left: 42%;
+}
+
+.hidableAddUserSelectContainer {
+    height: 50px;
+    margin-top: 10px;
+}
+
+.hidableAddUserSelectShown {
+    display: block;
+}
+
+.hidableAddUserSelectHidden {
+    display: none;
 }
 
 /**

@@ -8,7 +8,7 @@ const AdminBody = (props) => {
 
     const contentForCurrentTab = () => {
         if (currentTab === "users") {
-            return <AdminBodyUsers />
+            return <AdminBodyUsers groups={props.dashboardData.groups} />
         } else if (currentTab === "classes") {
 
         } else if (currentTab === "groups") {
@@ -24,7 +24,7 @@ const AdminBody = (props) => {
                 <div className="adminColumn1GoBack card" onClick={() => {navigate("/");}}>← Volver a inicio</div>
                 <div className="adminColumn1MenuItem card" onClick={() => {setCurrentTab("users");}}>Usuarios ({props.dashboardData.usersCount})</div>
                 <div className="adminColumn1MenuItem card" onClick={() => {setCurrentTab("classes");}}>Clases ({props.dashboardData.classesCount})</div>
-                <div className="adminColumn1MenuItem card" onClick={() => {setCurrentTab("groups");}}>Grupos ({props.dashboardData.groupsCount})</div>
+                <div className="adminColumn1MenuItem card" onClick={() => {setCurrentTab("groups");}}>Grupos ({props.dashboardData.groups.length})</div>
             </div>
             <div className="adminBodyColumn2">
                 <div className="adminBodyColumn2Content">

@@ -51,7 +51,7 @@ class EPGroup(models.Model):
                 "surname": self.tutor.surname
             }
         }
-    
+
 class EPClass(models.Model):
     name = models.CharField(max_length=100)
     group = models.ForeignKey(EPGroup, on_delete=models.CASCADE)
