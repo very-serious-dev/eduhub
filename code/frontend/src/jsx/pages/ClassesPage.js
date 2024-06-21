@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
-import MainBody from "../components/main/MainBody";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
-import MainHeader from "../components/main/MainHeader";
 import ErrorPage from "./ErrorPage";
+import ClassesBody from "../components/classes/ClassesBody";
 
-const MainPage = () => {
+const ClassesPage = () => {
     const [classes, setClasses] = useState([]);
     const [isRequestFailed, setRequestFailed] = useState(false);
+    const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
 
+    // TO-DO Work on this
     useEffect(() => {
         const options = {
             method: "GET",
@@ -19,22 +20,22 @@ const MainPage = () => {
             .then(json => {
                 setLoading(false);
                 setClasses(json.classes);
+                console.log(json)
             })
             .catch(error => {
                 setLoading(false);
                 setRequestFailed(true);
+                if (error.error) {
+                    setRequestErrorMessage(error.error);
+                }
             })
-
     }, [])
 
     return isLoading ?
             <LoadingHUDPage />
             : isRequestFailed ?
-                <ErrorPage />
-                : <div className="mainPageFlexContainer">
-                    <MainHeader showAdminLink={true}/>
-                    <MainBody classes={classes} />
-                </div>
+                <ErrorPage errorMessage={requestErrorMessage} />
+                : <ClassesBody classes={classes} />
 }
 
-export default MainPage;
+export default ClassesPage;

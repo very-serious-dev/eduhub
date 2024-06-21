@@ -3,6 +3,7 @@ const UserCard = (props) => {
         const tags = [];
         if (props.user.roles.includes("student")) {
             tags.push(<div className="userCardTag userCardTagStudent">ESTUDIANTE</div>)
+            tags.push(<div className="userCardTag userCardTagStudentGroup">{props.user.student_group}</div>)
         }
         if (props.user.roles.includes("teacher")) {
             tags.push(<div className="userCardTag userCardTagTeacher">DOCENTE</div>)

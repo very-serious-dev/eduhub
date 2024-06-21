@@ -68,7 +68,7 @@ def handle_users(request):
 
 
 def handle_groups(request):
-    if request.method == "GET":
+    if request.method == "GET": # TO-DO: Remove? Apparently not needed; already retrieved in /admin/home
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
@@ -87,6 +87,7 @@ def handle_groups(request):
         json_tag = body_json.get("tag")
         json_name = body_json.get("name")
         json_tutor_username = body_json.get("tutor_username")
+        # TO-DO: Validar que el tag no tiene espacios en blanco
         if json_tag is None or json_name is None or json_tutor_username is None:
             return JsonResponse({"error": "Falta tag, name o tutor_username en el cuerpo de la petición"}, status=400)
         if EPGroup.objects.filter(tag=json_tag).exists():
@@ -96,7 +97,7 @@ def handle_groups(request):
         new_group = EPGroup()
         new_group.tag = json_tag
         new_group.name = json_name
-        new_group.tutor = EPUser.objects.get(username=json_surname)
+        new_group.tutor = EPUser.objects.get(username=json_tutor_username)
         new_group.save()
         return JsonResponse({"success": True}, status=201)
     else:
@@ -134,9 +135,21 @@ def handle_classes(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
+def get_teachers(request):
+    if request.method == "GET":
+        admin_auth_error = __admin_auth_json_error_response(request)
+        if admin_auth_error is not None:
+            return admin_auth_error
+        serialized_users = []
+        for user in EPUser.objects.filter(is_teacher=True):
+            serialized_users.append(user.to_json_obj())
+        return JsonResponse({"teachers": serialized_users})
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+    
 def __admin_auth_json_error_response(request):
     if request.edu_user is None:
-        return JsonResponse({"error": "Usuario no autenticado"}, status=401)
+        return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
     if request.edu_user.is_sysadmin == False and request.edu_user.is_school_leader == False:
         return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
     return None

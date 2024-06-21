@@ -24,13 +24,15 @@ class EPUser(models.Model):
         return roles
                 
     def to_json_obj(self):
-        return {
+        json_obj = {
             "username": self.username,
             "name": self.name,
             "surname": self.surname,
-            # TO-DO: Serialize student registered group without hiting database resolving Foreign key
             "roles": self.roles_array()
         }
+        if self.student_registered_group is not None:
+            json_obj["student_group"] = self.student_registered_group_id
+        return json_obj
 
 class EPUserSession(models.Model):
     user = models.ForeignKey(EPUser, on_delete=models.CASCADE)
@@ -58,7 +60,8 @@ class EPClass(models.Model):
     
     def to_json_obj(self):
         return {
-            "name": self.name
+            "name": self.name,
+            "group": self.group_id
             # TO-DO: Serialize group without hiting database resolving Foreign key
         }
 

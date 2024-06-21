@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
-import MainHeader from "../components/main/MainHeader";
 import ErrorPage from "./ErrorPage";
 import AdminBody from "../components/admin/AdminBody";
 
 const AdminPage = () => {
     const [dashboardData, setDashboardData] = useState();
     const [isRequestFailed, setRequestFailed] = useState(false);
+    const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [newlyCreatedItems, setNewlyCreatedItems] = useState(0); // Refresh key after group, class or user creation
 
     useEffect(() => {
         const options = {
@@ -23,18 +24,19 @@ const AdminPage = () => {
             .catch(error => {
                 setLoading(false);
                 setRequestFailed(true);
+                if (error.error) {
+                    setRequestErrorMessage(error.error);
+                }
             })
-
-    }, [])
+    }, [newlyCreatedItems])
 
     return isLoading ?
-            <LoadingHUDPage />
-            : isRequestFailed ?
-                <ErrorPage />
-                : <div className="mainPageFlexContainer">
-                    <MainHeader showAdminLink={false}/>
-                    <AdminBody dashboardData={dashboardData}/>
-                </div>
+        <LoadingHUDPage />
+        : isRequestFailed ?
+            <ErrorPage errorMessage={requestErrorMessage} />
+            : <AdminBody dashboardData={dashboardData}
+                onShouldRefresh={() => { setNewlyCreatedItems(x => x + 1); }} />
+
 }
 
 export default AdminPage;

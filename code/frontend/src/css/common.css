@@ -43,7 +43,6 @@
   pointer-events: none;
   bottom: 10px;
   font-size: 15px;
-  font-family: var(--default-font);
   margin-left: 10px;
   transition: all 0.3s ease;
 }
@@ -76,15 +75,12 @@
 }
 
 .formInputRadio label {
-  font-family: var(--default-font);
   font-size: 16px;
   margin-left: 10px;
 }
 
 .formInputSelect select {
-  font-family: var(--default-font);
   font-size: 15px;
-  margin-left: 35px;
 }
 
 .formInputSelect option {
@@ -107,6 +103,55 @@
   background-color: var(--color-tertiary);
 }
 
+.popupOverlayBackground {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .2);
+  z-index: 2;
+}
+
+.popupForm {
+  position: absolute;
+  width: 40%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.adminFormBackground {
+  background-color: var(--color-background);
+}
+
+.adminFormTitle {
+  font-size: 34px;
+  margin-left: 10px;
+}
+
+.hidableAdminFormSelectContainer {
+  height: 50px;
+  margin-top: 10px;
+}
+
+.hidableAdminFormSelectHidden {
+  display: none;
+}
+
+.hidableAdminFormSelectShown {
+  display: block;
+}
+
+.adminFormHUDCentered {
+  width: fit-content;
+  margin-left: 42%;
+}
+
 /**
  * Animated button (inspired in form)
  */
@@ -124,7 +169,6 @@
   outline: none;
   border: none;
   font-size: 17px;
-  font-family: var(--default-font);
   border-bottom: 2px solid rgba(0, 0, 0, 0.12);
   background-color: rgba(0, 0, 0, 0);
 }

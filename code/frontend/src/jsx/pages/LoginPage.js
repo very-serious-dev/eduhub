@@ -8,7 +8,6 @@ const LoginPage = () => {
     const [error, setError] = useState(null)
     const [formUser, setFormUser] = useState("");
     const [formPassword, setFormPassword] = useState("");
-
     const navigate = useNavigate();
     
     const onSubmitLogin = (e) => {
@@ -44,14 +43,14 @@ const LoginPage = () => {
             <form onSubmit={onSubmitLogin}>
                 <div className="formInput">
                     <input type="text" value={formUser} 
-                      onChange={(e) => { setFormUser(e.target.value) }} 
+                      onChange={e => { setFormUser(e.target.value) }} 
                       required />
                     <div className="underline"></div>
                     <label htmlFor="">Usuario</label>
                 </div>
                 <div className="formInput">
                     <input type="password" value={formPassword}
-                      onChange={(e) => { setFormPassword(e.target.value) }}
+                      onChange={e => { setFormPassword(e.target.value) }}
                       required />
                     <div className="underline"></div>
                     <label htmlFor="">Contraseña</label>
