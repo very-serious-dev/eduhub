@@ -1,24 +1,26 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
-import ClassesBody from "../components/classes/ClassesBody";
+import ClassDetailBody from "../components/classes/ClassDetailBody";
 
-const ClassesPage = () => {
-    const [classes, setClasses] = useState([]);
+const ClassDetailPage = () => {
+    const [classData, setClassData] = useState();
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
+    const params = useParams();
 
     useEffect(() => {
         const options = {
             method: "GET",
             credentials: "include"
         };
-        EduAPIFetch("/api/v1/classes", options)
+        EduAPIFetch(`/api/v1/classes/${params.classId}`, options)
             .then(json => {
                 setLoading(false);
-                setClasses(json.classes);
+                setClassData(json);
             })
             .catch(error => {
                 setLoading(false);
@@ -33,7 +35,7 @@ const ClassesPage = () => {
             <LoadingHUDPage />
             : isRequestFailed ?
                 <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassesBody classes={classes} />
+                : <ClassDetailBody classData={classData} />
 }
 
-export default ClassesPage;
+export default ClassDetailPage;

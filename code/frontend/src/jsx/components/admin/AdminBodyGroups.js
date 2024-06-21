@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import AdminAddGroupForm from "./AdminAddGroupForm";
-import GroupCard from "./GenericCard";
-import GenericCard from "./GenericCard";
+import GroupCard from "../common/GenericCard";
+import GenericCard from "../common/GenericCard";
 
 const AdminBodyGroups = (props) => {
     const [showPopup, setShowPopup] = useState(false);
@@ -26,10 +26,10 @@ const AdminBodyGroups = (props) => {
             onGroupAdded={onGroupAdded} />
         <div className="adminSubpanelList">
             {props.groups.map(g => {
-                return <GenericCard key={ g.tag }
-                    preTitle={ g.tag }
-                    title={ g.name }
-                    footer={ `Tutor: ${g.tutor.name} ${g.tutor.surname}`} />
+                return <GenericCard cardId={g.tag}
+                    preTitle={g.tag}
+                    title={g.name}
+                    footer={`Tutor: ${g.tutor.name} ${g.tutor.surname}`} />
             })}
         </div>
     </div>

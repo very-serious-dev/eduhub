@@ -14,3 +14,13 @@ def handle_classes(request):
         return response  
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
+        
+def handle_class_detail(request, classId):
+    if request.method == "GET":
+        if request.edu_user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        # To-Do
+        response = JsonResponse({})
+        return response  
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)

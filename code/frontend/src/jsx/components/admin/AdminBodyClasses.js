@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import AdminAddClassForm from "./AdminAddClassForm";
-import GenericCard from "./GenericCard";
+import GenericCard from "../common/GenericCard";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
@@ -56,7 +56,7 @@ const AdminBodyClasses = (props) => {
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
                     {classes.map((c, i) => {
-                        return <GenericCard key={i}
+                        return <GenericCard cardId={i}
                             preTitle={""}
                             title={c.name}
                             footer={c.group} />

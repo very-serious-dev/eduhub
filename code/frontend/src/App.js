@@ -8,6 +8,8 @@ import MainContainer from "./jsx/pages/MainContainer";
 import ClassesPage from "./jsx/pages/ClassesPage";
 import MessagesPage from "./jsx/pages/MessagesPage";
 import FilesPage from "./jsx/pages/FilesPage";
+import ErrorPage from "./jsx/pages/ErrorPage";
+import ClassDetailPage from "./jsx/pages/ClassDetailPage";
 
 const App = () => {
 
@@ -20,6 +22,8 @@ const App = () => {
                 <Route path="admin" element={<AdminPage />}></Route>
             </Route>
             <Route path="login" element={<LoginPage />}></Route>
+            <Route path="classes/:classId" element={<ClassDetailPage />}></Route>
+            <Route path="*" element={<ErrorPage errorMessage={"404 - La página que buscas no existe"}/>}></Route>
         </Routes>
     </BrowserRouter>
 }

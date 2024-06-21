@@ -8,5 +8,6 @@ urlpatterns = [
     path("admin/groups", endpoints_admin.handle_groups),
     path("admin/classes", endpoints_admin.handle_classes),
     path("sessions", endpoints_users.handle_login),
-    path("classes", endpoints_classes.handle_classes) # TO-DO replace with /home
+    path("classes", endpoints_classes.handle_classes),
+    path("classes/<int:classId>", endpoints_classes.handle_class_detail)
 ]

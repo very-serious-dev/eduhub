@@ -60,9 +60,9 @@ class EPClass(models.Model):
     
     def to_json_obj(self):
         return {
+            "id": self.id,
             "name": self.name,
             "group": self.group_id
-            # TO-DO: Serialize group without hiting database resolving Foreign key
         }
 
 class EPUserClass(models.Model):
