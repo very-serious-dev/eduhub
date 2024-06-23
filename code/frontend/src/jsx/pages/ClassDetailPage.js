@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
-import ClassDetailBody from "../components/classes/ClassDetailBody";
+import ClassDetailBodyWithHeader from "../components/classes/ClassDetailBodyWithHeader";
 
 const ClassDetailPage = () => {
     const [classData, setClassData] = useState();
@@ -35,7 +35,7 @@ const ClassDetailPage = () => {
             <LoadingHUDPage />
             : isRequestFailed ?
                 <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassDetailBody classData={classData} />
+                : <ClassDetailBodyWithHeader classData={classData} />
 }
 
 export default ClassDetailPage;

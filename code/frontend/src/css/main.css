@@ -5,8 +5,11 @@
     --color-accent: #0029a5;
     --color-error: #f06161;
     --color-success: #058f00;
-    --color-background: #f8f8fb;
-    --header-height: 60px;
+    --color-background: #f5f5fa;
+    --main-header-height: 60px;
+    --class-header-animation-duration: 0.3s;
+    --class-header-collapsed-height: 80px;
+    --class-header-expanded-height: 200px;
 }
 
 * {
@@ -16,7 +19,8 @@
 html,
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;;
+    font-family: Arial, Helvetica, sans-serif;
+    ;
 }
 
 body {
@@ -78,7 +82,7 @@ body {
 }
 
 /**
- * Main page (some are reused for admin page)
+ * Main page (Container)
  **/
 
 .mainPageFlexContainer {
@@ -88,7 +92,7 @@ body {
 }
 
 .mainPageFlexHeader {
-    height: var(--header-height);
+    height: var(--main-header-height);
     display: flex;
     flex-flow: row;
     gap: 10px;
@@ -97,7 +101,7 @@ body {
 }
 
 .mainBody {
-    min-height: calc(100vh - var(--header-height));
+    min-height: calc(100vh - var(--main-header-height));
     display: flex;
     flex-direction: row;
     align-items: stretch;
@@ -107,7 +111,7 @@ body {
  * Classes page 
  **/
 
- .classesSectionContainer {
+.classesSectionContainer {
     margin-top: 20px;
 }
 
@@ -138,7 +142,139 @@ body {
 }
 
 /**
- * Admin page specific
+ * Class detail page
+ */
+
+.classDetailBackground {
+    background-color: var(--color-background);
+    min-height: 100vh;
+}
+
+.classDetailHeader {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    transition: var(--class-header-animation-duration);
+}
+
+.cdhCollapsed {
+    background-color: var(--color-secondary);
+    height: var(--class-header-collapsed-height);
+}
+
+.cdhExpanded {
+    background-color: #2f9789;
+    height: var(--class-header-expanded-height);
+}
+
+.classDetailHeaderImage {
+    position: absolute;
+    top: 0px;
+    height: 100%;
+    width: 100%;
+    object-fit: cover; /* Crop when scaling */
+    object-position: left; /* Crop when scaling */
+    transition: var(--class-header-animation-duration);
+}
+
+.cdhImgCollapsed {
+    opacity: 0.1;
+}
+
+.cdhImgExpanded {
+    opacity: 0.7;
+}
+
+.classDetailHeaderTitle {
+    position: absolute;
+    left: 15px;
+    color: white;
+    font-weight: bolder;
+    transition: var(--class-header-animation-duration);
+}
+
+.cdhTitleCollapsed {
+    font-size: 1.6em;
+    bottom: 23px;
+}
+
+.cdhTitleExpanded {
+    font-size: 2.5em;
+    bottom: 15px;
+}
+
+.classDetailHeaderCloseIcon {
+    position: absolute;
+    right: 30px;
+    top: 12px;
+    font-size: 2.5em;
+    color: white;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 4px;
+    border-radius: 4px;
+}
+
+.classDetailHeaderCloseIcon:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+}
+
+.classDetailBodyOuterContainerShrunk {
+    margin-top: var(--class-header-expanded-height);
+    transition: var(--class-header-animation-duration);
+}
+
+.classDetailBodyOuterContainerExpanded {
+    margin-top: var(--class-header-collapsed-height);
+    transition: var(--class-header-animation-duration);
+}
+
+.classDetailBodyContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.classDetailBodyColumn1 {
+    display: flex;
+    flex-direction: column;
+    width: 75%;
+}
+
+.classDetailEntry {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+}
+
+.classDetailEntrySubItem {
+    font-size: 0.7rem;
+    color: var(--color-accent);
+    align-self: flex-end;
+}
+
+.classDetailBodyColumn2 {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 25%;
+    padding-top: 15px;
+}
+
+.classDetailColumn2SectionTitle {
+    color: var(--color-accent);
+}
+
+.classDetailColumn2SectionUnderline {
+    height: 1px;
+    width: 90%;
+    background-color: var(--color-accent);
+}
+
+/**
+ * Admin page
  */
 
 .adminBodyColumn1 {
@@ -183,7 +319,8 @@ body {
 }
 
 .adminBodyColumn2Content {
-    min-height: calc(100% - 24px);;
+    min-height: calc(100% - 24px);
+    ;
     margin: 12px;
     background-color: var(--color-primary);
 }
