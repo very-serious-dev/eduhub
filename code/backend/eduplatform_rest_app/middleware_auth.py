@@ -7,7 +7,7 @@ class AuthMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        request.edu_user = self.__get_request_user(request)
+        request.user = self.__get_request_user(request)
         response = self.get_response(request)
         return response
 
@@ -18,6 +18,7 @@ class AuthMiddleware:
         cookies = cookies_header.split(";")
         session_token = None
         for cookie in cookies:
+			# TO-DO: Thoroughly review this impl, can be broken via malformed headers?
             cookie_key_value = cookie.strip().split("=")
             if len(cookie_key_value) == 2:
                 if cookie_key_value[0] == AUTH_COOKIE_KEY:

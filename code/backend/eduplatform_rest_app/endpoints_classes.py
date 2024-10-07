@@ -1,14 +1,20 @@
 import json
 from django.http import JsonResponse
-from .models import EPUserClass, EPClass
+from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher
 
 def handle_classes(request):
     if request.method == "GET":
-        if request.edu_user is None:
-            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        classes_user = EPUserClass.objects.filter(user=request.edu_user)
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)    
+        try:
+			# Teacher - We check EPTeacherClass
+		    teacher = EPTeacher.objects.get(user=request.user)
+		    user_classes = EPTeacherClass.objects.filter(teacher__user=request.user)
+	    except EPTeacher.DoesNotExist:
+		    # Student - We check EPStudentClass
+            user_classes = EPStudentClass.objects.filter(student__user=request.user)
         serialized_classes = []
-        for uc in classes_user:
+        for uc in user_classes:
             serialized_classes.append(uc.classroom.to_json_obj())
         response = JsonResponse({"classes": serialized_classes})
         return response  
@@ -17,19 +23,19 @@ def handle_classes(request):
         
 def handle_class_detail(request, classId):
     if request.method == "GET":
-        if request.edu_user is None:
+        if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
         teachers = []
-        for uc in EPUserClass.objects.filter(classroom=classroom, user__is_teacher=True):
-            teachers.append(uc.user.to_json_obj()   )
+        for tc in EPTeacherClass.objects.filter(classroom=classroom):
+            teachers.append(tc.teacher.to_json_obj())
         # TO-DO: Mock
         if len(teachers) == 0:
             teachers = [{"username": "prueba", "name": "Prueba", "surname": "Prueba1"}]
-        # TO-DO: Mock! 
+        # TO-DO: Mock!
         response = JsonResponse({"name": classroom.name,
                                  "entries": [{"published_date": "2024-09-17 11:31",
                                               "author": teachers[0]["username"],

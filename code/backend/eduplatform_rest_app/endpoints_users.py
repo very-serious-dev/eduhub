@@ -1,7 +1,7 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
 from .middleware_auth import AUTH_COOKIE_KEY
-from .models import EPUser, EPUserSession
+from .models import EPUser, EPUserSession, EPTeacher, STUDENT
 
 def handle_login(request):
     if request.method == "POST":
@@ -24,7 +24,13 @@ def handle_login(request):
             session.user = db_user
             session.token = random_token
             session.save()
-            response = JsonResponse({"success": True, "user_roles": db_user.roles_array()}, status=201)
+            try:
+			    db_teacher = EPTeacher(user=db_user)
+			    roles = db_teacher.roles_array()
+			except EPTeacher.DoesNotExist:
+				# Let's assume we're handling a student
+				roles = [STUDENT]
+            response = JsonResponse({"success": True, "user_roles": roles}, status=201)
             response["Set-Cookie"] = AUTH_COOKIE_KEY + "=" + random_token + "; SameSite=Strict; HttpOnly; Path=/"
             return response
         else:
