@@ -53,17 +53,17 @@ def handle_users(request):
         new_user.encrypted_password = bcrypt.hashpw(json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
         
         if json_is_teacher:
-			new_teacher = EPTeacher()
-			new_teacher.user = new_user
+            new_teacher = EPTeacher()
+            new_teacher.user = new_user
             new_user.save()
             new_student.save()
         elif json_student_group is not None:
-			try:
-				group = EPGroup.objects.get(tag=json_student_group)
-			except EPGroup.DoesNotExist:
-				return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
-			new_student = EPStudent()
-			new_student.user = new_user # TO-DO: Check that this works, maybe new_user.save() must be invoked before?
+            try:
+                group = EPGroup.objects.get(tag=json_student_group)
+            except EPGroup.DoesNotExist:
+                return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
+            new_student = EPStudent()
+            new_student.user = new_user # TO-DO: Check that this works, maybe new_user.save() must be invoked before?
             new_student.group = group
             new_user.save()
             new_student.save()
@@ -166,9 +166,9 @@ def __admin_auth_json_error_response(request):
     if request.user is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
     try:
-		teacher = EPTeacher.objects.get(user=request.user)
-		if teacher.is_sysadmin == False and teacher.is_school_leader == False:
-		    return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
-	except EPTeacher.DoesNotExist:
-		return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        teacher = EPTeacher.objects.get(user=request.user)
+        if teacher.is_sysadmin == False and teacher.is_school_leader == False:
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+    except EPTeacher.DoesNotExist:
+        return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
     return None

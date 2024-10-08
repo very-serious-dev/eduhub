@@ -7,11 +7,11 @@ def handle_classes(request):
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)    
         try:
-			# Teacher - We check EPTeacherClass
-		    teacher = EPTeacher.objects.get(user=request.user)
-		    user_classes = EPTeacherClass.objects.filter(teacher__user=request.user)
-	    except EPTeacher.DoesNotExist:
-		    # Student - We check EPStudentClass
+            # Teacher - We check EPTeacherClass
+            teacher = EPTeacher.objects.get(user=request.user)
+            user_classes = EPTeacherClass.objects.filter(teacher__user=request.user)
+        except EPTeacher.DoesNotExist:
+            # Student - We check EPStudentClass
             user_classes = EPStudentClass.objects.filter(student__user=request.user)
         serialized_classes = []
         for uc in user_classes:

@@ -25,11 +25,11 @@ def handle_login(request):
             session.token = random_token
             session.save()
             try:
-			    db_teacher = EPTeacher(user=db_user)
-			    roles = db_teacher.roles_array()
-			except EPTeacher.DoesNotExist:
-				# Let's assume we're handling a student
-				roles = [STUDENT]
+                db_teacher = EPTeacher(user=db_user)
+                roles = db_teacher.roles_array()
+            except EPTeacher.DoesNotExist:
+                # Let's assume we're handling a student
+                roles = [STUDENT]
             response = JsonResponse({"success": True, "user_roles": roles}, status=201)
             response["Set-Cookie"] = AUTH_COOKIE_KEY + "=" + random_token + "; SameSite=Strict; HttpOnly; Path=/"
             return response
