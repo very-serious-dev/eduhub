@@ -406,6 +406,10 @@ body {
     font-size: 0.75rem;
 }
 
+.genericCardClickable:hover {
+    cursor: pointer;
+}
+
 .adminSubpanelHeader {
     display: flex;
     flex-direction: row;
@@ -419,6 +423,16 @@ body {
 }
 
 .adminAddButtonHeader:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.adminAddTeacherOrStudent {
+    text-align: center;
+    padding: 20px;
+}
+
+.adminAddTeacherOrStudent:hover {
     cursor: pointer;
     background-color: var(--color-tertiary);
 }

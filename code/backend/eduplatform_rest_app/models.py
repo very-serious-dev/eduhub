@@ -47,7 +47,7 @@ class EPTeacher(models.Model):
             "username": self.user.username,
             "name": self.user.name,
             "surname": self.user.surname,
-            "roles": self.user.roles_array()
+            "roles": self.roles_array()
         }
 
 class EPUserSession(models.Model):
@@ -69,9 +69,9 @@ class EPGroup(models.Model):
             "tag": self.tag,
             "name": self.name,
             "tutor": {
-                "username": self.tutor.username,
-                "name": self.tutor.name,
-                "surname": self.tutor.surname
+                "username": self.tutor.user.username,
+                "name": self.tutor.user.name,
+                "surname": self.tutor.user.surname
             }
         }
 

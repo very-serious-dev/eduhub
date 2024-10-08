@@ -6,6 +6,7 @@ const AdminAddGroupForm = (props) => {
     const NOT_VALID = "NOT_VALID"
     const [formName, setFormName] = useState("");
     const [formTag, setFormTag] = useState("");
+    const [formYear, setFormYear] = useState("");
     const [formTutorUsername, setFormTutorUsername] = useState(NOT_VALID);
     const [availableTeachers, setAvailableTeachers] = useState([]);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
@@ -36,11 +37,11 @@ const AdminAddGroupForm = (props) => {
             body: JSON.stringify({
                 name: formName,
                 tag: formTag,
+                year: formYear,
                 tutor_username: formTutorUsername
             }),
             credentials: "include"
         };
-        console.log(formTutorUsername);
         setLoadingSubmit(true);
         EduAPIFetch("/api/v1/admin/groups", options)
             .then(json => {
@@ -83,6 +84,15 @@ const AdminAddGroupForm = (props) => {
                             required />
                         <div className="underline"></div>
                         <label htmlFor="">Etiqueta</label>
+                    </div>
+                    <div className="formInput">
+                        <input type="text" value={formYear}
+                            onChange={e => { setFormYear(e.target.value) }}
+                            onFocus={e => { e.target.placeholder = "24-25"; }}
+                            onBlur={e => { e.target.placeholder = ""; }}
+                            required />
+                        <div className="underline"></div>
+                        <label htmlFor="">Año</label>
                     </div>
                     {isLoadingTeachers && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
                     <div className="formInputSelect adminAddGroupSelect hidableAdminFormSelectContainer">

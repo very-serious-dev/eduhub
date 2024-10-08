@@ -32,10 +32,11 @@ const AdminBodyUsers = (props) => {
         if (errorMessage === undefined) {
             setUserAddedFeedback(<div className="adminAddResultMessage successColor">Nuevo usuario creado con éxito</div>);
             setNewlyCreatedUsers(value => value + 1);
-            {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
-                manually set a +1. In the end, this just aims to keep the left panel
-                number updated
-                */}
+            {/*
+              TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
+              manually set a +1. In the end, this just aims to keep the left panel
+              number updated
+             */}
             props.onShouldRefresh();
         } else {
             setUserAddedFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);

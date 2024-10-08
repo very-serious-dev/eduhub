@@ -1,6 +1,6 @@
 import bcrypt, json
 from django.http import JsonResponse
-from .models import EPUser, EPGroup, EPClass, EPTeacher
+from .models import EPUser, EPGroup, EPClass, EPTeacher, EPStudent
 
 def home(request):
     if request.method == "GET":
@@ -24,8 +24,10 @@ def handle_users(request):
         if admin_auth_error is not None:
             return admin_auth_error
         serialized_users = []
-        for user in EPUser.objects.all():
-            serialized_users.append(user.to_json_obj())
+        for teacher in EPTeacher.objects.all():
+            serialized_users.append(teacher.to_json_obj())
+        for student in EPStudent.objects.all():
+            serialized_users.append(student.to_json_obj())
         return JsonResponse({"users": serialized_users})
     elif request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)
@@ -56,7 +58,7 @@ def handle_users(request):
             new_teacher = EPTeacher()
             new_teacher.user = new_user
             new_user.save()
-            new_student.save()
+            new_teacher.save()
         elif json_student_group is not None:
             try:
                 group = EPGroup.objects.get(tag=json_student_group)
@@ -109,7 +111,7 @@ def handle_groups(request):
         new_group.tag = json_tag
         new_group.name = json_name
         new_group.year = json_year
-        new_group.tutor = EPUser.objects.get(username=json_tutor_username)
+        new_group.tutor = EPTeacher.objects.get(user__username=json_tutor_username)
         new_group.save()
         return JsonResponse({"success": True}, status=201)
     else:

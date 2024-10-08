@@ -3,13 +3,17 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import AdminAddClassForm from "./AdminAddClassForm";
 import GenericCard from "../common/GenericCard";
+import AdminClassTeacherOrStudent from "./AdminClassTeacherOrStudent";
+import AdminClassAddTeacher from "./AdminClassAddTeacher";
+import AdminClassAddStudent from "./AdminClassAddStudent";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
     const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0); // refresh key
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
-    const [showPopup, setShowPopup] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_TEACHER_OR_STUDENT, ADD_TEACHER_TO_CLASS, ADD_STUDENT_TO_CLASS
+    const [classIdForPopup, setClassIdForPopup] = useState();
     const [classAddedFeedback, setClassAddedFeedback] = useState(<div />);
 
     useEffect(() => {
@@ -46,20 +50,29 @@ const AdminBodyClasses = (props) => {
         <LoadingHUD /> :
         <>
             <div className="adminSubpanelHeader">
-                <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nueva clase</div>
+                <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
                 {classAddedFeedback}
             </div>
-            <AdminAddClassForm show={showPopup}
-                onDismiss={() => { setShowPopup(false) }}
+            <AdminAddClassForm show={popupShown === "ADD_CLASS"}
+                onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
                 groups={props.groups} />
+            <AdminClassTeacherOrStudent show={popupShown === "MENU_TEACHER_OR_STUDENT"} 
+                onDismiss={() => { setPopupShown("NONE") }}
+                onTeacherClicked={() => { setPopupShown("ADD_TEACHER_TO_CLASS") }}
+                onStudentClicked={() => { setPopupShown("ADD_STUDENT_TO_CLASS") }} />
+            <AdminClassAddTeacher show={popupShown === "ADD_TEACHER_TO_CLASS"} 
+                onDismiss={() => { setPopupShown("NONE") }} />
+            <AdminClassAddStudent show={popupShown === "ADD_STUDENT_TO_CLASS"} 
+                onDismiss={() => { setPopupShown("NONE") }} />
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
-                    {classes.map((c, i) => {
-                        return <GenericCard cardId={i}
+                    {classes.map(c => {
+                        return <GenericCard cardId={c.id}
                             preTitle={""}
                             title={c.name}
-                            footer={c.group} />
+                            footer={c.group}
+                            onClickWithId={id => { setClassIdForPopup(id); setPopupShown("MENU_TEACHER_OR_STUDENT")}} />
                     })}
                 </div>
             }
