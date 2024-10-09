@@ -1,4 +1,4 @@
-import bcrypt, json
+import bcrypt, json, re
 from django.http import JsonResponse
 from .models import EPUser, EPGroup, EPClass, EPTeacher, EPStudent, EPTeacherClass, EPStudentClass
 
@@ -45,7 +45,8 @@ def handle_users(request):
         json_is_teacher = body_json.get("is_teacher", False)
         if json_username is None or json_name is None or json_surname is None or json_password is None:
             return JsonResponse({"error": "Falta username, name, surname o password en el cuerpo de la petición"}, status=400)
-        # TO-DO: Validate username; should only contain lowercase letters and dots (.)
+        if not(re.match("^[a-z0-9.]+$", json_username)):
+            return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=409)
         if EPUser.objects.filter(username=json_username).exists():
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
         new_user = EPUser()
@@ -65,7 +66,7 @@ def handle_users(request):
             except EPGroup.DoesNotExist:
                 return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
             new_student = EPStudent()
-            new_student.user = new_user # TO-DO: Check that this works, maybe new_user.save() must be invoked before?
+            new_student.user = new_user
             new_student.group = group
             new_user.save()
             new_student.save()
@@ -92,10 +93,13 @@ def handle_groups(request):
         json_name = body_json.get("name")
         json_year = body_json.get("year")
         json_tutor_username = body_json.get("tutor_username")
-        # TO-DO: Validar que el tag no tiene espacios en blanco
         if json_tag is None or json_name is None or json_tutor_username is None or json_year is None:
             return JsonResponse({"error": "Falta tag, name, year o tutor_username en el cuerpo de la petición"}, status=400)
-        if EPGroup.objects.filter(tag=json_tag).exists():
+        if not(re.match("^[A-Za-z0-9]+$", json_tag)):
+            return JsonResponse({"error": "El tag no es válido. Sólo puede contener letras y dígitos"}, status=409)
+        if not(re.match("^[0-9-]+$", json_year)):
+            return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=409)
+        if EPGroup.objects.filter(tag=json_tag, year=json_year).exists():
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
         if EPUser.objects.filter(username=json_tutor_username).exists() == False:
             return JsonResponse({"error": "El tutor indicado no existe"}, status=409)
