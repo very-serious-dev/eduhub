@@ -17,7 +17,7 @@ const AdminBodyGroups = (props) => {
     }
 
     return <div>
-        <div className="adminSubpanelHeader">
+        <div>
             <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo grupo</div>
             {groupAddedFeedback}
         </div>

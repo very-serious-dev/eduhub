@@ -24,7 +24,6 @@ const AdminAddGroupForm = (props) => {
                 }
             })
             .catch(error => {
-                console.log(error)
                 setLoadingTeachers(false);
                 setAvailableTeachers([{ "name": "-- Se produjo un error --", "surname": "", "username": "" }]);
             })
@@ -57,7 +56,7 @@ const AdminAddGroupForm = (props) => {
             })
             .catch(error => {
                 setLoadingSubmit(false);
-                props.onGroupAdded(error.error);
+                props.onGroupAdded(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }

@@ -408,12 +408,7 @@ body {
 
 .genericCardClickable:hover {
     cursor: pointer;
-}
-
-.adminSubpanelHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    background-color: var(--color-tertiary);
 }
 
 .adminAddButtonHeader {
@@ -455,6 +450,13 @@ body {
 .adminAddClassSelect {
     margin-left: 5px;
     padding-top: 15px;
+}
+
+.hint {
+    padding-top: 12px;
+    padding-left: 4px;
+    color: #222222;
+    font-size: 11px;
 }
 
 /**

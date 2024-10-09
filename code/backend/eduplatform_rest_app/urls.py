@@ -7,6 +7,9 @@ urlpatterns = [
     path("admin/users/teachers", endpoints_admin.get_teachers),
     path("admin/groups", endpoints_admin.handle_groups),
     path("admin/classes", endpoints_admin.handle_classes),
+    path("admin/classes/<int:classId>/teachers", endpoints_admin.add_teacher_to_class),
+    path("admin/classes/<int:classId>/students", endpoints_admin.add_students_to_class),
+    path("admin/classes", endpoints_admin.handle_classes),
     path("sessions", endpoints_users.handle_login),
     path("classes", endpoints_classes.handle_classes),
     path("classes/<int:classId>", endpoints_classes.handle_class_detail)

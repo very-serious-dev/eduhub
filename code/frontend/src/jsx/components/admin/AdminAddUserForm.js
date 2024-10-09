@@ -54,7 +54,7 @@ const AdminAddUserForm = (props) => {
             .catch(error => {
                 setLoading(false);
                 setUsernameDidGainFocusOnce(false);
-                props.onUserAdded(error.error);
+                props.onUserAdded(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }

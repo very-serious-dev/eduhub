@@ -37,7 +37,7 @@ const AdminAddClassForm = (props) => {
             })
             .catch(error => {
                 setLoading(false);
-                props.onClassAdded(error.error);
+                props.onClassAdded(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }

@@ -14,7 +14,7 @@ const AdminBodyClasses = (props) => {
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_TEACHER_OR_STUDENT, ADD_TEACHER_TO_CLASS, ADD_STUDENT_TO_CLASS
     const [classIdForPopup, setClassIdForPopup] = useState();
-    const [classAddedFeedback, setClassAddedFeedback] = useState(<div />);
+    const [resultFeedback, setResultFeedback] = useState(<div />);
 
     useEffect(() => {
         const options = {
@@ -34,7 +34,7 @@ const AdminBodyClasses = (props) => {
 
     const onClassAdded = (errorMessage) => {
         if (errorMessage === undefined) {
-            setClassAddedFeedback(<div className="adminAddResultMessage successColor">Nueva clase creada con éxito</div>);
+            setResultFeedback(<div className="adminAddResultMessage successColor">Nueva clase creada con éxito</div>);
             setNewlyCreatedClasses(value => value + 1);
             {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
@@ -42,16 +42,24 @@ const AdminBodyClasses = (props) => {
                 */}
             props.onShouldRefresh();
         } else {
-            setClassAddedFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+            setResultFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+        }
+    }
+
+    const onTeacherOrStudentAddedToClass = (errorMessage) => {
+        if (errorMessage === undefined) {
+            setResultFeedback(<div className="adminAddResultMessage successColor">Añadido con éxito</div>);
+        } else {
+            setResultFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
         }
     }
 
     return isLoading ?
         <LoadingHUD /> :
         <>
-            <div className="adminSubpanelHeader">
+            <div>
                 <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
-                {classAddedFeedback}
+                {resultFeedback}
             </div>
             <AdminAddClassForm show={popupShown === "ADD_CLASS"}
                 onDismiss={() => { setPopupShown("NONE") }}
@@ -62,8 +70,12 @@ const AdminBodyClasses = (props) => {
                 onTeacherClicked={() => { setPopupShown("ADD_TEACHER_TO_CLASS") }}
                 onStudentClicked={() => { setPopupShown("ADD_STUDENT_TO_CLASS") }} />
             <AdminClassAddTeacher show={popupShown === "ADD_TEACHER_TO_CLASS"} 
+                classroom={classes.find( c => {return c.id === classIdForPopup})}
+                onTeacherAdded={onTeacherOrStudentAddedToClass}
                 onDismiss={() => { setPopupShown("NONE") }} />
             <AdminClassAddStudent show={popupShown === "ADD_STUDENT_TO_CLASS"} 
+                classroom={classes.find( c => {return c.id === classIdForPopup})}
+                onStudentAdded={onTeacherOrStudentAddedToClass}
                 onDismiss={() => { setPopupShown("NONE") }} />
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">

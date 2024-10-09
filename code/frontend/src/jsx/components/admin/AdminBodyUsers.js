@@ -46,7 +46,7 @@ const AdminBodyUsers = (props) => {
     return isLoading ?
         <LoadingHUD /> :
         <>
-            <div className="adminSubpanelHeader">
+            <div>
                 <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo usuario</div>
                 {userAddedFeedback}
             </div>
