@@ -1,6 +1,7 @@
 import bcrypt, json, re
 from django.http import JsonResponse
 from .models import EPUser, EPGroup, EPClass, EPTeacher, EPStudent, EPTeacherClass, EPStudentClass
+from .serializers import groups_array_to_json, classes_array_to_json, students_array_to_json, teachers_array_to_json
 
 def home(request):
     if request.method == "GET":
@@ -10,11 +11,10 @@ def home(request):
         users_count = EPUser.objects.all().count()
         classes_count = EPClass.objects.all().count()
         serialized_groups = []
-        for group in EPGroup.objects.all():
-            serialized_groups.append(group.to_json_obj())
+        groups = EPGroup.objects.all()
         return JsonResponse({"usersCount": users_count,
                              "classesCount": classes_count,
-                             "groups": serialized_groups })
+                             "groups": groups_array_to_json(groups) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     
@@ -24,11 +24,10 @@ def handle_users(request):
         if admin_auth_error is not None:
             return admin_auth_error
         serialized_users = []
-        for teacher in EPTeacher.objects.all():
-            serialized_users.append(teacher.to_json_obj())
-        for student in EPStudent.objects.all():
-            serialized_users.append(student.to_json_obj())
-        return JsonResponse({"users": serialized_users})
+        teachers = EPTeacher.objects.all()
+        students = EPStudent.objects.all()
+        users = [*teachers_array_to_json(teachers), *students_array_to_json(students)]
+        return JsonResponse({"users": users})
     elif request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
@@ -118,10 +117,8 @@ def handle_classes(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        serialized_classes = []
-        for cls in EPClass.objects.all():
-            serialized_classes.append(cls.to_json_obj())
-        return JsonResponse({"classes": serialized_classes})
+        classes = EPClass.objects.all()
+        return JsonResponse({"classes": classes_array_to_json(classes) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
@@ -202,10 +199,8 @@ def get_teachers(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        serialized_users = []
-        for user in EPTeacher.objects.all():
-            serialized_users.append(user.to_json_obj())
-        return JsonResponse({"teachers": serialized_users})
+        teachers = EPTeacher.objects.all()
+        return JsonResponse({"teachers": teachers_array_to_json(teachers) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     

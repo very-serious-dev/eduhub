@@ -1,6 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher, EPGroup
+from .serializers import classes_array_to_json
 
 def handle_classes(request):
     if request.method == "GET":
@@ -13,11 +14,8 @@ def handle_classes(request):
         except EPTeacher.DoesNotExist:
             # Student - We check EPStudentClass
             user_classes = EPStudentClass.objects.filter(student__user=request.user)
-        serialized_classes = []
-        for uc in user_classes:
-            serialized_classes.append(uc.classroom.to_json_obj())
-        response = JsonResponse({"classes": serialized_classes})
-        return response
+        classes = map(lambda uc: uc.classroom, user_classes)
+        return JsonResponse({"classes": classes_array_to_json(classes)})
     elif request.method == "POST":
         teacher_auth_error = __teacher_auth_json_error_response(request)
         if teacher_auth_error is not None:
@@ -37,14 +35,11 @@ def handle_classes(request):
         new_class.name = json_name
         new_class.group = EPGroup.objects.get(tag=json_group)
         new_class.save()
-        print("guay")
-        print(body_json)
         if json_automatically_add_teacher is True:
             teacher = EPTeacher.objects.get(user=request.user) # We can do this safely, already verified in __teacher_auth_json_error_response
             new_teacher_class = EPTeacherClass()
             new_teacher_class.teacher = teacher
             new_teacher_class.classroom = new_class
-            print("del paraguay")
             new_teacher_class.save()
         # TO-DO: Feature: Automatically add to the new class all users belonging to group
         return JsonResponse({"success": True}, status=201)

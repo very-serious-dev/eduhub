@@ -2,6 +2,7 @@ import bcrypt, json, secrets
 from django.http import JsonResponse
 from .middleware_auth import AUTH_COOKIE_KEY
 from .models import EPUser, EPUserSession, EPTeacher, STUDENT
+from .serializers import roles_array
 
 def handle_login(request):
     if request.method == "POST":
@@ -26,7 +27,7 @@ def handle_login(request):
             session.save()
             try:
                 db_teacher = EPTeacher(user=db_user)
-                roles = db_teacher.roles_array()
+                roles = roles_array(db_teacher)
             except EPTeacher.DoesNotExist:
                 # Let's assume we're handling a student
                 roles = [STUDENT]
