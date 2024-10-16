@@ -68,6 +68,7 @@ class EPGroup(models.Model):
         return {
             "tag": self.tag,
             "name": self.name,
+            # FIX-ME: This will fail if tutor is null
             "tutor": {
                 "username": self.tutor.user.username,
                 "name": self.tutor.user.name,

@@ -122,26 +122,6 @@ def handle_classes(request):
         for cls in EPClass.objects.all():
             serialized_classes.append(cls.to_json_obj())
         return JsonResponse({"classes": serialized_classes})
-    elif request.method == "POST":
-        admin_auth_error = __admin_auth_json_error_response(request)
-        if admin_auth_error is not None:
-            return admin_auth_error
-        try:
-            body_json = json.loads(request.body)
-        except JSONDecodeError:
-            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-        json_name = body_json.get("name")
-        json_group = body_json.get("group")
-        if json_name is None or json_group is None:
-            return JsonResponse({"error": "Falta name o group en el cuerpo de la petición"}, status=400)
-        if EPGroup.objects.filter(tag=json_group).exists() == False:
-            return JsonResponse({"error": "El grupo indicado al que debe pertenecer la clase no existe"}, status=409)
-        new_class = EPClass()
-        new_class.name = json_name
-        new_class.group = EPGroup.objects.get(tag=json_group)
-        new_class.save()
-        # TO-DO: Feature: Automatically add to the new class all users belonging to group
-        return JsonResponse({"success": True}, status=201)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

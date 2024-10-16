@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
-import AdminAddClassForm from "./AdminAddClassForm";
 import GenericCard from "../common/GenericCard";
 import AdminClassTeacherOrStudent from "./AdminClassTeacherOrStudent";
 import AdminClassAddTeacher from "./AdminClassAddTeacher";
 import AdminClassAddStudent from "./AdminClassAddStudent";
+import CreateClassDialog from "../dialogs/CreateClassDialog";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
@@ -61,7 +61,7 @@ const AdminBodyClasses = (props) => {
                 <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
                 {resultFeedback}
             </div>
-            <AdminAddClassForm show={popupShown === "ADD_CLASS"}
+            <CreateClassDialog show={popupShown === "ADD_CLASS"}
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
                 groups={props.groups} />

@@ -35,8 +35,8 @@ const AdminClassAddTeacher = (props) => {
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
     <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
-        <div className="card adminFormBackground">
-        <div className="adminFormTitle">Añadir docente a {props.classroom.name}</div>
+        <div className="card dialogBackground">
+        <div className="dialogTitle">Añadir docente a {props.classroom.name}</div>
                 <form onSubmit={onSubmitAddTeacher}>
                     <div className="formInput">
                         <input type="text" value={formTeacherUsername}
@@ -48,9 +48,9 @@ const AdminClassAddTeacher = (props) => {
                         <label htmlFor="">Nombre de usuario</label>
                     </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={isLoadingSubmit} />
+                        <input type="submit" value="Añadir" disabled={isLoadingSubmit} />
                     </div>
-                    {isLoadingSubmit && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>
         </div>
     </div>

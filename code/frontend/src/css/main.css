@@ -141,6 +141,22 @@ body {
     background-color: var(--color-tertiary);
 }
 
+.classesAddNew {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 200px;
+    text-align: center;
+    padding: 16px;
+    border-radius: 999px;
+    background-color: var(--color-secondary);
+}
+
+.classesAddNew:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
 /**
  * Class detail page
  */
@@ -445,11 +461,6 @@ body {
 
 .adminAddUserSelect {
     margin-left: 35px;
-}
-
-.adminAddClassSelect {
-    margin-left: 5px;
-    padding-top: 15px;
 }
 
 .hint {

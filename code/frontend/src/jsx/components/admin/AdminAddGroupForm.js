@@ -63,8 +63,8 @@ const AdminAddGroupForm = (props) => {
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
-            <div className="card adminFormBackground">
-                <div className="adminFormTitle">Nuevo grupo</div>
+            <div className="card dialogBackground">
+                <div className="dialogTitle">Nuevo grupo</div>
                 <form onSubmit={onSubmitAddGroup}>
                     <div className="formInput">
                         <input type="text" value={formName}
@@ -93,7 +93,7 @@ const AdminAddGroupForm = (props) => {
                         <div className="underline"></div>
                         <label htmlFor="">Año</label>
                     </div>
-                    {isLoadingTeachers && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingTeachers && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     <div className="formInputSelect adminAddGroupSelect hidableAdminFormSelectContainer">
                         <select name="tutorUsername"
                             value={formTutorUsername}
@@ -110,7 +110,7 @@ const AdminAddGroupForm = (props) => {
                     <div className="formSubmit">
                         <input type="submit" value="Crear" disabled={formTutorUsername === NOT_VALID || isLoadingTeachers === true} />
                     </div>
-                    {isLoadingSubmit && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

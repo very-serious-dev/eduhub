@@ -9,6 +9,7 @@ const ClassesPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0);
 
     useEffect(() => {
         const options = {
@@ -27,13 +28,17 @@ const ClassesPage = () => {
                     setRequestErrorMessage(error.error);
                 }
             })
-    }, [])
+    }, [newlyCreatedClasses]);
+
+    const onClassAdded = () => {
+        setNewlyCreatedClasses(newlyCreatedClasses+1);
+    }
 
     return isLoading ?
             <LoadingHUDPage />
             : isRequestFailed ?
                 <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassesBody classes={classes} />
+                : <ClassesBody classes={classes} onClassAdded={onClassAdded}/>
 }
 
 export default ClassesPage;

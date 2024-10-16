@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher
+from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher, EPGroup
 
 def handle_classes(request):
     if request.method == "GET":
@@ -17,7 +17,37 @@ def handle_classes(request):
         for uc in user_classes:
             serialized_classes.append(uc.classroom.to_json_obj())
         response = JsonResponse({"classes": serialized_classes})
-        return response  
+        return response
+    elif request.method == "POST":
+        teacher_auth_error = __teacher_auth_json_error_response(request)
+        if teacher_auth_error is not None:
+            return teacher_auth_error
+        try:
+            body_json = json.loads(request.body)
+        except JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_name = body_json.get("name")
+        json_group = body_json.get("group")
+        json_automatically_add_teacher = body_json.get("automaticallyAddTeacher")
+        if json_name is None or json_group is None:
+            return JsonResponse({"error": "Falta name o group en el cuerpo de la petición"}, status=400)
+        if EPGroup.objects.filter(tag=json_group).exists() == False:
+            return JsonResponse({"error": "El grupo indicado al que debe pertenecer la clase no existe"}, status=409)
+        new_class = EPClass()
+        new_class.name = json_name
+        new_class.group = EPGroup.objects.get(tag=json_group)
+        new_class.save()
+        print("guay")
+        print(body_json)
+        if json_automatically_add_teacher is True:
+            teacher = EPTeacher.objects.get(user=request.user) # We can do this safely, already verified in __teacher_auth_json_error_response
+            new_teacher_class = EPTeacherClass()
+            new_teacher_class.teacher = teacher
+            new_teacher_class.classroom = new_class
+            print("del paraguay")
+            new_teacher_class.save()
+        # TO-DO: Feature: Automatically add to the new class all users belonging to group
+        return JsonResponse({"success": True}, status=201)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
         
@@ -59,3 +89,13 @@ def handle_class_detail(request, classId):
         return response  
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
+
+def __teacher_auth_json_error_response(request):
+    if request.user is None:
+        return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+    try:
+        teacher = EPTeacher.objects.get(user=request.user)
+        return None
+    except EPTeacher.DoesNotExist:
+        return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+    return None

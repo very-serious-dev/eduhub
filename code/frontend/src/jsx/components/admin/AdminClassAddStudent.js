@@ -37,8 +37,8 @@ const AdminClassAddStudent = (props) => {
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
     <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
-        <div className="card adminFormBackground">
-        <div className="adminFormTitle">Añadir estudiante a {props.classroom.name}</div>
+        <div className="card dialogBackground">
+        <div className="dialogTitle">Añadir estudiante a {props.classroom.name}</div>
                 <form onSubmit={onSubmitAddStudent}>
                     <div className="formInput">
                         <input type="text" value={formStudentUsername}
@@ -51,9 +51,9 @@ const AdminClassAddStudent = (props) => {
                     </div>
                     <div className="hint">Puedes añadir más de un estudiante a la vez si los introduces en una lista separados por comas</div>
                     <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={isLoadingSubmit} />
+                        <input type="submit" value="Añadir" disabled={isLoadingSubmit} />
                     </div>
-                    {isLoadingSubmit && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>
         </div>
     </div>

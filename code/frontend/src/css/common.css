@@ -103,6 +103,10 @@
   background-color: var(--color-tertiary);
 }
 
+/**
+ * Dialog-related
+ */
+
 .popupOverlayBackground {
   position: fixed;
   display: block;
@@ -125,13 +129,18 @@
   z-index: 3;
 }
 
-.adminFormBackground {
+.dialogBackground {
   background-color: var(--color-background);
 }
 
-.adminFormTitle {
+.dialogTitle {
   font-size: 34px;
   margin-left: 10px;
+}
+
+.createClassSelect {
+  margin-left: 5px;
+  padding-top: 15px;
 }
 
 .hidableAdminFormSelectContainer {
@@ -147,7 +156,7 @@
   display: block;
 }
 
-.adminFormHUDCentered {
+.dialogHUDCentered {
   width: fit-content;
   margin-left: 42%;
 }

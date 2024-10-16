@@ -1,6 +1,12 @@
+import { useState } from "react";
 import GroupClassesSection from "./GroupClassesSection";
+import EduAPIFetch from "../../../client/EduAPIFetch";
+import CreateClassDialog from "../dialogs/CreateClassDialog";
 
 const ClassesBody = (props) => {
+    const [showAddClassPopup, setShowAddClassPopup] = useState(false);
+    const [isLoadingGroups, setLoadingGroups] = useState(false);
+    const [groups, setGroups] = useState([]);
 
     const sections = () => {
         // Elegant reduce (I hope so) to transform an array like this:
@@ -26,11 +32,41 @@ const ClassesBody = (props) => {
             }, {})
     }
 
+    const onClickAddClass = () => {
+        if (isLoadingGroups) { return; }
+        if (groups.length > 0) {
+            setShowAddClassPopup(true);
+            return;
+        }
+
+        const options = {
+            method: "GET",
+            credentials: "include"
+        };
+        setLoadingGroups(true);
+        EduAPIFetch("/api/v1/groups", options)
+            .then(json => {
+                setLoadingGroups(false);
+                setGroups(json.groups);
+                setShowAddClassPopup(true);
+            })
+            .catch(error => {
+                setLoadingGroups(false);
+            })
+    }
+
     return <div className="mainBodyClasses">
+        <CreateClassDialog show={showAddClassPopup}
+                onDismiss={() => { setShowAddClassPopup(false) }}
+                onClassAdded={ () => { props.onClassAdded(); }}
+                groups={groups} 
+                automaticallyAddTeacher={true} /> 
         {Object.entries(sections()).map(([groupTag, classes])=> {
             return <GroupClassesSection group={groupTag}
                 classes={classes} />
         })}
+        { /* Fix-me: Show only for teachers */}
+        <div className="card classesAddNew" onClick={() => { onClickAddClass() }}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div>
     </div>
 }
 

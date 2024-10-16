@@ -77,8 +77,8 @@ const AdminAddUserForm = (props) => {
     return props.show === true ? <div className="popupOverlayBackground"
         onClick={() => { setUsernameDidGainFocusOnce(false); props.onDismiss(); }}>
         <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
-            <div className="card adminFormBackground">
-                <div className="adminFormTitle">Nuevo usuario</div>
+            <div className="card dialogBackground">
+                <div className="dialogTitle">Nuevo usuario</div>
                 <form onSubmit={onSubmitAddUser}>
                     <div className="formInput">
                         <input type="text" value={formName}
@@ -137,7 +137,7 @@ const AdminAddUserForm = (props) => {
                     <div className="formSubmit">
                         <input type="submit" value="Crear" disabled={formStudentGroup === NOT_VALID && formIsTeacher === false} />
                     </div>
-                    {isLoading && <div className="adminFormHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>
