@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher, EPGroup
-from .serializers import classes_array_to_json
+from .serializers import classes_array_to_json, teachers_array_to_json
 
 def handle_classes(request):
     if request.method == "GET":
@@ -54,12 +54,8 @@ def handle_class_detail(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        teachers = []
-        for tc in EPTeacherClass.objects.filter(classroom=classroom):
-            teachers.append(tc.teacher.to_json_obj())
         # TO-DO: Mock
-        if len(teachers) == 0:
-            teachers = [{"username": "prueba", "name": "Prueba", "surname": "Prueba1"}]
+        teachers = [{"username": "prueba", "name": "Prueba", "surname": "Prueba1", "roles": ["teacher"]}]
         # TO-DO: Mock!
         response = JsonResponse({"name": classroom.name,
                                  "entries": [{"published_date": "2024-09-17 11:31",

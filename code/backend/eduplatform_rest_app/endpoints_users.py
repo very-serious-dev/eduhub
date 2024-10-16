@@ -1,6 +1,6 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
-from .middleware_auth import AUTH_COOKIE_KEY
+from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY
 from .models import EPUser, EPUserSession, EPTeacher, STUDENT
 from .serializers import roles_array
 
@@ -26,13 +26,15 @@ def handle_login(request):
             session.token = random_token
             session.save()
             try:
-                db_teacher = EPTeacher(user=db_user)
+                db_teacher = EPTeacher.objects.get(user=db_user)
                 roles = roles_array(db_teacher)
             except EPTeacher.DoesNotExist:
                 # Let's assume we're handling a student
                 roles = [STUDENT]
-            response = JsonResponse({"success": True, "user_roles": roles}, status=201)
-            response["Set-Cookie"] = AUTH_COOKIE_KEY + "=" + random_token + "; SameSite=Strict; HttpOnly; Path=/"
+            response = JsonResponse({"success": True}, status=201)
+            # https://docs.djangoproject.com/en/5.1/ref/request-response/#django.http.HttpResponse.set_cookie
+            response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
+            response.set_cookie(key=ROLES_COOKIE_KEY, value='-'.join(roles), path="/", samesite="Strict")
             return response
         else:
             return JsonResponse({"error": "Contraseña incorrecta"}, status=401)    

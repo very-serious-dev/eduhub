@@ -2,11 +2,13 @@ import { useState } from "react";
 import GroupClassesSection from "./GroupClassesSection";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
+import GetRolesFromCookie from "../../../client/GetRolesFromCookie";
 
 const ClassesBody = (props) => {
     const [showAddClassPopup, setShowAddClassPopup] = useState(false);
     const [isLoadingGroups, setLoadingGroups] = useState(false);
     const [groups, setGroups] = useState([]);
+    const roles = GetRolesFromCookie();
 
     const sections = () => {
         // Elegant reduce (I hope so) to transform an array like this:
@@ -65,8 +67,8 @@ const ClassesBody = (props) => {
             return <GroupClassesSection group={groupTag}
                 classes={classes} />
         })}
-        { /* Fix-me: Show only for teachers */}
-        <div className="card classesAddNew" onClick={() => { onClickAddClass() }}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div>
+        { roles.includes("teacher") === true &&
+        <div className="card classesAddNew" onClick={() => { onClickAddClass() }}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div> }
     </div>
 }
 

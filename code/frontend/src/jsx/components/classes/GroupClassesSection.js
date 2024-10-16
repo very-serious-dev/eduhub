@@ -13,7 +13,6 @@ const GroupClassesSection = (props) => {
         <div className="classesSectionTitleUnderline"></div>
         <div className="classesSectionInnerContainer">
             {props.classes.map(c => {
-                console.log(JSON.stringify(c));
                 return <GenericCard additionalCssClass="classClickableGenericCard"
                     cardId={c.id}
                     title={c.name}

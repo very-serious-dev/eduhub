@@ -1,6 +1,7 @@
 from .models import EPUserSession
 
 AUTH_COOKIE_KEY = "SessionToken"
+ROLES_COOKIE_KEY = "UserRoles"
 
 class AuthMiddleware:
     def __init__(self, get_response):
