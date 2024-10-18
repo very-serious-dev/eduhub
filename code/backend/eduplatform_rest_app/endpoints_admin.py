@@ -9,7 +9,7 @@ def home(request):
         if admin_auth_error is not None:
             return admin_auth_error
         users_count = EPUser.objects.all().count()
-        classes_count = EPClass.objects.all().count()
+        classes_count = EPClass.objects.filter(archived=False).count()
         serialized_groups = []
         groups = EPGroup.objects.all()
         return JsonResponse({"usersCount": users_count,
@@ -117,7 +117,7 @@ def handle_classes(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        classes = EPClass.objects.all()
+        classes = EPClass.objects.filter(archived=False)
         return JsonResponse({"classes": classes_array_to_json(classes) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

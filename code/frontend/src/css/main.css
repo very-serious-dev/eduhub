@@ -4,6 +4,8 @@
     --color-tertiary: #bccef8;
     --color-accent: #0029a5;
     --color-error: #f06161;
+    --color-delete: #f65050;
+    --color-destructive: #f52020;
     --color-success: #058f00;
     --color-background: #f5f5fa;
     --main-header-height: 60px;
@@ -233,6 +235,24 @@ body {
 }
 
 .classDetailHeaderCloseIcon:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+}
+
+.classDetailHeaderEditIcon {
+    position: absolute;
+    right: 90px;
+    top: 25px;
+    font-size: 1.5em;
+    color: white;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 4px;
+    border-radius: 4px;
+}
+
+.classDetailHeaderEditIcon:hover {
     cursor: pointer;
     background-color: var(--color-tertiary);
     box-shadow: 0 0 20px rgba(0, 0, 0, .15);

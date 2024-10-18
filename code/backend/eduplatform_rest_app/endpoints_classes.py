@@ -10,10 +10,10 @@ def handle_classes(request):
         try:
             # Teacher - We check EPTeacherClass
             teacher = EPTeacher.objects.get(user=request.user)
-            user_classes = EPTeacherClass.objects.filter(teacher__user=request.user)
+            user_classes = EPTeacherClass.objects.filter(teacher__user=request.user, classroom__archived=False)
         except EPTeacher.DoesNotExist:
             # Student - We check EPStudentClass
-            user_classes = EPStudentClass.objects.filter(student__user=request.user)
+            user_classes = EPStudentClass.objects.filter(student__user=request.user, classroom__archived=False)
         classes = map(lambda uc: uc.classroom, user_classes)
         return JsonResponse({"classes": classes_array_to_json(classes)})
     elif request.method == "POST":
@@ -54,10 +54,17 @@ def handle_class_detail(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        try:
+            teacher = EPTeacher.objects.get(user=request.user)
+            isClassEditableByUser = EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() > 0
+        except EPTeacher.DoesNotExist:
+            isClassEditableByUser = False
+        
         # TO-DO: Mock
         teachers = [{"username": "prueba", "name": "Prueba", "surname": "Prueba1", "roles": ["teacher"]}]
         # TO-DO: Mock!
-        response = JsonResponse({"name": classroom.name,
+        response = JsonResponse({"id": classId,
+                                 "name": classroom.name,
                                  "entries": [{"published_date": "2024-09-17 11:31",
                                               "author": teachers[0]["username"],
                                               "content": "Mañana en clase hablaremos de las fechas de los exámenes parciales"}, 
@@ -76,8 +83,48 @@ def handle_class_detail(request, classId):
                                               {"published_date": "2024-09-11 08:30",
                                               "author": teachers[0]["username"],
                                               "content": "¡Da comienzo el nuevo curso! ¡Bienvenidos! Recordad que las clases empiezan el próximo lunes"}],
-                                 "teachers": teachers })
+                                 "teachers": teachers,
+                                 "shouldShowEditButton": isClassEditableByUser })
         return response  
+    elif request.method == "PUT":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        try:
+            teacher = EPTeacher.objects.get(user=request.user)
+            if EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() == 0:
+                return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        except EPTeacher.DoesNotExist:
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        try:
+            body_json = json.loads(request.body)
+        except JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_name = body_json.get("name")
+        if json_name is None:
+            return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
+        classroom.name = json_name
+        classroom.save()
+        return JsonResponse({"success": True}, status=200)
+    elif request.method == "DELETE":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        try:
+            teacher = EPTeacher.objects.get(user=request.user)
+            if EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() == 0:
+                return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        except EPTeacher.DoesNotExist:
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        classroom.archived = True
+        classroom.save()
+        return JsonResponse({"success": True}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

@@ -42,7 +42,7 @@ class EPGroup(models.Model):
 class EPClass(models.Model):
     name = models.CharField(max_length=100)
     group = models.ForeignKey(EPGroup, on_delete=models.CASCADE)
-
+    archived = models.BooleanField(default=False)
 
 class EPTeacherClass(models.Model):
     teacher = models.ForeignKey(EPTeacher, on_delete=models.CASCADE)

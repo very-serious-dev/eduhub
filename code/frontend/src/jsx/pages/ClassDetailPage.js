@@ -10,9 +10,11 @@ const ClassDetailPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [numTimesClassWasEdited, setNumTimesClassWasEdited] = useState(0);
     const params = useParams();
 
     useEffect(() => {
+        setLoading(true);
         const options = {
             method: "GET",
             credentials: "include"
@@ -29,13 +31,13 @@ const ClassDetailPage = () => {
                     setRequestErrorMessage(error.error);
                 }
             })
-    }, [])
+    }, [numTimesClassWasEdited])
 
     return isLoading ?
             <LoadingHUDPage />
             : isRequestFailed ?
                 <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassDetailBodyWithHeader classData={classData} />
+                : <ClassDetailBodyWithHeader classData={classData} onShouldRefresh={() => {setNumTimesClassWasEdited(numTimesClassWasEdited + 1);}} />
 }
 
 export default ClassDetailPage;
