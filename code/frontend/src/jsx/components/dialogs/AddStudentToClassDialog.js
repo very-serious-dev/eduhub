@@ -2,7 +2,7 @@ import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 
-const AdminClassAddStudent = (props) => {
+const AddStudentToClassDialog = (props) => {
     const [formStudentUsername, setFormStudentUsername] = useState("");
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -60,4 +60,4 @@ const AdminClassAddStudent = (props) => {
 </div> : <></>
 }
 
-export default AdminClassAddStudent;
+export default AddStudentToClassDialog;

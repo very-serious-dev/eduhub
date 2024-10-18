@@ -2,7 +2,7 @@ import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 
-const AdminClassAddTeacher = (props) => {
+const AddTeacherToClassDialog = (props) => {
     const [formTeacherUsername, setFormTeacherUsername] = useState("");
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -57,4 +57,4 @@ const AdminClassAddTeacher = (props) => {
 </div> : <></>
 }
 
-export default AdminClassAddTeacher;
+export default AddTeacherToClassDialog;

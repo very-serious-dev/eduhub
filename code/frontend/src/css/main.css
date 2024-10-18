@@ -438,29 +438,10 @@ body {
     background-color: var(--color-tertiary);
 }
 
-.adminAddTeacherOrStudent {
-    text-align: center;
-    padding: 20px;
-}
-
-.adminAddTeacherOrStudent:hover {
-    cursor: pointer;
-    background-color: var(--color-tertiary);
-}
-
 .adminAddResultMessage {
     font-size: 1.25rem;
     font-weight: bold;
     margin-left: 6px;
-}
-
-.adminAddGroupSelect {
-    margin-left: 5px;
-    padding-top: 15px;
-}
-
-.adminAddUserSelect {
-    margin-left: 35px;
 }
 
 .hint {

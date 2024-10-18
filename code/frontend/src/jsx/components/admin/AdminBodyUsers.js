@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import UserCard from "../common/UserCard";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
-import AdminAddUserForm from "./AdminAddUserForm";
+import CreateUserDialog from "../dialogs/CreateUserDialog";
 
 const AdminBodyUsers = (props) => {
     const [users, setUsers] = useState([]);
@@ -50,7 +50,7 @@ const AdminBodyUsers = (props) => {
                 <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo usuario</div>
                 {userAddedFeedback}
             </div>
-            <AdminAddUserForm show={showPopup}
+            <CreateUserDialog show={showPopup}
                 onDismiss={() => { setShowPopup(false) }}
                 onUserAdded={onUserAdded}
                 groups={props.groups} />

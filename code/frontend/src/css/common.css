@@ -143,17 +143,36 @@
   padding-top: 15px;
 }
 
-.hidableAdminFormSelectContainer {
+.hidableFormSelectContainer {
   height: 50px;
   margin-top: 10px;
 }
 
-.hidableAdminFormSelectHidden {
+.hidableFormSelectHidden {
   display: none;
 }
 
-.hidableAdminFormSelectShown {
+.hidableFormSelectShown {
   display: block;
+}
+
+.addGroupSelect {
+  margin-left: 5px;
+  padding-top: 15px;
+}
+
+.addUserSelect {
+  margin-left: 35px;
+}
+
+.addTeacherOrStudent {
+  text-align: center;
+  padding: 20px;
+}
+
+.addTeacherOrStudent:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
 }
 
 .dialogHUDCentered {

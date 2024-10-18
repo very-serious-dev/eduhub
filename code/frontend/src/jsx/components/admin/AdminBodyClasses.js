@@ -2,10 +2,10 @@ import { useEffect, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import GenericCard from "../common/GenericCard";
-import AdminClassTeacherOrStudent from "./AdminClassTeacherOrStudent";
-import AdminClassAddTeacher from "./AdminClassAddTeacher";
-import AdminClassAddStudent from "./AdminClassAddStudent";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
+import AddTeacherOrStudentToClassDialog from "../dialogs/AddTeacherOrStudentToClassDialog";
+import AddTeacherToClassDialog from "../dialogs/AddTeacherToClassDialog";
+import AddStudentToClassDialog from "../dialogs/AddStudentToClassDialog";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
@@ -65,15 +65,15 @@ const AdminBodyClasses = (props) => {
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
                 groups={props.groups} />
-            <AdminClassTeacherOrStudent show={popupShown === "MENU_TEACHER_OR_STUDENT"} 
+            <AddTeacherOrStudentToClassDialog show={popupShown === "MENU_TEACHER_OR_STUDENT"} 
                 onDismiss={() => { setPopupShown("NONE") }}
                 onTeacherClicked={() => { setPopupShown("ADD_TEACHER_TO_CLASS") }}
                 onStudentClicked={() => { setPopupShown("ADD_STUDENT_TO_CLASS") }} />
-            <AdminClassAddTeacher show={popupShown === "ADD_TEACHER_TO_CLASS"} 
+            <AddTeacherToClassDialog show={popupShown === "ADD_TEACHER_TO_CLASS"} 
                 classroom={classes.find( c => {return c.id === classIdForPopup})}
                 onTeacherAdded={onTeacherOrStudentAddedToClass}
                 onDismiss={() => { setPopupShown("NONE") }} />
-            <AdminClassAddStudent show={popupShown === "ADD_STUDENT_TO_CLASS"} 
+            <AddStudentToClassDialog show={popupShown === "ADD_STUDENT_TO_CLASS"} 
                 classroom={classes.find( c => {return c.id === classIdForPopup})}
                 onStudentAdded={onTeacherOrStudentAddedToClass}
                 onDismiss={() => { setPopupShown("NONE") }} />

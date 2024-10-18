@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import AdminAddGroupForm from "./AdminAddGroupForm";
 import GroupCard from "../common/GenericCard";
 import GenericCard from "../common/GenericCard";
+import CreateGroupDialog from "../dialogs/CreateGroupDialog";
 
 const AdminBodyGroups = (props) => {
     const [showPopup, setShowPopup] = useState(false);
@@ -21,7 +21,7 @@ const AdminBodyGroups = (props) => {
             <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo grupo</div>
             {groupAddedFeedback}
         </div>
-        <AdminAddGroupForm show={showPopup}
+        <CreateGroupDialog show={showPopup}
             onDismiss={() => { setShowPopup(false) }}
             onGroupAdded={onGroupAdded} />
         <div className="adminSubpanelList">
