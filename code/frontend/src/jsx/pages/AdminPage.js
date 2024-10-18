@@ -24,9 +24,7 @@ const AdminPage = () => {
             .catch(error => {
                 setLoading(false);
                 setRequestFailed(true);
-                if (error.error) {
-                    setRequestErrorMessage(error.error);
-                }
+                setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
     }, [newlyCreatedItems])
 

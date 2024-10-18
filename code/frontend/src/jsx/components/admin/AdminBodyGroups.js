@@ -1,25 +1,24 @@
-import { useEffect, useState } from "react";
-import GroupCard from "../common/GenericCard";
+import { useContext, useState } from "react";
 import GenericCard from "../common/GenericCard";
 import CreateGroupDialog from "../dialogs/CreateGroupDialog";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const AdminBodyGroups = (props) => {
     const [showPopup, setShowPopup] = useState(false);
-    const [groupAddedFeedback, setGroupAddedFeedback] = useState(<div />);
+    const setFeedback = useContext(FeedbackContext);
 
     const onGroupAdded = (errorMessage) => {
         if (errorMessage === undefined) {
-            setGroupAddedFeedback(<div className="adminAddResultMessage successColor">Nuevo grupo creado con éxito</div>);
+            setFeedback({type: "success", message: "Nuevo grupo creado con éxito"});
             props.onShouldRefresh();
         } else {
-            setGroupAddedFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+            setFeedback({type: "success", message: errorMessage});
         }
     }
 
     return <div>
         <div>
             <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo grupo</div>
-            {groupAddedFeedback}
         </div>
         <CreateGroupDialog show={showPopup}
             onDismiss={() => { setShowPopup(false) }}

@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const ClassDetailBodyWithHeader = (props) => {
     const [isHeaderCollapsed, setHeaderCollapsed] = useState(false);
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
     const navigate = useNavigate();
+    const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
         const handleScroll = (e) => {
@@ -21,10 +23,19 @@ const ClassDetailBodyWithHeader = (props) => {
 
     const onClassEdited = (errorMessage) => {
         if (errorMessage === undefined) {
-            console.log("Éxito");
+            setFeedback({type: "success", message: "Clase modificada con éxito"});
             props.onShouldRefresh();
         } else {
-            console.log(errorMessage);
+            setFeedback({type: "error", message: errorMessage});
+        }
+    }
+
+    const onClassDeleted = (errorMessage) => {
+        if (errorMessage === undefined) {
+            setFeedback({type: "success", message: "Clase eliminada con éxito"});
+            navigate("/");
+        } else {
+            setFeedback({type: "error", message: errorMessage});
         }
     }
 
@@ -32,7 +43,7 @@ const ClassDetailBodyWithHeader = (props) => {
         <EditClassDialog show={showEditClassPopup}
                 onDismiss={() => { setShowEditClassPopup(false); }}
                 onClassEdited={onClassEdited}
-                onClassDeleted={ () => { navigate("/"); }}
+                onClassDeleted={onClassDeleted}
                 classId={props.classData.id}
                 classInitialName={props.classData.name} />
         <div className={`classDetailHeader ${isHeaderCollapsed ? "cdhCollapsed" : "cdhExpanded"}`}>

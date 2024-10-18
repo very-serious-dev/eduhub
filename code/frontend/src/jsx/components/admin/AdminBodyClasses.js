@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import GenericCard from "../common/GenericCard";
@@ -6,6 +6,7 @@ import CreateClassDialog from "../dialogs/CreateClassDialog";
 import AddTeacherOrStudentToClassDialog from "../dialogs/AddTeacherOrStudentToClassDialog";
 import AddTeacherToClassDialog from "../dialogs/AddTeacherToClassDialog";
 import AddStudentToClassDialog from "../dialogs/AddStudentToClassDialog";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
@@ -14,7 +15,7 @@ const AdminBodyClasses = (props) => {
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_TEACHER_OR_STUDENT, ADD_TEACHER_TO_CLASS, ADD_STUDENT_TO_CLASS
     const [classIdForPopup, setClassIdForPopup] = useState();
-    const [resultFeedback, setResultFeedback] = useState(<div />);
+    const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
         const options = {
@@ -34,7 +35,7 @@ const AdminBodyClasses = (props) => {
 
     const onClassAdded = (errorMessage) => {
         if (errorMessage === undefined) {
-            setResultFeedback(<div className="adminAddResultMessage successColor">Nueva clase creada con éxito</div>);
+            setFeedback({type: "success", message: "Nueva clase creada con éxito"});
             setNewlyCreatedClasses(value => value + 1);
             {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
@@ -42,15 +43,15 @@ const AdminBodyClasses = (props) => {
                 */}
             props.onShouldRefresh();
         } else {
-            setResultFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+            setFeedback({type: "error", message: errorMessage});
         }
     }
 
     const onTeacherOrStudentAddedToClass = (errorMessage) => {
         if (errorMessage === undefined) {
-            setResultFeedback(<div className="adminAddResultMessage successColor">Añadido con éxito</div>);
+            setFeedback({type: "success", message: "Añadido con éxito"});
         } else {
-            setResultFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+            setFeedback({type: "success", message: errorMessage});
         }
     }
 
@@ -59,7 +60,6 @@ const AdminBodyClasses = (props) => {
         <>
             <div>
                 <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
-                {resultFeedback}
             </div>
             <CreateClassDialog show={popupShown === "ADD_CLASS"}
                 onDismiss={() => { setPopupShown("NONE") }}

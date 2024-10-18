@@ -3,10 +3,10 @@
     --color-secondary: #bdece6;
     --color-tertiary: #bccef8;
     --color-accent: #0029a5;
-    --color-error: #f06161;
+    --color-error: #f37979;
     --color-delete: #f65050;
     --color-destructive: #f52020;
-    --color-success: #058f00;
+    --color-success: #7dca7d;
     --color-background: #f5f5fa;
     --main-header-height: 60px;
     --class-header-animation-duration: 0.3s;
@@ -458,12 +458,6 @@ body {
     background-color: var(--color-tertiary);
 }
 
-.adminAddResultMessage {
-    font-size: 1.25rem;
-    font-weight: bold;
-    margin-left: 6px;
-}
-
 .hint {
     padding-top: 12px;
     padding-left: 4px;
@@ -492,4 +486,49 @@ body {
 .generalErrorMessage {
     font-size: 1rem;
     text-align: center;
+}
+
+/**
+ * Global user feedback bubble
+ */
+
+.globalUserFeedback {
+    opacity: 1;
+    position: fixed;
+    bottom: 30px;
+    right: 50px;
+    width: 250px;
+    text-align: start;
+    padding: 12px;
+    border-radius: 0px;
+    animation: globalUserFeedback 3s infinite;
+    animation-iteration-count: 1;
+}
+
+.globalUserFeedbackInfo {
+    background-color: var(--color-secondary);
+}
+
+.globalUserFeedbackSuccess {
+    background-color: var(--color-success);
+}
+
+.globalUserFeedbackError {
+    background-color: var(--color-error);
+}
+
+
+
+@keyframes globalUserFeedback {
+    0% {
+        opacity: 1;
+    }
+
+    80% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
 }

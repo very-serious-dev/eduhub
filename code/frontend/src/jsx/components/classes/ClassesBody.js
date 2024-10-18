@@ -1,13 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import GroupClassesSection from "./GroupClassesSection";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
 import GetRolesFromCookie from "../../../client/GetRolesFromCookie";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const ClassesBody = (props) => {
     const [showAddClassPopup, setShowAddClassPopup] = useState(false);
     const [isLoadingGroups, setLoadingGroups] = useState(false);
     const [groups, setGroups] = useState([]);
+    const setFeedback = useContext(FeedbackContext);
     const roles = GetRolesFromCookie();
 
     const sections = () => {
@@ -54,6 +56,7 @@ const ClassesBody = (props) => {
             })
             .catch(error => {
                 setLoadingGroups(false);
+                setFeedback({type: "error", message: "Ha habido un error cargando los grupos"})
             })
     }
 

@@ -1,11 +1,3 @@
-.errorColor {
-  color: var(--color-error);
-}
-
-.successColor {
-  color: var(--color-success);
-}
-
 /**
  * Form-related
  * https://codepen.io/Metty/pen/NWpzexj

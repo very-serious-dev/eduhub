@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import UserCard from "../common/UserCard";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import CreateUserDialog from "../dialogs/CreateUserDialog";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const AdminBodyUsers = (props) => {
     const [users, setUsers] = useState([]);
@@ -10,7 +11,7 @@ const AdminBodyUsers = (props) => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [showPopup, setShowPopup] = useState(false);
-    const [userAddedFeedback, setUserAddedFeedback] = useState(<div />);
+    const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
         const options = {
@@ -27,10 +28,9 @@ const AdminBodyUsers = (props) => {
                 setRequestFailed(true);
             })
     }, [newlyCreatedUsers]);
-
     const onUserAdded = (errorMessage) => {
         if (errorMessage === undefined) {
-            setUserAddedFeedback(<div className="adminAddResultMessage successColor">Nuevo usuario creado con éxito</div>);
+            setFeedback({type: "success", message: "Nuevo usuario creado con éxito"});
             setNewlyCreatedUsers(value => value + 1);
             {/*
               TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
@@ -39,7 +39,7 @@ const AdminBodyUsers = (props) => {
              */}
             props.onShouldRefresh();
         } else {
-            setUserAddedFeedback(<div className="adminAddResultMessage errorColor">{errorMessage}</div>);
+            setFeedback({type: "error", message: errorMessage});
         }
     }
 
@@ -48,7 +48,6 @@ const AdminBodyUsers = (props) => {
         <>
             <div>
                 <div className="card adminAddButtonHeader" onClick={() => { setShowPopup(true) }}>➕ Añadir nuevo usuario</div>
-                {userAddedFeedback}
             </div>
             <CreateUserDialog show={showPopup}
                 onDismiss={() => { setShowPopup(false) }}

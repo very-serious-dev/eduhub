@@ -1,14 +1,14 @@
-import "./css/main.css";
-import "./css/common.css";
+import "../../css/main.css";
+import "../../css/common.css";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import LoginPage from "./jsx/pages/LoginPage";
-import AdminPage from "./jsx/pages/AdminPage";
-import MainContainer from "./jsx/pages/MainContainer";
-import ClassesPage from "./jsx/pages/ClassesPage";
-import FilesPage from "./jsx/pages/FilesPage";
-import ErrorPage from "./jsx/pages/ErrorPage";
-import ClassDetailPage from "./jsx/pages/ClassDetailPage";
+import LoginPage from "../pages/LoginPage";
+import AdminPage from "../pages/AdminPage";
+import MainContainer from "../pages/MainContainer";
+import ClassesPage from "../pages/ClassesPage";
+import FilesPage from "../pages/FilesPage";
+import ErrorPage from "../pages/ErrorPage";
+import ClassDetailPage from "../pages/ClassDetailPage";
 
 const App = () => {
 
