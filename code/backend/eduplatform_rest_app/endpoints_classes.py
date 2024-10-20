@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher, EPGroup
-from .serializers import classes_array_to_json, teachers_array_to_json
+from .serializers import classes_array_to_json, teachers_array_to_json, students_array_to_json
 
 def handle_classes(request):
     if request.method == "GET":
@@ -60,30 +60,27 @@ def handle_class_detail(request, classId):
         except EPTeacher.DoesNotExist:
             isClassEditableByUser = False
         
-        # TO-DO: Mock
-        teachers = [{"username": "prueba", "name": "Prueba", "surname": "Prueba1", "roles": ["teacher"]}]
         # TO-DO: Mock!
         response = JsonResponse({"id": classId,
                                  "name": classroom.name,
                                  "entries": [{"published_date": "2024-09-17 11:31",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "Mañana en clase hablaremos de las fechas de los exámenes parciales"}, 
                                               {"published_date": "2024-09-14 07:42",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "Por favor, enviadme un mensaje el número de serie de vuestro ordenador. Para sacar el número de serie, podéis ejecutar\n\n>wmic bios get serialnumber\n\n...desde un terminal. ¡Un saludo!"}, 
                                               {"published_date": "2024-09-12 14:30",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "El centro permanecerá cerrado por festivo el próximo 7 de octubre"}, 
                                               {"published_date": "2024-09-12 09:41",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "Recordad solicitar las habilitaciones para:\n\n- FOL\n- EIE\n\n¡Gracias!"}, 
                                               {"published_date": "2024-09-12 09:45",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "La plataforma de Classroom dejará de funcionar próximamente.\nPor favor, pasad todos vuestros datos a Eduplatform"}, 
                                               {"published_date": "2024-09-11 08:30",
-                                              "author": teachers[0]["username"],
+                                              "author": "Test",
                                               "content": "¡Da comienzo el nuevo curso! ¡Bienvenidos! Recordad que las clases empiezan el próximo lunes"}],
-                                 "teachers": teachers,
                                  "shouldShowEditButton": isClassEditableByUser })
         return response  
     elif request.method == "PUT":
@@ -128,6 +125,30 @@ def handle_class_detail(request, classId):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
+def handle_class_participants(request, classId):
+    if request.method == "GET":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        teachers_class = EPTeacherClass.objects.filter(classroom=classroom)
+        students_class = EPStudentClass.objects.filter(classroom=classroom)
+        teachers = list(map(lambda tc: tc.teacher, teachers_class))
+        students = list(map(lambda sc: sc.student, students_class))
+        user_belongs_to_class = False
+        for x in [*teachers, *students]:
+            if x.user_id == request.user.id:
+                user_belongs_to_class = True
+                break
+        if not(user_belongs_to_class):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        return JsonResponse({"teachers": teachers_array_to_json(teachers), "students": students_array_to_json(students)}, status=200)
+        
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+            
 def __teacher_auth_json_error_response(request):
     if request.user is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

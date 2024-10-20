@@ -176,10 +176,11 @@ def add_students_to_class(request, classId):
                 student = EPStudent.objects.get(user__username=username)
                 if EPStudentClass.objects.filter(student=student, classroom=cls).exists():
                     failed_already_added_users.append(username)
-                new_student_class = EPStudentClass()
-                new_student_class.student = student
-                new_student_class.classroom = cls
-                new_student_class.save()
+                else:
+                    new_student_class = EPStudentClass()
+                    new_student_class.student = student
+                    new_student_class.classroom = cls
+                    new_student_class.save()
             except EPStudent.DoesNotExist:
                 failed_inexistent_users.append(username)
         if len(failed_inexistent_users) == 0 and (failed_already_added_users) == 0:

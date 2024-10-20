@@ -63,7 +63,7 @@ const ClassesBody = (props) => {
     return <div className="mainBodyClasses">
         <CreateClassDialog show={showAddClassPopup}
                 onDismiss={() => { setShowAddClassPopup(false) }}
-                onClassAdded={ () => { props.onClassAdded(); }}
+                onClassAdded={ props.onClassAdded }
                 groups={groups} 
                 automaticallyAddTeacher={true} /> 
         {Object.entries(sections()).map(([groupTag, classes])=> {
@@ -71,7 +71,7 @@ const ClassesBody = (props) => {
                 classes={classes} />
         })}
         { roles.includes("teacher") === true &&
-        <div className="card classesAddNew" onClick={() => { onClickAddClass() }}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div> }
+        <div className="card classesAddNew" onClick={onClickAddClass}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div> }
     </div>
 }
 

@@ -48,10 +48,10 @@ const AdminBodyClasses = (props) => {
     }
 
     const onTeacherOrStudentAddedToClass = (errorMessage) => {
-        if (errorMessage === undefined) {
+        if (errorMessage === undefined || errorMessage === "") {
             setFeedback({type: "success", message: "Añadido con éxito"});
         } else {
-            setFeedback({type: "success", message: errorMessage});
+            setFeedback({type: "error", message: errorMessage});
         }
     }
 

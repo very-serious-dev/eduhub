@@ -299,14 +299,36 @@ body {
     padding-top: 15px;
 }
 
-.classDetailColumn2SectionTitle {
+.classDetailSectionTitle {
     color: var(--color-accent);
 }
 
-.classDetailColumn2SectionUnderline {
+.classDetailSectionUnderline {
     height: 1px;
     width: 90%;
     background-color: var(--color-accent);
+}
+
+.seeParticipants {
+    padding-right: 10px;
+    width: 85%;
+    text-align: center;
+    border-radius: 999px;
+    background-color: var(--color-secondary);
+}
+
+.seeParticipants:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.participantsContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.emptyParticipants {
+    padding: 30px;
 }
 
 /**

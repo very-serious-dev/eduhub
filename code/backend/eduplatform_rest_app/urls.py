@@ -18,5 +18,6 @@ urlpatterns = [
     path("sessions", endpoints_users.handle_login),
     path("groups", endpoints_groups.handle_groups),
     path("classes", endpoints_classes.handle_classes),
-    path("classes/<int:classId>", endpoints_classes.handle_class_detail)
+    path("classes/<int:classId>", endpoints_classes.handle_class_detail),
+    path("classes/<int:classId>/users", endpoints_classes.handle_class_participants)
 ]
