@@ -26,6 +26,8 @@ def handle_users(request):
         if admin_auth_error is not None:
             return admin_auth_error
         users = EPUser.objects.all()
+        print(users)
+        print( users_array_to_json(users))
         return JsonResponse({"users": users_array_to_json(users)})
     elif request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)

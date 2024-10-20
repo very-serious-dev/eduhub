@@ -65,12 +65,13 @@ const CreateUserDialog = (props) => {
         let suggestedUsername = formName.toLowerCase()
         if (formSurname.length > 0) {
             suggestedUsername += "." + formSurname.split(" ")[0].toLowerCase();
-            suggestedUsername = suggestedUsername.replaceAll('á', 'a')
-            suggestedUsername = suggestedUsername.replaceAll('é', 'e')
-            suggestedUsername = suggestedUsername.replaceAll('í', 'i')
-            suggestedUsername = suggestedUsername.replaceAll('ó', 'o')
-            suggestedUsername = suggestedUsername.replaceAll('ú', 'u')
         }
+        suggestedUsername = suggestedUsername.replaceAll(" ", "");
+        suggestedUsername = suggestedUsername.replaceAll('á', 'a')
+        suggestedUsername = suggestedUsername.replaceAll('é', 'e')
+        suggestedUsername = suggestedUsername.replaceAll('í', 'i')
+        suggestedUsername = suggestedUsername.replaceAll('ó', 'o')
+        suggestedUsername = suggestedUsername.replaceAll('ú', 'u')
         setFormUsername(suggestedUsername);
     }
 

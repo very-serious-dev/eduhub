@@ -20,10 +20,11 @@ const ClassParticipantsDialog = (props) => {
         EduAPIFetch(`/api/v1/classes/${props.classId}/users`, options)
             .then(json => {
                 setLoading(false);
-                setTeachers(json.users.filter(u => { return u.roles.contains("teacher")}));
-                setStudents(json.users.filter(u => { return u.roles.contains("student")}));
+                setTeachers(json.users.filter(u => { return u.roles.includes("teacher")}));
+                setStudents(json.users.filter(u => { return u.roles.includes("student")}));
             })
             .catch(error => {
+                console.log(error);
                 setLoading(false);
                 setFeedback({type: "error", message: error.error ?? "Se ha producido un error"});
                 props.onDismiss();

@@ -8,7 +8,8 @@ def handle_classes(request):
     if request.method == "GET":
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        classes = EPUserClass(user=request.user, classroom__archived=False)
+        users_classes = EPUserClass.objects.filter(user=request.user, classroom__archived=False)
+        classes = list(map(lambda uc: uc.classroom, users_classes))
         return JsonResponse({"classes": classes_array_to_json(classes)})
     elif request.method == "POST":
         if request.user is None:
@@ -33,6 +34,7 @@ def handle_classes(request):
         if json_automatically_add_teacher is True:
             new_user_class = EPUserClass()
             new_user_class.user = request.user
+            new_user_class.classroom = new_class
             new_user_class.save()
         # TO-DO: Feature: Automatically add to the new class all users belonging to group
         return JsonResponse({"success": True}, status=201)
@@ -50,7 +52,7 @@ def handle_class_detail(request, classId):
         if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             isClassEditableByUser = False
         else:
-            isClassEditableByUser = EPUserClass.objects.filter(user=user, classroom=classroom).count() > 0
+            isClassEditableByUser = EPUserClass.objects.filter(user=request.user, classroom=classroom).count() > 0
         
         # TO-DO: Mock!
         response = JsonResponse({"id": classId,

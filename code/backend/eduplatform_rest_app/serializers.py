@@ -43,8 +43,8 @@ def user_to_json(user):
         "roles": roles_array(user)
     }
     if user.student_group is not None:
-        json_user["student_group"] = user.group_id
-    return user
+        json_user["student_group"] = user.student_group_id
+    return json_user
 
 def users_array_to_json(users):
     result = []
@@ -54,14 +54,14 @@ def users_array_to_json(users):
     
 def roles_array(user):
     roles = []
-    if teacher.roles == EPUSER_STUDENT:
+    if user.role == EPUSER_STUDENT:
         roles.append(JSON_STUDENT)
-    if teacher.roles == EPUSER_TEACHER:
+    if user.role == EPUSER_TEACHER:
         roles.append(JSON_TEACHER)
-    if teacher.roles == EPUSER_TEACHER_LEADER:
+    if user.role == EPUSER_TEACHER_LEADER:
         roles.append(JSON_TEACHER)
         roles.append(JSON_LEADER)
-    if teacher.roles == EPUSER_TEACHER_SYSADMIN:
+    if user.role == EPUSER_TEACHER_SYSADMIN:
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles
