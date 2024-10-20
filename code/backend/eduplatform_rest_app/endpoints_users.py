@@ -1,7 +1,7 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
 from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY
-from .models import EPUser, EPUserSession, EPTeacher, STUDENT
+from .models import EPUser, EPUserSession
 from .serializers import roles_array
 
 def handle_login(request):
@@ -25,12 +25,7 @@ def handle_login(request):
             session.user = db_user
             session.token = random_token
             session.save()
-            try:
-                db_teacher = EPTeacher.objects.get(user=db_user)
-                roles = roles_array(db_teacher)
-            except EPTeacher.DoesNotExist:
-                # Let's assume we're handling a student
-                roles = [STUDENT]
+            roles = roles_array(db_user)
             response = JsonResponse({"success": True}, status=201)
             # https://docs.djangoproject.com/en/5.1/ref/request-response/#django.http.HttpResponse.set_cookie
             response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS

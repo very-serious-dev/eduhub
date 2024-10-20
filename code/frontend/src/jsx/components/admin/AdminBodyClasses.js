@@ -3,7 +3,7 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import GenericCard from "../common/GenericCard";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
-import AddTeacherOrStudentToClassDialog from "../dialogs/AddTeacherOrStudentToClassDialog";
+import EditClassOrParticipantsDialog from "../dialogs/EditClassOrParticipantsDialog";
 import AddTeacherToClassDialog from "../dialogs/AddTeacherToClassDialog";
 import AddStudentToClassDialog from "../dialogs/AddStudentToClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
@@ -13,7 +13,7 @@ const AdminBodyClasses = (props) => {
     const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0); // refresh key
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_TEACHER_OR_STUDENT, ADD_TEACHER_TO_CLASS, ADD_STUDENT_TO_CLASS
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, CLASS_PARTICIPANTS
     const [classIdForPopup, setClassIdForPopup] = useState();
     const setFeedback = useContext(FeedbackContext);
 
@@ -65,10 +65,11 @@ const AdminBodyClasses = (props) => {
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
                 groups={props.groups} />
-            <AddTeacherOrStudentToClassDialog show={popupShown === "MENU_TEACHER_OR_STUDENT"} 
+            <EditClassOrParticipantsDialog show={popupShown === "MENU_PARTICIPANTS_OR_EDIT"} 
                 onDismiss={() => { setPopupShown("NONE") }}
-                onTeacherClicked={() => { setPopupShown("ADD_TEACHER_TO_CLASS") }}
-                onStudentClicked={() => { setPopupShown("ADD_STUDENT_TO_CLASS") }} />
+                onEditClicked={() => { setPopupShown("EDIT_CLASS") }}
+                onParticipantsClicked={() => { setPopupShown("CLASS_PARTICIPANTS") }} />
+                {/* 
             <AddTeacherToClassDialog show={popupShown === "ADD_TEACHER_TO_CLASS"} 
                 classroom={classes.find( c => {return c.id === classIdForPopup})}
                 onTeacherAdded={onTeacherOrStudentAddedToClass}
@@ -76,7 +77,7 @@ const AdminBodyClasses = (props) => {
             <AddStudentToClassDialog show={popupShown === "ADD_STUDENT_TO_CLASS"} 
                 classroom={classes.find( c => {return c.id === classIdForPopup})}
                 onStudentAdded={onTeacherOrStudentAddedToClass}
-                onDismiss={() => { setPopupShown("NONE") }} />
+                onDismiss={() => { setPopupShown("NONE") }} />*/}
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
                     {classes.map(c => {
@@ -84,7 +85,7 @@ const AdminBodyClasses = (props) => {
                             preTitle={""}
                             title={c.name}
                             footer={c.group}
-                            onClickWithId={id => { setClassIdForPopup(id); setPopupShown("MENU_TEACHER_OR_STUDENT")}} />
+                            onClickWithId={id => { setClassIdForPopup(id); setPopupShown("MENU_PARTICIPANTS_OR_EDIT")}} />
                     })}
                 </div>
             }

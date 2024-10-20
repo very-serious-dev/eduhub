@@ -4,7 +4,7 @@ import LoadingHUD from "../common/LoadingHUD";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
 
-const ClassUsersDialog = (props) => {
+const ClassParticipantsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
@@ -20,8 +20,8 @@ const ClassUsersDialog = (props) => {
         EduAPIFetch(`/api/v1/classes/${props.classId}/users`, options)
             .then(json => {
                 setLoading(false);
-                setTeachers(json.teachers);
-                setStudents(json.students);
+                setTeachers(json.users.filter(u => { return u.roles.contains("teacher")}));
+                setStudents(json.users.filter(u => { return u.roles.contains("student")}));
             })
             .catch(error => {
                 setLoading(false);
@@ -30,6 +30,8 @@ const ClassUsersDialog = (props) => {
             })
     }, [props.show]);
 
+    /** TO-DO if props.shouldShowEditButton, display buttons to allow adding/removing users and teachers */
+    
     return  props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
     <div className="popupScreen" onClick={e => { e.stopPropagation(); }}>
         <div className="card dialogBackground">
@@ -51,4 +53,4 @@ const ClassUsersDialog = (props) => {
 
 }
 
-export default ClassUsersDialog;
+export default ClassParticipantsDialog;

@@ -184,12 +184,12 @@
   margin-left: 35px;
 }
 
-.addTeacherOrStudent {
+.editClassOrParticipants {
   text-align: center;
   padding: 20px;
 }
 
-.addTeacherOrStudent:hover {
+.editClassOrParticipants:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }

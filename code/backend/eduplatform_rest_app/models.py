@@ -1,29 +1,21 @@
 from django.db import models
 
-STUDENT = "student"
-TEACHER = "teacher"
-SCHOOL_LEADER = "school_leader"
-SYSADMIN = "sysadmin"
+EPUSER_STUDENT = 0
+EPUSER_TEACHER = 1
+EPUSER_TEACHER_SYSADMIN = 2
+EPUSER_TEACHER_LEADER = 3
 
 ##
 # USERS
 #
 
-# Base user class - only created together with a EPStudent or EPTeacher
 class EPUser(models.Model):
     username = models.CharField(unique=True, max_length=100)
     name = models.CharField(max_length=120)
     surname = models.CharField(max_length=120)
     encrypted_password = models.CharField(max_length=120)
-        
-class EPStudent(models.Model):
-    user = models.ForeignKey(EPUser, on_delete=models.CASCADE, unique=True)
-    group = models.ForeignKey("EPGroup", on_delete=models.SET_NULL, null=True) # TO-DO: Check if can be converted to null after group deletion; (maybe blank=True is needed too?)
-
-class EPTeacher(models.Model):
-    user = models.ForeignKey(EPUser, on_delete=models.CASCADE, unique=True)
-    is_school_leader = models.BooleanField(default=False)
-    is_sysadmin = models.BooleanField(default=False)
+    role = models.IntegerField() # Must be EPUSER_STUDENT, EPUSER_TEACHER,...
+    student_group = models.ForeignKey("EPGroup", on_delete=models.SET_NULL, null=True, default=None)
 
 class EPUserSession(models.Model):
     user = models.ForeignKey(EPUser, on_delete=models.CASCADE)
@@ -36,7 +28,7 @@ class EPUserSession(models.Model):
 class EPGroup(models.Model):
     tag = models.CharField(max_length=10, primary_key=True)
     name = models.CharField(max_length=100)
-    tutor = models.ForeignKey(EPTeacher, on_delete=models.SET_NULL, null=True)
+    tutor = models.ForeignKey(EPUser, on_delete=models.SET_NULL, null=True)
     year = models.CharField(max_length=10)
 
 class EPClass(models.Model):
@@ -44,12 +36,8 @@ class EPClass(models.Model):
     group = models.ForeignKey(EPGroup, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
 
-class EPTeacherClass(models.Model):
-    teacher = models.ForeignKey(EPTeacher, on_delete=models.CASCADE)
-    classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
-
-class EPStudentClass(models.Model):
-    student = models.ForeignKey(EPStudent, on_delete=models.CASCADE)
+class EPUserClass(models.Model):
+    user = models.ForeignKey(EPUser, on_delete=models.CASCADE)
     classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
 
 ##
@@ -79,7 +67,7 @@ class EPPostDocument(models.Model):
     document = models.ForeignKey(EPDocument, on_delete=models.CASCADE)
 
 class EPTaskSubmit(models.Model):
-    author = models.ForeignKey(EPStudent, on_delete=models.CASCADE)
+    author = models.ForeignKey(EPUser, on_delete=models.CASCADE)
     task = models.ForeignKey(EPTask, on_delete=models.CASCADE)
     comment = models.CharField(max_length=1000)
     submit_date = models.DateTimeField(auto_now=True)

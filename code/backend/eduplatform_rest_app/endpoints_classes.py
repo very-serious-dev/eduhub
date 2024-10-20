@@ -1,25 +1,20 @@
 import json
 from django.http import JsonResponse
-from .models import EPTeacherClass, EPStudentClass, EPClass, EPTeacher, EPGroup
-from .serializers import classes_array_to_json, teachers_array_to_json, students_array_to_json
+from .models import EPClass, EPUserClass, EPGroup
+from .models import EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .serializers import classes_array_to_json, users_array_to_json
 
 def handle_classes(request):
     if request.method == "GET":
         if request.user is None:
-            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)    
-        try:
-            # Teacher - We check EPTeacherClass
-            teacher = EPTeacher.objects.get(user=request.user)
-            user_classes = EPTeacherClass.objects.filter(teacher__user=request.user, classroom__archived=False)
-        except EPTeacher.DoesNotExist:
-            # Student - We check EPStudentClass
-            user_classes = EPStudentClass.objects.filter(student__user=request.user, classroom__archived=False)
-        classes = map(lambda uc: uc.classroom, user_classes)
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        classes = EPUserClass(user=request.user, classroom__archived=False)
         return JsonResponse({"classes": classes_array_to_json(classes)})
     elif request.method == "POST":
-        teacher_auth_error = __teacher_auth_json_error_response(request)
-        if teacher_auth_error is not None:
-            return teacher_auth_error
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
             body_json = json.loads(request.body)
         except JSONDecodeError:
@@ -36,11 +31,9 @@ def handle_classes(request):
         new_class.group = EPGroup.objects.get(tag=json_group)
         new_class.save()
         if json_automatically_add_teacher is True:
-            teacher = EPTeacher.objects.get(user=request.user) # We can do this safely, already verified in __teacher_auth_json_error_response
-            new_teacher_class = EPTeacherClass()
-            new_teacher_class.teacher = teacher
-            new_teacher_class.classroom = new_class
-            new_teacher_class.save()
+            new_user_class = EPUserClass()
+            new_user_class.user = request.user
+            new_user_class.save()
         # TO-DO: Feature: Automatically add to the new class all users belonging to group
         return JsonResponse({"success": True}, status=201)
     else:
@@ -54,11 +47,10 @@ def handle_class_detail(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        try:
-            teacher = EPTeacher.objects.get(user=request.user)
-            isClassEditableByUser = EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() > 0
-        except EPTeacher.DoesNotExist:
+        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             isClassEditableByUser = False
+        else:
+            isClassEditableByUser = EPUserClass.objects.filter(user=user, classroom=classroom).count() > 0
         
         # TO-DO: Mock!
         response = JsonResponse({"id": classId,
@@ -90,11 +82,11 @@ def handle_class_detail(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        try:
-            teacher = EPTeacher.objects.get(user=request.user)
-            if EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() == 0:
-                return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        except EPTeacher.DoesNotExist:
+        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            # Student - can't edit classes
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        if request.user.role == EPUSER_TEACHER and EPUserClass.objects.filter(user=user, classroom=classroom).count() == 0:
+            # Regular teacher trying to edit another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
             body_json = json.loads(request.body)
@@ -113,11 +105,11 @@ def handle_class_detail(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        try:
-            teacher = EPTeacher.objects.get(user=request.user)
-            if EPTeacherClass.objects.filter(teacher=teacher, classroom=classroom).count() == 0:
-                return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        except EPTeacher.DoesNotExist:
+        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            # Student - can't edit classes
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        if request.user.role == EPUSER_TEACHER and EPUserClass.objects.filter(user=user, classroom=classroom).count() == 0:
+            # Regular teacher trying to edit another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         classroom.archived = True
         classroom.save()
@@ -133,28 +125,19 @@ def handle_class_participants(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        teachers_class = EPTeacherClass.objects.filter(classroom=classroom)
-        students_class = EPStudentClass.objects.filter(classroom=classroom)
-        teachers = list(map(lambda tc: tc.teacher, teachers_class))
-        students = list(map(lambda sc: sc.student, students_class))
-        user_belongs_to_class = False
-        for x in [*teachers, *students]:
-            if x.user_id == request.user.id:
-                user_belongs_to_class = True
+        users_class = EPUserClass.objects.filter(classroom=classroom)
+        has_permission_to_see = False
+        if request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            has_permission_to_see = True
+        else:
+            for uc in users_class:
+                if uc.user_id == request.user.id:
+                    has_permission_to_see = True
                 break
-        if not(user_belongs_to_class):
+        if not(has_permission_to_see):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
-        return JsonResponse({"teachers": teachers_array_to_json(teachers), "students": students_array_to_json(students)}, status=200)
+        users = list(map(lambda uc: uc.user, users_class))
+        return JsonResponse({"users": users_array_to_json(users)}, status=200)
         
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
-            
-def __teacher_auth_json_error_response(request):
-    if request.user is None:
-        return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-    try:
-        teacher = EPTeacher.objects.get(user=request.user)
-        return None
-    except EPTeacher.DoesNotExist:
-        return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
-    return None

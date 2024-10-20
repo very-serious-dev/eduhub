@@ -1,14 +1,15 @@
 import { useState } from "react";
-import ClassUsersDialog from "../dialogs/ClassUsersDialog";
+import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
 import ClassDetailEntryCard from "./ClassDetailEntryCard";
 
 const ClassDetailBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS
 
     return <>
-    <ClassUsersDialog show={popupShown === "PARTICIPANTS"}
+    <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
         onDismiss={() => {setPopupShown("NONE")}} 
-        classId={props.classData.id}/>
+        classId={props.classData.id}
+        shouldShowEditButton={props.classData.shouldShowEditButton} />
     <div className="classDetailBodyContainer">
         <div className="classDetailBodyColumn1">
             {props.classData.entries.map(e => <ClassDetailEntryCard entry={e} />)}

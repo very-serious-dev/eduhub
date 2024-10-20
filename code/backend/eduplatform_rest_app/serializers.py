@@ -1,14 +1,18 @@
-from .models import STUDENT, TEACHER, SCHOOL_LEADER, SYSADMIN
+from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+
+JSON_STUDENT = "student"
+JSON_TEACHER = "teacher"
+JSON_SYSADMIN = "sysadmin"
+JSON_LEADER = "school_leader"
 
 def group_to_json(group):
     return {
         "tag": group.tag,
         "name": group.name,
-        # FIX-ME: This will fail if tutor is null
         "tutor": {
-            "username": group.tutor.user.username,
-            "name": group.tutor.user.name,
-            "surname": group.tutor.user.surname
+            "username": group.tutor.username if group.tutor is not None else "none",
+            "name": group.tutor.name if group.tutor is not None else "none",
+            "surname": group.tutor.surname if group.tutor is not None else "none",
         }
     }
 
@@ -31,40 +35,37 @@ def classes_array_to_json(classes):
         result.append(class_to_json(c))
     return result
 
-def student_to_json(student):
-    return {
-        "username": student.user.username,
-        "name": student.user.name,
-        "surname": student.user.surname,
-        "roles": [STUDENT],
-        "student_group": student.group_id
+def user_to_json(user):
+    json_user = {
+        "username": user.username,
+        "name": user.name,
+        "surname": user.surname,
+        "roles": roles_array(user)
     }
+    if user.student_group is not None:
+        json_user["student_group"] = user.group_id
+    return user
 
-def students_array_to_json(students):
+def users_array_to_json(users):
     result = []
-    for s in students:
-        result.append(student_to_json(s))
+    for u in users:
+        result.append(user_to_json(u))
     return result
     
-def teacher_to_json(teacher):
-    return {
-        "username": teacher.user.username,
-        "name": teacher.user.name,
-        "surname": teacher.user.surname,
-        "roles": roles_array(teacher)
-    }
- 
-def roles_array(teacher):
-    roles = [TEACHER]
-    if teacher.is_school_leader:
-        roles.append(SCHOOL_LEADER)
-    if teacher.is_sysadmin:
-        roles.append(SYSADMIN)
+def roles_array(user):
+    roles = []
+    if teacher.roles == EPUSER_STUDENT:
+        roles.append(JSON_STUDENT)
+    if teacher.roles == EPUSER_TEACHER:
+        roles.append(JSON_TEACHER)
+    if teacher.roles == EPUSER_TEACHER_LEADER:
+        roles.append(JSON_TEACHER)
+        roles.append(JSON_LEADER)
+    if teacher.roles == EPUSER_TEACHER_SYSADMIN:
+        roles.append(JSON_TEACHER)
+        roles.append(JSON_SYSADMIN)
     return roles
 
-def teachers_array_to_json(teachers):
-    result = []
-    for t in teachers:
-        result.append(teacher_to_json(t))
-    return result
+
+
 
