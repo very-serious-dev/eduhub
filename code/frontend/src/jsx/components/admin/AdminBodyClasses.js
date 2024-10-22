@@ -5,7 +5,7 @@ import GenericCard from "../common/GenericCard";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
 import EditClassOrParticipantsDialog from "../dialogs/EditClassOrParticipantsDialog";
 import AddTeacherToClassDialog from "../dialogs/AddTeacherToClassDialog";
-import AddStudentToClassDialog from "../dialogs/AddStudentToClassDialog";
+import AddStudentToClassDialog from "../dialogs/AddParticipantToClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 
 const AdminBodyClasses = (props) => {

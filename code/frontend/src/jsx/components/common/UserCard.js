@@ -17,12 +17,23 @@ const UserCard = (props) => {
         return tags;
     }
 
-    return <div className="card userCard" key={props.user.username}>
+    const onClick = () => {
+        if (props.onClickWithUsername !== undefined) {
+            props.onClickWithUsername(props.user.username);
+        }
+    }
+
+    const onDelete = () => {
+        props.onDeleteWithUsername(props.user.username);
+    }
+
+    return <div className={`card userCard ${props.onClickWithUsername !== undefined ? "cardClickable" : ""}`} key={props.user.username} onClick={onClick}>
         <div className="userCardUsername">{`${props.user.username}`}</div>
         <div className="userCardName">{`${props.user.name} ${props.user.surname}`}</div>
         <div className="userCardTagsContainer">
             {contentForTags()}
         </div>
+        {props.onDeleteWithUsername && <div className="userCardDeleteButton" onClick={onDelete}>❌</div>}
     </div>
 }
 

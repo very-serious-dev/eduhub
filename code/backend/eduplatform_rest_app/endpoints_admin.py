@@ -21,15 +21,7 @@ def home(request):
         return JsonResponse({"error": "Unsupported"}, status=405)
     
 def handle_users(request):
-    if request.method == "GET":
-        admin_auth_error = __admin_auth_json_error_response(request)
-        if admin_auth_error is not None:
-            return admin_auth_error
-        users = EPUser.objects.all()
-        print(users)
-        print( users_array_to_json(users))
-        return JsonResponse({"users": users_array_to_json(users)})
-    elif request.method == "POST":
+    if request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
@@ -115,49 +107,6 @@ def handle_classes(request):
             return admin_auth_error
         classes = EPClass.objects.filter(archived=False)
         return JsonResponse({"classes": classes_array_to_json(classes) })
-    else:
-        return JsonResponse({"error": "Unsupported"}, status=405)
-
-def add_users_to_class(request, classId):
-    if request.method == "POST":
-        admin_auth_error = __admin_auth_json_error_response(request)
-        if admin_auth_error is not None:
-            return admin_auth_error
-        try:
-            body_json = json.loads(request.body)
-        except JSONDecodeError:
-            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-        json_username = body_json.get("username")
-        if json_username is None:
-            return JsonResponse({"error": "Falta username en el cuerpo de la petición"}, status=400)
-        try:
-            cls = EPClass.objects.get(id=classId)
-        except EPClass.DoesNotExist:
-            return JsonResponse({"error": "La clase no existe"}, status=404)
-        failed_inexistent_users = []
-        failed_already_added_users = []
-        for non_trimmed_username in json_username.split(","):
-            username = non_trimmed_username.strip()
-            try:
-                user = EPUser.objects.get(username=username)
-                if EPUserClass.objects.filter(user=user, classroom=cls).exists():
-                    failed_already_added_users.append(username)
-                else:
-                    new_user_class = EPUserClass()
-                    new_user_class.user = user
-                    new_user_class.classroom = cls
-                    new_user_class.save()
-            except EPUser.DoesNotExist:
-                failed_inexistent_users.append(username)
-        if len(failed_inexistent_users) == 0 and (failed_already_added_users) == 0:
-            return JsonResponse({"success": True}, status=201)
-        else:
-            error_msg = ""
-            if len(failed_inexistent_users) > 0:
-                error_msg += "Usuario(s) inexistente(s): " + ", ".join(failed_inexistent_users) + ". "
-            if len(failed_already_added_users) > 0:
-                error_msg += "Usuario(s) ya pertenece(n) a la clase: " + ", ".join(failed_already_added_users)
-            return JsonResponse({"partial_success": True, "error": error_msg}, status=201)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

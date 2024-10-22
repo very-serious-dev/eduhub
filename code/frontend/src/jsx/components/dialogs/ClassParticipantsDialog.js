@@ -3,9 +3,13 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
+import AreYouSureDialog from "./AreYouSureDialog";
 
 const ClassParticipantsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
+    const [isLoadingDelete, setLoadingDelete] = useState(false);
+    const [areYouSureDeleteUsername, setAreYouSureDeleteUsername] = useState();
+    const [numDeletedUsers, setNumDeletedUsers] = useState(0); // refresh key
     const [teachers, setTeachers] = useState([]);
     const [students, setStudents] = useState([]);
     const setFeedback = useContext(FeedbackContext);
@@ -24,16 +28,57 @@ const ClassParticipantsDialog = (props) => {
                 setStudents(json.users.filter(u => { return u.roles.includes("student")}));
             })
             .catch(error => {
-                console.log(error);
                 setLoading(false);
                 setFeedback({type: "error", message: error.error ?? "Se ha producido un error"});
                 props.onDismiss();
             })
-    }, [props.show]);
+    }, [props.show, numDeletedUsers]);
 
-    /** TO-DO if props.shouldShowEditButton, display buttons to allow adding/removing users and teachers */
+    const onRemoveUserClicked = (username) => {
+        setAreYouSureDeleteUsername(username);
+    }
+
+    const onRemoveUserActionConfirmed = () => {
+        if (isLoadingDelete) { return; }
+        const options = {
+            method: "DELETE",
+            credentials: "include"
+        };
+        setLoadingDelete(true);
+        EduAPIFetch(`/api/v1/classes/${props.classId}/users/${areYouSureDeleteUsername}`, options)
+            .then(json => {
+                setLoadingDelete(false);
+                setAreYouSureDeleteUsername(undefined); // Dismisses Are you sure? dialog
+                if (json.success === true) {
+                    setFeedback({type: "success", message: "Usuario eliminado de la clase"});
+                } else {
+                    setFeedback({type: "error", message: "Se ha producido un error"});
+                }
+                setNumDeletedUsers(numDeletedUsers + 1);
+            })
+            .catch(error => {
+                setLoadingDelete(false);
+                setAreYouSureDeleteUsername(undefined); // Dismisses Are you sure? dialog
+                setFeedback({type: "error", message: error.error ?? "Se ha producido un error"});
+            })
+    }
+
+
+    const userCardForUser = (user) => {
+        if (props.shouldShowEditButton) {
+            return <UserCard user={user} onDeleteWithUsername={onRemoveUserClicked}/>
+        } else {
+            return <UserCard user={user} />
+        }
+    }
+    /** TO-DO if props.shouldShowEditButton, display buttons to allow removing users */
     
-    return  props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return  props.show === true ? 
+    areYouSureDeleteUsername !== undefined ? 
+    <AreYouSureDialog onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
+        onActionConfirmed={onRemoveUserActionConfirmed}
+        isLoading={isLoadingDelete} />
+    : <div className="popupOverlayBackground" onClick={props.onDismiss}>
     <div className="popupScreen" onClick={e => { e.stopPropagation(); }}>
         <div className="card dialogBackground">
             <div className="dialogTitle">Participantes</div>
@@ -41,13 +86,14 @@ const ClassParticipantsDialog = (props) => {
             <div className="classDetailSectionTitle">💼 Profesores</div>
             <div className="classDetailSectionUnderline" />
             <div className="participantsContainer">
-                {teachers && teachers.length > 0 ? teachers.map(u => <UserCard user={u} />) : <div className="emptyParticipants">No hay docentes asignados</div>}
+                {teachers && teachers.length > 0 ? teachers.map(u => userCardForUser(u)) : <div className="emptyParticipants">No hay docentes asignados</div>}
             </div>
             <div className="classDetailSectionTitle">📗 Estudiantes</div>
             <div className="classDetailSectionUnderline" />
             <div className="participantsContainer">
-                {students && students.length > 0 ? students.map(u => <UserCard user={u} />) : <div className="emptyParticipants">No hay estudiantes asignados</div>}
+                {students && students.length > 0 ? students.map(u => userCardForUser(u)) : <div className="emptyParticipants">No hay estudiantes asignados</div>}
             </div>
+            { props.shouldShowEditButton && <div className="card addParticipant" onClick={props.onWantsToAddParticipant}>➕ Añadir participante</div> }
         </div>
     </div>
 </div> : <></>

@@ -6,7 +6,7 @@ const GenericCard = (props) => {
         }
     }
 
-    return <div key={props.cardId} onClick={onClick} className={`card genericCard ${props.additionalCssClass ?? ""} ${props.onClickWithId !== undefined ? "genericCardClickable" : ""}`} >
+    return <div key={props.cardId} onClick={onClick} className={`card genericCard ${props.additionalCssClass ?? ""} ${props.onClickWithId !== undefined ? "cardClickable" : ""}`} >
         <div className="genericCardPreTitle">{props.preTitle}</div>
         <div className="genericCardTitle">{props.title}</div>
         <div className="genericCardFooter">{props.footer}</div>

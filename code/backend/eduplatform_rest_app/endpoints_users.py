@@ -1,8 +1,10 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
+from django.db.models import Q
 from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY
 from .models import EPUser, EPUserSession
-from .serializers import roles_array
+from .models import EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .serializers import roles_array, users_array_to_json
 
 def handle_login(request):
     if request.method == "POST":
@@ -32,8 +34,22 @@ def handle_login(request):
             response.set_cookie(key=ROLES_COOKIE_KEY, value='-'.join(roles), path="/", samesite="Strict")
             return response
         else:
-            return JsonResponse({"error": "Contraseña incorrecta"}, status=401)    
+            return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
+def handle_users(request):
+    if request.method == "GET":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=401)
+        q = request.GET.get("search", None)
+        if q is None:
+            users = EPUser.objects.all()
+        else:
+            users = EPUser.objects.filter(Q(username__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
+        return JsonResponse({"users": users_array_to_json(users)})
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
 

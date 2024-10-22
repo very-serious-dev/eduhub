@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
-from .models import EPClass, EPUserClass, EPGroup
-from .models import EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .models import EPUser, EPClass, EPUserClass, EPGroup
+from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
 from .serializers import classes_array_to_json, users_array_to_json
 
 def handle_classes(request):
@@ -135,11 +135,95 @@ def handle_class_participants(request, classId):
             for uc in users_class:
                 if uc.user_id == request.user.id:
                     has_permission_to_see = True
-                break
+                    break
         if not(has_permission_to_see):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         users = list(map(lambda uc: uc.user, users_class))
         return JsonResponse({"users": users_array_to_json(users)}, status=200)
-        
+    elif request.method == "PUT":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        teachers_class = EPUserClass.objects.filter(classroom=classroom, user__role=EPUSER_TEACHER)
+        has_permission_to_edit = False
+        if request.user.role == EPUSER_STUDENT:
+            has_permission_to_edit = False
+        elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            has_permission_to_edit = True
+        else:
+            # Regular teacher
+            for tc in teachers_class:
+                if tc.user_id == request.user.id:
+                    has_permission_to_edit = True
+                break
+        if not(has_permission_to_edit):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        try:
+            body_json = json.loads(request.body)
+        except JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_username = body_json.get("username")
+        if json_username is None:
+            return JsonResponse({"error": "Falta username en el cuerpo de la petición"}, status=400)
+        failed_inexistent_users = []
+        failed_already_added_users = []
+        for non_trimmed_username in json_username.split(","):
+            username = non_trimmed_username.strip()
+            if len(username) > 0:
+                try:
+                    user = EPUser.objects.get(username=username)
+                    if EPUserClass.objects.filter(user=user, classroom=classroom).exists():
+                        failed_already_added_users.append(username)
+                    else:
+                        new_user_class = EPUserClass()
+                        new_user_class.user = user
+                        new_user_class.classroom = classroom
+                        new_user_class.save()
+                except EPUser.DoesNotExist:
+                    failed_inexistent_users.append(username)
+        if len(failed_inexistent_users) == 0 and (failed_already_added_users) == 0:
+            return JsonResponse({"success": True}, status=201)
+        else:
+            error_msg = ""
+            if len(failed_inexistent_users) > 0:
+                error_msg += "Usuario(s) inexistente(s): " + ", ".join(failed_inexistent_users) + ". "
+            if len(failed_already_added_users) > 0:
+                error_msg += "Usuario(s) ya pertenece(n) a la clase: " + ", ".join(failed_already_added_users)
+            return JsonResponse({"partial_success": True, "error": error_msg}, status=201)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+def handle_class_participant_deletion(request, classId, username):
+    if request.method == "DELETE":
+        # FIX-ME: Permission check is CTRL+C, CTRL+V from handle_class_participants
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        teachers_class = EPUserClass.objects.filter(classroom=classroom, user__role=EPUSER_TEACHER)
+        has_permission_to_edit = False
+        if request.user.role == EPUSER_STUDENT:
+            has_permission_to_edit = False
+        elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            has_permission_to_edit = True
+        else:
+            # Regular teacher
+            for tc in teachers_class:
+                if tc.user_id == request.user.id:
+                    has_permission_to_edit = True
+                break
+        if not(has_permission_to_edit):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        try:
+            user_class = EPUserClass.objects.get(classroom=classroom, user__username=username)
+            user_class.delete()
+            return JsonResponse({"success": True}, status=200)
+        except EPUserClass.DoesNotExist:
+            return JsonResponse({"error": "El usuario no pertenece a esa clase"}, status=404)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

@@ -18,7 +18,7 @@ const AdminBodyUsers = (props) => {
             method: "GET",
             credentials: "include"
         };
-        EduAPIFetch("/api/v1/admin/users", options)
+        EduAPIFetch("/api/v1/users", options)
             .then(json => {
                 setLoading(false);
                 setUsers(json.users);

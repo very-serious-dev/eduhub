@@ -10,13 +10,13 @@ urlpatterns = [
     path("admin/users/teachers", endpoints_admin.get_teachers),
     path("admin/groups", endpoints_admin.handle_groups),
     path("admin/classes", endpoints_admin.handle_classes),
-    path("admin/classes/<int:classId>/users", endpoints_admin.add_users_to_class),
-    path("admin/classes", endpoints_admin.handle_classes),
     
     # Regular users
+    path("users", endpoints_users.handle_users),
     path("sessions", endpoints_users.handle_login),
     path("groups", endpoints_groups.handle_groups),
     path("classes", endpoints_classes.handle_classes),
     path("classes/<int:classId>", endpoints_classes.handle_class_detail),
-    path("classes/<int:classId>/users", endpoints_classes.handle_class_participants)
+    path("classes/<int:classId>/users", endpoints_classes.handle_class_participants),
+    path("classes/<int:classId>/users/<username>", endpoints_classes.handle_class_participant_deletion)
 ]

@@ -90,6 +90,10 @@
   background-color: var(--color-secondary);
 }
 
+.formSubmitNoMarginTop input {
+  margin-top: 0px;
+}
+
 .formSubmit input:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);

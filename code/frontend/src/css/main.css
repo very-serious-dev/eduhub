@@ -322,9 +322,32 @@ body {
     background-color: var(--color-tertiary);
 }
 
+.addParticipant {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    padding-right: 10px;
+    width: 200px;
+    text-align: center;
+    border-radius: 999px;
+    background-color: var(--color-secondary);
+}
+
+.addParticipant:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
 .participantsContainer {
     display: flex;
     flex-wrap: wrap;
+}
+
+.participantsSearchContainer {
+    display: flex;
+    flex-wrap: wrap;
+    max-height: 260px;
+    overflow-y: scroll;
 }
 
 .emptyParticipants {
@@ -441,6 +464,17 @@ body {
     background-color: #006d0f;
 }
 
+.userCardDeleteButton {
+    position: absolute;
+    top: 1px;
+    right: 2px;
+}
+
+.userCardDeleteButton:hover {
+    cursor:pointer;
+    background-color: var(--color-destructive)
+}
+
 .genericCard {
     position: relative;
     height: 180px;
@@ -464,7 +498,7 @@ body {
     font-size: 0.75rem;
 }
 
-.genericCardClickable:hover {
+.cardClickable:hover {
     cursor: pointer;
     background-color: var(--color-tertiary);
 }
