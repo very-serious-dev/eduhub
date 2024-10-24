@@ -9,8 +9,8 @@
     --color-success: #7dca7d;
     --color-background: #f5f5fa;
     --main-header-height: 60px;
-    --class-header-animation-duration: 0.3s;
-    --class-header-collapsed-height: 80px;
+    --class-header-animation-duration: 0.4s;
+    --class-header-collapsed-height: 60px;
     --class-header-expanded-height: 200px;
 }
 
@@ -170,20 +170,31 @@ body {
 
 .classDetailHeader {
     position: fixed;
-    top: 0;
-    width: 100%;
     z-index: 1;
     transition: var(--class-header-animation-duration);
+
 }
 
 .cdhCollapsed {
+    width: 100%;
+    top: 0;
+    left: 0;
     background-color: var(--color-secondary);
     height: var(--class-header-collapsed-height);
 }
 
 .cdhExpanded {
+    width: calc(100% - 16px);
+    top: 8px;
+    left: 8px;
     background-color: #2f9789;
     height: var(--class-header-expanded-height);
+    box-shadow: 0 0 20px rgba(0, 0, 0, .15);
+    border-radius: 4px;
+}
+
+.cdhExpanded > img{
+    border-radius: 4px;
 }
 
 .classDetailHeaderImage {
@@ -213,8 +224,8 @@ body {
 }
 
 .cdhTitleCollapsed {
-    font-size: 1.6em;
-    bottom: 23px;
+    font-size: 1.3em;
+    bottom: calc((var(--class-header-collapsed-height) - 1.3em) / 2);
 }
 
 .cdhTitleExpanded {
@@ -223,15 +234,15 @@ body {
 }
 
 .classDetailHeaderCloseIcon {
+    font-size: 2em;
     position: absolute;
     right: 30px;
-    top: 12px;
-    font-size: 2.5em;
-    color: white;
+    top: calc((var(--class-header-collapsed-height) - 45px) / 2);
     padding-left: 12px;
     padding-right: 12px;
     padding-bottom: 4px;
     border-radius: 4px;
+    color: white;
 }
 
 .classDetailHeaderCloseIcon:hover {
@@ -243,7 +254,7 @@ body {
 .classDetailHeaderEditIcon {
     position: absolute;
     right: 90px;
-    top: 25px;
+    top: calc((var(--class-header-collapsed-height) - 30px) / 2);
     font-size: 1.5em;
     color: white;
     padding-left: 12px;
@@ -259,7 +270,7 @@ body {
 }
 
 .classDetailBodyOuterContainerShrunk {
-    margin-top: var(--class-header-expanded-height);
+    margin-top: calc(var(--class-header-expanded-height) + 8px);
     transition: var(--class-header-animation-duration);
 }
 

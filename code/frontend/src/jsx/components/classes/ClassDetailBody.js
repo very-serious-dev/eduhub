@@ -33,11 +33,6 @@ const ClassDetailBody = (props) => {
         </div>
         <div className="classDetailBodyColumn2">
             <div>
-                <div className="classDetailSectionTitle">👤 Participantes</div>
-                <div className="classDetailSectionUnderline" />
-                <div className="card seeParticipants" onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div> 
-            </div>
-            <div>
                 <div className="classDetailSectionTitle">💼 Próximas entregas</div>
                 <div className="classDetailSectionUnderline" />
                 <p>
@@ -50,6 +45,11 @@ const ClassDetailBody = (props) => {
                 <p>
                     No hay temas
                 </p>
+            </div>
+            <div>
+                <div className="classDetailSectionTitle">👤 Participantes</div>
+                <div className="classDetailSectionUnderline" />
+                <div className="card seeParticipants" onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div> 
             </div>
         </div>
     </div>

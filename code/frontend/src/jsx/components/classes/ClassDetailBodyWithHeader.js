@@ -46,7 +46,7 @@ const ClassDetailBodyWithHeader = (props) => {
                 onClassDeleted={onClassDeleted}
                 classId={props.classData.id} />
         <div className={`classDetailHeader ${isHeaderCollapsed ? "cdhCollapsed" : "cdhExpanded"}`}>
-            <img className={`classDetailHeaderImage ${isHeaderCollapsed ? "cdhImgCollapsed" : "cdhImgExpanded"}`} src="/class_header.png" />
+            <img className={`classDetailHeaderImage ${isHeaderCollapsed ? "cdhImgCollapsed" : "cdhImgExpanded"}`} src="/header.jpg" />
             <div className={`classDetailHeaderTitle ${isHeaderCollapsed ? "cdhTitleCollapsed" : "cdhTitleExpanded"}`}>{props.classData.name}</div>
             <div className="classDetailHeaderCloseIcon" onClick={() => { navigate("/");}}>✖</div>
             { props.classData.shouldShowEditButton === true && 
