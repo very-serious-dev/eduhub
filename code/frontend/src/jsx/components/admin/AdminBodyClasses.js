@@ -15,7 +15,7 @@ const AdminBodyClasses = (props) => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, PARTICIPANTS, ADD_PARTICIPANT
-    const [classIdForPopup, setClassIdForPopup] = useState();
+    const [classForPopup, setClassForPopup] = useState({id: undefined, name: undefined});
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -79,6 +79,12 @@ const AdminBodyClasses = (props) => {
         }
     }
 
+    const onClassClicked = (id) => {
+        const classroom = classes.find(c => c.id === id)
+        setClassForPopup(classroom);
+        setPopupShown("MENU_PARTICIPANTS_OR_EDIT")
+    }
+
     return isLoading ?
         <LoadingHUD /> :
         <>
@@ -97,17 +103,15 @@ const AdminBodyClasses = (props) => {
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassEdited={onClassEdited}
                 onClassDeleted={onClassDeleted}
-                classId={classIdForPopup}
-                classInitialName=""/>
+                classId={classForPopup.id}/>
             <ClassParticipantsDialog  show={popupShown === "PARTICIPANTS"}
                 onDismiss={() => {setPopupShown("NONE")}} 
-                classId={classIdForPopup}
+                classId={classForPopup.id}
                 shouldShowEditButton={true}
                 onWantsToAddParticipant={() => {setPopupShown("ADD_PARTICIPANT")}} />
-            {/* FIX-ME classroomName is ""; find the correct class name from classes array*/}
             <AddParticipantToClassDialog show={popupShown === "ADD_PARTICIPANT"} 
-                classId={classIdForPopup}
-                classroomName={""}
+                classId={classForPopup.id}
+                classroomName={classForPopup.name}
                 onUserAdded={onUserAdded}
                 onDismiss={() => { setPopupShown("NONE") }} />
                 
@@ -118,7 +122,7 @@ const AdminBodyClasses = (props) => {
                             preTitle={""}
                             title={c.name}
                             footer={c.group}
-                            onClickWithId={id => { setClassIdForPopup(id); setPopupShown("MENU_PARTICIPANTS_OR_EDIT")}} />
+                            onClickWithId={onClassClicked} />
                     })}
                 </div>
             }

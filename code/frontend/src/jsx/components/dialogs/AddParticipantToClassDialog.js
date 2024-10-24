@@ -12,7 +12,7 @@ const AddParticipantToClassDialog = (props) => {
     const [serverSuggestedUsers, setServerSuggestedUsers] = useState([]);
     const [lastSuccessfulSearch, setLastSuccessfulSearch] = useState();
     const setFeedback = useContext(FeedbackContext);
-
+    
     const onSubmitAddUser = (event) => {
         event.preventDefault();
         const options = {

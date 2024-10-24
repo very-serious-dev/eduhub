@@ -44,8 +44,7 @@ const ClassDetailBodyWithHeader = (props) => {
                 onDismiss={() => { setShowEditClassPopup(false); }}
                 onClassEdited={onClassEdited}
                 onClassDeleted={onClassDeleted}
-                classId={props.classData.id}
-                classInitialName={props.classData.name} />
+                classId={props.classData.id} />
         <div className={`classDetailHeader ${isHeaderCollapsed ? "cdhCollapsed" : "cdhExpanded"}`}>
             <img className={`classDetailHeaderImage ${isHeaderCollapsed ? "cdhImgCollapsed" : "cdhImgExpanded"}`} src="/class_header.png" />
             <div className={`classDetailHeaderTitle ${isHeaderCollapsed ? "cdhTitleCollapsed" : "cdhTitleExpanded"}`}>{props.classData.name}</div>

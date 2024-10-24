@@ -128,14 +128,10 @@ def handle_class_participants(request, classId):
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
         users_class = EPUserClass.objects.filter(classroom=classroom)
-        has_permission_to_see = False
         if request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             has_permission_to_see = True
         else:
-            for uc in users_class:
-                if uc.user_id == request.user.id:
-                    has_permission_to_see = True
-                    break
+            has_permission_to_see = user_class.filter(user=request.user).exists()
         if not(has_permission_to_see):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         users = list(map(lambda uc: uc.user, users_class))
@@ -147,18 +143,12 @@ def handle_class_participants(request, classId):
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        teachers_class = EPUserClass.objects.filter(classroom=classroom, user__role=EPUSER_TEACHER)
-        has_permission_to_edit = False
         if request.user.role == EPUSER_STUDENT:
             has_permission_to_edit = False
         elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             has_permission_to_edit = True
-        else:
-            # Regular teacher
-            for tc in teachers_class:
-                if tc.user_id == request.user.id:
-                    has_permission_to_edit = True
-                break
+        else: # Regular teacher
+            has_permission_to_edit = EPUserClass.objects.filter(classroom=classroom, user=request.user).exists()
         if not(has_permission_to_edit):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
@@ -198,25 +188,18 @@ def handle_class_participants(request, classId):
 
 def handle_class_participant_deletion(request, classId, username):
     if request.method == "DELETE":
-        # FIX-ME: Permission check is CTRL+C, CTRL+V from handle_class_participants
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
             classroom = EPClass.objects.get(id=classId)
         except EPClass.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        teachers_class = EPUserClass.objects.filter(classroom=classroom, user__role=EPUSER_TEACHER)
-        has_permission_to_edit = False
         if request.user.role == EPUSER_STUDENT:
             has_permission_to_edit = False
         elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             has_permission_to_edit = True
-        else:
-            # Regular teacher
-            for tc in teachers_class:
-                if tc.user_id == request.user.id:
-                    has_permission_to_edit = True
-                break
+        else: # Regular teacher
+            has_permission_to_edit = EPUserClass.objects.filter(classroom=classroom, user=request.user).exists()
         if not(has_permission_to_edit):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:

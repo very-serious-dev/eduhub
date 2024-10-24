@@ -5,7 +5,7 @@ import AreYouSureDialog from "./AreYouSureDialog";
 
 const EditClassDialog = (props) => {
 
-    const [formName, setFormName] = useState(props.classInitialName);
+    const [formName, setFormName] = useState();
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
 
