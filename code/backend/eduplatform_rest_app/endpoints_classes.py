@@ -87,7 +87,7 @@ def handle_class_detail(request, classId):
         if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             # Student - can't edit classes
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.user.role == EPUSER_TEACHER and EPUserClass.objects.filter(user=user, classroom=classroom).count() == 0:
+        if request.user.role == EPUSER_TEACHER and EPUserClass.objects.filter(user=request.user, classroom=classroom).count() == 0:
             # Regular teacher trying to edit another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -131,7 +131,7 @@ def handle_class_participants(request, classId):
         if request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             has_permission_to_see = True
         else:
-            has_permission_to_see = user_class.filter(user=request.user).exists()
+            has_permission_to_see = users_class.filter(user=request.user).exists()
         if not(has_permission_to_see):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         users = list(map(lambda uc: uc.user, users_class))
