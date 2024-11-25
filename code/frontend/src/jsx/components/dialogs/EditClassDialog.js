@@ -4,7 +4,6 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 
 const EditClassDialog = (props) => {
-
     const [formName, setFormName] = useState();
     const [formColor, setFormColor] = useState();
     const [isLoading, setLoading] = useState(false);

@@ -6,7 +6,7 @@ from .models import EPUser, EPUserSession
 from .models import EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
 from .serializers import roles_array, users_array_to_json
 
-def login(request):
+def login_logout(request):
     if request.method == "POST":
         try:
             body_json = json.loads(request.body)
@@ -35,6 +35,11 @@ def login(request):
             return response
         else:
             return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
+    elif request.method == "DELETE":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        request.session.delete()
+        return JsonResponse({"success": True}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

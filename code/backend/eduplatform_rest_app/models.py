@@ -49,17 +49,14 @@ class EPUnit(models.Model):
     name = models.CharField(max_length=100)
     classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
 
-class EPTask(models.Model):
-    title = models.CharField(max_length=100)
-    instructions = models.CharField(max_length=2000)
-    due_date = models.DateTimeField(null=True)
-
 class EPPost(models.Model):
+    title = models.CharField(max_length=100, null=True)
     content = models.CharField(max_length=2000)
     classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
-    task = models.ForeignKey(EPTask, on_delete=models.CASCADE, null=True)
     unit = models.ForeignKey(EPUnit, on_delete=models.CASCADE, null=True)
     publication_date = models.DateTimeField(auto_now=True)
+    task_instructions = models.CharField(max_length=2000, null=True)
+    task_due_date = models.DateTimeField(null=True)
 
 class EPDocument(models.Model):
     url = models.CharField(max_length=200)
@@ -70,7 +67,7 @@ class EPPostDocument(models.Model):
 
 class EPTaskSubmit(models.Model):
     author = models.ForeignKey(EPUser, on_delete=models.CASCADE)
-    task = models.ForeignKey(EPTask, on_delete=models.CASCADE)
+    task = models.ForeignKey(EPPost, on_delete=models.CASCADE)
     comment = models.CharField(max_length=1000)
     submit_date = models.DateTimeField(auto_now=True)
 

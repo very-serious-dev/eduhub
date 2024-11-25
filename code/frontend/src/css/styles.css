@@ -950,6 +950,11 @@ body {
   cursor: pointer;
 }
 
+.animatedButtonRightAligned {
+  position: absolute;
+  right: 40px;
+}
+
 /**
  * Loading-spinner
  * https://loading.io/css/
