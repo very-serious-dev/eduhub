@@ -26,7 +26,8 @@ def class_to_json(classroom):
     return {
         "id": classroom.id,
         "name": classroom.name,
-        "group": classroom.group_id
+        "group": classroom.group_id,
+        "color": classroom.color
     }
 
 def classes_array_to_json(classes):

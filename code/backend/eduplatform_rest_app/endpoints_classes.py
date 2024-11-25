@@ -1,4 +1,4 @@
-import json
+import json, random
 from django.http import JsonResponse
 from .models import EPUser, EPClass, EPUserClass, EPGroup
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
@@ -30,6 +30,8 @@ def handle_classes(request):
         new_class = EPClass()
         new_class.name = json_name
         new_class.group = EPGroup.objects.get(tag=json_group)
+        r = lambda: random.randint(0,255)
+        new_class.color = '#{:02x}{:02x}{:02x}'.format(r(), r(), r()) # https://stackoverflow.com/a/14019260
         new_class.save()
         if json_automatically_add_teacher is True:
             new_user_class = EPUserClass()
@@ -57,6 +59,7 @@ def handle_class_detail(request, classId):
         # TO-DO: Mock!
         response = JsonResponse({"id": classId,
                                  "name": classroom.name,
+                                 "color": classroom.color,
                                  "entries": [{"published_date": "2024-09-17 11:31",
                                               "author": "Test",
                                               "content": "Mañana en clase hablaremos de las fechas de los exámenes parciales"}, 
@@ -95,9 +98,11 @@ def handle_class_detail(request, classId):
         except JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_name = body_json.get("name")
-        if json_name is None:
-            return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
+        json_color = body_json.get("color")
+        if json_name is None or json_color is None:
+            return JsonResponse({"error": "Falta name o color en el cuerpo de la petición"}, status=400)
         classroom.name = json_name
+        classroom.color = json_color
         classroom.save()
         return JsonResponse({"success": True}, status=200)
     elif request.method == "DELETE":

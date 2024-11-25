@@ -33,6 +33,7 @@ class EPGroup(models.Model):
 
 class EPClass(models.Model):
     name = models.CharField(max_length=100)
+    color = models.CharField(max_length=7)
     group = models.ForeignKey(EPGroup, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
 

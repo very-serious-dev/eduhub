@@ -79,6 +79,13 @@
   font-size: 15px;
 }
 
+.formInputColor input {
+  padding-top: 8px;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
 .formSubmit input {
   display: block;
   width: 100%;

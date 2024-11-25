@@ -17,7 +17,8 @@ const GroupClassesSection = (props) => {
                     cardId={c.id}
                     title={c.name}
                     footer={c.group} 
-                    onClickWithId={onClickClass} />
+                    onClickWithId={onClickClass}
+                    skirtingBoardColor={c.color} />
             })}
         </div>
     </div>

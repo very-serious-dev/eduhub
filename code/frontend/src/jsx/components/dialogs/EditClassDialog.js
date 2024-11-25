@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
@@ -6,13 +6,15 @@ import AreYouSureDialog from "./AreYouSureDialog";
 const EditClassDialog = (props) => {
 
     const [formName, setFormName] = useState();
+    const [formColor, setFormColor] = useState();
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
 
     const onSubmitEditClass = (event) => {
         event.preventDefault();
         let body = {
-            name: formName
+            name: formName,
+            color: formColor
         }
         const options = {
             method: "PUT",
@@ -80,7 +82,11 @@ const EditClassDialog = (props) => {
                         <div className="underline"></div>
                         <label htmlFor="">Nombre</label>
                     </div>
-                    
+                    <div className="formInput formInputColor">
+                        <input type="color" value={formColor} 
+                            onChange={e => { setFormColor(e.target.value) }}/>
+                        <label htmlFor="">Color del tema</label>
+                    </div>
                     <div className="formSubmit">
                         <input type="submit" value="Guardar cambios" />
                     </div>
