@@ -625,8 +625,6 @@ body {
     background-color: var(--color-error);
 }
 
-
-
 @keyframes globalUserFeedback {
     0% {
         opacity: 1;
@@ -639,4 +637,392 @@ body {
     100% {
         opacity: 0;
     }
+}
+
+/**
+ * Form-related
+ * https://codepen.io/Metty/pen/NWpzexj
+ */
+
+.formInput,
+.formSubmit {
+  width: 100%;
+  height: 40px;
+  position: relative;
+}
+
+.formInput input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  margin-top: 15px;
+  background-color: var(--color-secondary);
+  border-radius: 5px;
+}
+
+.formInput input:focus~label,
+.formInput input:valid~label {
+  transform: translateY(-23px);
+  font-size: 14px;
+  color: var(--color-accent);
+}
+
+.formInput label {
+  position: absolute;
+  pointer-events: none;
+  bottom: 10px;
+  font-size: 15px;
+  margin-left: 10px;
+  transition: all 0.3s ease;
+}
+
+.formInput .underline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+}
+
+.formInput .underline:before {
+  position: absolute;
+  content: "";
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.formInput input:focus~.underline:before,
+.formInput input:valid~.underline:before {
+  transform: scale(1);
+}
+
+.formInputRadio {
+  margin: 10px 4px 4px 4px;
+}
+
+.formInputRadio label {
+  font-size: 16px;
+  margin-left: 10px;
+}
+
+.formInputSelect select {
+  font-size: 15px;
+}
+
+.formInputSelect option {
+  font-size: 15px;
+}
+
+.formInputColor input {
+  padding-top: 8px;
+  padding-bottom: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.formSubmit input {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  margin-top: 35px;
+  background-color: var(--color-secondary);
+}
+
+.formSubmitNoMarginTop input {
+  margin-top: 0px;
+}
+
+.formSubmit input:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+/**
+ * Dialog-related
+ */
+
+.popupOverlayBackground {
+  position: fixed;
+  display: block;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, .2);
+  z-index: 2;
+}
+
+/* TO-DO: Merge popupForm and popupScreen (they just differ in width) */
+.popupForm {
+  position: absolute;
+  overflow-y: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  width: 40%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+/* https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.popupForm::-webkit-scrollbar {
+  display: none;
+}
+
+.popupScreen {
+  position: absolute;
+  overflow-y: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+  width: 80%;
+  max-height: 90%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+
+.popupScreen::-webkit-scrollbar {
+  display: none;
+}
+
+.dialogBackground {
+  background-color: var(--color-background);
+}
+
+.dialogTitle {
+  font-size: 34px;
+  margin-left: 10px;
+}
+
+.createClassSelect {
+  margin-left: 5px;
+  padding-top: 15px;
+}
+
+.hidableFormSelectContainer {
+  height: 50px;
+  margin-top: 10px;
+}
+
+.hidableFormSelectHidden {
+  display: none;
+}
+
+.hidableFormSelectShown {
+  display: block;
+}
+
+.addGroupSelect {
+  margin-left: 5px;
+  padding-top: 15px;
+}
+
+.addUserSelect {
+  margin-left: 35px;
+}
+
+.editClassOrParticipants {
+  text-align: center;
+  padding: 20px;
+}
+
+.editClassOrParticipants:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+.dialogHUDCentered {
+  width: fit-content;
+  margin-left: 42%;
+}
+
+.dialogScreenHUDCentered {
+  width: fit-content;
+  margin-left: 46%;
+}
+
+.buttonDelete {
+  width: 100%;
+  height: 40px;
+  position: relative;
+}
+
+.buttonDelete button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  margin-top: 65px;
+  background-color: var(--color-delete);
+}
+
+.buttonDelete button:hover {
+  cursor: pointer;
+  background-color: var(--color-destructive);
+}
+
+.areYouSureOption {
+  box-shadow: none;
+  height: 40px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 0px;
+  background-color: var(--color-secondary);
+}
+
+.areYouSureOption:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+.areYouSureOptionDestructive {
+  background-color: var(--color-delete);
+}
+
+.areYouSureOptionDestructive:hover {
+  cursor: pointer;
+  background-color: var(--color-destructive);
+}
+
+/**
+ * Animated button (inspired in form)
+ */
+
+.animatedButtonContainer {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+.animatedButtonContainer button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  border: none;
+  font-size: 17px;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.animatedButtonContainer .animatedButtonUnderline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+}
+
+.animatedButtonContainer .animatedButtonUnderline:before {
+  position: absolute;
+  content: "";
+  height: 2px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.3s ease;
+}
+
+.animatedButtonContainer button:hover~.animatedButtonUnderline:before {
+  transform: scale(1);
+}
+
+.animatedButtonContainer button:hover {
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+/**
+ * Loading-spinner
+ * https://loading.io/css/
+ */
+
+.lds-ellipsis,
+.lds-ellipsis div {
+  box-sizing: border-box;
+}
+
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+
+.lds-ellipsis div {
+  position: absolute;
+  top: 33.33333px;
+  width: 13.33333px;
+  height: 13.33333px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(24px, 0);
+  }
 }
