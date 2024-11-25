@@ -36,6 +36,16 @@ def classes_array_to_json(classes):
         result.append(class_to_json(c))
     return result
 
+def class_detail_to_json(classroom, isClassEditableByUser):
+    return {
+        "id": classroom.id,
+        "name": classroom.name,
+        "group": classroom.group_id,
+        "color": classroom.color,
+        "shouldShowEditButton": isClassEditableByUser,
+        "entries": []
+    }
+
 def user_to_json(user):
     json_user = {
         "username": user.username,

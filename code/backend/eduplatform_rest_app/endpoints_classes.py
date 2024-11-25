@@ -2,7 +2,7 @@ import json, random
 from django.http import JsonResponse
 from .models import EPUser, EPClass, EPUserClass, EPGroup
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
-from .serializers import classes_array_to_json, users_array_to_json
+from .serializers import classes_array_to_json, users_array_to_json, class_detail_to_json
 
 def handle_classes(request):
     if request.method == "GET":
@@ -55,31 +55,7 @@ def handle_class_detail(request, classId):
             isClassEditableByUser = False
         else:
             isClassEditableByUser = EPUserClass.objects.filter(user=request.user, classroom=classroom).count() > 0
-        
-        # TO-DO: Mock!
-        response = JsonResponse({"id": classId,
-                                 "name": classroom.name,
-                                 "color": classroom.color,
-                                 "entries": [{"published_date": "2024-09-17 11:31",
-                                              "author": "Test",
-                                              "content": "Mañana en clase hablaremos de las fechas de los exámenes parciales"}, 
-                                              {"published_date": "2024-09-14 07:42",
-                                              "author": "Test",
-                                              "content": "Por favor, enviadme un mensaje el número de serie de vuestro ordenador. Para sacar el número de serie, podéis ejecutar\n\n>wmic bios get serialnumber\n\n...desde un terminal. ¡Un saludo!"}, 
-                                              {"published_date": "2024-09-12 14:30",
-                                              "author": "Test",
-                                              "content": "El centro permanecerá cerrado por festivo el próximo 7 de octubre"}, 
-                                              {"published_date": "2024-09-12 09:41",
-                                              "author": "Test",
-                                              "content": "Recordad solicitar las habilitaciones para:\n\n- FOL\n- EIE\n\n¡Gracias!"}, 
-                                              {"published_date": "2024-09-12 09:45",
-                                              "author": "Test",
-                                              "content": "La plataforma de Classroom dejará de funcionar próximamente.\nPor favor, pasad todos vuestros datos a Eduplatform"}, 
-                                              {"published_date": "2024-09-11 08:30",
-                                              "author": "Test",
-                                              "content": "¡Da comienzo el nuevo curso! ¡Bienvenidos! Recordad que las clases empiezan el próximo lunes"}],
-                                 "shouldShowEditButton": isClassEditableByUser })
-        return response  
+        return JsonResponse(class_detail_to_json(classroom, isClassEditableByUser))
     elif request.method == "PUT":
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
