@@ -1,4 +1,5 @@
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .models import EPUnit
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -37,13 +38,18 @@ def classes_array_to_json(classes):
     return result
 
 def class_detail_to_json(classroom, isClassEditableByUser):
+    units = []
+    for u in EPUnit.objects.filter(classroom=classroom):
+        units.append({"id": u.id, "name": u.name})
+        
     return {
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
         "color": classroom.color,
         "shouldShowEditButton": isClassEditableByUser,
-        "entries": []
+        "entries": [],
+        "units": units
     }
 
 def user_to_json(user):
@@ -76,7 +82,3 @@ def roles_array(user):
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles
-
-
-
-

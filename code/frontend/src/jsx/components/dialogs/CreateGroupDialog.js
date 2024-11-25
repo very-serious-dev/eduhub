@@ -30,6 +30,7 @@ const CreateGroupDialog = (props) => {
     }, []);
 
     const onSubmitAddGroup = (event) => {
+        if (isLoadingSubmit) { return; }
         event.preventDefault();
         const options = {
             method: "POST",

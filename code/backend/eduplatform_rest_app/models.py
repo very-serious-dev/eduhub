@@ -45,13 +45,14 @@ class EPUserClass(models.Model):
 # CLASS POSTS, TASKS
 #
 
+class EPUnit(models.Model):
+    name = models.CharField(max_length=100)
+    classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
+
 class EPTask(models.Model):
     title = models.CharField(max_length=100)
     instructions = models.CharField(max_length=2000)
     due_date = models.DateTimeField(null=True)
-
-class EPUnit(models.Model):
-    name = models.CharField(max_length=100)
 
 class EPPost(models.Model):
     content = models.CharField(max_length=2000)

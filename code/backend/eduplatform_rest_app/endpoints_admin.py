@@ -27,7 +27,7 @@ def handle_users(request):
             return admin_auth_error
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_username = body_json.get("username")
         json_name = body_json.get("name")
@@ -72,7 +72,7 @@ def handle_groups(request):
             return admin_auth_error
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_tag = body_json.get("tag")
         json_name = body_json.get("name")

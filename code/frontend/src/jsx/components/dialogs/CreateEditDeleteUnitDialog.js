@@ -1,104 +1,107 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 
-const EditClassDialog = (props) => {
-
-    const [formName, setFormName] = useState();
-    const [formColor, setFormColor] = useState();
+const CreateEditDeleteUnitDialog = (props) => {
+    const [formName, setFormName] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
 
-    const onSubmitEditClass = (event) => {
+    useEffect(() => {
+        setFormName(props.unit.name ?? "")
+    }, [props.show]);
+
+    const isEditingUnit = () => { return props.unit.id !== undefined }
+
+    const onSubmitAddOrEditUnit = (event) => {
+        if (isLoading) { return; }
         event.preventDefault();
-        let body = {
-            name: formName,
-            color: formColor
-        }
         const options = {
-            method: "PUT",
-            body: JSON.stringify(body),
+            method: isEditingUnit() ? "PUT" : "POST",
+            body: JSON.stringify({
+                name: formName
+            }),
             credentials: "include"
         };
         setLoading(true);
-        EduAPIFetch(`/api/v1/classes/${props.classId}`, options)
+        const url = isEditingUnit() ? 
+                    `/api/v1/classes/${props.classId}/units/${props.unit.id}`
+                    : `/api/v1/classes/${props.classId}/units`
+        EduAPIFetch(url, options)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    props.onClassEdited();
+                    props.onOperationDone();
                     setFormName("");
                 } else {
-                    props.onClassEdited("Se ha producido un error");
+                    props.onOperationDone("Se ha producido un error");
                 }
                 props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
-                props.onClassEdited(error.error ?? "Se ha producido un error");
+                props.onOperationDone(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }
 
-    const onDeleteClass = () => {
+    const onDeleteUnit = (event) => {
         if (isLoading) { return; }
+        event.preventDefault();
         const options = {
             method: "DELETE",
             credentials: "include"
         };
         setLoading(true);
         setShowAreYouSurePopup(false);
-        EduAPIFetch(`/api/v1/classes/${props.classId}`, options)
+        EduAPIFetch(`/api/v1/classes/${props.classId}/units/${props.unit.id}`, options)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    props.onClassDeleted();
+                    props.onOperationDone();
+                    setFormName("");
                 } else {
-                    props.onClassDeleted("Se ha producido un error");
+                    props.onOperationDone("Se ha producido un error");
                 }
                 props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
-                props.onClassDeleted(error.error ?? "Se ha producido un error");
+                props.onOperationDone(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }
-
+    
     return props.show === true ? showAreYouSurePopup ? 
     <AreYouSureDialog onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss(); }}
-        onActionConfirmed={onDeleteClass}
+        onActionConfirmed={onDeleteUnit}
         isLoading={isLoading} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
-                <div className="dialogTitle">Editar clase</div>
-                <form onSubmit={onSubmitEditClass}>
+                <div className="dialogTitle">{isEditingUnit() ? "Modificar tema" : "Nuevo tema"}</div>
+                <form onSubmit={onSubmitAddOrEditUnit}>
                     <div className="formInput">
                         <input type="text" value={formName}
                             onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Literatura universal"; }}
+                            onFocus={e => { e.target.placeholder = "Ecuaciones"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
                         <div className="underline"></div>
                         <label htmlFor="">Nombre</label>
                     </div>
-                    <div className="formInput formInputColor">
-                        <input type="color" value={formColor} 
-                            onChange={e => { setFormColor(e.target.value) }}/>
-                        <label htmlFor="">Color del tema</label>
-                    </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Guardar cambios" />
+                        <input type="submit" value={isEditingUnit() ? "Modificar" : "Crear"} />
                     </div>
                     {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>
-                <div className="buttonDelete">
-                    <button onClick={ () => { setShowAreYouSurePopup(true); }}>❌ Eliminar clase</button>
-                </div>
+                { isEditingUnit() && <div className="buttonDelete">
+                    <button onClick={ () => { setShowAreYouSurePopup(true); }}>❌ Eliminar tema</button>
+                </div> }
             </div>
         </div>
     </div> : <></>
 }
 
-export default EditClassDialog;
+export default CreateEditDeleteUnitDialog;

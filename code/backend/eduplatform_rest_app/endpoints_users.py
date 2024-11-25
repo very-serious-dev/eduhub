@@ -10,7 +10,7 @@ def handle_login(request):
     if request.method == "POST":
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_username = body_json.get("username")
         json_password = body_json.get("password")

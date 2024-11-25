@@ -1,6 +1,6 @@
 import json, random
 from django.http import JsonResponse
-from .models import EPUser, EPClass, EPUserClass, EPGroup
+from .models import EPUser, EPClass, EPUserClass, EPGroup, EPUnit
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
 from .serializers import classes_array_to_json, users_array_to_json, class_detail_to_json
 
@@ -18,7 +18,7 @@ def handle_classes(request):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_name = body_json.get("name")
         json_group = body_json.get("group")
@@ -71,7 +71,7 @@ def handle_class_detail(request, classId):
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_name = body_json.get("name")
         json_color = body_json.get("color")
@@ -134,7 +134,7 @@ def handle_class_participants(request, classId):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
             body_json = json.loads(request.body)
-        except JSONDecodeError:
+        except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_username = body_json.get("username")
         if json_username is None:
@@ -189,5 +189,80 @@ def handle_class_participant_deletion(request, classId, username):
             return JsonResponse({"success": True}, status=200)
         except EPUserClass.DoesNotExist:
             return JsonResponse({"error": "El usuario no pertenece a esa clase"}, status=404)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+def handle_class_units(request, classId):
+    if request.method == "POST":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        if request.user.role == EPUSER_STUDENT:
+            has_permission_to_edit = False
+        elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            has_permission_to_edit = True
+        else: # Regular teacher
+            has_permission_to_edit = EPUserClass.objects.filter(classroom=classroom, user=request.user).exists()
+        if not(has_permission_to_edit):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_name = body_json.get("name")
+        if json_name is None:
+            return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
+        try:
+            EPUnit.objects.get(classroom=classroom, name=json_name)
+            return JsonResponse({"error": "Ya existe una clase con ese nombre"}, status=409)
+        except EPUnit.DoesNotExist:
+            # Doesn't exist, create it
+            new_unit = EPUnit()
+            new_unit.name = json_name
+            new_unit.classroom = classroom
+            new_unit.save()
+            return JsonResponse({"success": True}, status=201)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+def handle_class_unit(request, classId, unitId):
+    if request.method in ["PUT", "DELETE"]:
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = EPClass.objects.get(id=classId)
+        except EPClass.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        if request.user.role == EPUSER_STUDENT:
+            has_permission_to_edit = False
+        elif request.user.role in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+            has_permission_to_edit = True
+        else: # Regular teacher
+            has_permission_to_edit = EPUserClass.objects.filter(classroom=classroom, user=request.user).exists()
+        if not(has_permission_to_edit):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        try:
+            unit = EPUnit.objects.get(id=unitId)
+            if request.method == "PUT":
+                try:
+                    body_json = json.loads(request.body)
+                except json.decoder.JSONDecodeError:
+                    return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+                json_name = body_json.get("name")
+                if json_name is None:
+                    return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
+                unit.name = json_name
+                unit.save()
+                return JsonResponse({"success": True}, status=200)
+            elif request.method == "DELETE":
+                unit.delete()
+                return JsonResponse({"success": True}, status=200)
+            else:
+                return JsonResponse({"error": "Server error"}, status=500)
+        except EPUnit.DoesNotExist:
+            return JsonResponse({"error": "No existe ese tema"}, status=404)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

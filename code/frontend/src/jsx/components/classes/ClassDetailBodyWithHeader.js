@@ -12,6 +12,9 @@ const ClassDetailBodyWithHeader = (props) => {
 
     useEffect(() => {
         const handleScroll = (e) => {
+            // FIX-ME: Find better and smoother collapsing behaviour
+            // This works wrong if there are no entries and you scroll down
+            // with right pane populated (several units [temas])
             setHeaderCollapsed(document.body.scrollTop > 30 ||
                 document.documentElement.scrollTop > 30);
         };
@@ -54,7 +57,7 @@ const ClassDetailBodyWithHeader = (props) => {
               <div className="classDetailHeaderEditIcon" onClick={() => { setShowEditClassPopup(true); }}>Editar</div> }
         </div>
         <div className={isHeaderCollapsed ? "classDetailBodyOuterContainerExpanded" : "classDetailBodyOuterContainerShrunk"}>
-            <ClassDetailBody classData={props.classData} />
+            <ClassDetailBody classData={props.classData} onShouldRefresh={props.onShouldRefresh}/>
         </div>
     </>
 }
