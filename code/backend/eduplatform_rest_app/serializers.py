@@ -39,7 +39,7 @@ def classes_array_to_json(classes):
 
 def class_detail_to_json(classroom, isClassEditableByUser):
     units = []
-    for u in EPUnit.objects.filter(classroom=classroom):
+    for u in EPUnit.objects.filter(classroom=classroom).order_by("name"):
         units.append({"id": u.id, "name": u.name})
         
     return {

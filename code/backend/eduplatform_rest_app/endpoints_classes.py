@@ -2,7 +2,18 @@ import json, random
 from django.http import JsonResponse
 from .models import EPUser, EPClass, EPUserClass, EPGroup, EPUnit
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
-from .serializers import classes_array_to_json, users_array_to_json, class_detail_to_json
+from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json, class_detail_to_json
+
+# TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
+
+def get_all_groups(request):
+    if request.method == "GET":
+        if request.user is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        groups = EPGroup.objects.all()
+        return JsonResponse({"groups": groups_array_to_json(groups) })  
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
 
 def handle_classes(request):
     if request.method == "GET":
@@ -167,7 +178,7 @@ def handle_class_participants(request, classId):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def handle_class_participant_deletion(request, classId, username):
+def delete_class_participant(request, classId, username):
     if request.method == "DELETE":
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
@@ -192,7 +203,7 @@ def handle_class_participant_deletion(request, classId, username):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def handle_class_units(request, classId):
+def create_class_unit(request, classId):
     if request.method == "POST":
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

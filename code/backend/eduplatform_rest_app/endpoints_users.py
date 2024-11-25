@@ -6,7 +6,7 @@ from .models import EPUser, EPUserSession
 from .models import EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
 from .serializers import roles_array, users_array_to_json
 
-def handle_login(request):
+def login(request):
     if request.method == "POST":
         try:
             body_json = json.loads(request.body)
@@ -38,7 +38,7 @@ def handle_login(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def handle_users(request):
+def get_users(request):
     if request.method == "GET":
         if request.user is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

@@ -20,7 +20,7 @@ def home(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     
-def handle_users(request):
+def create_user(request):
     if request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
@@ -65,7 +65,7 @@ def handle_users(request):
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 
-def handle_groups(request):
+def create_group(request):
     if request.method == "POST":
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
@@ -100,7 +100,7 @@ def handle_groups(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def handle_classes(request):
+def get_all_classes(request):
     if request.method == "GET":
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
