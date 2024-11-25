@@ -1,5 +1,4 @@
-import "../../css/main.css";
-import "../../css/common.css";
+import "../../css/styles.css";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
