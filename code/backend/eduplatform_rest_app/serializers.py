@@ -1,5 +1,5 @@
 from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
-from .models import EPUnit
+from .models import EPUnit, EPPost
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -41,6 +41,10 @@ def class_detail_to_json(classroom, isClassEditableByUser):
     units = []
     for u in EPUnit.objects.filter(classroom=classroom).order_by("name"):
         units.append({"id": u.id, "name": u.name})
+
+    posts = []
+    for p in EPPost.objects.filter(classroom=classroom).order_by("publication_date"):
+        posts.append({"id": p.id, "title": p.title, "content": p.content, "publication_date": p.publication_date})
         
     return {
         "id": classroom.id,
@@ -48,7 +52,7 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "group": classroom.group_id,
         "color": classroom.color,
         "shouldShowEditButton": isClassEditableByUser,
-        "posts": [],
+        "posts": posts,
         "units": units
     }
 

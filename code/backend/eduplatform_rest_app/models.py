@@ -55,7 +55,6 @@ class EPPost(models.Model):
     classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
     unit = models.ForeignKey(EPUnit, on_delete=models.CASCADE, null=True)
     publication_date = models.DateTimeField(auto_now=True)
-    task_instructions = models.CharField(max_length=2000, null=True)
     task_due_date = models.DateTimeField(null=True)
 
 class EPDocument(models.Model):

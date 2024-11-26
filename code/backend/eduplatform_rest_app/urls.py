@@ -1,5 +1,5 @@
 from django.urls import path
-from . import endpoints_users, endpoints_classes, endpoints_admin
+from . import endpoints_users, endpoints_classes, endpoints_admin, endpoints_posts
 
 urlpatterns = [
     path("admin/home",                               endpoints_admin.home),
@@ -16,4 +16,5 @@ urlpatterns = [
     path("classes/<int:classId>/users/<username>",   endpoints_classes.delete_class_participant),
     path("classes/<int:classId>/units",              endpoints_classes.create_class_unit),
     path("classes/<int:classId>/units/<int:unitId>", endpoints_classes.handle_class_unit),
+    path("classes/<int:classId>/posts",              endpoints_posts.create_post),
 ]

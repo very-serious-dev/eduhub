@@ -19,9 +19,9 @@ const ClassDetailBody = (props) => {
         }
     }
 
-    const onUnitAddedOrEditedOrDeleted = (errorMessage) => {
+    const onOperationFinished = (errorMessage) => { // Unit Added Or Edited Or Deleted; Post Created
         if (errorMessage === undefined || errorMessage === "") {
-            setFeedback({type: "success", message: "Operación realizada con éxito"});
+            setFeedback({type: "success", message: "Completado con éxito"});
             props.onShouldRefresh();
         } else {
             setFeedback({type: "error", message: errorMessage});
@@ -32,7 +32,7 @@ const ClassDetailBody = (props) => {
     <CreateEditDeleteUnitDialog show={popupShown === "CREATE_EDIT_UNIT"}
         classId={props.classData.id}
         unit={unitForPopup}
-        onOperationDone={onUnitAddedOrEditedOrDeleted}
+        onOperationDone={onOperationFinished}
         onDismiss={() => {setPopupShown("NONE"); setUnitForPopup({id: undefined, name: undefined})}}/>
     <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
         classId={props.classData.id}
@@ -46,7 +46,7 @@ const ClassDetailBody = (props) => {
         onDismiss={() => { setPopupShown("NONE") }} />
     <div className="classDetailBodyContainer">
         <div className="classDetailBodyColumn1">
-            <PostsBoard classData={props.classData} />
+            <PostsBoard classData={props.classData} onPostAdded={onOperationFinished}/>
         </div>
         <div className="classDetailBodyColumn2">
             <div>
