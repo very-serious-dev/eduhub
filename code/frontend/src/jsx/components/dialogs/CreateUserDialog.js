@@ -77,7 +77,7 @@ const CreateUserDialog = (props) => {
 
     return props.show === true ? <div className="popupOverlayBackground"
         onClick={() => { setUsernameDidGainFocusOnce(false); props.onDismiss(); }}>
-        <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
+        <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nuevo usuario</div>
                 <form onSubmit={onSubmitAddUser}>

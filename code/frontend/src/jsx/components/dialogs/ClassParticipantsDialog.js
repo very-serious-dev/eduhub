@@ -79,7 +79,7 @@ const ClassParticipantsDialog = (props) => {
         onActionConfirmed={onRemoveUserActionConfirmed}
         isLoading={isLoadingDelete} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-    <div className="popupScreen" onClick={e => { e.stopPropagation(); }}>
+    <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
         <div className="card dialogBackground">
             <div className="dialogTitle">Participantes</div>
             {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}

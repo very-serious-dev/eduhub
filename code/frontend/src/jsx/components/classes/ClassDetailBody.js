@@ -1,10 +1,10 @@
 import { useContext, useState } from "react";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
-import ClassDetailEntryCard from "./ClassDetailEntryCard";
 import AddParticipantToClassDialog from "../dialogs/AddParticipantToClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
-import ClassDetailBodyUnit from "./ClassDetailBodyUnit";
+import ClassDetailBodyUnitItem from "./ClassDetailBodyUnitItem";
 import CreateEditDeleteUnitDialog from "../dialogs/CreateEditDeleteUnitDialog";
+import PostsBoard from "../posts/PostsBoard";
 
 const ClassDetailBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, ADD_PARTICIPANT, CREATE_EDIT_UNIT
@@ -46,7 +46,7 @@ const ClassDetailBody = (props) => {
         onDismiss={() => { setPopupShown("NONE") }} />
     <div className="classDetailBodyContainer">
         <div className="classDetailBodyColumn1">
-            {props.classData.entries.map(e => <ClassDetailEntryCard entry={e} />)}
+            <PostsBoard classData={props.classData} />
         </div>
         <div className="classDetailBodyColumn2">
             <div>
@@ -62,7 +62,7 @@ const ClassDetailBody = (props) => {
                 <div>
                     { props.classData.units.length > 0 ?
                         props.classData.units.map(u => {
-                            return <ClassDetailBodyUnit
+                            return <ClassDetailBodyUnitItem
                                     unit={u} 
                                     editable={props.classData.shouldShowEditButton}
                                     onEdit={unit => {

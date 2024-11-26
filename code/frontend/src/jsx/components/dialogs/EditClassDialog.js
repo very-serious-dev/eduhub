@@ -69,7 +69,7 @@ const EditClassDialog = (props) => {
         onActionConfirmed={onDeleteClass}
         isLoading={isLoading} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
+        <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Editar clase</div>
                 <form onSubmit={onSubmitEditClass}>

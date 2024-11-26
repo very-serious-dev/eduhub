@@ -1,30 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 
-const CreateClassDialog = (props) => {
-    const NOT_VALID = "NOT_VALID";
-    const initialGroupValue = () => {
-        if (props.groups.length > 0) { return props.groups[0].tag; }
-        return NOT_VALID;
-    }
-    const [formName, setFormName] = useState("");
-    const [formGroup, setFormGroup] = useState(initialGroupValue());
+const CreatePostDialog = (props) => {
+    const [formTitle, setFormTitle] = useState("");
+    const [formContent, setFormContent] = useState("");
+    const [formUnit, setFormUnit] = useState();
+    const [formTaskInstructions, setFormTaskInstructions] = useState();
+    const [formTaskDueDate, setFormTaskDueDate] = useState();
     const [isLoading, setLoading] = useState(false);
 
-    useEffect(() => { // FIX: This ensures that formGroup isn't NOT_VALID when displayed
-                      // Otherwise, the submit button would appear disabled initially
-        if (formGroup === NOT_VALID) {
-            setFormGroup(initialGroupValue());
-        }
-    }, [props.show]);
-
-    const onSubmitAddClass = (event) => {
+    const onSubmitCreatePost = (event) => {
         event.preventDefault();
         let body = {
-            name: formName,
-            group: formGroup,
-            automaticallyAddTeacher: props.automaticallyAddTeacher === true
+            //
         }
         const options = {
             method: "POST",
@@ -32,38 +21,38 @@ const CreateClassDialog = (props) => {
             credentials: "include"
         };
         setLoading(true);
-        EduAPIFetch("/api/v1/classes", options)
+        EduAPIFetch(`/api/v1/classes/${props.classId}/posts`, options)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    props.onClassAdded();
-                    setFormName("");
+                    //props.onClassAdded();
+                    //setFormName("");
                 } else {
-                    props.onClassAdded("Se ha producido un error");
+                    //props.onClassAdded("Se ha producido un error");
                 }
                 props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
-                props.onClassAdded(error.error ?? "Se ha producido un error");
+                //props.onClassAdded(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popup" onClick={e => { e.stopPropagation(); }}>
+        <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
-                <div className="dialogTitle">Nueva clase</div>
-                <form onSubmit={onSubmitAddClass}>
+                <form onSubmit={onSubmitCreatePost}>
                     <div className="formInput">
-                        <input type="text" value={formName}
-                            onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Literatura universal"; }}
+                        <input type="text" value={formTitle}
+                            onChange={e => { setFormTitle(e.target.value) }}
+                            onFocus={e => { e.target.placeholder = "Autores del siglo XVII"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
                         <div className="underline"></div>
-                        <label htmlFor="">Nombre</label>
+                        <label htmlFor="">Título</label>
                     </div>
+                    {/* WORK FROM HERE*/}
                     <div className="formInputSelect createClassSelect">
                         <select name="group"
                             value={formGroup}
@@ -77,7 +66,7 @@ const CreateClassDialog = (props) => {
                         </select>
                     </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={formGroup === NOT_VALID} />
+                        <input type="submit" value="Publicar" />
                     </div>
                     {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>

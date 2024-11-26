@@ -1,4 +1,4 @@
-const ClassDetailBodyUnit = (props) => {
+const ClassDetailBodyUnitItem = (props) => {
     const onClick = () => {
         alert("To-Do")
     }
@@ -19,4 +19,4 @@ const ClassDetailBodyUnit = (props) => {
             </div>   
 }
 
-export default ClassDetailBodyUnit;
+export default ClassDetailBodyUnitItem;

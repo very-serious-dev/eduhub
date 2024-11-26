@@ -118,7 +118,7 @@ const AddParticipantToClassDialog = (props) => {
     }
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
+        <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Añadir usuario a {props.classroomName}</div>
                 <form onSubmit={onSubmitAddUser}>

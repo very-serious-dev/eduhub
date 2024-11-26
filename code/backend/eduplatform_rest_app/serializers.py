@@ -48,7 +48,7 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "group": classroom.group_id,
         "color": classroom.color,
         "shouldShowEditButton": isClassEditableByUser,
-        "entries": [],
+        "posts": [],
         "units": units
     }
 

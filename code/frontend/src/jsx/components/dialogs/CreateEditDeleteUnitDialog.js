@@ -78,7 +78,7 @@ const CreateEditDeleteUnitDialog = (props) => {
         onActionConfirmed={onDeleteUnit}
         isLoading={isLoading} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popupForm" onClick={e => { e.stopPropagation(); }}>
+        <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">{isEditingUnit() ? "Modificar tema" : "Nuevo tema"}</div>
                 <form onSubmit={onSubmitAddOrEditUnit}>
