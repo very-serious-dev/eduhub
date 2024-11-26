@@ -11,17 +11,8 @@ const EditClassDialog = (props) => {
 
     const onSubmitEditClass = (event) => {
         event.preventDefault();
-        let body = {
-            name: formName,
-            color: formColor
-        }
-        const options = {
-            method: "PUT",
-            body: JSON.stringify(body),
-            credentials: "include"
-        };
         setLoading(true);
-        EduAPIFetch(`/api/v1/classes/${props.classId}`, options)
+        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}`, { name: formName, color: formColor })
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -41,13 +32,9 @@ const EditClassDialog = (props) => {
 
     const onDeleteClass = () => {
         if (isLoading) { return; }
-        const options = {
-            method: "DELETE",
-            credentials: "include"
-        };
         setLoading(true);
         setShowAreYouSurePopup(false);
-        EduAPIFetch(`/api/v1/classes/${props.classId}`, options)
+        EduAPIFetch("DELETE", `/api/v1/classes/${props.classId}`)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {

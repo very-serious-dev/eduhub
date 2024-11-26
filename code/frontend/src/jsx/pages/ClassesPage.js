@@ -12,11 +12,7 @@ const ClassesPage = () => {
     const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0);
 
     useEffect(() => {
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
-        EduAPIFetch("/api/v1/classes", options)
+        EduAPIFetch("GET", "/api/v1/classes")
             .then(json => {
                 setLoading(false);
                 setClasses(json.classes);

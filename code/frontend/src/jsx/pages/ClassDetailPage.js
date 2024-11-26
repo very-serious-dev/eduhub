@@ -15,11 +15,7 @@ const ClassDetailPage = () => {
 
     useEffect(() => {
         setLoading(true);
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
-        EduAPIFetch(`/api/v1/classes/${params.classId}`, options)
+        EduAPIFetch("GET", `/api/v1/classes/${params.classId}`)
             .then(json => {
                 setLoading(false);
                 setClassData(json);

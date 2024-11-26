@@ -43,12 +43,8 @@ const ClassesBody = (props) => {
             return;
         }
 
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
         setLoadingGroups(true);
-        EduAPIFetch("/api/v1/groups", options)
+        EduAPIFetch("GET", "/api/v1/groups")
             .then(json => {
                 setLoadingGroups(false);
                 setGroups(json.groups);

@@ -19,11 +19,7 @@ const AdminBodyClasses = (props) => {
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
-        EduAPIFetch("/api/v1/admin/classes", options)
+        EduAPIFetch("GET", "/api/v1/admin/classes")
             .then(json => {
                 setLoading(false);
                 setClasses(json.classes);

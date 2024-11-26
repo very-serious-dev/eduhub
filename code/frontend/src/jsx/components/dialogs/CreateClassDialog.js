@@ -21,18 +21,13 @@ const CreateClassDialog = (props) => {
 
     const onSubmitAddClass = (event) => {
         event.preventDefault();
+        setLoading(true);
         let body = {
             name: formName,
             group: formGroup,
             automaticallyAddTeacher: props.automaticallyAddTeacher === true
         }
-        const options = {
-            method: "POST",
-            body: JSON.stringify(body),
-            credentials: "include"
-        };
-        setLoading(true);
-        EduAPIFetch("/api/v1/classes", options)
+        EduAPIFetch("POST", "/api/v1/classes", body)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {

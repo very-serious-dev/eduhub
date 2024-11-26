@@ -17,11 +17,7 @@ const ClassParticipantsDialog = (props) => {
     useEffect(() => {
         if (!props.show) { return; }
         setLoading(true);
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
-        EduAPIFetch(`/api/v1/classes/${props.classId}/users`, options)
+        EduAPIFetch("GET", `/api/v1/classes/${props.classId}/users`)
             .then(json => {
                 setLoading(false);
                 setTeachers(json.users.filter(u => { return u.roles.includes("teacher")}));
@@ -40,12 +36,8 @@ const ClassParticipantsDialog = (props) => {
 
     const onRemoveUserActionConfirmed = () => {
         if (isLoadingDelete) { return; }
-        const options = {
-            method: "DELETE",
-            credentials: "include"
-        };
         setLoadingDelete(true);
-        EduAPIFetch(`/api/v1/classes/${props.classId}/users/${areYouSureDeleteUsername}`, options)
+        EduAPIFetch("DELETE", `/api/v1/classes/${props.classId}/users/${areYouSureDeleteUsername}`)
             .then(json => {
                 setLoadingDelete(false);
                 setAreYouSureDeleteUsername(undefined); // Dismisses Are you sure? dialog

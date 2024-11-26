@@ -14,11 +14,7 @@ const AdminBodyUsers = (props) => {
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
-        const options = {
-            method: "GET",
-            credentials: "include"
-        };
-        EduAPIFetch("/api/v1/users", options)
+        EduAPIFetch("GET", "/api/v1/users")
             .then(json => {
                 setLoading(false);
                 setUsers(json.users);

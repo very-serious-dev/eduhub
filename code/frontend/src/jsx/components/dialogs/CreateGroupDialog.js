@@ -14,7 +14,7 @@ const CreateGroupDialog = (props) => {
 
     useEffect(() => {
         setLoadingTeachers(true);
-        EduAPIFetch("/api/v1/admin/users/teachers", { method: "GET", credentials: "include" })
+        EduAPIFetch("GET", "/api/v1/admin/users/teachers")
             .then(json => {
                 console.log(json)
                 setLoadingTeachers(false);
@@ -32,18 +32,14 @@ const CreateGroupDialog = (props) => {
     const onSubmitAddGroup = (event) => {
         if (isLoadingSubmit) { return; }
         event.preventDefault();
-        const options = {
-            method: "POST",
-            body: JSON.stringify({
-                name: formName,
-                tag: formTag,
-                year: formYear,
-                tutor_username: formTutorUsername
-            }),
-            credentials: "include"
-        };
         setLoadingSubmit(true);
-        EduAPIFetch("/api/v1/admin/groups", options)
+        const body = {
+            name: formName,
+            tag: formTag,
+            year: formYear,
+            tutor_username: formTutorUsername
+        };
+        EduAPIFetch("POST", "/api/v1/admin/groups", body)
             .then(json => {
                 setLoadingSubmit(false);
                 if (json.success === true) {

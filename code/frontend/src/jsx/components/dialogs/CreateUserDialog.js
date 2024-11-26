@@ -19,6 +19,7 @@ const CreateUserDialog = (props) => {
 
     const onSubmitAddUser = (event) => {
         event.preventDefault();
+        setLoading(true);
         let body = {
             name: formName,
             surname: formSurname,
@@ -30,13 +31,7 @@ const CreateUserDialog = (props) => {
         } else if (formStudentGroup !== undefined) {
             body.student_group = formStudentGroup;
         }
-        const options = {
-            method: "POST",
-            body: JSON.stringify(body),
-            credentials: "include"
-        };
-        setLoading(true);
-        EduAPIFetch("/api/v1/admin/users", options)
+        EduAPIFetch("POST", "/api/v1/admin/users", body)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {

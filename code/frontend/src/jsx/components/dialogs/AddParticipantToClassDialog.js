@@ -15,15 +15,8 @@ const AddParticipantToClassDialog = (props) => {
     
     const onSubmitAddUser = (event) => {
         event.preventDefault();
-        const options = {
-            method: "PUT",
-            body: JSON.stringify({
-                username: formUsername
-            }),
-            credentials: "include"
-        };
         setLoadingSubmit(true);
-        EduAPIFetch(`/api/v1/classes/${props.classId}/users`, options)
+        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}/users`, { username: formUsername })
             .then(json => {
                 setLoadingSubmit(false);
                 setFormUsername("");
@@ -52,12 +45,8 @@ const AddParticipantToClassDialog = (props) => {
             const shouldNotHitServerBecauseAlreadyDidForASubstring = lastSuccessfulSearch !== undefined ? search.toLowerCase().includes(lastSuccessfulSearch.toLowerCase()) : false
             if (serverSuggestedUsers.length === 0 && !shouldNotHitServerBecauseAlreadyDidForASubstring) {
                 // Must perform server-side search
-                const options = {
-                    method: "GET",
-                    credentials: "include"
-                };
                 setLoadingSearch(true);
-                EduAPIFetch(`/api/v1/users?search=${search}`, options)
+                EduAPIFetch("GET", `/api/v1/users?search=${search}`)
                     .then(json => {
                         setLoadingSearch(false);
                         setLastSuccessfulSearch(search);

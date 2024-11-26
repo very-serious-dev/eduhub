@@ -11,12 +11,8 @@ const MainHeader = (props) => {
 
     const onLogout = () => {
         if (isLoadingLogout) { return; }
-        const options = {
-            method: "DELETE",
-            credentials: "include"
-        };
         setLoadingLogout(true);
-        EduAPIFetch(`/api/v1/sessions`, options)
+        EduAPIFetch("DELETE", "/api/v1/sessions")
             .then(json => {
                 setLoadingLogout(false);
                 if (json.success === true) {

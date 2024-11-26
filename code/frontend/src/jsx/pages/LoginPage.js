@@ -12,29 +12,21 @@ const LoginPage = () => {
     
     const onSubmitLogin = (e) => {
         e.preventDefault();
-        const options = {
-            method: "POST",
-            body: JSON.stringify({
-                username: formUser,
-                password: formPassword,
-            }),
-            credentials: "include"
-        };
         setLoading(true);
         setError(null);
-        EduAPIFetch("/api/v1/sessions", options)
-                .then(json => {
-                    setLoading(false);
-                    if (json.success === true) {
-                        navigate("/");
-                    } else {
-                        setError("Se ha producido un error");
-                    }
-                })
-                .catch(error => {
-                    setLoading(false);
-                    setError(error.error ?? "Se ha producido un error");
-                })
+        EduAPIFetch("POST", "/api/v1/sessions", { username: formUser, password: formPassword })
+            .then(json => {
+                setLoading(false);
+                if (json.success === true) {
+                    navigate("/");
+                } else {
+                    setError("Se ha producido un error");
+                }
+            })
+            .catch(error => {
+                setLoading(false);
+                setError(error.error ?? "Se ha producido un error");
+            })
     }
 
     return <div className="loginMain">

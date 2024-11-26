@@ -17,18 +17,12 @@ const CreateEditDeleteUnitDialog = (props) => {
     const onSubmitAddOrEditUnit = (event) => {
         if (isLoading) { return; }
         event.preventDefault();
-        const options = {
-            method: isEditingUnit() ? "PUT" : "POST",
-            body: JSON.stringify({
-                name: formName
-            }),
-            credentials: "include"
-        };
         setLoading(true);
+        const httpMethod = isEditingUnit() ? "PUT" : "POST"
         const url = isEditingUnit() ? 
                     `/api/v1/classes/${props.classId}/units/${props.unit.id}`
                     : `/api/v1/classes/${props.classId}/units`
-        EduAPIFetch(url, options)
+        EduAPIFetch(httpMethod, url, { name: formName })
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -49,13 +43,9 @@ const CreateEditDeleteUnitDialog = (props) => {
     const onDeleteUnit = (event) => {
         if (isLoading) { return; }
         event.preventDefault();
-        const options = {
-            method: "DELETE",
-            credentials: "include"
-        };
         setLoading(true);
         setShowAreYouSurePopup(false);
-        EduAPIFetch(`/api/v1/classes/${props.classId}/units/${props.unit.id}`, options)
+        EduAPIFetch("DELETE", `/api/v1/classes/${props.classId}/units/${props.unit.id}`)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {

@@ -12,16 +12,11 @@ const CreatePostDialog = (props) => {
 
     const onSubmitCreatePost = (event) => {
         event.preventDefault();
+        setLoading(true);
         let body = {
             //
         }
-        const options = {
-            method: "POST",
-            body: JSON.stringify(body),
-            credentials: "include"
-        };
-        setLoading(true);
-        EduAPIFetch(`/api/v1/classes/${props.classId}/posts`, options)
+        EduAPIFetch("POST", `/api/v1/classes/${props.classId}/posts`, body)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
