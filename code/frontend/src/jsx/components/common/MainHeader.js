@@ -35,6 +35,7 @@ const MainHeader = (props) => {
             <AnimatedButton onClick={() => { navigate("/"); }} text="📚 Clases" />
             <AnimatedButton onClick={() => { navigate("/files"); }} text="📁 Archivos" />
             {props.showAdminLink && <AnimatedButton onClick={() => { navigate("/admin"); }} text="⚙️ Panel de administración" />}
+            { /* TODO: Don't show logout button if user is not logged in*/}
             <AnimatedButton onClick={onLogout} text="Cerrar sesión" rightAligned={true}/>
         </>}
     </div>
