@@ -745,8 +745,27 @@ body {
   margin-left: 10px;
 }
 
+.formInputSelect {
+  position: relative;
+}
+
 .formInputSelect select {
+  appearance: none;
+  background-color: var(--color-secondary);
   font-size: 15px;
+  outline: none;
+  border: none;
+  padding: 6px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.formInputSelect::after {
+  content: "▼";
+  font-size: 0.6em;
+  top: 9px;
+  right: 9px;
+  position: absolute;
 }
 
 .formInputSelect option {
@@ -780,7 +799,7 @@ body {
   background-color: var(--color-tertiary);
 }
 
-.formTextArea textarea{
+.formTextArea textarea {
   margin-top: 20px;
   padding: 3px;
   width: 100%;
@@ -840,27 +859,12 @@ body {
   margin-left: 10px;
 }
 
-.createClassSelect {
-  margin-left: 5px;
-  padding-top: 15px;
-}
-
-.hidableFormSelectContainer {
-  height: 50px;
-  margin-top: 10px;
-}
-
-.hidableFormSelectHidden {
+.formInputSelectHidden {
   display: none;
 }
 
-.hidableFormSelectShown {
-  display: block;
-}
-
-.addGroupSelect {
-  margin-left: 5px;
-  padding-top: 15px;
+.selectWithTopMargin {
+  margin-top: 15px;
 }
 
 .addUserSelect {
@@ -933,7 +937,9 @@ body {
   background-color: var(--color-destructive);
 }
 
-.createPostSelect {
+.createPostSelect select {
+  appearance: none;
+  background-color: #000;
 }
 
 .postFormFirstRowInputsContainer {

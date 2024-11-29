@@ -45,9 +45,9 @@ def login_logout(request):
 
 def get_users(request):
     if request.method == "GET":
-        if request.user is None:
+        if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        if request.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+        if request.session.user.role not in [EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=401)
         q = request.GET.get("search", None)
         if q is None:

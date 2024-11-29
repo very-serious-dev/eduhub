@@ -59,7 +59,7 @@ const CreateClassDialog = (props) => {
                         <div className="underline"></div>
                         <label htmlFor="">Nombre</label>
                     </div>
-                    <div className="formInputSelect createClassSelect">
+                    <div className="formInputSelect selectWithTopMargin">
                         <select name="group"
                             value={formGroup}
                             onChange={e => { setFormGroup(e.target.value); }} >

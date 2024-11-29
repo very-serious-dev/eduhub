@@ -117,11 +117,10 @@ const CreateUserDialog = (props) => {
                             required />
                         <label htmlFor="">ESTUDIANTE</label>
                     </div>
-                    <div className="formInputSelect addUserSelect hidableFormSelectContainer">
+                    <div className={"formInputSelect selectWithTopMargin addUserSelect" + (formIsTeacher === undefined || formIsTeacher === true ? " formInputSelectHidden" : "")}>
                         <select name="studentGroup"
                             value={formStudentGroup}
-                            onChange={e => { setFormStudentGroup(e.target.value); }}
-                            className={formIsTeacher === undefined || formIsTeacher === true ? "hidableFormSelectHidden" : "hidableFormSelectShown"}>
+                            onChange={e => { setFormStudentGroup(e.target.value); }}>
                             {props.groups.length > 0 ?
                                 props.groups.map(g => {
                                     return <option value={g.tag}>{g.tag}</option>

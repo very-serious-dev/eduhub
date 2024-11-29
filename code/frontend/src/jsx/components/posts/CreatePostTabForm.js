@@ -43,7 +43,7 @@ const CreatePostTabForm = (props) => {
     return <div className="createPostFormContainer">
         <form onSubmit={onSubmitCreatePost}>
             <div className="postFormFirstRowInputsContainer">
-                <div className="formInputSelect createPostSelect">
+                <div className="formInputSelect">
                     <select name="unit"
                         value={formUnitId}
                         onChange={e => { setFormUnitId(e.target.value); }} >
