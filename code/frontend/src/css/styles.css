@@ -780,6 +780,18 @@ body {
   background-color: var(--color-tertiary);
 }
 
+.formTextArea textarea{
+  margin-top: 20px;
+  padding: 3px;
+  width: 100%;
+  height: 250px;
+  outline: none;
+  border: none;
+  resize: none;
+  font-family: inherit;
+  overflow: auto;
+}
+
 /**
  * Dialog-related
  */
@@ -922,8 +934,21 @@ body {
 }
 
 .createPostSelect {
-  margin-left: 5px;
-  padding-top: 10px;
+}
+
+.postFormFirstRowInputsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 15px;
+}
+
+.formInputCreatePostTitle {
+  /* Override default .formInput input selector
+   * margin-top, as this is exceptionally contained
+   * in a flexbox.
+   * Without important, it won't work */
+  margin-top: 0 !important;
 }
 
 /**
@@ -932,8 +957,12 @@ body {
 
 .tabbedActivityOuterContainer {
   width: 100%;
-  height: 90vh;
-  overflow: hidden;
+  max-height: 90vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
 }
 
 .tabbedActivityHeader {
