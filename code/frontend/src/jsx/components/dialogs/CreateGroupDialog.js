@@ -91,11 +91,10 @@ const CreateGroupDialog = (props) => {
                         <label htmlFor="">Año</label>
                     </div>
                     {isLoadingTeachers && <div className="dialogHUDCentered"><LoadingHUD /></div>}
-                    <div className="formInputSelect selectWithTopMargin hidableFormSelectContainer">
+                    <div className={"formInputSelect selectWithTopMargin " + (isLoadingTeachers === true ? "formInputSelectHidden" : "")}>
                         <select name="tutorUsername"
                             value={formTutorUsername}
-                            onChange={e => { setFormTutorUsername(e.target.value); }}
-                            className={isLoadingTeachers === true ? "hidableFormSelectHidden" : "hidableFormSelectShown"}>
+                            onChange={e => { setFormTutorUsername(e.target.value); }}>
                             {availableTeachers.length > 0 ?
                                 availableTeachers.map(t => {
                                     return <option value={t.username}>{`Tutor: ${t.name} ${t.surname}`}</option>

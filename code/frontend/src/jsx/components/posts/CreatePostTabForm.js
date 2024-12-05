@@ -1,6 +1,7 @@
 import { useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
+import RichTextArea from "../common/RichTextArea";
 
 const CreatePostTabForm = (props) => {
     const UNIT_UNASSIGNED = -1;
@@ -62,13 +63,20 @@ const CreatePostTabForm = (props) => {
                     <label htmlFor="">Título</label>
                 </div>
             </div>
-            <div className="formTextArea">
-                <textarea placeholder="¡Acordaos de tomaros las cosas con calma! Estamos aquí para aprender :)"
+            <div className="formRichTextAreaContainer">
+                <RichTextArea />
+                {/* <textarea placeholder="¡Acordaos de tomaros las cosas con calma! Estamos aquí para aprender :)"
                     value={formContent}
                     onChange={e => { setFormContent(e.target.value) }}
                     onFocus={e => { e.target.placeholder = "Los autores del siglo XVII eran..."; }}
-                    required />
+                    required />*/}
+                
             </div>
+            <textarea placeholder="¡Acordaos de tomaros las cosas con calma! Estamos aquí para aprender :)"
+                    value={formContent}
+                    onChange={e => { setFormContent(e.target.value) }}
+                    onFocus={e => { e.target.placeholder = "Los autores del siglo XVII eran..."; }}
+                    required >hahah </textarea>
             <div className="formSubmit">
                 <input type="submit" value="Publicar" />
             </div>
