@@ -11,6 +11,7 @@ const CreatePostDialog = (props) => {
                     title: "Nueva publicación",
                     view: <CreatePostTabForm classId={props.classId}
                             units={props.units}
+                            isTask={false}
                             onPostAdded={props.onPostAdded}
                             onDismiss={props.onDismiss} />
                 },
@@ -18,6 +19,7 @@ const CreatePostDialog = (props) => {
                     title: "Nueva tarea",
                     view: <CreatePostTabForm classId={props.classId}
                             units={props.units}
+                            isTask={true}
                             onPostAdded={props.onPostAdded}
                             onDismiss={props.onDismiss} />
                 },

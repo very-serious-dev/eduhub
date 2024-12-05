@@ -5,6 +5,9 @@ EPUSER_TEACHER = 1
 EPUSER_TEACHER_SYSADMIN = 2
 EPUSER_TEACHER_LEADER = 3
 
+EPPOST_PUBLICATION = 0
+EPPOST_TASK = 1
+
 ##
 # USERS
 #
@@ -52,10 +55,11 @@ class EPUnit(models.Model):
 class EPPost(models.Model):
     title = models.CharField(max_length=100, null=True)
     content = models.CharField(max_length=2000)
+    kind = models.IntegerField() # Must be EPPOST_PUBLICATION, EPPOST_TASK
     classroom = models.ForeignKey(EPClass, on_delete=models.CASCADE)
     unit = models.ForeignKey(EPUnit, on_delete=models.CASCADE, null=True)
     publication_date = models.DateTimeField(auto_now=True)
-    task_due_date = models.DateTimeField(null=True)
+    task_due_date = models.DateField(null=True)
 
 class EPDocument(models.Model):
     url = models.CharField(max_length=200)

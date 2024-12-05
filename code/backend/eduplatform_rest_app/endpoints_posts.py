@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import EPClass, EPUserClass, EPUnit, EPPost
-from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER, EPPOST_PUBLICATION, EPPOST_TASK
 
 def create_post(request, classId):
     if request.method == "POST":
@@ -15,7 +15,7 @@ def create_post(request, classId):
             # Student - can't create posts inside a class (?)
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         if request.session.user.role == EPUSER_TEACHER and EPUserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
-            # Regular teacher trying to edit another teacher's class
+            # Regular teacher trying to post on another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
             body_json = json.loads(request.body)
@@ -24,8 +24,12 @@ def create_post(request, classId):
         json_title = body_json.get("title")
         json_unit_id = body_json.get("unit_id")
         json_content = body_json.get("content")
-        if json_content is None:
-            return JsonResponse({"error": "Falta content en el cuerpo de la petición"}, status=400)
+        json_post_type = body_json.get("post_type")
+        json_task_due_date = body_json.get("task_due_date")
+        if json_title is None or json_content is None or json_post_type is None:
+            return JsonResponse({"error": "Falta title, content o post_type en el cuerpo de la petición"}, status=400)
+        if json_post_type not in ["publication", "task"]:
+            return JsonResponse({"error": "post_type inválido"}, status=400)
         if json_unit_id is None:
             unit = None
         else:
@@ -38,7 +42,12 @@ def create_post(request, classId):
         new_post.content = json_content
         new_post.unit = unit
         new_post.classroom = classroom
-        # TO-DO: Task due date, post type (add to models.py too)
+        if json_post_type == "publication":
+            new_post.kind = EPPOST_PUBLICATION
+        elif json_post_type == "task":
+            new_post.kind = EPPOST_TASK
+            if json_task_due_date is not None:
+                new_post.task_due_date = json_task_due_date
         new_post.save()
         return JsonResponse({"success": True}, status=201) 
     else:
