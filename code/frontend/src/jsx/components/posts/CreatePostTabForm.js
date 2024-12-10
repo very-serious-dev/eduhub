@@ -1,6 +1,7 @@
 import { useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
+import DropFilesArea from "../common/DropFilesArea";
 
 const CreatePostTabForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];
@@ -64,7 +65,7 @@ const CreatePostTabForm = (props) => {
                         type="date"
                         min={TODAY}
                         value={formTaskDueDate}
-                        onChange={e => {setFormTaskDueDate(e.target.value)}}></input>
+                        onChange={e => {setFormTaskDueDate(e.target.value)}} />
                 </div> }
                 <div className="formInput"> 
                     <input className="formInputCreatePostTitle" type="text" value={formTitle}
@@ -81,10 +82,7 @@ const CreatePostTabForm = (props) => {
                     onFocus={e => { e.target.placeholder = props.isTask ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}
                     onBlur={e => { e.target.placeholder = ""; }} required />
             </div>
-            <div className="formFiles">
-                <div className="formFilesUploaded"></div>
-                <div className="formFilesDropableArea">⬇️📄 Arrastra un fichero aquí para adjuntarlo</div>
-            </div>
+            <DropFilesArea />
             <div className="formSubmit">
                 <input type="submit" value={props.isTask ? "Crear tarea" : "Publicar"} />
             </div>
