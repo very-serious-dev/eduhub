@@ -814,25 +814,56 @@ body {
 
 .formFiles {
   margin-top: 8px;
-  height: 90px;
   width: 100%;
 }
 
 .formFilesUploaded {
-  height: 30%;
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
   width: 100%;
 }
 
 .formFilesDropableArea {
+  margin-top: 4px;
   padding-top: 15px;
   text-align: center;
-  height: 70%;
+  height: 60px;
   width: 100%;
   border: 3px dashed white;
 }
 
 .formFilesDropableAreaActive {
   background-color: var(--color-secondary);
+}
+
+.dropFilesAreaItem {
+  background-color: white;
+  border-radius: 999px;
+  padding-left: 4px;
+  padding-right: 24px;
+  position: relative;
+}
+
+.dropFilesAreaItemTitle {
+  font-size: 0.875rem;
+  color: var(--color-accent);
+}
+
+.dropFilesAreaItemSubtitle {
+  font-size: 0.7rem;
+  color: var(--color-accent);
+}
+
+.dropFilesAreaItemDeleteButton {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.dropFilesAreaItemDeleteButton:hover {
+  cursor: pointer;
+  background-color: var(--color-destructive);
 }
 
 /**

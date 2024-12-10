@@ -1,4 +1,5 @@
 import { useState } from "react";
+import DropFilesAreaItem from "./DropFilesAreaItem";
 
 const DropFilesArea = (props) => {
     const MAX_SIZE = {nBytes: 1024*1024*30, humanReadable: "30 Mb"}
@@ -14,11 +15,15 @@ const DropFilesArea = (props) => {
         // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop#process_the_drop
         const files = event.dataTransfer.items ? [...event.dataTransfer.items].filter(i => i.kind === "file").map(i => i.getAsFile()) : [...event.dataTransfer.files];
         if (files.length === 0) { return; }
+        if (readyFiles.some(f => f.name === files[0].name)) {
+            alert(`Ya has adjuntado un fichero de nombre ${files[0].name}`);
+            return;
+        }
         if (readyFiles.length >= MAX_ATTACHMENTS) {
             alert(`No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`);
             return;
         }
-        if ((readyFiles.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0) + files[0].size) >= MAX_SIZE.nBytes) {
+        if ((files[0] + readyFiles.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0)) >= MAX_SIZE.nBytes) {
             alert(`No se puede exceder ${MAX_SIZE.humanReadable} entre todos los ficheros`);
             return;
         }
@@ -33,7 +38,11 @@ const DropFilesArea = (props) => {
             files.shift(); // Remove files[0], it has been processed
             if (files.length > 0) {
                 // There are more files!
-                if ((readyFiles.length + processedFiles.length) >= MAX_ATTACHMENTS) {
+                if (processedFiles.some(f => f.name === files[0].name)) {
+                    setReadyFiles([...readyFiles, ...processedFiles]);
+                    setReadingFiles(false);
+                    alert(`Ya has adjuntado un fichero de nombre ${files[0].name}`);
+                } else if ((readyFiles.length + processedFiles.length) >= MAX_ATTACHMENTS) {
                     setReadyFiles([...readyFiles, ...processedFiles]);
                     setReadingFiles(false);
                     alert(`No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`);
@@ -63,17 +72,13 @@ const DropFilesArea = (props) => {
         reader.readAsDataURL(files[0]); // Begin processing files
     }
 
-    const sizeToHumanReadable = (size) => { // https://stackoverflow.com/a/63032680
-        const fileSize = size.toString();
-        if(fileSize.length < 7) {
-            return `${Math.round(+fileSize/1024).toFixed(2)}kb`
-        }
-        return `${(Math.round(+fileSize/1024)/1000).toFixed(2)}MB`
+    const onRemoveReadyFile = (fileName) => {
+        setReadyFiles(readyFiles.filter(f => f.name !== fileName));
     }
 
     return <div className="formFiles">
         <div className="formFilesUploaded">
-            {readyFiles.map(f => { return f.name })}
+            {readyFiles.map(f => <DropFilesAreaItem file={f} onDelete={onRemoveReadyFile}/>)}
         </div>
         <div className={`formFilesDropableArea${dropAreaActive ? " formFilesDropableAreaActive" : ""}`}
             onDragOver={e => { e.preventDefault() }}
