@@ -1,4 +1,4 @@
-from .models import EPUserSession
+from .models import UserSession
 
 AUTH_COOKIE_KEY = "SessionToken"
 ROLES_COOKIE_KEY = "UserRoles"
@@ -27,6 +27,6 @@ class AuthMiddleware:
         if session_token is None:
             return None
         try:
-            return EPUserSession.objects.get(token=session_token)
-        except EPUserSession.DoesNotExist:
+            return UserSession.objects.get(token=session_token)
+        except UserSession.DoesNotExist:
             return None

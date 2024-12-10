@@ -1,8 +1,8 @@
 import bcrypt, json, re
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import EPUser, EPGroup, EPClass, EPUserClass
-from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
+from .models import User, Group, Class, UserClass
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
 
 def home(request):
@@ -10,10 +10,10 @@ def home(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        users_count = EPUser.objects.all().count()
-        classes_count = EPClass.objects.filter(archived=False).count()
+        users_count = User.objects.all().count()
+        classes_count = Class.objects.filter(archived=False).count()
         serialized_groups = []
-        groups = EPGroup.objects.all()
+        groups = Group.objects.all()
         return JsonResponse({"usersCount": users_count,
                              "classesCount": classes_count,
                              "groups": groups_array_to_json(groups) })
@@ -39,21 +39,21 @@ def create_user(request):
             return JsonResponse({"error": "Falta username, name, surname o password en el cuerpo de la petición"}, status=400)
         if not(re.match("^[a-z0-9.]+$", json_username)):
             return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=409)
-        if EPUser.objects.filter(username=json_username).exists():
+        if User.objects.filter(username=json_username).exists():
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
-        new_user = EPUser()
+        new_user = User()
         new_user.username = json_username
         new_user.name = json_name
         new_user.surname = json_surname
         new_user.encrypted_password = bcrypt.hashpw(json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
         if json_is_teacher:
-            new_user.role = EPUSER_TEACHER
+            new_user.role = USER_TEACHER
         elif json_student_group is not None:
             try:
-                group = EPGroup.objects.get(tag=json_student_group)
-            except EPGroup.DoesNotExist:
+                group = Group.objects.get(tag=json_student_group)
+            except Group.DoesNotExist:
                 return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
-            new_user.role = EPUSER_STUDENT
+            new_user.role = USER_STUDENT
             new_user.student_group = group
         else:
             # School leader and Sysadmin must be manually added
@@ -84,17 +84,17 @@ def create_group(request):
             return JsonResponse({"error": "El tag no es válido. Sólo puede contener letras y dígitos"}, status=409)
         if not(re.match("^[0-9-]+$", json_year)):
             return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=409)
-        if EPGroup.objects.filter(tag=json_tag, year=json_year).exists():
+        if Group.objects.filter(tag=json_tag, year=json_year).exists():
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
-        if EPUser.objects.filter(username=json_tutor_username).exists() == False:
+        if User.objects.filter(username=json_tutor_username).exists() == False:
             return JsonResponse({"error": "El tutor indicado no existe"}, status=409)
-        new_group = EPGroup()
+        new_group = Group()
         new_group.tag = json_tag
         new_group.name = json_name
         new_group.year = json_year
         # Here we assume that json_tutor_username is a valid and correct teacher,
         # because it's chosen from a preloaded HTML <select> with the teachers
-        new_group.tutor = EPUser.objects.get(username=json_tutor_username)
+        new_group.tutor = User.objects.get(username=json_tutor_username)
         new_group.save()
         return JsonResponse({"success": True}, status=201)
     else:
@@ -105,7 +105,7 @@ def get_all_classes(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        classes = EPClass.objects.filter(archived=False)
+        classes = Class.objects.filter(archived=False)
         return JsonResponse({"classes": classes_array_to_json(classes) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
@@ -115,7 +115,7 @@ def get_teachers(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        users = EPUser.objects.filter(Q(role=EPUSER_TEACHER) | Q(role=EPUSER_TEACHER_SYSADMIN) | Q(role=EPUSER_TEACHER_LEADER))
+        users = User.objects.filter(Q(role=USER_TEACHER) | Q(role=USER_TEACHER_SYSADMIN) | Q(role=USER_TEACHER_LEADER))
         return JsonResponse({"teachers": users_array_to_json(users) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
@@ -123,6 +123,6 @@ def get_teachers(request):
 def __admin_auth_json_error_response(request):
     if request.session.user is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-    if request.session.user.role not in [EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER]:
+    if request.session.user.role not in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
         return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
     return None

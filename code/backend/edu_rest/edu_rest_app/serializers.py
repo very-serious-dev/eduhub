@@ -1,5 +1,5 @@
-from .models import EPUSER_STUDENT, EPUSER_TEACHER, EPUSER_TEACHER_SYSADMIN, EPUSER_TEACHER_LEADER
-from .models import EPUnit, EPPost
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
+from .models import Unit, Post
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -39,11 +39,11 @@ def classes_array_to_json(classes):
 
 def class_detail_to_json(classroom, isClassEditableByUser):
     units = []
-    for u in EPUnit.objects.filter(classroom=classroom).order_by("name"):
+    for u in Unit.objects.filter(classroom=classroom).order_by("name"):
         units.append({"id": u.id, "name": u.name})
 
     posts = []
-    for p in EPPost.objects.filter(classroom=classroom).order_by("publication_date"):
+    for p in Post.objects.filter(classroom=classroom).order_by("publication_date"):
         posts.append({"id": p.id, "title": p.title, "content": p.content, "publication_date": p.publication_date})
         
     return {
@@ -75,14 +75,14 @@ def users_array_to_json(users):
     
 def roles_array(user):
     roles = []
-    if user.role == EPUSER_STUDENT:
+    if user.role == USER_STUDENT:
         roles.append(JSON_STUDENT)
-    if user.role == EPUSER_TEACHER:
+    if user.role == USER_TEACHER:
         roles.append(JSON_TEACHER)
-    if user.role == EPUSER_TEACHER_LEADER:
+    if user.role == USER_TEACHER_LEADER:
         roles.append(JSON_TEACHER)
         roles.append(JSON_LEADER)
-    if user.role == EPUSER_TEACHER_SYSADMIN:
+    if user.role == USER_TEACHER_SYSADMIN:
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles

@@ -31,15 +31,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'eduplatform_rest_app.apps.EduplatformRestAppConfig'
+    'edu_rest_app.apps.EduRestAppConfig'
 ]
 
 MIDDLEWARE = [
-    'eduplatform_rest_app.middleware_cors.CORSMiddleware',
-    'eduplatform_rest_app.middleware_auth.AuthMiddleware',
+    'edu_rest_app.middleware_cors.CORSMiddleware',
+    'edu_rest_app.middleware_auth.AuthMiddleware',
 ]
 
-ROOT_URLCONF = 'eduplatform_rest.urls'
+ROOT_URLCONF = 'edu_rest.urls'
 
 TEMPLATES = [
     {
@@ -57,7 +57,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'eduplatform_rest.wsgi.application'
+WSGI_APPLICATION = 'edu_rest.wsgi.application'
 
 
 # Database
@@ -92,3 +92,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
