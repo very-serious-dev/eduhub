@@ -7,7 +7,7 @@ from .admin_secret import ADMIN_SECRET
 EDU_REST_BASE_URL = "http://localhost:8000"
 EDU_REST_VERIFY_SESSION_ENDPOINT = "/api/v1/admin/sessions"
 
-def login(request):
+def login_logout(request):
     if request.method == "POST":
         try:
             body_json = json.loads(request.body)
@@ -34,5 +34,10 @@ def login(request):
         response = JsonResponse({"success": True}, status=201)
         response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
         return response
+    elif request.method == "DELETE":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        request.session.delete()
+        return JsonResponse({"success": True}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

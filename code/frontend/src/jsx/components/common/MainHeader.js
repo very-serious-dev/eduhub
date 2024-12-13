@@ -3,6 +3,7 @@ import AnimatedButton from "./AnimatedButton";
 import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import { FeedbackContext } from "../../main/GlobalContainer";
+import DocuAPIFetch from "../../../client/DocuAPIFetch";
 
 const MainHeader = (props) => {
     const [isLoadingLogout, setLoadingLogout] = useState(false);
@@ -12,13 +13,23 @@ const MainHeader = (props) => {
     const onLogout = () => {
         if (isLoadingLogout) { return; }
         setLoadingLogout(true);
-        EduAPIFetch("DELETE", "/api/v1/sessions")
-            .then(json => {
-                setLoadingLogout(false);
+        EduAPIFetch("DELETE", "/api/v1/sessions").then(json => {
                 if (json.success === true) {
-                    navigate("/login");
-                    setFeedback({type: "info", message: "Has cerrado tu sesión"});
+                    DocuAPIFetch("DELETE", "/api/v1/sessions").then(json => {
+                            setLoadingLogout(false);
+                            if (json.success === true) {
+                                navigate("/login");
+                                setFeedback({type: "info", message: "Has cerrado tu sesión"});
+                            } else {
+                                setFeedback({type: "error", message: "Se ha producido un error"});
+                            }
+                        })
+                        .catch(error => {
+                            setLoadingLogout(false);
+                            setFeedback({type: "error", message: error.error ?? "Se ha producido un error"});
+                        })
                 } else {
+                    setLoadingLogout(false);
                     setFeedback({type: "error", message: "Se ha producido un error"});
                 }
             })
