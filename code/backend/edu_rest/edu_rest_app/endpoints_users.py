@@ -23,12 +23,14 @@ def login_logout(request):
         # Let's create a new session
         if bcrypt.checkpw(json_password.encode('utf8'), db_user.encrypted_password.encode('utf8')):
             random_token = secrets.token_hex(20)
+            random_one_time_token = secrets.token_hex(20)
             session = UserSession()
             session.user = db_user
             session.token = random_token
+            session.one_time_token = random_one_time_token
             session.save()
             roles = roles_array(db_user)
-            response = JsonResponse({"success": True}, status=201)
+            response = JsonResponse({"success": True, "one_time_token": random_one_time_token}, status=201)
             # https://docs.djangoproject.com/en/5.1/ref/request-response/#django.http.HttpResponse.set_cookie
             response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
             response.set_cookie(key=ROLES_COOKIE_KEY, value='-'.join(roles), path="/", samesite="Strict")

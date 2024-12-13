@@ -1,7 +1,6 @@
 from .models import UserSession
 
-AUTH_COOKIE_KEY = "EduSessionToken"
-ROLES_COOKIE_KEY = "UserRoles"
+AUTH_COOKIE_KEY = "DocuSessionToken"
 
 class AuthMiddleware:
     def __init__(self, get_response):
@@ -20,7 +19,7 @@ class AuthMiddleware:
         session_token = None
         for cookie in cookies:
             # TO-DO: Thoroughly review this impl, can be broken via malformed headers?
-            # (Code is also in docu_rest, it has been copy-pasted)
+            # (Code is also in edu_rest, it has been copy-pasted)
             cookie_key_value = cookie.strip().split("=")
             if len(cookie_key_value) == 2:
                 if cookie_key_value[0] == AUTH_COOKIE_KEY:

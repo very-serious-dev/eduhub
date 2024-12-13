@@ -35,6 +35,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'docu_rest_app.middleware_cors.CORSMiddleware',
+    'docu_rest_app.middleware_auth.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'docu_rest.urls'

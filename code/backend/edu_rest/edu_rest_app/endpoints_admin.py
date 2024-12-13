@@ -1,9 +1,10 @@
 import bcrypt, json, re
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import User, Group, Class, UserClass
+from .models import User, Group, Class, UserClass, UserSession
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
+from .admin_secret import ADMIN_SECRET
 
 def home(request):
     if request.method == "GET":
@@ -117,6 +118,37 @@ def get_teachers(request):
             return admin_auth_error
         users = User.objects.filter(Q(role=USER_TEACHER) | Q(role=USER_TEACHER_SYSADMIN) | Q(role=USER_TEACHER_LEADER))
         return JsonResponse({"teachers": users_array_to_json(users) })
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+
+def verify_session(request): # This is received from another server (DocuREST); not the React client
+                             # See docs/auth_flow.txt for further information
+    if request.method == "POST":
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_admin_secret = body_json.get("admin_secret")
+        json_one_time_token = body_json.get("one_time_token")
+        if json_admin_secret is None or json_one_time_token is None:
+            return JsonResponse({"error": "Error"}, status=400)
+        if json_admin_secret != ADMIN_SECRET:
+            return JsonResponse({"error": "Error"}, status=400)
+        try:
+            user_session = UserSession.objects.get(one_time_token=json_one_time_token)
+        except UserSession.DoesNotExist:
+            return JsonResponse({"error": "Error"}, status=400)
+        if user_session.one_time_token_already_used == True:
+            # TODO: Implement an actual log system
+            print("[SEVERE] Security warning: The one_time_token " + json_one_time_token)
+            print("has been used twice in /admin/sessions. This should never happen in a regular")
+            print("authentication flow. Someone might trying to do something naughty")
+            user_session.delete()
+            return JsonResponse({"error": "Error"}, status=400)
+        user_session.one_time_token_already_used = True
+        user_session.save()
+        return JsonResponse({"user_id": user_session.user.id})
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     

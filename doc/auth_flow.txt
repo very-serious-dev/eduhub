@@ -1,0 +1,34 @@
+# In EduPlatform we have two REST APIs:
+#
+# - EduREST keeps the users information, classes, groups, etc.
+# - DocuREST keeps the users' documents.
+#
+# In order to login, a client makes 2 requests:
+#
+# 1. React Client ----- POST /sessions (username+password) ----> EduREST
+#                                                                  |
+#         <------------ Set-Cookie (HttpOnly) session token -------|
+#                             JSON response: one_time_token
+#
+# 2. React Client ----- POST /sessions (one_time_token) ------> DocuREST
+#                                                                  |
+#                 EduREST <---- POST /admin/sessions --------------|
+#                    |          (admin secret+one_time_token)
+#                    |
+#                    |--------- JSON response: user_id -------> DocuREST
+#                                                                  |
+#         <------------ Set-Cookie (HttpOnly) session token -------|
+#
+
+# In step 2, DocuREST HTTP POST to EduREST's /admin/sessions might be
+# forged, but still, an attacker can't easily steal the one_time_token.
+#
+# If such one_time_token was stolen via XSS or other means, the EduREST
+# still checks that no duplicate calls to /admin/sessions with the same
+# one_time_token (for verification purposes) are made. If that happened,
+# EduREST would invalidate the session. So an attacker should not only
+# have to steal the one_time_token (XSS vulnerable due to not being HttpOnly)
+# to gain a DocuREST session; they should also prevent the legit DocuREST
+# request from happening.
+#
+# Anyway, for extra security, an admin secret key is hardcoded in both servers

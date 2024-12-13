@@ -22,7 +22,14 @@ class User(models.Model):
 
 class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    # Sent to client after successful login via HttpOnly Set-Cookie
     token = models.CharField(unique=True, max_length=50)
+
+    # Sent to client after successful login via response body (JSON)
+    # See docs/auth_flow.txt for further information
+    one_time_token = models.CharField(unique=True, max_length=50)
+    one_time_token_already_used = models.BooleanField(default=False)
 
 ##
 # GROUPS AND CLASSES
