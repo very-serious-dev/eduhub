@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from .models import Class, UserClass, Unit, Post
+from .models import Class, UserClass, Unit, Post, Document, PostDocument
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
 
 def create_post(request, classId):
@@ -26,6 +26,7 @@ def create_post(request, classId):
         json_content = body_json.get("content")
         json_post_type = body_json.get("post_type")
         json_task_due_date = body_json.get("task_due_date")
+        json_files = body_json.get("files")
         if json_title is None or json_content is None or json_post_type is None:
             return JsonResponse({"error": "Falta title, content o post_type en el cuerpo de la petición"}, status=400)
         if json_post_type not in ["publication", "task"]:
@@ -49,6 +50,19 @@ def create_post(request, classId):
             if json_task_due_date is not None:
                 new_post.task_due_date = json_task_due_date
         new_post.save()
+        if json_files is not None:
+            for f in json_files:
+                document = Document()
+                document.identifier = f["identifier"]
+                document.name = f["name"]
+                document.size = f["size"]
+                document.mime_type = f["mime_type"]
+                document.author = request.session.user
+                document.save()
+                post_document = PostDocument()
+                post_document.document = document
+                post_document.post = new_post
+                post_document.save()
         return JsonResponse({"success": True}, status=201) 
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

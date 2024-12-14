@@ -2,6 +2,7 @@ import { useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
+import DocuAPIFetch from "../../../client/DocuAPIFetch";
 
 const CreatePostTabForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];
@@ -10,10 +11,39 @@ const CreatePostTabForm = (props) => {
     const [formContent, setFormContent] = useState("");
     const [formUnitId, setFormUnitId] = useState(UNIT_UNASSIGNED);
     const [formTaskDueDate, setFormTaskDueDate] = useState(TODAY);
+    const [filesReadyToUpload, setFilesReadyToUpload] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
     const onSubmitCreatePost = (event) => {
         event.preventDefault();
+        
+        if (filesReadyToUpload.length === 0) {
+            sendEduPostRequest();
+        } else {
+            uploadFilesThenSendEduPostRequest();
+        }
+    }
+
+    const uploadFilesThenSendEduPostRequest = () => {
+        setLoading(true);
+        DocuAPIFetch("POST", "/api/v1/documents", { files: filesReadyToUpload})
+        .then(json => {
+            if (json.success === true) {
+                sendEduPostRequest(json.uploaded_files);
+            } else {
+                setLoading(false);
+                props.onPostAdded("Se ha producido un error");
+                props.onDismiss();
+            }
+        })
+        .catch(error => {
+            setLoading(false);
+            props.onPostAdded(error.error ?? "Se ha producido un error");
+            props.onDismiss();
+        })
+    }
+
+    const sendEduPostRequest = (uploadedFiles = []) => {
         setLoading(true);
         let body = {
             title: formTitle,
@@ -26,23 +56,26 @@ const CreatePostTabForm = (props) => {
         if (props.isTask === true) {
             body["task_due_date"] = formTaskDueDate;
         }
+        if (uploadedFiles.length > 0) {
+            body["files"] = uploadedFiles;
+        }
         EduAPIFetch("POST", `/api/v1/classes/${props.classId}/posts`, body)
-            .then(json => {
-                setLoading(false);
-                if (json.success === true) {
-                    props.onPostAdded();
-                    setFormTitle("");
-                    setFormContent("");
-                } else {
-                    props.onPostAdded("Se ha producido un error");
-                }
-                props.onDismiss();
-            })
-            .catch(error => {
-                setLoading(false);
-                props.onPostAdded(error.error ?? "Se ha producido un error");
-                props.onDismiss();
-            })
+        .then(json => {
+            setLoading(false);
+            if (json.success === true) {
+                props.onPostAdded();
+                setFormTitle("");
+                setFormContent("");
+            } else {
+                props.onPostAdded("Se ha producido un error");
+            }
+            props.onDismiss();
+        })
+        .catch(error => {
+            setLoading(false);
+            props.onPostAdded(error.error ?? "Se ha producido un error");
+            props.onDismiss();
+        })
     }
 
     return <div className="createPostFormContainer">
@@ -82,7 +115,7 @@ const CreatePostTabForm = (props) => {
                     onFocus={e => { e.target.placeholder = props.isTask ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}
                     onBlur={e => { e.target.placeholder = ""; }} required />
             </div>
-            <DropFilesArea />
+            <DropFilesArea filesReadyToUpload={filesReadyToUpload} setFilesReadyToUpload={setFilesReadyToUpload} />
             <div className="formSubmit">
                 <input type="submit" value={props.isTask ? "Crear tarea" : "Publicar"} />
             </div>

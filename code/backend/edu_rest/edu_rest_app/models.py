@@ -69,7 +69,11 @@ class Post(models.Model):
     task_due_date = models.DateField(null=True)
 
 class Document(models.Model):
-    url = models.CharField(max_length=200)
+    identifier = models.CharField(max_length=20, unique=True)
+    name = models.CharField(max_length=300)
+    size = models.IntegerField() # TO-DO: Check if with 30 MB max file size this is enough
+    mime_type = models.CharField(max_length=50)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class PostDocument(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
