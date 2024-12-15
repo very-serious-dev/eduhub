@@ -39,10 +39,11 @@ def create_post(request, classId):
             except Unit.DoesNotExist:
                 return JsonResponse({"error": "No existe un tema con ese id"}, status=404)
         new_post = Post()
-        new_post.title = json_title # Can be null
+        new_post.title = json_title
         new_post.content = json_content
         new_post.unit = unit
         new_post.classroom = classroom
+        new_post.author = request.session.user
         if json_post_type == "publication":
             new_post.kind = POST_PUBLICATION
         elif json_post_type == "task":

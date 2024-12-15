@@ -1,10 +1,18 @@
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
-from .models import Unit, Post
+from .models import Unit, Post, PostDocument, Document
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
 JSON_SYSADMIN = "sysadmin"
 JSON_LEADER = "school_leader"
+
+def document_to_json(document):
+    return {
+        "identifier": document.identifier,
+        "name": document.name,
+        "size": document.size,
+        "mime_type": document.mime_type
+    }
 
 def group_to_json(group):
     return {
@@ -43,8 +51,20 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         units.append({"id": u.id, "name": u.name})
 
     posts = []
-    for p in Post.objects.filter(classroom=classroom).order_by("publication_date"):
-        posts.append({"id": p.id, "title": p.title, "content": p.content, "publication_date": p.publication_date})
+    for p in Post.objects.filter(classroom=classroom).order_by("-publication_date"):
+        response_post_documents = []
+        for pd in PostDocument.objects.filter(post=p):
+            response_post_documents.append(document_to_json(pd.document))
+        response_post = {
+            "id": p.id,
+            "title": p.title,
+            "content": p.content,
+            "files": response_post_documents,
+            "author": p.author.username,
+            "publication_date": p.publication_date }
+        if p.unit is not None:
+            response_post["unitName"] = p.unit.name
+        posts.append(response_post)
         
     return {
         "id": classroom.id,

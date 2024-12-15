@@ -1,19 +1,23 @@
+import PostsBoardEntryFile from "./PostsBoardEntryFile";
+
 const PostsBoardEntry = (props) => {
-    const addLineBreaks = (str) =>
-        str.split('\n').map((subStr) => {
-          return (
-            <>
-              {subStr}
-              <br />
-            </>
-          );
-        });
-      
+    const addLineBreaks = (str) => {
+        return str.split('\n').map(subStr => <>{subStr}<br/></>);
+    }
+
+    const footNote = () => {
+        const date = new Date(props.post.publication_date);
+        return `${props.post.author}, ${date.toLocaleDateString()} (${date.getHours()}:${date.getMinutes()})`
+    }
 
     return <div className="card classDetailEntry">
-        <div className="classDetailEntrySubItem">{props.post.title}</div>
-        <div>{addLineBreaks(props.post.content)}</div>
-        <div className="classDetailEntrySubItem">{props.post.publication_date}</div>
+        {props.post.unitName && <div className="classDetailEntryUnit">{props.post.unitName}</div>}
+        <div className="classDetailEntryTitle">{props.post.title}</div>
+        <div className="classDetailEntryContent">{addLineBreaks(props.post.content)}</div>
+        <div className="classDetailEntryFiles">
+            {props.post.files.map(f => <PostsBoardEntryFile file={f} />)}
+        </div>
+        <div className="classDetailEntryFootNote">{footNote()}</div>
     </div>
 }
 

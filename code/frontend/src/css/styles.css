@@ -290,15 +290,86 @@ body {
 }
 
 .classDetailEntry {
-    display: flex;
-    gap: 6px;
-    flex-direction: column;
+    position: relative;
+    padding: 8px;
 }
 
-.classDetailEntrySubItem {
-    font-size: 0.7rem;
-    color: var(--color-accent);
-    align-self: flex-end;
+.classDetailEntryTitle {
+    color: #222;
+    font-size: 0.875rem;
+    font-weight: lighter;
+    letter-spacing: 0.2em;
+    padding-left: 4px;
+}
+
+.classDetailEntryContent {
+    padding-top: 8px;
+    padding-bottom: 4px;
+}
+
+.classDetailEntryUnit {
+    font-size: 0.7em;
+    font-weight: bold;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border-radius: 999px;
+    background-color: var(--color-tertiary);
+}
+
+.classDetailEntryFiles {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.classEntryFile {
+  background-color: #eee;
+  border-radius: 3px;
+  padding: 4px;
+  position: relative;
+  margin: 8px;
+}
+
+.classEntryFile:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+.classEntryFileImage {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  margin-right: 4px;
+}
+
+.classEntryFileRightContainer {
+  display: inline-block;
+}
+
+.classEntryFileTitle {
+  font-size: 0.875rem;
+  color: var(--color-accent);
+  margin-right: 4px;
+}
+
+.classEntryFileSubtitle {
+  font-size: 0.7rem;
+  color: var(--color-accent);
+}
+
+.classDetailEntryFootNote {
+    position: absolute;
+    right: 8px;
+    bottom: 2px;
+    color: #555;
+    font-size: 0.6rem;
+    font-weight: lighter;
 }
 
 .classDetailBodyColumn2 {

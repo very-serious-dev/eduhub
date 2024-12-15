@@ -67,6 +67,7 @@ class Post(models.Model):
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
     publication_date = models.DateTimeField(auto_now=True)
     task_due_date = models.DateField(null=True)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Document(models.Model):
     identifier = models.CharField(max_length=20, unique=True)
