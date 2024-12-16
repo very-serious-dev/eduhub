@@ -1,4 +1,4 @@
-const ClassDetailBodyUnitItem = (props) => {
+const ClassDetailUnitItem = (props) => {
     const onClick = () => {
         alert("To-Do")
     }
@@ -9,7 +9,7 @@ const ClassDetailBodyUnitItem = (props) => {
     }
 
     return <div key={props.unit.id}
-                className="classDetailSectionSubitem"
+                className="classDetailSectionSubitem sectionSubitemPaddingTopBottomMedium"
                 onClick={onClick}>{props.unit.name}
                 { props.editable === true &&
                     <div className="classDetailSectionSubitemEditBtn"
@@ -19,4 +19,4 @@ const ClassDetailBodyUnitItem = (props) => {
             </div>   
 }
 
-export default ClassDetailBodyUnitItem;
+export default ClassDetailUnitItem;

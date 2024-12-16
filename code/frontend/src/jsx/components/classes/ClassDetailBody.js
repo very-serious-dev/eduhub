@@ -2,9 +2,11 @@ import { useContext, useState } from "react";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
 import AddParticipantToClassDialog from "../dialogs/AddParticipantToClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
-import ClassDetailBodyUnitItem from "./ClassDetailBodyUnitItem";
 import CreateEditDeleteUnitDialog from "../dialogs/CreateEditDeleteUnitDialog";
 import PostsBoard from "../posts/PostsBoard";
+import ClassDetailDrawerSectionUnits from "./ClassDetailDrawerSectionUnits";
+import ClassDetailDrawerSectionTitle from "./ClassDetailDrawerSectionTitle";
+import ClassDetailDrawerSectionAssignments from "./ClassDetailDrawerSectionAssignments";
 
 const ClassDetailBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, ADD_PARTICIPANT, CREATE_EDIT_UNIT
@@ -49,33 +51,12 @@ const ClassDetailBody = (props) => {
             <PostsBoard classData={props.classData} onPostAdded={onOperationFinished}/>
         </div>
         <div className="classDetailBodyColumn2">
+            <ClassDetailDrawerSectionAssignments classData={props.classData} />
+            <ClassDetailDrawerSectionUnits classData={props.classData}
+                onClickEditUnit={unit => { setPopupShown("CREATE_EDIT_UNIT"); setUnitForPopup(unit) }}
+                onClickNewUnit={() => { setPopupShown("CREATE_EDIT_UNIT"); }} />
             <div>
-                <div className="classDetailSectionTitle">📅 Próximas entregas</div>
-                <div className="classDetailSectionUnderline" />
-                <p>
-                    No hay entregas próximas
-                </p>
-            </div>
-            <div>
-                <div className="classDetailSectionTitle">📚 Temario</div>
-                <div className="classDetailSectionUnderline" />
-                <div>
-                    { props.classData.units.length > 0 ?
-                        props.classData.units.map(u => {
-                            return <ClassDetailBodyUnitItem
-                                    unit={u} 
-                                    editable={props.classData.shouldShowEditButton}
-                                    onEdit={unit => {
-                                         setPopupShown("CREATE_EDIT_UNIT");
-                                         setUnitForPopup(unit) }} /> }) 
-                        : <p>No hay temas</p> }
-                </div>
-                { props.classData.shouldShowEditButton === true &&
-                    <div className="card classDetailBubbleButton" onClick={() => { setPopupShown("CREATE_EDIT_UNIT"); }}>➕ Añadir tema</div>}
-            </div>
-            <div>
-                <div className="classDetailSectionTitle">👤 Participantes</div>
-                <div className="classDetailSectionUnderline" />
+                <ClassDetailDrawerSectionTitle title="👤 Participantes" />
                 <div className="card classDetailBubbleButton" onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div> 
             </div>
         </div>
