@@ -1,5 +1,5 @@
 import DocuURL from "../../../client/DocuURL";
-import sizeToHumanReadable from "../../../util/FileSizeToHumanReadable";
+import { sizeToHumanReadable } from "../../../util/Formatter";
 
 const PostsBoardEntryFile = (props) => {
     const iconImgSrc = (mimeType) => {

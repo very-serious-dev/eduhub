@@ -2,6 +2,7 @@
     --color-primary: #f2f2fc;
     --color-secondary: #bdece6;
     --color-tertiary: #bccef8;
+    --color-quaternary: #d1c3f9;
     --color-accent: #0029a5;
     --color-error: #f37979;
     --color-delete: #f65050;
@@ -370,6 +371,27 @@ body {
     color: #555;
     font-size: 0.6rem;
     font-weight: lighter;
+}
+
+.classDetailEntryAssignment {
+    background-color: var(--color-quaternary);
+}
+
+.classDetailEntryAssignment:hover {
+    cursor: pointer;
+    background-color: var(--color-tertiary);
+}
+
+.classDetailAssignmentTitle {
+    padding: 8px;
+    font-size: 1.325em;
+    text-align: center;
+}
+
+.classDetailAssignmentDueDate {
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center;
 }
 
 .classDetailBodyColumn2 {

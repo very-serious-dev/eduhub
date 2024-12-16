@@ -1,3 +1,4 @@
+import { footNoteForDateAndAuthor } from "../../../util/Formatter";
 import PostsBoardEntryFile from "./PostsBoardEntryFile";
 
 const PostsBoardEntry = (props) => {
@@ -17,7 +18,9 @@ const PostsBoardEntry = (props) => {
         <div className="classDetailEntryFiles">
             {props.post.files.map(f => <PostsBoardEntryFile file={f} />)}
         </div>
-        <div className="classDetailEntryFootNote">{footNote()}</div>
+        <div className="classDetailEntryFootNote">
+            {footNoteForDateAndAuthor(props.post.publication_date, props.post.author)}
+        </div>
     </div>
 }
 

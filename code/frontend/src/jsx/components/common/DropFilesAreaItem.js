@@ -1,4 +1,4 @@
-import sizeToHumanReadable from "../../../util/FileSizeToHumanReadable";
+import { sizeToHumanReadable } from "../../../util/Formatter";
 
 const DropFilesAreaItem = (props) => {
 

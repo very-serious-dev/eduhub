@@ -1,4 +1,4 @@
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
 from .models import Unit, Post, PostDocument, Document
 
 JSON_STUDENT = "student"
@@ -52,20 +52,28 @@ def class_detail_to_json(classroom, isClassEditableByUser):
 
     posts = []
     for p in Post.objects.filter(classroom=classroom).order_by("-publication_date"):
-        response_post_documents = []
-        for pd in PostDocument.objects.filter(post=p):
-            response_post_documents.append(document_to_json(pd.document))
         response_post = {
             "id": p.id,
             "title": p.title,
             "content": p.content,
-            "files": response_post_documents,
             "author": p.author.username,
-            "publication_date": p.publication_date }
+            "publication_date": p.publication_date
+        }
         if p.unit is not None:
             response_post["unitName"] = p.unit.name
+        if p.kind == POST_PUBLICATION:
+            response_post["kind"] = "publication"
+            # Only hit database to retrieve associated files for regular posts,
+            # because the other kind (='task') are opened in another tab
+            response_post_documents = []
+            for pd in PostDocument.objects.filter(post=p):
+                response_post_documents.append(document_to_json(pd.document))
+            response_post["files"] = response_post_documents
+        elif p.kind == POST_TASK:
+            response_post["kind"] = "task"
+            if p.task_due_date is not None:
+                response_post["taskDueDate"] = p.task_due_date
         posts.append(response_post)
-        
     return {
         "id": classroom.id,
         "name": classroom.name,

@@ -50,7 +50,7 @@ const ClassDetailBody = (props) => {
         </div>
         <div className="classDetailBodyColumn2">
             <div>
-                <div className="classDetailSectionTitle">💼 Próximas entregas</div>
+                <div className="classDetailSectionTitle">📅 Próximas entregas</div>
                 <div className="classDetailSectionUnderline" />
                 <p>
                     No hay entregas próximas
