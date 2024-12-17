@@ -11,7 +11,7 @@ const footNoteForDateAndAuthor = (date, author) => {
     return `${author}, ${dateObject.toLocaleDateString()} (${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)})`
 }
 
-const beautifullyParseDate = (date) => {
+const beautifullyDisplayDate = (date) => {
     const getWeekDayLiteral = (day) => {
         switch (day) {
             case 0: return "Domingo";
@@ -46,4 +46,4 @@ const beautifullyParseDate = (date) => {
 
 export { sizeToHumanReadable };
 export { footNoteForDateAndAuthor };
-export { beautifullyParseDate };
+export { beautifullyDisplayDate };

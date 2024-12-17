@@ -84,6 +84,18 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "units": units
     }
 
+def assignment_to_json(assignment):
+    response = {
+        "id": assignment.id,
+        "title": assignment.title,
+        "content": assignment.content,
+        "author": assignment.author.username,
+        "publication_date": assignment.publication_date
+    }
+    if assignment.task_due_date is not None:
+        response["taskDueDate"] = assignment.task_due_date
+    return response
+
 def user_to_json(user):
     json_user = {
         "username": user.username,
