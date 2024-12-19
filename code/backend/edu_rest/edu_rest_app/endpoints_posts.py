@@ -2,7 +2,7 @@ import json
 from django.http import JsonResponse
 from .models import Class, UserClass, Unit, Post, Document, PostDocument
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
-from .serializers import assignment_to_json
+from .serializers import assignment_detail_to_json
 
 def create_post(request, classId):
     if request.method == "POST":
@@ -83,9 +83,9 @@ def assignment_detail(request, assignmentId):
         if request.session.user.role == USER_TEACHER and UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() == 0:
             # Regular teacher trying to view another teacher's class assignment
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        
+        isTeacher = request.session.user.role == USER_TEACHER
         # TODO Return also tasksubmit documents
-        return JsonResponse(assignment_to_json(assignment)) 
+        return JsonResponse(assignment_detail_to_json(assignment, isTeacher)) 
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     

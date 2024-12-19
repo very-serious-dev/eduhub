@@ -6,11 +6,6 @@ const PostsBoardEntry = (props) => {
         return str.split('\n').map(subStr => <>{subStr}<br/></>);
     }
 
-    const footNote = () => {
-        const date = new Date(props.post.publication_date);
-        return `${props.post.author}, ${date.toLocaleDateString()} (${date.getHours()}:${date.getMinutes()})`
-    }
-
     return <div className="card classDetailEntry">
         {props.post.unitName && <div className="classDetailEntryUnit">{props.post.unitName}</div>}
         <div className="classDetailEntryTitle">{props.post.title}</div>

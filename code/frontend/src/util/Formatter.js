@@ -44,6 +44,11 @@ const beautifullyDisplayDate = (date) => {
     return `${getWeekDayLiteral(date.getDay())}, ${date.getDate()} de ${getMonthLiteral(date.getMonth())}`;
 }
 
+const formatNullableDueDate = (dueDate) => {
+    return dueDate !== undefined ? beautifullyDisplayDate(new Date(dueDate)) : "Sin definir";
+}
+
 export { sizeToHumanReadable };
 export { footNoteForDateAndAuthor };
 export { beautifullyDisplayDate };
+export { formatNullableDueDate };

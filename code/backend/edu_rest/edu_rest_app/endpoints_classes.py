@@ -62,6 +62,7 @@ def handle_class_detail(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        # TO-DO: 401 if one student is accessing a class where he/she doesn't belong!
         if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
             isClassEditableByUser = False
         else:

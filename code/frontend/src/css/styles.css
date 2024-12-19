@@ -539,10 +539,67 @@ body {
   margin-right: 10px;
 }
 
-.classDetailBodyColumn1 {
+/**
+ * Assignment detail page
+ */
+
+.assignmentDetailTitleHeader {
+  margin-top: 25px;
+  margin-left: 15px;
+}
+
+.assignmentDetailBodyContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+}
+
+.assignmentDetailBodyColumn1 {
+  width: 25%;
+}
+
+.assignmentDetailLeftPane {
+  margin-top: 10px;
+  margin-right: 25px;
+}
+
+.assignmentDetailLeftPaneTitle {
+  font-weight: bold;
+  font-size: 0.875em;
+}
+
+.assignmentDetailBodyColumn2 {
   width: 75%;
+}
+
+.assignmentDetailBodyFilesTitle {
+  font-weight: light;
+  font-size: 0.875em;
+  margin-top: 50px;
+  margin-left: 8px;
+  margin-bottom: 20px;
+}
+
+.assignmentDetailBodyFiles {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.assignmentDetailTitle {
+  font-size: 2.25em;
+  font-weight: light;
+  margin-right: 30px;
+}
+
+.assignmentDetailDueDate {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.assignmentDetailContent {
+  font-size: 1.125em;
+  margin-top: 15px;
+  margin-right: 30px;
 }
 
 /**

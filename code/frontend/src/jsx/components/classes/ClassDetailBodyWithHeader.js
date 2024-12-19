@@ -52,7 +52,7 @@ const ClassDetailBodyWithHeader = (props) => {
             style={isHeaderCollapsed ? { backgroundColor: props.classData.color }: {}}>
             <img className={`classDetailHeaderImage ${isHeaderCollapsed ? "cdhImgCollapsed" : "cdhImgExpanded"}`} src="/header.jpg" />
             <div className={`classDetailHeaderTitle ${isHeaderCollapsed ? "cdhTitleCollapsed" : "cdhTitleExpanded"}`}>{props.classData.name}</div>
-            <div className="classDetailHeaderCloseIcon" onClick={() => { navigate("/");}}>✖</div>
+            <div className="classDetailHeaderCloseIcon" onClick={() => { navigate(-1);}}>✖</div>
             { props.classData.shouldShowEditButton === true && 
               <div className="classDetailHeaderEditIcon" onClick={() => { setShowEditClassPopup(true); }}>Editar</div> }
         </div>

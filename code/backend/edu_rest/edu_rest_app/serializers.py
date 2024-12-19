@@ -84,16 +84,22 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "units": units
     }
 
-def assignment_to_json(assignment):
+def assignment_detail_to_json(assignment, isAssignmentCreatedByUser):
     response = {
         "id": assignment.id,
         "title": assignment.title,
         "content": assignment.content,
         "author": assignment.author.username,
+        "shouldShowTeacherOptions": isAssignmentCreatedByUser,
         "publication_date": assignment.publication_date
     }
+    response_documents = []
+    for pd in PostDocument.objects.filter(post=assignment):
+        response_documents.append(document_to_json(pd.document))
+    response["files"] = response_documents
     if assignment.task_due_date is not None:
         response["taskDueDate"] = assignment.task_due_date
+        
     return response
 
 def user_to_json(user):

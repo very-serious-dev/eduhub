@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { beautifullyDisplayDate } from "../../../util/Formatter";
+import { formatNullableDueDate } from "../../../util/Formatter";
 import { ASSIGNMENT_CONTENT_NAVIGATED_FROM_WITH_ID, ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID } from "../../pages/AssignmentPage";
 
 const ClassDetailAssignmentItem = (props) => {
@@ -15,9 +15,7 @@ const ClassDetailAssignmentItem = (props) => {
                 className="classDetailSectionSubitem sectionSubitemPaddingTopBottomSmall"
                 onClick={onClick}>
                     <div className="classDetailSectionAssignmentDueDateCapsule">
-                        { props.assignment.taskDueDate !== undefined
-                         ? beautifullyDisplayDate(new Date(props.assignment.taskDueDate))
-                         : "Sin fecha definida" }
+                        { formatNullableDueDate(props.assignment.taskDueDate) }
                     </div>
                     <div>💼 {props.assignment.title}</div>
             </div>
