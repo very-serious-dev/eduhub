@@ -26,7 +26,7 @@ const CreatePostTabForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        DocuAPIFetch("POST", "/api/v1/documents", { files: filesReadyToUpload})
+        DocuAPIFetch("POST", "/api/v1/documents", { files: filesReadyToUpload })
         .then(json => {
             if (json.success === true) {
                 sendEduPostRequest(json.uploaded_files);
@@ -109,7 +109,7 @@ const CreatePostTabForm = (props) => {
                     <label htmlFor="">Título</label>
                 </div>
             </div>
-            <div className="formTextArea">
+            <div className="formTextArea formTextAreaBig">
                 <textarea value={formContent}
                     onChange={e => { setFormContent(e.target.value) }}
                     onFocus={e => { e.target.placeholder = props.isTask ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}

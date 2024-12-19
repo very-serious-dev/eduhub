@@ -84,13 +84,13 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "units": units
     }
 
-def assignment_detail_to_json(assignment, isAssignmentCreatedByUser):
+def assignment_detail_to_json(assignment, isTeacher):
     response = {
         "id": assignment.id,
         "title": assignment.title,
         "content": assignment.content,
         "author": assignment.author.username,
-        "shouldShowTeacherOptions": isAssignmentCreatedByUser,
+        "shouldShowTeacherOptions": isTeacher,
         "publication_date": assignment.publication_date
     }
     response_documents = []

@@ -3,7 +3,7 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
-import AreYouSureDialog from "./AreYouSureDialog";
+import AreYouSureDeleteDialog from "./AreYouSureDeleteDialog";
 
 const ClassParticipantsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -67,7 +67,7 @@ const ClassParticipantsDialog = (props) => {
     
     return  props.show === true ? 
     areYouSureDeleteUsername !== undefined ? 
-    <AreYouSureDialog onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
+    <AreYouSureDeleteDialog onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
         onActionConfirmed={onRemoveUserActionConfirmed}
         isLoading={isLoadingDelete} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>

@@ -1,6 +1,6 @@
 import json
 from django.http import JsonResponse
-from .models import Class, UserClass, Unit, Post, Document, PostDocument
+from .models import Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
 from .serializers import assignment_detail_to_json
 
@@ -77,15 +77,65 @@ def assignment_detail(request, assignmentId):
             assignment = Post.objects.get(id=assignmentId, kind=POST_TASK)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
-            # Student - can't globally view assignments
-            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == USER_TEACHER and UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() == 0:
-            # Regular teacher trying to view another teacher's class assignment
-            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        isTeacher = request.session.user.role == USER_TEACHER
-        # TODO Return also tasksubmit documents
+        canView = False
+        if request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+            canView = True
+        if request.session.user.role in [USER_STUDENT, USER_TEACHER]:
+            canView = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
+        if canView == False:
+            return JsonResponse({"error": "No tienes permisos para ver esta tarea"}, status=403)
+        isTeacher = request.session.user.role in [USER_TEACHER, USER_TEACHER_LEADER, USER_TEACHER_SYSADMIN]
         return JsonResponse(assignment_detail_to_json(assignment, isTeacher)) 
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
-    
+
+def assignment_submits(request, assignmentId):
+    if request.method == "GET":
+        pass
+        # TODO
+    elif request.method == "POST":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            assignment = Post.objects.get(id=assignmentId, kind=POST_TASK)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
+        if request.session.user.role not in [USER_STUDENT]:
+            # Not a student - prevent from making a submit
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        if UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() == 0:
+            # Student doesn't belong to assignment's class
+            return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        if AssignmentSubmit.objects.filter(author=request.session.user, assignment=assignment).count() > 0:
+            # Trying to submit an already submitted task
+            return JsonResponse({"error": "No puedes entregar una tarea dos veces"}, status=409)
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_comment = body_json.get("comment")
+        json_files = body_json.get("files")
+        new_submit = AssignmentSubmit()
+        new_submit.author = request.session.user
+        new_submit.assignment = assignment
+        if json_comment is not None:
+            new_submit.comment = json_comment
+        new_submit.save()
+        if json_files is not None:
+            for f in json_files:
+                document = Document()
+                document.identifier = f["identifier"]
+                document.name = f["name"]
+                document.size = f["size"]
+                document.mime_type = f["mime_type"]
+                document.author = request.session.user
+                document.save()
+                submit_document = AssignmentSubmitDocument()
+                submit_document.document = document
+                submit_document.submit = new_submit
+                submit_document.save()
+        return JsonResponse({"success": True}, status=201) 
+
+        return JsonResponse(assignment_detail_to_json(assignment, isTeacher)) 
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)

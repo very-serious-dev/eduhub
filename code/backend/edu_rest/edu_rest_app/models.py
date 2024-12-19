@@ -80,13 +80,13 @@ class PostDocument(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
-class TaskSubmit(models.Model):
+class AssignmentSubmit(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    task = models.ForeignKey(Post, on_delete=models.CASCADE)
-    comment = models.CharField(max_length=1000)
+    assignment = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment = models.CharField(max_length=1000, null=True)
     submit_date = models.DateTimeField(auto_now=True)
 
-class TaskSubmitDocument(models.Model):
-    task_submit = models.ForeignKey(Post, on_delete=models.CASCADE)
+class AssignmentSubmitDocument(models.Model):
+    submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     

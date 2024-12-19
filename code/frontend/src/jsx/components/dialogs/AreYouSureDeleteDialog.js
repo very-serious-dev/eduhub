@@ -1,6 +1,6 @@
 import LoadingHUD from "../common/LoadingHUD";
 
-const AreYouSureDialog = (props) => {
+const AreYouSureDeleteDialog = (props) => {
     return <div className="popupOverlayBackground" onClick={props.onDismiss}>
     <div className="popup" onClick={e => { e.stopPropagation(); }}>
         <div className="card dialogBackground">
@@ -12,4 +12,4 @@ const AreYouSureDialog = (props) => {
 </div>
 }
 
-export default AreYouSureDialog;
+export default AreYouSureDeleteDialog;

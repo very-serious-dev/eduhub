@@ -1,7 +1,7 @@
 import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
-import AreYouSureDialog from "./AreYouSureDialog";
+import AreYouSureDeleteDialog from "./AreYouSureDeleteDialog";
 
 const EditClassDialog = (props) => {
     const [formName, setFormName] = useState();
@@ -52,7 +52,7 @@ const EditClassDialog = (props) => {
     }
 
     return props.show === true ? showAreYouSurePopup ? 
-    <AreYouSureDialog onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss(); }}
+    <AreYouSureDeleteDialog onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss(); }}
         onActionConfirmed={onDeleteClass}
         isLoading={isLoading} />
     : <div className="popupOverlayBackground" onClick={props.onDismiss}>
