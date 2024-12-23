@@ -51,7 +51,10 @@ const beautifullyDisplayDate = (date) => {
 }
 
 const formatNullableDueDate = (dueDate) => {
-    return dueDate !== undefined ? beautifullyDisplayDate(dueDate) : "Sin definir";
+    if (dueDate === undefined || dueDate === null) {
+        return "Sin definir"
+    }
+    return beautifullyDisplayDate(dueDate);
 }
 
 export { sizeToHumanReadable };

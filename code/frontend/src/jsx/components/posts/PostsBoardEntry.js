@@ -7,7 +7,7 @@ const PostsBoardEntry = (props) => {
     }
 
     return <div className="card classDetailEntry">
-        {props.post.unitName && <div className="classDetailEntryUnit">{props.post.unitName}</div>}
+        {props.post.unit_name && <div className="classDetailEntryUnit">{props.post.unit_name}</div>}
         <div className="classDetailEntryTitle">{props.post.title}</div>
         <div className="classDetailEntryContent">{addLineBreaks(props.post.content)}</div>
         <div className="classDetailEntryFiles">

@@ -10,7 +10,7 @@ const CreatePostTabForm = (props) => {
     const [formTitle, setFormTitle] = useState("");
     const [formContent, setFormContent] = useState("");
     const [formUnitId, setFormUnitId] = useState(UNIT_UNASSIGNED);
-    const [formTaskDueDate, setFormTaskDueDate] = useState(TODAY);
+    const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(TODAY);
     const [filesReadyToUpload, setFilesReadyToUpload] = useState([]);
     const [isLoading, setLoading] = useState(false);
 
@@ -48,13 +48,13 @@ const CreatePostTabForm = (props) => {
         let body = {
             title: formTitle,
             content: formContent,
-            post_type: props.isTask ? "task" : "publication"
+            post_type: props.isAssignment ? "assignment" : "publication"
         }
         if (formUnitId !== UNIT_UNASSIGNED) {
             body["unit_id"] = formUnitId;
         }
-        if (props.isTask === true) {
-            body["task_due_date"] = formTaskDueDate;
+        if (props.isAssignment === true && formAssignmentDueDate !== "") {
+            body["assignment_due_date"] = formAssignmentDueDate;
         }
         if (uploadedFiles.length > 0) {
             body["files"] = uploadedFiles;
@@ -91,19 +91,18 @@ const CreatePostTabForm = (props) => {
                         })}
                     </select>
                 </div>
-                { /* NICE-TO-HAVE: Allow empty task due dates */}
-                { props.isTask === true && 
+                { props.isAssignment === true && 
                 <div className="formInput formInputDivCreatePostTaskDate">
                     <input className="formInputCreatePostTaskDate"
                         type="date"
                         min={TODAY}
-                        value={formTaskDueDate}
-                        onChange={e => {setFormTaskDueDate(e.target.value)}} />
+                        value={formAssignmentDueDate}
+                        onChange={e => {setFormAssignmentDueDate(e.target.value)}} />
                 </div> }
                 <div className="formInput"> 
                     <input className="formInputCreatePostTitle" type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
-                        onFocus={e => { e.target.placeholder = props.isTask ? "Trabajo sobre la máquina de vapor" : "Filósofos del empirismo"; }}
+                        onFocus={e => { e.target.placeholder = props.isAssignment ? "Trabajo sobre la máquina de vapor" : "Filósofos del empirismo"; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
                     <div className="underline"></div>
                     <label htmlFor="">Título</label>
@@ -112,12 +111,12 @@ const CreatePostTabForm = (props) => {
             <div className="formTextArea formTextAreaBig">
                 <textarea value={formContent}
                     onChange={e => { setFormContent(e.target.value) }}
-                    onFocus={e => { e.target.placeholder = props.isTask ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}
+                    onFocus={e => { e.target.placeholder = props.isAssignment ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}
                     onBlur={e => { e.target.placeholder = ""; }} required />
             </div>
             <DropFilesArea filesReadyToUpload={filesReadyToUpload} setFilesReadyToUpload={setFilesReadyToUpload} />
             <div className="formSubmit">
-                <input type="submit" value={props.isTask ? "Crear tarea" : "Publicar"} />
+                <input type="submit" value={props.isAssignment ? "Crear tarea" : "Publicar"} />
             </div>
             
             {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}

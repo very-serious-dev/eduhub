@@ -13,12 +13,12 @@ const PostsBoard = (props) => {
         onPostAdded={props.onPostAdded}
         onDismiss={() => { setShowNewPost(false); }}/>
     <div className="postsBoardContainer">
-        {props.classData.shouldShowEditButton && <div className="card postsBoardPublishButton" 
+        {props.classData.should_show_edit_button && <div className="card postsBoardPublishButton" 
             onClick={()=>{ setShowNewPost(true); }}>➕ Nueva publicación</div>}
         {props.classData.posts.map(p => {
             if (p.kind === "publication") {
                 return <PostsBoardEntry post={p} />
-            } else if (p.kind === "task") {
+            } else if (p.kind === "assignment") {
                 return <PostsBoardAssignment post={p} />
             }
         })}

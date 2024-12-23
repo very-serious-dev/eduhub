@@ -11,7 +11,7 @@ const AssignmentBody = (props) => {
     const appropriateLeftPaneContent = () => {
         if (props.isLoading) {
             return <LoadingHUD />
-        } else if (props.assignmentData.shouldShowTeacherOptions === true) {
+        } else if (props.assignmentData.should_show_teacher_options === true) {
             return <AssignmentTeacherLeftPaneContent
                 assignmentData={props.assignmentData} />
         } else {
@@ -25,7 +25,7 @@ const AssignmentBody = (props) => {
         <div className="classDetailHeaderCloseIcon" onClick={() => { navigate(-1); }}>✖</div>
         <div className="assignmentDetailTitleHeader">
             <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
-            <div className="assignmentDetailDueDate">Fecha de entrega: {formatNullableDueDate(props.assignmentData.taskDueDate)}</div>
+            <div className="assignmentDetailDueDate">Fecha de entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
             <div className="classDetailSectionUnderline" />
         </div>
         <div className="assignmentDetailBodyContainer">

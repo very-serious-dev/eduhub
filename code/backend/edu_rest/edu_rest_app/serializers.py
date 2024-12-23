@@ -1,4 +1,4 @@
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT
 from .models import Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass
 
 JSON_STUDENT = "student"
@@ -63,26 +63,25 @@ def class_detail_to_json(classroom, isClassEditableByUser):
             "publication_date": p.publication_date
         }
         if p.unit is not None:
-            response_post["unitName"] = p.unit.name
+            response_post["unit_name"] = p.unit.name
         if p.kind == POST_PUBLICATION:
             response_post["kind"] = "publication"
             # Only hit database to retrieve associated files for regular posts,
-            # because the other kind (='task') are opened in another tab
+            # because the other kind (=POST_ASSIGNMENT) are opened in another tab
             response_post_documents = []
             for pd in PostDocument.objects.filter(post=p):
                 response_post_documents.append(document_to_json(pd.document))
             response_post["files"] = response_post_documents
-        elif p.kind == POST_TASK:
-            response_post["kind"] = "task"
-            if p.task_due_date is not None:
-                response_post["taskDueDate"] = p.task_due_date
+        elif p.kind == POST_ASSIGNMENT:
+            response_post["kind"] = "assignment"
+            response_post["assignment_due_date"] = p.assignment_due_date
         posts.append(response_post)
     return {
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
         "color": classroom.color,
-        "shouldShowEditButton": isClassEditableByUser,
+        "should_show_edit_button": isClassEditableByUser,
         "posts": posts,
         "units": units
     }
@@ -100,10 +99,9 @@ def assignment_detail_to_json(assignment, user):
     for pd in PostDocument.objects.filter(post=assignment):
         response_documents.append(document_to_json(pd.document))
     response["files"] = response_documents
-    if assignment.task_due_date is not None:
-        response["taskDueDate"] = assignment.task_due_date
+    response["assignment_due_date"] = assignment.assignment_due_date
     isTeacher = user.role in [USER_TEACHER, USER_TEACHER_LEADER, USER_TEACHER_SYSADMIN]
-    response["shouldShowTeacherOptions"] = isTeacher
+    response["should_show_teacher_options"] = isTeacher
     if isTeacher:
         submits = []
         for s in AssignmentSubmit.objects.filter(assignment=assignment):

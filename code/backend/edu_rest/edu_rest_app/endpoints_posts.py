@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_TASK
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT
 from .serializers import assignment_detail_to_json
 
 def create_post(request, classId):
@@ -26,7 +26,7 @@ def create_post(request, classId):
         json_unit_id = body_json.get("unit_id")
         json_content = body_json.get("content")
         json_post_type = body_json.get("post_type")
-        json_task_due_date = body_json.get("task_due_date")
+        json_assignment_due_date = body_json.get("assignment_due_date")
         json_files = body_json.get("files")
         if json_title is None or json_content is None or json_post_type is None:
             return JsonResponse({"error": "Falta title, content o post_type en el cuerpo de la petición"}, status=400)
@@ -47,10 +47,9 @@ def create_post(request, classId):
         new_post.author = request.session.user
         if json_post_type == "publication":
             new_post.kind = POST_PUBLICATION
-        elif json_post_type == "task":
-            new_post.kind = POST_TASK
-            if json_task_due_date is not None:
-                new_post.task_due_date = json_task_due_date
+        elif json_post_type == "assignment":
+            new_post.kind = POST_ASSIGNMENT
+            new_post.assignment_due_date = json_assignment_due_date
         new_post.save()
         if json_files is not None:
             for f in json_files:
@@ -74,7 +73,7 @@ def assignment_detail(request, assignmentId):
         if request.session is None: # FIX-ME: So much CTRL+C CTRL+V :(
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
-            assignment = Post.objects.get(id=assignmentId, kind=POST_TASK)
+            assignment = Post.objects.get(id=assignmentId, kind=POST_ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         canView = False
@@ -93,7 +92,7 @@ def create_assignment_submit(request, assignmentId):
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
-            assignment = Post.objects.get(id=assignmentId, kind=POST_TASK)
+            assignment = Post.objects.get(id=assignmentId, kind=POST_ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         if request.session.user.role not in [USER_STUDENT]:

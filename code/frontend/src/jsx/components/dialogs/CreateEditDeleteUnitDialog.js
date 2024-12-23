@@ -75,7 +75,7 @@ const CreateEditDeleteUnitDialog = (props) => {
                     <div className="formInput">
                         <input type="text" value={formName}
                             onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Ecuaciones"; }}
+                            onFocus={e => { e.target.placeholder = "Tema 1: Ecuaciones"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
                         <div className="underline"></div>

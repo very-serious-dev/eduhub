@@ -8,12 +8,12 @@ const ClassDetailDrawerSectionUnits = (props) => {
             {props.classData.units.length > 0 ?
                 props.classData.units.map(u => {
                     return <ClassDetailUnitItem unit={u}
-                        editable={props.classData.shouldShowEditButton}
+                        editable={props.classData.should_show_edit_button}
                         onEdit={props.onClickEditUnit} />
                 })
                 : <p>No hay temas</p>}
         </div>
-        {props.classData.shouldShowEditButton === true &&
+        {props.classData.should_show_edit_button === true &&
             <div className="card classDetailBubbleButton" onClick={props.onClickNewUnit}>
                 ➕ Añadir tema
             </div>}

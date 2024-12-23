@@ -6,7 +6,7 @@ USER_TEACHER_SYSADMIN = 2
 USER_TEACHER_LEADER = 3
 
 POST_PUBLICATION = 0
-POST_TASK = 1
+POST_ASSIGNMENT = 1
 
 ##
 # USERS
@@ -66,7 +66,7 @@ class Post(models.Model):
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
     publication_date = models.DateTimeField(auto_now=True)
-    task_due_date = models.DateField(null=True)
+    assignment_due_date = models.DateField(null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Document(models.Model):

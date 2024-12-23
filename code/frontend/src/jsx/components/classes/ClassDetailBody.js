@@ -38,7 +38,7 @@ const ClassDetailBody = (props) => {
         onDismiss={() => {setPopupShown("NONE"); setUnitForPopup({id: undefined, name: undefined})}}/>
     <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
         classId={props.classData.id}
-        shouldShowEditButton={props.classData.shouldShowEditButton}
+        shouldShowEditButton={props.classData.should_show_edit_button}
         onWantsToAddParticipant={() => {setPopupShown("ADD_PARTICIPANT")}} 
         onDismiss={() => {setPopupShown("NONE")}}/>
     <AddParticipantToClassDialog show={popupShown === "ADD_PARTICIPANT"} 

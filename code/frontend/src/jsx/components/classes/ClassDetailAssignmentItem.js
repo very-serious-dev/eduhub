@@ -15,7 +15,7 @@ const ClassDetailAssignmentItem = (props) => {
                 className="classDetailSectionSubitem sectionSubitemPaddingTopBottomSmall"
                 onClick={onClick}>
                     <div className="classDetailSectionAssignmentDueDateCapsule">
-                        { formatNullableDueDate(props.assignment.taskDueDate) }
+                        { formatNullableDueDate(props.assignment.assignment_due_date) }
                     </div>
                     <div>💼 {props.assignment.title}</div>
             </div>
