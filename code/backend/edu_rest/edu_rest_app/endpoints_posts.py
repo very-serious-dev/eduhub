@@ -101,6 +101,8 @@ def create_assignment_submit(request, assignmentId):
         if UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() == 0:
             # Student doesn't belong to assignment's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
+        # TODO: Don't allow submits beyond due date
+        # (Already disallowed client-side)
         if AssignmentSubmit.objects.filter(author=request.session.user, assignment=assignment).count() > 0:
             # Trying to submit an already submitted task
             return JsonResponse({"error": "No puedes entregar una tarea dos veces"}, status=409)
