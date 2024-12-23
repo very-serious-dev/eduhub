@@ -6,9 +6,14 @@ const sizeToHumanReadable = (size) => { // https://stackoverflow.com/a/63032680
     return `${(Math.round(+fileSize / 1024) / 1000).toFixed(2)}MB`
 }
 
+const beautifullyDisplayDateHour = (date) => {
+    const dateObject = new Date(date);
+    return `${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)}`;
+}
+
 const footNoteForDateAndAuthor = (date, author) => {
     const dateObject = new Date(date);
-    return `${author}, ${dateObject.toLocaleDateString()} (${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)})`
+    return `${author}, ${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(date)})`
 }
 
 const beautifullyDisplayDate = (date) => {
@@ -41,14 +46,16 @@ const beautifullyDisplayDate = (date) => {
         }
     }
 
-    return `${getWeekDayLiteral(date.getDay())}, ${date.getDate()} de ${getMonthLiteral(date.getMonth())}`;
+    const dateObject = new Date(date);
+    return `${getWeekDayLiteral(dateObject.getDay())}, ${dateObject.getDate()} de ${getMonthLiteral(dateObject.getMonth())}`;
 }
 
 const formatNullableDueDate = (dueDate) => {
-    return dueDate !== undefined ? beautifullyDisplayDate(new Date(dueDate)) : "Sin definir";
+    return dueDate !== undefined ? beautifullyDisplayDate(dueDate) : "Sin definir";
 }
 
 export { sizeToHumanReadable };
 export { footNoteForDateAndAuthor };
 export { beautifullyDisplayDate };
+export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };

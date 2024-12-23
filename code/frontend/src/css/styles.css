@@ -581,7 +581,7 @@ body {
 
 .assignmentDetailBodyFiles {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
 }
 
@@ -614,6 +614,74 @@ body {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }
+
+.assignmentCell {
+  padding: 4px;
+  margin-top: 4px;
+}
+
+.assignmentCell:hover {
+  cursor: pointer;
+  background-color: var(--color-tertiary);
+}
+
+.assignmentCellUsername {
+  font-size: 0.7em;
+}
+
+.assignmentCellStatus {
+  display: inline-block;
+  font-size: 0.7em;
+  border-radius: 999px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+.assignmentOk {
+  background-color: var(--color-quaternary);
+}
+
+.assignmentKo {
+  background-color: var(--color-delete);
+}
+
+.assignmentSubmitDialogAuthorFullName {
+  display: inline-block;
+  margin-top: 12px;
+}
+
+.assignmentSubmitDialogAuthorUsername {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.875em;
+}
+
+.assignmentSubmitDialogDate {
+  margin-top: 2px;
+}
+
+.assignmentSubmitDialogFilesTitle {
+  margin-top: 8px;
+}
+
+.assignmentSubmitDialogCommentTitle {
+  margin-top: 8px;
+}
+
+.assignmentSubmitDialogSectionContent {
+  margin-left: 12px;
+  margin-top: 4px;
+  margin-right: 8px;
+  font-size: 0.875em;
+}
+
+.assignmentSubmitDialogFiles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 
 /**
  * Admin page

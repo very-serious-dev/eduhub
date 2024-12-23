@@ -84,16 +84,12 @@ def assignment_detail(request, assignmentId):
             canView = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
         if canView == False:
             return JsonResponse({"error": "No tienes permisos para ver esta tarea"}, status=403)
-        isTeacher = request.session.user.role in [USER_TEACHER, USER_TEACHER_LEADER, USER_TEACHER_SYSADMIN]
-        return JsonResponse(assignment_detail_to_json(assignment, isTeacher)) 
+        return JsonResponse(assignment_detail_to_json(assignment, request.session.user)) 
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def assignment_submits(request, assignmentId):
-    if request.method == "GET":
-        pass
-        # TODO
-    elif request.method == "POST":
+def create_assignment_submit(request, assignmentId):
+    if request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
@@ -134,8 +130,6 @@ def assignment_submits(request, assignmentId):
                 submit_document.document = document
                 submit_document.submit = new_submit
                 submit_document.save()
-        return JsonResponse({"success": True}, status=201) 
-
-        return JsonResponse(assignment_detail_to_json(assignment, isTeacher)) 
+        return JsonResponse({"success": True}, status=201)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
