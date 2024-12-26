@@ -163,118 +163,53 @@ body {
  * Class detail page
  */
 
-.classDetailBackground {
-  background-color: var(--color-background);
-  min-height: 100vh;
-}
-
 .classDetailHeader {
-  position: fixed;
-  z-index: 1;
-  transition: var(--class-header-animation-duration);
-}
-
-.cdhCollapsed {
   width: 100%;
-  top: 0;
-  left: 0;
-  height: var(--class-header-collapsed-height);
-}
-
-.cdhExpanded {
-  width: calc(100% - 16px);
-  top: 8px;
-  left: 8px;
-  background-color: #2f9789;
-  height: var(--class-header-expanded-height);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-}
-
-.cdhExpanded > img {
-  border-radius: 4px;
+  position: fixed;
+  top: 0;
+  z-index: 1;
 }
 
 .classDetailHeaderImage {
   position: absolute;
   top: 0px;
+  opacity: 0.9;
   height: 100%;
   width: 100%;
   object-fit: cover; /* Crop when scaling */
   object-position: left; /* Crop when scaling */
-  transition: var(--class-header-animation-duration);
-}
-
-.cdhImgCollapsed {
-  opacity: 0.1;
-}
-
-.cdhImgExpanded {
-  opacity: 0.7;
 }
 
 .classDetailHeaderTitle {
   position: absolute;
-  left: 15px;
-  color: white;
-  font-weight: bolder;
-  transition: var(--class-header-animation-duration);
-}
-
-.cdhTitleCollapsed {
-  font-size: 1.3em;
-  bottom: calc((var(--class-header-collapsed-height) - 1.3em) / 2);
-}
-
-.cdhTitleExpanded {
   font-size: 2.5em;
-  bottom: 15px;
+  left: 15px;
+  bottom: 8px;
+  color: white;
+  font-weight: bold;
 }
 
-.classDetailHeaderCloseIcon {
-  font-size: 2em;
+.classDetailHeaderTopIcons {
   position: absolute;
   right: 30px;
-  top: calc((var(--class-header-collapsed-height) - 45px) / 2);
-  padding-left: 12px;
-  padding-right: 12px;
-  padding-bottom: 4px;
-  border-radius: 4px;
-  color: white;
+  top: 8px;
 }
 
-.classDetailHeaderCloseIcon:hover {
-  cursor: pointer;
-  background-color: var(--color-tertiary);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.classDetailHeaderEditIcon {
-  position: absolute;
-  right: 90px;
-  top: calc((var(--class-header-collapsed-height) - 30px) / 2);
+.classDetailHeaderIcon {
+  display: inline-block;
   font-size: 1.5em;
-  color: white;
   padding-left: 12px;
   padding-right: 12px;
-  padding-bottom: 4px;
-  border-radius: 4px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  border-radius: 3px;
 }
 
-.classDetailHeaderEditIcon:hover {
+.classDetailHeaderIcon:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
-.classDetailBodyOuterContainerShrunk {
-  margin-top: calc(var(--class-header-expanded-height) + 8px);
-  transition: var(--class-header-animation-duration);
-}
-
-.classDetailBodyOuterContainerExpanded {
-  margin-top: var(--class-header-collapsed-height);
-  transition: var(--class-header-animation-duration);
 }
 
 .classDetailBodyContainer {

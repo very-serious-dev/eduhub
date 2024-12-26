@@ -22,7 +22,12 @@ const AssignmentBody = (props) => {
     }
 
     return <div>
-        <div className="classDetailHeaderCloseIcon" onClick={() => { navigate(-1); }}>✖</div>
+        <div className="classDetailHeaderTopIcons">
+            {/* TODO: EDIT ASSIGNMENT 
+                props.classData.should_show_edit_button === true &&
+                    <div className="classDetailHeaderIcon" onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>*/}
+            <div className="classDetailHeaderIcon" onClick={() => { navigate(-1); }}>✖️</div>
+        </div>
         <div className="assignmentDetailTitleHeader">
             <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
             <div className="assignmentDetailDueDate">Fecha de entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>

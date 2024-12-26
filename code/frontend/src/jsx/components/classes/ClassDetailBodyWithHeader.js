@@ -5,18 +5,16 @@ import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 
 const ClassDetailBodyWithHeader = (props) => {
-    const [isHeaderCollapsed, setHeaderCollapsed] = useState(false);
+    const EXPANDED_HEADER_HEIGHT = 200;
+    const COLLAPSED_HEADER_HEIGHT = 60;
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
+    const [amountScrolled, setAmountScrolled] = useState(0);
     const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
         const handleScroll = (e) => {
-            // FIX-ME: Find better and smoother collapsing behaviour
-            // This works wrong if there are no entries and you scroll down
-            // with right pane populated (several units [temas])
-            setHeaderCollapsed(document.body.scrollTop > 30 ||
-                document.documentElement.scrollTop > 30);
+            setAmountScrolled(e.target.scrollingElement.scrollTop);
         };
         window.addEventListener('scroll', handleScroll);
         return () => {
@@ -26,38 +24,43 @@ const ClassDetailBodyWithHeader = (props) => {
 
     const onClassEdited = (errorMessage) => {
         if (errorMessage === undefined) {
-            setFeedback({type: "success", message: "Clase modificada con éxito"});
+            setFeedback({ type: "success", message: "Clase modificada con éxito" });
             props.onShouldRefresh();
         } else {
-            setFeedback({type: "error", message: errorMessage});
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
 
     const onClassDeleted = (errorMessage) => {
         if (errorMessage === undefined) {
-            setFeedback({type: "success", message: "Clase eliminada con éxito"});
+            setFeedback({ type: "success", message: "Clase eliminada con éxito" });
             navigate("/");
         } else {
-            setFeedback({type: "error", message: errorMessage});
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
-    
+
+    const headerHeight = () => {
+        return Math.min(EXPANDED_HEADER_HEIGHT, Math.max(EXPANDED_HEADER_HEIGHT - amountScrolled, COLLAPSED_HEADER_HEIGHT));
+    }
+
     return <>
         <EditClassDialog show={showEditClassPopup}
-                onDismiss={() => { setShowEditClassPopup(false); }}
-                onClassEdited={onClassEdited}
-                onClassDeleted={onClassDeleted}
-                classId={props.classData.id} />
-        <div className={`classDetailHeader ${isHeaderCollapsed ? "cdhCollapsed" : "cdhExpanded"}`}
-            style={isHeaderCollapsed ? { backgroundColor: props.classData.color }: {}}>
-            <img className={`classDetailHeaderImage ${isHeaderCollapsed ? "cdhImgCollapsed" : "cdhImgExpanded"}`} src="/header.jpg" />
-            <div className={`classDetailHeaderTitle ${isHeaderCollapsed ? "cdhTitleCollapsed" : "cdhTitleExpanded"}`}>{props.classData.name}</div>
-            <div className="classDetailHeaderCloseIcon" onClick={() => { navigate(-1);}}>✖</div>
-            { props.classData.should_show_edit_button === true && 
-              <div className="classDetailHeaderEditIcon" onClick={() => { setShowEditClassPopup(true); }}>Editar</div> }
+            onDismiss={() => { setShowEditClassPopup(false); }}
+            onClassEdited={onClassEdited}
+            onClassDeleted={onClassDeleted}
+            classId={props.classData.id} />
+        <div className="classDetailHeader" style={{ height: headerHeight() }}>
+            <img className="classDetailHeaderImage" src="/header.jpg" />
+            <div className="classDetailHeaderTitle">{props.classData.name}</div>
+            <div className="classDetailHeaderTopIcons">
+                {props.classData.should_show_edit_button === true &&
+                    <div className="classDetailHeaderIcon" onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
+                <div className="classDetailHeaderIcon" onClick={() => { navigate(-1); }}>✖️</div>
+            </div>
         </div>
-        <div className={isHeaderCollapsed ? "classDetailBodyOuterContainerExpanded" : "classDetailBodyOuterContainerShrunk"}>
-            <ClassDetailBody classData={props.classData} onShouldRefresh={props.onShouldRefresh}/>
+        <div style={{ marginTop: EXPANDED_HEADER_HEIGHT }}>
+            <ClassDetailBody classData={props.classData} onShouldRefresh={props.onShouldRefresh} />
         </div>
     </>
 }
