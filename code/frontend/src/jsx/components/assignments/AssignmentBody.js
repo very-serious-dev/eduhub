@@ -30,7 +30,7 @@ const AssignmentBody = (props) => {
         </div>
         <div className="assignmentDetailTitleHeader">
             <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
-            <div className="assignmentDetailDueDate">Fecha de entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
+            <div className="assignmentDetailDueDate">Se entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
             <div className="classDetailSectionUnderline" />
         </div>
         <div className="assignmentDetailBodyContainer">
