@@ -1,6 +1,6 @@
 const ClassDetailUnitItem = (props) => {
     const onClick = () => {
-        alert("To-Do")
+        props.onFilterByUnit(props.unit.name)
     }
 
     const onEdit = (event) => {
@@ -13,9 +13,7 @@ const ClassDetailUnitItem = (props) => {
                 onClick={onClick}>{props.unit.name}
                 { props.editable === true &&
                     <div className="classDetailSectionSubitemEditBtn"
-                        onClick={onEdit}>
-                        Editar
-                    </div> }
+                        onClick={onEdit}>⚙️</div> }
             </div>   
 }
 

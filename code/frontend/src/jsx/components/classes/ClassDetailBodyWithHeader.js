@@ -71,7 +71,10 @@ const ClassDetailBodyWithHeader = (props) => {
             </div>
         </div>
         <div style={{ marginTop: EXPANDED_HEADER_HEIGHT }}>
-            <ClassDetailBody classData={props.classData} searchedText={searchedText} onShouldRefresh={props.onShouldRefresh} />
+            <ClassDetailBody classData={props.classData}
+                searchedText={searchedText}
+                onFilterPostsByUnit={(unitName => { setSearchedText(unitName); })}
+                onShouldRefresh={props.onShouldRefresh} />
         </div>
     </>
 }

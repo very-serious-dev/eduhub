@@ -422,19 +422,20 @@ body {
 
 .classDetailSectionSubitemEditBtn {
   font-weight: bold;
-  height: 80%;
+  height: 90%;
   position: absolute;
   right: 5px;
   top: 0px;
-  margin-top: 5px;
   padding-top: 12px;
-  padding-left: 5px;
-  padding-right: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
   border-radius: 4px;
+  margin-top: 3px;
 }
 
 .classDetailSectionSubitemEditBtn:hover {
   background-color: var(--color-secondary);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .classDetailSectionAssignmentDueDateCapsule {

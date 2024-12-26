@@ -8,6 +8,7 @@ const ClassDetailDrawerSectionUnits = (props) => {
             {props.classData.units.length > 0 ?
                 props.classData.units.map(u => {
                     return <ClassDetailUnitItem unit={u}
+                        onFilterByUnit={props.onFilterPostsByUnit}
                         editable={props.classData.should_show_edit_button}
                         onEdit={props.onClickEditUnit} />
                 })
