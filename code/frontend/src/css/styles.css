@@ -23,6 +23,13 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* https://stackoverflow.com/a/6466399 */
+/* When filtering posts in class detail, the content
+ * will sometimes jump if scroll bar appears and
+ * disappears. As a workaround, we're always displaying
+ * the scroll bar */
+html { overflow-y: scroll; }
+
 body {
   background-color: var(--color-background);
 }

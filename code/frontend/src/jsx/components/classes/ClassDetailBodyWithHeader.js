@@ -9,6 +9,7 @@ const ClassDetailBodyWithHeader = (props) => {
     const COLLAPSED_HEADER_HEIGHT = 60;
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
     const [amountScrolled, setAmountScrolled] = useState(0);
+    const [searchedText, setSearchedText] = useState("");
     const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
 
@@ -54,8 +55,12 @@ const ClassDetailBodyWithHeader = (props) => {
             <img className="classDetailHeaderImage" src="/header.jpg" />
             <div className="classDetailHeaderTitleSearchContainer">
                 <div className="classDetailHeaderTitle">{props.classData.name}</div>
-                <form className="classDetailHeaderSearchForm" onSubmit={(e) => {e.preventDefault();}}>
-                    <input type="text" placeholder="🔎 Buscar..." required />
+                <form className="classDetailHeaderSearchForm" onSubmit={(e) => { e.preventDefault(); }}>
+                    <input type="text"
+                        placeholder="🔎 Buscar..."
+                        value={searchedText}
+                        onChange={e => { setSearchedText(e.target.value); }}
+                        required />
                     <div className="underline"></div>
                 </form>
             </div>
@@ -66,7 +71,7 @@ const ClassDetailBodyWithHeader = (props) => {
             </div>
         </div>
         <div style={{ marginTop: EXPANDED_HEADER_HEIGHT }}>
-            <ClassDetailBody classData={props.classData} onShouldRefresh={props.onShouldRefresh} />
+            <ClassDetailBody classData={props.classData} searchedText={searchedText} onShouldRefresh={props.onShouldRefresh} />
         </div>
     </>
 }

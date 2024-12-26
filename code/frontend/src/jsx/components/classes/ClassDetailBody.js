@@ -48,7 +48,7 @@ const ClassDetailBody = (props) => {
         onDismiss={() => { setPopupShown("NONE") }} />
     <div className="classDetailBodyContainer">
         <div className="classDetailBodyColumn1">
-            <PostsBoard classData={props.classData} onPostAdded={onOperationFinished}/>
+            <PostsBoard classData={props.classData} searchedText={props.searchedText} onPostAdded={onOperationFinished}/>
         </div>
         <div className="classDetailBodyColumn2">
             <ClassDetailDrawerSectionAssignments classData={props.classData} />
