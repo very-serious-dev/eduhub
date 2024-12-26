@@ -1,4 +1,5 @@
 :root {
+  --color-background: #f5f5fa;
   --color-primary: #f2f2fc;
   --color-secondary: #bdece6;
   --color-tertiary: #bccef8;
@@ -8,11 +9,8 @@
   --color-delete: #f65050;
   --color-destructive: #f52020;
   --color-success: #7dca7d;
-  --color-background: #f5f5fa;
   --main-header-height: 60px;
-  --class-header-animation-duration: 0.4s;
-  --class-header-collapsed-height: 60px;
-  --class-header-expanded-height: 200px;
+  --class-header-search-width: 300px;
 }
 
 * {
@@ -181,13 +179,47 @@ body {
   object-position: left; /* Crop when scaling */
 }
 
-.classDetailHeaderTitle {
+.classDetailHeaderTitleSearchContainer {
   position: absolute;
-  font-size: 2.5em;
   left: 15px;
   bottom: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.classDetailHeaderTitle {
+  font-size: 2em;
   color: white;
   font-weight: bold;
+}
+
+.classDetailHeaderSearchForm {
+  margin-left: 24px;
+  width: var(--class-header-search-width);
+}
+
+.classDetailHeaderSearchForm input {
+  font-size: 1.4em;
+  outline: none;
+  border: none;
+  opacity: 0.5;
+  border-radius: 3px;
+  width: 100%;
+}
+
+.classDetailHeaderSearchForm .underline {
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: var(--class-header-search-width); /* 100% won't work (it will fill the entire flex container, including title) even if I put the whole search form inside a div with explicit width (?)*/
+  opacity: 1;
+}
+
+/* expandable underline effect -> see Form-related section */
+
+.classDetailHeaderSearchForm input:focus,
+.classDetailHeaderSearchForm input:valid {
+  opacity: 0.8;
 }
 
 .classDetailHeaderTopIcons {
@@ -901,14 +933,14 @@ body {
   transition: all 0.3s ease;
 }
 
-.formInput .underline {
+.underline {
   position: absolute;
   bottom: 0;
   height: 2px;
   width: 100%;
 }
 
-.formInput .underline:before {
+.underline:before {
   position: absolute;
   content: "";
   height: 2px;
@@ -919,8 +951,8 @@ body {
   transition: transform 0.3s ease;
 }
 
-.formInput input:focus ~ .underline:before,
-.formInput input:valid ~ .underline:before {
+input:focus ~ .underline:before,
+input:valid ~ .underline:before {
   transform: scale(1);
 }
 

@@ -52,7 +52,13 @@ const ClassDetailBodyWithHeader = (props) => {
             classId={props.classData.id} />
         <div className="classDetailHeader" style={{ height: headerHeight() }}>
             <img className="classDetailHeaderImage" src="/header.jpg" />
-            <div className="classDetailHeaderTitle">{props.classData.name}</div>
+            <div className="classDetailHeaderTitleSearchContainer">
+                <div className="classDetailHeaderTitle">{props.classData.name}</div>
+                <form className="classDetailHeaderSearchForm" onSubmit={(e) => {e.preventDefault();}}>
+                    <input type="text" placeholder="🔎 Buscar..." required />
+                    <div className="underline"></div>
+                </form>
+            </div>
             <div className="classDetailHeaderTopIcons">
                 {props.classData.should_show_edit_button === true &&
                     <div className="classDetailHeaderIcon" onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
