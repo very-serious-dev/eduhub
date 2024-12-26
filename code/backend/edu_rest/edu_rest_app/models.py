@@ -7,6 +7,8 @@ USER_TEACHER_LEADER = 3
 
 POST_PUBLICATION = 0
 POST_ASSIGNMENT = 1
+POST_AMEND_EDIT = 2
+POST_AMEND_DELETE = 3
 
 ##
 # USERS
@@ -52,7 +54,7 @@ class UserClass(models.Model):
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
 
 ##
-# CLASS POSTS, TASKS
+# CLASS POSTS, ASSIGNMENTS
 #
 
 class Unit(models.Model):
@@ -61,13 +63,15 @@ class Unit(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=100, null=True)
-    content = models.CharField(max_length=2000)
-    kind = models.IntegerField() # Must be POST_PUBLICATION, POST_TASK
+    content = models.CharField(max_length=2000, null=True)
+    kind = models.IntegerField() # Must be POST_PUBLICATION, POST_ASSIGNMENT,...
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
-    publication_date = models.DateTimeField(auto_now=True)
     assignment_due_date = models.DateField(null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    publication_date = models.DateTimeField(auto_now=True)
+    amend_original_post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
+    amend_changes_documents = models.BooleanField(default=False)
 
 class Document(models.Model):
     identifier = models.CharField(max_length=20, unique=True)
