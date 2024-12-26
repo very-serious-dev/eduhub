@@ -30,7 +30,7 @@ def create_post(request, classId):
         json_files = body_json.get("files")
         if json_title is None or json_content is None or json_post_type is None:
             return JsonResponse({"error": "Falta title, content o post_type en el cuerpo de la petición"}, status=400)
-        if json_post_type not in ["publication", "task"]:
+        if json_post_type not in ["publication", "assignment"]:
             return JsonResponse({"error": "post_type inválido"}, status=400)
         if json_unit_id is None:
             unit = None
