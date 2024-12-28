@@ -11,6 +11,3 @@ EduPlatform es un aula virtual en desarrollo.
 * Publicación de tareas/temario en clase
 * _Wishlist_: [WCAG](https://www.w3.org/TR/WCAG21/)
 
-**Autor**:
-
-* Rubén Montero Vázquez
