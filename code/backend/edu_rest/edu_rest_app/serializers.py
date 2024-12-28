@@ -1,10 +1,15 @@
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMENDMENT_EDIT, POST_AMENDMENT_DELETE
 from .models import Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
 JSON_SYSADMIN = "sysadmin"
 JSON_LEADER = "school_leader"
+
+JSON_PUBLICATION = "publication"
+JSON_ASSIGNMENT = "assignment"
+JSON_AMEND_EDIT = "amend_edit"
+JSON_AMEND_DELETE = "amend_delete"
 
 def user_to_json(user):
     return {
@@ -55,26 +60,24 @@ def class_detail_to_json(classroom, isClassEditableByUser):
     posts = []
     # REFACTOR: serializers.py shouldn't contain ORM code
     for p in Post.objects.filter(classroom=classroom).order_by("-publication_date"):
+        response_post_documents = []
+        for pd in PostDocument.objects.filter(post=p):
+            response_post_documents.append(document_to_json(pd.document))
         response_post = {
             "id": p.id,
             "title": p.title,
             "content": p.content,
             "author": p.author.username,
-            "publication_date": p.publication_date
+            "publication_date": p.publication_date,
+            "files": response_post_documents,
+            "kind": post_kind(p)
         }
         if p.unit is not None:
-            response_post["unit_name"] = p.unit.name
-        if p.kind == POST_PUBLICATION:
-            response_post["kind"] = "publication"
-            # Only hit database to retrieve associated files for regular posts,
-            # because the other kind (=POST_ASSIGNMENT) are opened in another tab
-            response_post_documents = []
-            for pd in PostDocument.objects.filter(post=p):
-                response_post_documents.append(document_to_json(pd.document))
-            response_post["files"] = response_post_documents
-        elif p.kind == POST_ASSIGNMENT:
-            response_post["kind"] = "assignment"
+            response_post["unit_id"] = p.unit.id
+        if p.kind == POST_ASSIGNMENT:
             response_post["assignment_due_date"] = p.assignment_due_date
+        if p.amendment_original_post is not None:
+            response_post["amended_post_id"] = p.amendment_original_post.id
         posts.append(response_post)
     return {
         "id": classroom.id,
@@ -169,3 +172,13 @@ def roles_array(user):
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles
+
+def post_kind(p):
+    if p.kind == POST_PUBLICATION:
+        return JSON_PUBLICATION
+    if p.kind == POST_ASSIGNMENT:
+        return JSON_ASSIGNMENT
+    if p.kind == POST_AMENDMENT_EDIT:
+        return JSON_AMEND_EDIT
+    if p.kind == POST_AMENDMENT_DELETE:
+        return JSON_AMEND_DELETE

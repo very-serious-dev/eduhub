@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { formatNullableDueDate } from "../../../util/Formatter";
+import { formatNullableDueDate, formatPseudoMarkdown } from "../../../util/Formatter";
 import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent";
 import PostsBoardEntryFile from "../posts/PostsBoardEntryFile";
 import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent";
@@ -40,7 +40,7 @@ const AssignmentBody = (props) => {
                 </div>
             </div>
             <div className="assignmentDetailBodyColumn2">
-                <div className="assignmentDetailContent">{props.assignmentData.content}</div>
+                <div className="assignmentDetailContent">{formatPseudoMarkdown(props.assignmentData.content)}</div>
                 {props.isLoading ? <LoadingHUD /> :
                     <>
                         <div className="assignmentDetailBodyFilesTitle">📎 Documentos adjuntos</div>

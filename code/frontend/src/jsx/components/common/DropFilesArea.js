@@ -14,15 +14,15 @@ const DropFilesArea = (props) => {
         // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/File_drag_and_drop#process_the_drop
         const files = event.dataTransfer.items ? [...event.dataTransfer.items].filter(i => i.kind === "file").map(i => i.getAsFile()) : [...event.dataTransfer.files];
         if (files.length === 0) { return; }
-        if (props.filesReadyToUpload.some(f => f.name === files[0].name)) {
+        if (props.attachedFilesReady.some(f => f.name === files[0].name)) {
             alert(`Ya has adjuntado un fichero de nombre ${files[0].name}`);
             return;
         }
-        if (props.filesReadyToUpload.length >= MAX_ATTACHMENTS) {
+        if (props.attachedFilesReady.length >= MAX_ATTACHMENTS) {
             alert(`No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`);
             return;
         }
-        if ((files[0] + props.filesReadyToUpload.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0)) >= MAX_SIZE.nBytes) {
+        if ((files[0] + props.attachedFilesReady.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0)) >= MAX_SIZE.nBytes) {
             alert(`No se puede exceder ${MAX_SIZE.humanReadable} entre todos los ficheros`);
             return;
         }
@@ -40,19 +40,19 @@ const DropFilesArea = (props) => {
             if (files.length > 0) {
                 // There are more files!
                 if (processedFiles.some(f => f.name === files[0].name)) {
-                    props.setFilesReadyToUpload([...props.filesReadyToUpload, ...processedFiles]);
+                    props.setAttachedFilesReady([...props.attachedFilesReady, ...processedFiles]);
                     setReadingFiles(false);
                     alert(`Ya has adjuntado un fichero de nombre ${files[0].name}`);
-                } else if ((props.filesReadyToUpload.length + processedFiles.length) >= MAX_ATTACHMENTS) {
-                    props.setFilesReadyToUpload([...props.filesReadyToUpload, ...processedFiles]);
+                } else if ((props.attachedFilesReady.length + processedFiles.length) >= MAX_ATTACHMENTS) {
+                    props.setAttachedFilesReady([...props.attachedFilesReady, ...processedFiles]);
                     setReadingFiles(false);
                     alert(`No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`);
                 } else {
-                    const readyFilesTotalSize = props.filesReadyToUpload.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0);
+                    const readyFilesTotalSize = props.attachedFilesReady.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0);
                     const processedFilesTotalSize = processedFiles.reduce((accumulated, currentFile) => accumulated + currentFile.size, 0);
                     const toBeProcessedFileSize = files[0].size;
                     if ((readyFilesTotalSize + processedFilesTotalSize + toBeProcessedFileSize) > MAX_SIZE.nBytes) {
-                        props.setFilesReadyToUpload([...props.filesReadyToUpload, ...processedFiles]);
+                        props.setAttachedFilesReady([...props.attachedFilesReady, ...processedFiles]);
                         setReadingFiles(false);
                         alert(`No se puede exceder ${MAX_SIZE.humanReadable} entre todos los ficheros`);
                     } else {
@@ -62,7 +62,7 @@ const DropFilesArea = (props) => {
                 }
             } else {
                 // No more files, we're done
-                props.setFilesReadyToUpload([...props.filesReadyToUpload, ...processedFiles]);
+                props.setAttachedFilesReady([...props.attachedFilesReady, ...processedFiles]);
                 setReadingFiles(false);
             }
         })
@@ -74,12 +74,12 @@ const DropFilesArea = (props) => {
     }
 
     const onRemoveReadyFile = (fileName) => {
-        props.setFilesReadyToUpload(props.filesReadyToUpload.filter(f => f.name !== fileName));
+        props.setAttachedFilesReady(props.attachedFilesReady.filter(f => f.name !== fileName));
     }
 
     return <div className="formFiles">
-        <div className="formFilesUploaded">
-            {props.filesReadyToUpload.map(f => <DropFilesAreaItem file={f} onDelete={onRemoveReadyFile}/>)}
+        <div className="formFilesAttached">
+            {props.attachedFilesReady.map(f => <DropFilesAreaItem file={f} onDelete={onRemoveReadyFile}/>)}
         </div>
         <div className={`formFilesDropableArea${dropAreaActive ? " formFilesDropableAreaActive" : ""}`}
             onDragOver={e => { e.preventDefault() }}

@@ -280,20 +280,6 @@ body {
   padding-bottom: 4px;
 }
 
-.classDetailEntryUnit {
-  font-size: 0.7em;
-  font-weight: bold;
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  padding-top: 2px;
-  padding-bottom: 2px;
-  padding-left: 6px;
-  padding-right: 6px;
-  border-radius: 999px;
-  background-color: var(--color-tertiary);
-}
-
 .classDetailEntryFiles {
   display: flex;
   gap: 8px;
@@ -364,6 +350,37 @@ body {
   font-size: 1em;
   font-weight: bold;
   text-align: center;
+}
+
+.classDetailEntryTopRightContainer {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+.classDetailEntryTopRightUnit {
+  font-size: 0.7em;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 999px;
+  background-color: var(--color-tertiary);
+}
+
+.classDetailEntryTopRightEdit {
+  padding: 3px;
+}
+
+.classDetailEntryTopRightEdit:hover {
+  cursor: pointer;
+  background-color: var(--color-secondary);
+  
 }
 
 .classDetailBodyColumn2 {
@@ -509,7 +526,7 @@ body {
   background-color: var(--color-tertiary);
 }
 
-.createPostFormContainer {
+.createOrEditPostFormContainer {
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -1054,7 +1071,7 @@ input:valid ~ .underline:before {
   width: 100%;
 }
 
-.formFilesUploaded {
+.formFilesAttached {
   display: flex;
   gap: 3px;
   flex-wrap: wrap;

@@ -4,20 +4,20 @@ import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
 
-const CreatePostTabForm = (props) => {
+const CreateOrEditPostForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];
     const UNIT_UNASSIGNED = -1;
-    const [formTitle, setFormTitle] = useState("");
-    const [formContent, setFormContent] = useState("");
-    const [formUnitId, setFormUnitId] = useState(UNIT_UNASSIGNED);
-    const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(TODAY);
-    const [filesReadyToUpload, setFilesReadyToUpload] = useState([]);
+    const [formTitle, setFormTitle] = useState(props.postBeingEdited ? props.postBeingEdited.title : "");
+    const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
+    const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
+    const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(props.postBeingEdited ? props.postBeingEdited.assignment_due_date : TODAY);
+    const [attachedFilesReady, setAttachedFilesReady] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
 
-    const onSubmitCreatePost = (event) => {
+    const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
         
-        if (filesReadyToUpload.length === 0) {
+        if (attachedFilesReady.length === 0) {
             sendEduPostRequest();
         } else {
             uploadFilesThenSendEduPostRequest();
@@ -26,60 +26,75 @@ const CreatePostTabForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        DocuAPIFetch("POST", "/api/v1/documents", { files: filesReadyToUpload })
+        // `attachedFilesReady` are those in the drop area. Bear in mind that:
+        // - If we are creating a new post, all of them must be uploaded to DocuREST who will baptise them with identifiers
+        // - If we are editing a post maybe none, some or all have already been uploaded (this is, they
+        //   come from props.postBeingEdited.files) in which case they already have an identifier
+        //   We don't need to reupload them to DocuREST! We just need to put them in the amendment json body 
+        //   with their identifiers; so that EduREST knows that they aren't being modified.
+        //   The files that are new need to be uploaded previously to DocuREST, of course
+        const newFilesThatMustBeUploaded      = attachedFilesReady.filter(f => f.identifier === undefined);
+        const filesThatAlreadyExistInDocuREST = attachedFilesReady.filter(f => f.identifier !== undefined);
+
+        DocuAPIFetch("POST", "/api/v1/documents", { files: newFilesThatMustBeUploaded })
         .then(json => {
             if (json.success === true) {
-                sendEduPostRequest(json.uploaded_files);
+                sendEduPostRequest([...json.uploaded_files, ...filesThatAlreadyExistInDocuREST]);
             } else {
                 setLoading(false);
-                props.onPostAdded("Se ha producido un error");
+                props.onFinished("Se ha producido un error");
                 props.onDismiss();
             }
         })
         .catch(error => {
             setLoading(false);
-            props.onPostAdded(error.error ?? "Se ha producido un error");
+            props.onFinished(error.error ?? "Se ha producido un error");
             props.onDismiss();
         })
     }
 
-    const sendEduPostRequest = (uploadedFiles = []) => {
+    const sendEduPostRequest = (attachedFiles = []) => {
         setLoading(true);
         let body = {
             title: formTitle,
             content: formContent,
-            post_type: props.isAssignment ? "assignment" : "publication"
+            post_type: props.postType
         }
         if (formUnitId !== UNIT_UNASSIGNED) {
             body["unit_id"] = formUnitId;
         }
-        if (props.isAssignment === true && formAssignmentDueDate !== "") {
+        if (props.showDatePicker && formAssignmentDueDate !== "") {
             body["assignment_due_date"] = formAssignmentDueDate;
         }
-        if (uploadedFiles.length > 0) {
-            body["files"] = uploadedFiles;
+        if (attachedFiles.length > 0) {
+            body["files"] = attachedFiles;
         }
-        EduAPIFetch("POST", `/api/v1/classes/${props.classId}/posts`, body)
-        .then(json => {
+        let url;
+        if (props.postBeingEdited) {
+            url = `/api/v1/posts/${props.postBeingEdited.id}/amendments`;
+        } else {
+            url = `/api/v1/classes/${props.classIdForPostCreation}/posts`;
+        }
+        EduAPIFetch("POST", url, body).then(json => {
             setLoading(false);
             if (json.success === true) {
-                props.onPostAdded();
+                props.onFinished();
                 setFormTitle("");
                 setFormContent("");
             } else {
-                props.onPostAdded("Se ha producido un error");
+                props.onFinished("Se ha producido un error");
             }
             props.onDismiss();
         })
         .catch(error => {
             setLoading(false);
-            props.onPostAdded(error.error ?? "Se ha producido un error");
+            props.onFinished(error.error ?? "Se ha producido un error");
             props.onDismiss();
         })
     }
 
-    return <div className="createPostFormContainer">
-        <form onSubmit={onSubmitCreatePost}>
+    return <div className="createOrEditPostFormContainer">
+        <form onSubmit={onSubmitCreateOrEditPost}>
             <div className="postFormFirstRowInputsContainer">
                 <div className="formInputSelect">
                     <select name="unit"
@@ -91,7 +106,7 @@ const CreatePostTabForm = (props) => {
                         })}
                     </select>
                 </div>
-                { props.isAssignment === true && 
+                { props.showDatePicker && 
                 <div className="formInput formInputDivCreatePostTaskDate">
                     <input className="formInputCreatePostTaskDate"
                         type="date"
@@ -102,7 +117,7 @@ const CreatePostTabForm = (props) => {
                 <div className="formInput"> 
                     <input className="formInputCreatePostTitle" type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
-                        onFocus={e => { e.target.placeholder = props.isAssignment ? "Trabajo sobre la máquina de vapor" : "Filósofos del empirismo"; }}
+                        onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
                     <div className="underline"></div>
                     <label htmlFor="">Título</label>
@@ -111,17 +126,16 @@ const CreatePostTabForm = (props) => {
             <div className="formTextArea formTextAreaBig">
                 <textarea value={formContent}
                     onChange={e => { setFormContent(e.target.value) }}
-                    onFocus={e => { e.target.placeholder = props.isAssignment ? "Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática": "Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."; }}
+                    onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
                     onBlur={e => { e.target.placeholder = ""; }} required />
             </div>
-            <DropFilesArea filesReadyToUpload={filesReadyToUpload} setFilesReadyToUpload={setFilesReadyToUpload} />
+            <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formSubmit">
-                <input type="submit" value={props.isAssignment ? "Crear tarea" : "Publicar"} />
+                <input type="submit" value={props.submitText } />
             </div>
-            
             {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
         </form>
     </div>
 }
 
-export default CreatePostTabForm;
+export default CreateOrEditPostForm;

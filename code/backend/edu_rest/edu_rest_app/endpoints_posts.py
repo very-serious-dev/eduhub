@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMEND_DELETE, POST_AMEND_EDIT
+from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMENDMENT_DELETE, POST_AMENDMENT_EDIT
 from .serializers import assignment_detail_to_json
 
 def create_post(request, classId):
@@ -105,40 +105,46 @@ def amend_post(request, postId):
             except Unit.DoesNotExist:
                 return JsonResponse({"error": "No existe un tema con ese id"}, status=404)
         if json_post_type == "amend_delete":
-            new_amend = Post()
-            new_amend.kind = POST_AMEND_DELETE
-            new_amend.author = request.session.user
-            new_amend.classroom = post.classroom
-            new_amend.amend_original_post = post
-            new_amend.save()
+            new_amendment = Post()
+            new_amendment.kind = POST_AMENDMENT_DELETE
+            new_amendment.author = request.session.user
+            new_amendment.classroom = post.classroom
+            new_amendment.amendment_original_post = post
+            new_amendment.save()
             return JsonResponse({"success": True}, status=201) 
         elif json_post_type == "amend_edit":
-            new_amend = Post()
-            new_amend.kind = POST_AMEND_EDIT
-            new_amend.author = request.session.user
-            new_amend.classroom = post.classroom
-            new_amend.amend_original_post = post
-            new_amend.title = json_title
-            new_amend.content = json_content
-            new_amend.unit = unit
-            new_amend.assignment_due_date = json_assignment_due_date
-            if json_files is None:
-                new_amend.amend_changes_documents = False
-            else:
-                new_amend.amend_changes_documents = True
+            new_amendment = Post()
+            new_amendment.kind = POST_AMENDMENT_EDIT
+            new_amendment.author = request.session.user
+            new_amendment.classroom = post.classroom
+            new_amendment.amendment_original_post = post
+            new_amendment.title = json_title
+            new_amendment.content = json_content
+            new_amendment.unit = unit
+            new_amendment.assignment_due_date = json_assignment_due_date
+            new_amendment.save()
+            if json_files is not None:
+                # NICE-TO-HAVE: Maybe implement a better way of amending
+                # attached documents? Now, if you have
+                #
+                # POST 1           -> Docs A, B, C <-- These aren't used anymore
+                # POST 1 amendment -> Docs A, B        since the amendment establishes
+                #                                      new PostDocument rows that prevail
                 for f in json_files:
-                    document = Document()
-                    document.identifier = f["identifier"]
-                    document.name = f["name"]
-                    document.size = f["size"]
-                    document.mime_type = f["mime_type"]
-                    document.author = request.session.user
-                    document.save()
+                    try:
+                        document = Document.objects.get(identifier=f["identifier"])
+                    except Document.DoesNotExist:
+                        document = Document()
+                        document.identifier = f["identifier"]
+                        document.name = f["name"]
+                        document.size = f["size"]
+                        document.mime_type = f["mime_type"]
+                        document.author = request.session.user
+                        document.save()
                     post_document = PostDocument()
                     post_document.document = document
-                    post_document.post = new_amend
+                    post_document.post = new_amendment
                     post_document.save()
-            new_amend.save()
             return JsonResponse({"success": True}, status=201) 
         else:
             return JsonResponse({"error": "post_type inválido"}, status=400)

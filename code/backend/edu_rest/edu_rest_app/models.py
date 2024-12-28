@@ -7,8 +7,8 @@ USER_TEACHER_LEADER = 3
 
 POST_PUBLICATION = 0
 POST_ASSIGNMENT = 1
-POST_AMEND_EDIT = 2
-POST_AMEND_DELETE = 3
+POST_AMENDMENT_EDIT = 2
+POST_AMENDMENT_DELETE = 3
 
 ##
 # USERS
@@ -70,8 +70,7 @@ class Post(models.Model):
     assignment_due_date = models.DateField(null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     publication_date = models.DateTimeField(auto_now=True)
-    amend_original_post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
-    amend_changes_documents = models.BooleanField(default=False)
+    amendment_original_post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
 
 class Document(models.Model):
     identifier = models.CharField(max_length=20, unique=True)

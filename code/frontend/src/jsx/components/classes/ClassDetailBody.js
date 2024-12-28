@@ -21,7 +21,7 @@ const ClassDetailBody = (props) => {
         }
     }
 
-    const onOperationFinished = (errorMessage) => { // Unit Added Or Edited Or Deleted; Post Created
+    const onOperationFinished = (errorMessage) => { // Unit Added/Edited/Deleted; Post Created/Edited/Deleted
         if (errorMessage === undefined || errorMessage === "") {
             setFeedback({ type: "success", message: "Completado con éxito" });
             props.onShouldRefresh();
@@ -48,7 +48,7 @@ const ClassDetailBody = (props) => {
             onDismiss={() => { setPopupShown("NONE") }} />
         <div className="classDetailBodyContainer">
             <div className="classDetailBodyColumn1">
-                <PostsBoard classData={props.classData} searchedText={props.searchedText} onPostAdded={onOperationFinished} />
+                <PostsBoard classData={props.classData} searchedText={props.searchedText} onPostsChanged={onOperationFinished} />
             </div>
             <div className="classDetailBodyColumn2">
                 <ClassDetailDrawerSectionAssignments classData={props.classData} />

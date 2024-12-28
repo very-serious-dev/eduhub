@@ -11,9 +11,14 @@ const beautifullyDisplayDateHour = (date) => {
     return `${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)}`;
 }
 
-const footNoteForDateAndAuthor = (date, author) => {
-    const dateObject = new Date(date);
-    return `${author}, ${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(date)})`
+const footNoteAuthorDate = (author, originalDate, modificationDate) => {
+    if (modificationDate) {
+        const modificationDateObject = new Date(modificationDate);
+        return `${author}, ${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]` 
+    } else {
+        const dateObject = new Date(originalDate);
+        return `${author}, ${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(originalDate)})`
+    }
 }
 
 const beautifullyDisplayDate = (date) => {
@@ -57,8 +62,15 @@ const formatNullableDueDate = (dueDate) => {
     return beautifullyDisplayDate(dueDate);
 }
 
+const formatPseudoMarkdown = (str) => {
+    // For now, just transform line breaks
+    // Nice-to-have: Bold (**) and lists (- )
+    return str.split('\n').map(subStr => <>{subStr}<br/></>);
+}
+
 export { sizeToHumanReadable };
-export { footNoteForDateAndAuthor };
+export { footNoteAuthorDate };
 export { beautifullyDisplayDate };
 export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };
+export { formatPseudoMarkdown };
