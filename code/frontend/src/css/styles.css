@@ -1213,7 +1213,7 @@ input:valid ~ .underline:before {
   outline: none;
   border: none;
   font-size: 17px;
-  margin-top: 65px;
+  margin-top: 12px;
   background-color: var(--color-delete);
 }
 

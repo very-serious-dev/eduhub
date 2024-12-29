@@ -17,6 +17,7 @@ const CreatePostDialog = (props) => {
                             contentPlaceholder={"Los filósofos empiristas que entran en el examen son:\n\n- John Locke\n- Thomas Hobbes\n- George Berkeley\n- etc."}
                             submitText="Publicar"
                             showDatePicker={false}
+                            showDeleteButton={false}
                             onFinished={props.onFinished}
                             onDismiss={props.onDismiss} />
                     },
@@ -30,6 +31,7 @@ const CreatePostDialog = (props) => {
                             contentPlaceholder={"Se debe subir un PDF sobre el tema de la máquina de vapor, con estos apartados:\n\n1. Año de invención y contexto histórico\n2. Inventor, historia\n3. Funcionamiento de la máquina de vapor\n4. Efecto en la industria y a nivel mundial\n\nHasta 1 punto extra sobre la nota del examen\nSe valorará el formato del documento y la gramática"}
                             submitText="Crear tarea"
                             showDatePicker={true}
+                            showDeleteButton={false}
                             onFinished={props.onFinished}
                             onDismiss={props.onDismiss} />
                     },
