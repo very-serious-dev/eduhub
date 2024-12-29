@@ -74,7 +74,7 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         }
         if p.unit is not None:
             response_post["unit_id"] = p.unit.id
-        if p.kind == POST_ASSIGNMENT:
+        if p.kind == POST_ASSIGNMENT or p.kind == POST_AMENDMENT_EDIT:
             response_post["assignment_due_date"] = p.assignment_due_date
         if p.amendment_original_post is not None:
             response_post["amended_post_id"] = p.amendment_original_post.id
@@ -89,25 +89,26 @@ def class_detail_to_json(classroom, isClassEditableByUser):
         "units": units
     }
 
-def assignment_detail_to_json(assignment, user):
+def assignment_detail_to_json(original_assignment, newest_edit, user):
     response = {
-        "id": assignment.id,
-        "title": assignment.title,
-        "content": assignment.content,
-        "author": assignment.author.username,
-        "publication_date": assignment.publication_date
+        "id": original_assignment.id,
+        "title": original_assignment.title if newest_edit is None else newest_edit.title,
+        "content": original_assignment.content if newest_edit is None else newest_edit.content,
+        "author": original_assignment.author.username,
+        "publication_date": original_assignment.publication_date,
+        "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
+        "kind": post_kind(original_assignment)
     }
     response_documents = []
     # REFACTOR: serializers.py shouldn't contain ORM code
-    for pd in PostDocument.objects.filter(post=assignment):
+    for pd in PostDocument.objects.filter(post=newest_edit or original_assignment):
         response_documents.append(document_to_json(pd.document))
     response["files"] = response_documents
-    response["assignment_due_date"] = assignment.assignment_due_date
     isTeacher = user.role in [USER_TEACHER, USER_TEACHER_LEADER, USER_TEACHER_SYSADMIN]
     response["should_show_teacher_options"] = isTeacher
     if isTeacher:
         submits = []
-        for s in AssignmentSubmit.objects.filter(assignment=assignment):
+        for s in AssignmentSubmit.objects.filter(assignment=original_assignment):
             submit = {
               "author": user_to_json(s.author),
               "submit_date": s.submit_date
@@ -121,12 +122,16 @@ def assignment_detail_to_json(assignment, user):
             submits.append(submit)
         response["submits"] = submits
         assignees = []
-        for uc in UserClass.objects.filter(classroom=assignment.classroom, user__role=USER_STUDENT).order_by("user__surname"):
+        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=USER_STUDENT).order_by("user__surname"):
             assignees.append(user_to_json(uc.user))
         response["assignees"] = assignees
+        units = [] # Needed so that teacher can select a different unit when editing the assignment
+        for u in Unit.objects.filter(classroom=original_assignment.classroom).order_by("name"):
+            units.append({"id": u.id, "name": u.name})
+        response["class_units"] = units
     else:
         try:
-            s = AssignmentSubmit.objects.get(assignment=assignment, author=user)
+            s = AssignmentSubmit.objects.get(assignment=original_assignment, author=user)
             submit = {
               "author": user_to_json(s.author),
               "submit_date": s.submit_date

@@ -41,17 +41,12 @@ const PostsBoard = (props) => {
             postsDictionary[p.id] = p
         });
         sortedPosts.filter(p => p.kind === "amend_edit").forEach(p => {
-            postsDictionary[p.amended_post_id] = {
-                id: p.amended_post_id,
-                title: p.title,
-                content: p.content,
-                author: p.author,
-                publication_date: postsDictionary[p.amended_post_id].publication_date,
-                kind: postsDictionary[p.amended_post_id].kind,
-                files: p.files,
-                unit_id: p.unit_id,
-                modificationDate: p.publication_date
-            }
+            const editedPost = {...p}
+            editedPost["id"] = p.amended_post_id;
+            editedPost["publication_date"] = postsDictionary[p.amended_post_id].publication_date;
+            editedPost["kind"] = postsDictionary[p.amended_post_id].kind;
+            editedPost["modificationDate"] = p.publication_date
+            postsDictionary[p.amended_post_id] = editedPost;
         });
         sortedPosts.filter(p => p.kind === "amend_delete").forEach(p => {
             const deleted_post_id = p.amended_post_id

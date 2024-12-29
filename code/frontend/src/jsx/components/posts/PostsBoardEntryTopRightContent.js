@@ -9,7 +9,6 @@ const PostsBoardEntryTopRightContent = (props) => {
         setShowEditPopup(true);
     }
 
-
     return <>
         <EditPostDialog show={showEditPopup}
             post={props.post}

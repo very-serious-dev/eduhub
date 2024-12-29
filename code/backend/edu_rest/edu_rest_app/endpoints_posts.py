@@ -1,5 +1,6 @@
 import json
 from django.http import JsonResponse
+from django.db.models import Q
 from .models import Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
 from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMENDMENT_DELETE, POST_AMENDMENT_EDIT
 from .serializers import assignment_detail_to_json
@@ -159,6 +160,11 @@ def assignment_detail(request, assignmentId):
             assignment = Post.objects.get(id=assignmentId, kind=POST_ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
+        newest_amendment = None
+        if Post.objects.filter(amendment_original_post=assignment).count() > 0:
+            newest_amendment = Post.objects.filter(amendment_original_post=assignment).order_by("-id")[0]
+            if newest_amendment.kind == POST_AMENDMENT_DELETE:
+                return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         canView = False
         if request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
             canView = True
@@ -166,7 +172,7 @@ def assignment_detail(request, assignmentId):
             canView = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
         if canView == False:
             return JsonResponse({"error": "No tienes permisos para ver esta tarea"}, status=403)
-        return JsonResponse(assignment_detail_to_json(assignment, request.session.user)) 
+        return JsonResponse(assignment_detail_to_json(assignment, newest_amendment, request.session.user)) 
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
