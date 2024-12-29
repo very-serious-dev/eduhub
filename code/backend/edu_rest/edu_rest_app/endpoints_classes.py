@@ -67,7 +67,8 @@ def handle_class_detail(request, classId):
             isClassEditableByUser = False
         else:
             isClassEditableByUser = UserClass.objects.filter(user=request.session.user, classroom=classroom).count() > 0
-        return JsonResponse(class_detail_to_json(classroom, isClassEditableByUser))
+        only_newer_than_post_with_id = request.GET.get("newerThanPostWithId", None)
+        return JsonResponse(class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id))
     elif request.method == "PUT":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

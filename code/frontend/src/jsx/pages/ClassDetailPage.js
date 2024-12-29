@@ -4,6 +4,7 @@ import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import ClassDetailBodyWithHeader from "../components/classes/ClassDetailBodyWithHeader";
+import { GetCachedPosts, SetCachedPosts } from "../../client/PostsCache";
 
 const ClassDetailPage = () => {
     const [classData, setClassData] = useState();
@@ -15,10 +16,15 @@ const ClassDetailPage = () => {
 
     useEffect(() => {
         setLoading(true);
-        EduAPIFetch("GET", `/api/v1/classes/${params.classId}`)
+        const cachedPosts = GetCachedPosts(params.classId);
+        EduAPIFetch("GET", `/api/v1/classes/${params.classId}${cachedPosts.length > 0 ? "?newerThanPostWithId="+cachedPosts[0].id : ""}`)
             .then(json => {
                 setLoading(false);
-                setClassData(json);
+                const mergedPosts = [...json.posts, ...cachedPosts]
+                SetCachedPosts(params.classId, mergedPosts);
+                const classData = json;
+                classData["posts"] = mergedPosts;
+                setClassData(classData);
             })
             .catch(error => {
                 setLoading(false);

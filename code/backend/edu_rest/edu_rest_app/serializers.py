@@ -53,13 +53,18 @@ def classes_array_to_json(classes):
         result.append(class_to_json(c))
     return result
 
-def class_detail_to_json(classroom, isClassEditableByUser):
+def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id):
     units = []
     for u in Unit.objects.filter(classroom=classroom).order_by("name"):
         units.append({"id": u.id, "name": u.name})
     posts = []
     # REFACTOR: serializers.py shouldn't contain ORM code
-    for p in Post.objects.filter(classroom=classroom).order_by("-publication_date"):
+    posts_query = Post.objects.filter(classroom=classroom)
+    if only_newer_than_post_with_id is not None:
+        print("Not returning posts older than that with id")
+        print(only_newer_than_post_with_id)
+        posts_query = posts_query.filter(id__gt=only_newer_than_post_with_id)
+    for p in posts_query:
         response_post_documents = []
         for pd in PostDocument.objects.filter(post=p):
             response_post_documents.append(document_to_json(pd.document))
