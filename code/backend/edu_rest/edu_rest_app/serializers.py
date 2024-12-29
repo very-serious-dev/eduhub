@@ -1,5 +1,4 @@
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMENDMENT_EDIT, POST_AMENDMENT_DELETE
-from .models import Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass
+from .models import User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -79,7 +78,7 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
         }
         if p.unit is not None:
             response_post["unit_id"] = p.unit.id
-        if p.kind == POST_ASSIGNMENT or p.kind == POST_AMENDMENT_EDIT:
+        if p.kind == Post.PostKind.ASSIGNMENT or p.kind == Post.PostKind.AMENDMENT_EDIT:
             response_post["assignment_due_date"] = p.assignment_due_date
         if p.amendment_original_post is not None:
             response_post["amended_post_id"] = p.amendment_original_post.id
@@ -109,7 +108,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
     for pd in PostDocument.objects.filter(post=newest_edit or original_assignment):
         response_documents.append(document_to_json(pd.document))
     response["files"] = response_documents
-    isTeacher = user.role in [USER_TEACHER, USER_TEACHER_LEADER, USER_TEACHER_SYSADMIN]
+    isTeacher = user.role in [User.UserKind.TEACHER, User.UserKind.TEACHER_LEADER, User.UserKind.TEACHER_SYSADMIN]
     response["should_show_teacher_options"] = isTeacher
     if isTeacher:
         submits = []
@@ -127,7 +126,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
             submits.append(submit)
         response["submits"] = submits
         assignees = []
-        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=USER_STUDENT).order_by("user__surname"):
+        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=User.UserKind.STUDENT).order_by("user__surname"):
             assignees.append(user_to_json(uc.user))
         response["assignees"] = assignees
         units = [] # Needed so that teacher can select a different unit when editing the assignment
@@ -171,24 +170,24 @@ def users_array_to_json(users):
     
 def roles_array(user):
     roles = []
-    if user.role == USER_STUDENT:
+    if user.role == User.UserKind.STUDENT:
         roles.append(JSON_STUDENT)
-    if user.role == USER_TEACHER:
+    if user.role == User.UserKind.TEACHER:
         roles.append(JSON_TEACHER)
-    if user.role == USER_TEACHER_LEADER:
+    if user.role == User.UserKind.TEACHER_LEADER:
         roles.append(JSON_TEACHER)
         roles.append(JSON_LEADER)
-    if user.role == USER_TEACHER_SYSADMIN:
+    if user.role == User.UserKind.TEACHER_SYSADMIN:
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles
 
 def post_kind(p):
-    if p.kind == POST_PUBLICATION:
+    if p.kind == Post.PostKind.PUBLICATION:
         return JSON_PUBLICATION
-    if p.kind == POST_ASSIGNMENT:
+    if p.kind == Post.PostKind.ASSIGNMENT:
         return JSON_ASSIGNMENT
-    if p.kind == POST_AMENDMENT_EDIT:
+    if p.kind == Post.PostKind.AMENDMENT_EDIT:
         return JSON_AMEND_EDIT
-    if p.kind == POST_AMENDMENT_DELETE:
+    if p.kind == Post.PostKind.AMENDMENT_DELETE:
         return JSON_AMEND_DELETE

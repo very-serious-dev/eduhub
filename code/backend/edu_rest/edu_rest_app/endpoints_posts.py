@@ -1,8 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER, POST_PUBLICATION, POST_ASSIGNMENT, POST_AMENDMENT_DELETE, POST_AMENDMENT_EDIT
+from .models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
 from .serializers import assignment_detail_to_json
 
 def create_post(request, classId):
@@ -13,10 +12,10 @@ def create_post(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserKind.TEACHER, User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
             # Student - can't create posts inside a class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == USER_TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
+        if request.session.user.role == User.UserKind.TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
             # Regular teacher trying to post on another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -47,9 +46,9 @@ def create_post(request, classId):
         new_post.classroom = classroom
         new_post.author = request.session.user
         if json_post_type == "publication":
-            new_post.kind = POST_PUBLICATION
+            new_post.kind = Post.PostKind.PUBLICATION
         elif json_post_type == "assignment":
-            new_post.kind = POST_ASSIGNMENT
+            new_post.kind = Post.PostKind.ASSIGNMENT
             new_post.assignment_due_date = json_assignment_due_date
         new_post.save()
         if json_files is not None:
@@ -83,9 +82,9 @@ def amend_post(request, postId):
             post = Post.objects.get(id=postId)
         except Post.DoesNotExist:
             return JsonResponse({"error": "El post que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserKind.TEACHER, User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == USER_TEACHER and request.session.user != post.author:
+        if request.session.user.role == User.UserKind.TEACHER and request.session.user != post.author:
             # Regular teacher trying to edit/remove another teacher's publication
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -107,7 +106,7 @@ def amend_post(request, postId):
                 return JsonResponse({"error": "No existe un tema con ese id"}, status=404)
         if json_post_type == "amend_delete":
             new_amendment = Post()
-            new_amendment.kind = POST_AMENDMENT_DELETE
+            new_amendment.kind = Post.PostKind.AMENDMENT_DELETE
             new_amendment.author = request.session.user
             new_amendment.classroom = post.classroom
             new_amendment.amendment_original_post = post
@@ -115,7 +114,7 @@ def amend_post(request, postId):
             return JsonResponse({"success": True}, status=201) 
         elif json_post_type == "amend_edit":
             new_amendment = Post()
-            new_amendment.kind = POST_AMENDMENT_EDIT
+            new_amendment.kind = Post.PostKind.AMENDMENT_EDIT
             new_amendment.author = request.session.user
             new_amendment.classroom = post.classroom
             new_amendment.amendment_original_post = post
@@ -157,18 +156,18 @@ def assignment_detail(request, assignmentId):
         if request.session is None: # FIX-ME: So much CTRL+C CTRL+V :(
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
-            assignment = Post.objects.get(id=assignmentId, kind=POST_ASSIGNMENT)
+            assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         newest_amendment = None
         if Post.objects.filter(amendment_original_post=assignment).count() > 0:
             newest_amendment = Post.objects.filter(amendment_original_post=assignment).order_by("-id")[0]
-            if newest_amendment.kind == POST_AMENDMENT_DELETE:
+            if newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
                 return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         canView = False
-        if request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role in [User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
             canView = True
-        if request.session.user.role in [USER_STUDENT, USER_TEACHER]:
+        if request.session.user.role in [User.UserKind.STUDENT, User.UserKind.TEACHER]:
             canView = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
         if canView == False:
             return JsonResponse({"error": "No tienes permisos para ver esta tarea"}, status=403)
@@ -181,7 +180,7 @@ def create_assignment_submit(request, assignmentId):
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         try:
-            assignment = Post.objects.get(id=assignmentId, kind=POST_ASSIGNMENT)
+            assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         if request.session.user.role not in [USER_STUDENT]:

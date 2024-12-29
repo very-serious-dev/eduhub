@@ -2,7 +2,6 @@ import bcrypt, json, re
 from django.http import JsonResponse
 from django.db.models import Q
 from .models import User, Group, Class, UserClass, UserSession
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
 from .admin_secret import ADMIN_SECRET
 
@@ -48,13 +47,13 @@ def create_user(request):
         new_user.surname = json_surname
         new_user.encrypted_password = bcrypt.hashpw(json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
         if json_is_teacher:
-            new_user.role = USER_TEACHER
+            new_user.role = User.UserRole.TEACHER
         elif json_student_group is not None:
             try:
                 group = Group.objects.get(tag=json_student_group)
             except Group.DoesNotExist:
                 return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
-            new_user.role = USER_STUDENT
+            new_user.role = User.UserRole.STUDENT
             new_user.student_group = group
         else:
             # School leader and Sysadmin must be manually added
@@ -116,7 +115,7 @@ def get_teachers(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        users = User.objects.filter(Q(role=USER_TEACHER) | Q(role=USER_TEACHER_SYSADMIN) | Q(role=USER_TEACHER_LEADER))
+        users = User.objects.filter(Q(role=User.UserRole.TEACHER) | Q(role=User.UserRole.TEACHER_SYSADMIN) | Q(role=User.UserRole.TEACHER_LEADER))
         return JsonResponse({"teachers": users_array_to_json(users) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
@@ -155,6 +154,6 @@ def verify_session(request): # This is received from another server (DocuREST); 
 def __admin_auth_json_error_response(request):
     if request.session.user is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-    if request.session.user.role not in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+    if request.session.user.role not in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
         return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
     return None

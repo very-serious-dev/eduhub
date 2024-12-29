@@ -1,7 +1,6 @@
 import json, random
 from django.http import JsonResponse
 from .models import User, Class, UserClass, Group, Unit
-from .models import USER_STUDENT, USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json, class_detail_to_json
 
 # TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
@@ -25,7 +24,7 @@ def handle_classes(request):
     elif request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
             body_json = json.loads(request.body)
@@ -63,7 +62,7 @@ def handle_class_detail(request, classId):
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
         # TO-DO: 401 if one student is accessing a class where he/she doesn't belong!
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             isClassEditableByUser = False
         else:
             isClassEditableByUser = UserClass.objects.filter(user=request.session.user, classroom=classroom).count() > 0
@@ -76,10 +75,10 @@ def handle_class_detail(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             # Student - can't edit classes
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == USER_TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
+        if request.session.user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
             # Regular teacher trying to edit another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -101,10 +100,10 @@ def handle_class_detail(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             # Student - can't edit classes
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == USER_TEACHER and UserClass.objects.filter(user=user, classroom=classroom).count() == 0:
+        if request.session.user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).count() == 0:
             # Regular teacher trying to edit another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         classroom.archived = True
@@ -122,7 +121,7 @@ def handle_class_participants(request, classId):
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
         users_class = UserClass.objects.filter(classroom=classroom)
-        if request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_see = True
         else:
             has_permission_to_see = users_class.filter(user=request.session.user).exists()
@@ -137,9 +136,9 @@ def handle_class_participants(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role == USER_STUDENT:
+        if request.session.user.role == User.UserRole.STUDENT:
             has_permission_to_edit = False
-        elif request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        elif request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_edit = True
         else: # Regular teacher
             has_permission_to_edit = UserClass.objects.filter(classroom=classroom, user=request.session.user).exists()
@@ -188,9 +187,9 @@ def delete_class_participant(request, classId, username):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role == USER_STUDENT:
+        if request.session.user.role == User.UserRole.STUDENT:
             has_permission_to_edit = False
-        elif request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        elif request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_edit = True
         else: # Regular teacher
             has_permission_to_edit = UserClass.objects.filter(classroom=classroom, user=request.session.user).exists()
@@ -213,9 +212,9 @@ def create_class_unit(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role == USER_STUDENT:
+        if request.session.user.role == User.UserRole.STUDENT:
             has_permission_to_edit = False
-        elif request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        elif request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_edit = True
         else: # Regular teacher
             has_permission_to_edit = UserClass.objects.filter(classroom=classroom, user=request.session.user).exists()
@@ -249,9 +248,9 @@ def handle_class_unit(request, classId, unitId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role == USER_STUDENT:
+        if request.session.user.role == User.UserRole.STUDENT:
             has_permission_to_edit = False
-        elif request.session.user.role in [USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        elif request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_edit = True
         else: # Regular teacher
             has_permission_to_edit = UserClass.objects.filter(classroom=classroom, user=request.session.user).exists()

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY
 from .models import User, UserSession
-from .models import USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER
+from .models import TOKEN_SIZE
 from .serializers import roles_array, users_array_to_json
 
 def login_logout(request):
@@ -22,8 +22,8 @@ def login_logout(request):
             return JsonResponse({"error": "El usuario no existe"}, status=404)
         # Let's create a new session
         if bcrypt.checkpw(json_password.encode('utf8'), db_user.encrypted_password.encode('utf8')):
-            random_token = secrets.token_hex(20)
-            random_one_time_token = secrets.token_hex(20)
+            random_token = secrets.token_hex(TOKEN_SIZE)
+            random_one_time_token = secrets.token_hex(TOKEN_SIZE)
             session = UserSession()
             session.user = db_user
             session.token = random_token
@@ -49,7 +49,7 @@ def get_users(request):
     if request.method == "GET":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        if request.session.user.role not in [USER_TEACHER, USER_TEACHER_SYSADMIN, USER_TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=401)
         q = request.GET.get("search", None)
         if q is None:
