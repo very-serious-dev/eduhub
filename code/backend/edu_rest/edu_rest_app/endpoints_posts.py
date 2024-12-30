@@ -12,10 +12,10 @@ def create_post(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        if request.session.user.role not in [User.UserKind.TEACHER, User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             # Student - can't create posts inside a class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == User.UserKind.TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
+        if request.session.user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=request.session.user, classroom=classroom).count() == 0:
             # Regular teacher trying to post on another teacher's class
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -82,9 +82,9 @@ def amend_post(request, postId):
             post = Post.objects.get(id=postId)
         except Post.DoesNotExist:
             return JsonResponse({"error": "El post que buscas no existe"}, status=404)
-        if request.session.user.role not in [User.UserKind.TEACHER, User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
+        if request.session.user.role not in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
-        if request.session.user.role == User.UserKind.TEACHER and request.session.user != post.author:
+        if request.session.user.role == User.UserRole.TEACHER and request.session.user != post.author:
             # Regular teacher trying to edit/remove another teacher's publication
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         try:
@@ -165,9 +165,9 @@ def assignment_detail(request, assignmentId):
             if newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
                 return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
         canView = False
-        if request.session.user.role in [User.UserKind.TEACHER_SYSADMIN, User.UserKind.TEACHER_LEADER]:
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             canView = True
-        if request.session.user.role in [User.UserKind.STUDENT, User.UserKind.TEACHER]:
+        if request.session.user.role in [User.UserRole.STUDENT, User.UserRole.TEACHER]:
             canView = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
         if canView == False:
             return JsonResponse({"error": "No tienes permisos para ver esta tarea"}, status=403)

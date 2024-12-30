@@ -108,7 +108,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
     for pd in PostDocument.objects.filter(post=newest_edit or original_assignment):
         response_documents.append(document_to_json(pd.document))
     response["files"] = response_documents
-    isTeacher = user.role in [User.UserKind.TEACHER, User.UserKind.TEACHER_LEADER, User.UserKind.TEACHER_SYSADMIN]
+    isTeacher = user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]
     response["should_show_teacher_options"] = isTeacher
     if isTeacher:
         submits = []
@@ -126,7 +126,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
             submits.append(submit)
         response["submits"] = submits
         assignees = []
-        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=User.UserKind.STUDENT).order_by("user__surname"):
+        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=User.UserRole.STUDENT).order_by("user__surname"):
             assignees.append(user_to_json(uc.user))
         response["assignees"] = assignees
         units = [] # Needed so that teacher can select a different unit when editing the assignment
@@ -170,14 +170,14 @@ def users_array_to_json(users):
     
 def roles_array(user):
     roles = []
-    if user.role == User.UserKind.STUDENT:
+    if user.role == User.UserRole.STUDENT:
         roles.append(JSON_STUDENT)
-    if user.role == User.UserKind.TEACHER:
+    if user.role == User.UserRole.TEACHER:
         roles.append(JSON_TEACHER)
-    if user.role == User.UserKind.TEACHER_LEADER:
+    if user.role == User.UserRole.TEACHER_LEADER:
         roles.append(JSON_TEACHER)
         roles.append(JSON_LEADER)
-    if user.role == User.UserKind.TEACHER_SYSADMIN:
+    if user.role == User.UserRole.TEACHER_SYSADMIN:
         roles.append(JSON_TEACHER)
         roles.append(JSON_SYSADMIN)
     return roles
