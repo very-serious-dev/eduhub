@@ -22,7 +22,8 @@ def document_to_json(document):
         "identifier": document.identifier,
         "name": document.name,
         "size": document.size,
-        "mime_type": document.mime_type
+        "mime_type": document.mime_type,
+        "folder_id": folder_id
     }
 
 def group_to_json(group):
@@ -32,12 +33,6 @@ def group_to_json(group):
         "tutor": user_to_json(group.tutor)
     }
 
-def groups_array_to_json(groups):
-    result = []
-    for g in groups:
-        result.append(group_to_json(g))
-    return result
-
 def class_to_json(classroom):
     return {
         "id": classroom.id,
@@ -46,10 +41,52 @@ def class_to_json(classroom):
         "color": classroom.color
     }
 
+def user_to_json(user):
+    json_user = {
+        "username": user.username,
+        "name": user.name,
+        "surname": user.surname,
+        "roles": roles_array(user)
+    }
+    if user.student_group is not None:
+        json_user["student_group"] = user.student_group_id
+    return json_user
+
+def folder_to_json(folder):
+    return {
+        "id": folder.id,
+        "name": folder.name,
+        "parent_folder_id": folder.parent_folder_id
+    }
+
+def groups_array_to_json(groups):
+    result = []
+    for g in groups:
+        result.append(group_to_json(g))
+    return result
+
 def classes_array_to_json(classes):
     result = []
     for c in classes:
         result.append(class_to_json(c))
+    return result
+
+def users_array_to_json(users):
+    result = []
+    for u in users:
+        result.append(user_to_json(u))
+    return result
+
+def folders_array_to_json(folders):
+    result = []
+    for f in folders:
+        result.append(folder_to_json(f))
+    return result
+
+def documents_array_to_json(documents):
+    result = []
+    for d in documents:
+        result.append(document_to_json(f))
     return result
 
 def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id):
@@ -149,23 +186,6 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
             pass
     return response
 
-def user_to_json(user):
-    json_user = {
-        "username": user.username,
-        "name": user.name,
-        "surname": user.surname,
-        "roles": roles_array(user)
-    }
-    if user.student_group is not None:
-        json_user["student_group"] = user.student_group_id
-    return json_user
-
-def users_array_to_json(users):
-    result = []
-    for u in users:
-        result.append(user_to_json(u))
-    return result
-    
 def roles_array(user):
     roles = []
     if user.role == User.UserRole.STUDENT:

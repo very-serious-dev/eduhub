@@ -59,6 +59,8 @@ def create_post(request, classId):
                 document.size = f["size"]
                 document.mime_type = f["mime_type"]
                 document.author = request.session.user
+                #FIX-ME: Probably it's now breaking since I introduced 'folder' attribute
+                #TODO: Make (if not exists) a new folder with the class name and put files into it
                 document.save()
                 post_document = PostDocument()
                 post_document.document = document
