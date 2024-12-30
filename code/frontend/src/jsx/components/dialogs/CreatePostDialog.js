@@ -34,8 +34,9 @@ const CreatePostDialog = (props) => {
                             showDeleteButton={false}
                             onFinished={props.onFinished}
                             onDismiss={props.onDismiss} />
-                    },
-                ]} />
+                    }]}
+                    tabContentWidthPercentage={100}
+                    showTitles={true} />
             </div>
         </div></div> : <></>
 }

@@ -69,9 +69,9 @@ const PostsBoard = (props) => {
             {squashedPosts()
                 .map(p => {
                     if (p.unit_id) {
-                        const unitName = props.classData.units.find(u => u.id === p.unit_id).name
-                        if (unitName) {
-                            return { ...p, unitName: unitName }
+                        const matchingUnit = props.classData.units.find(u => u.id === p.unit_id)
+                        if (matchingUnit) {
+                            return { ...p, unitName: matchingUnit.name }
                         } // unit might have been deleted
                     }
                     return p;

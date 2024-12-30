@@ -87,7 +87,7 @@ class Post(models.Model):
     content = models.CharField(max_length=3000, null=True)
     kind = models.IntegerField(choices=PostKind)
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, null=True)
+    unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
     assignment_due_date = models.DateField(null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     publication_date = models.DateTimeField(auto_now=True)

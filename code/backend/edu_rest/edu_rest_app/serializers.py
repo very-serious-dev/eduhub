@@ -60,8 +60,6 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
     # REFACTOR: serializers.py shouldn't contain ORM code
     posts_query = Post.objects.filter(classroom=classroom)
     if only_newer_than_post_with_id is not None:
-        print("Not returning posts older than that with id")
-        print(only_newer_than_post_with_id)
         posts_query = posts_query.filter(id__gt=only_newer_than_post_with_id)
     for p in posts_query:
         response_post_documents = []
