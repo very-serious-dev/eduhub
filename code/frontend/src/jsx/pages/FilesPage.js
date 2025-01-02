@@ -32,11 +32,11 @@ const FilesPage = () => {
         if (remainingFoldersMutable.length === 0) { return; }
         for (let i = remainingFoldersMutable.length - 1; i >= 0; i--) {
             if (remainingFoldersMutable[i].parent_folder_id === folder.id) {
-                const childFolder = remainingFoldersMutable.splice(i, 1);
+                const childFolder = remainingFoldersMutable.splice(i, 1)[0];
                 folder.children.push(childFolder);
             }
         }
-        for (const child of folder.children) {
+        for (const child of folder.children.filter(x => x.type === "folder")) {
             findAllChildrenAndRecursivelyInsertInto(child, remainingFoldersMutable);
         }
     }
@@ -47,9 +47,14 @@ const FilesPage = () => {
             allFoldersById[f.id] = { ...f, children: [] };
         });
         documentsAndFolders.documents.forEach(d => {
-            allFoldersById[d.folder_id].children.push(d);
+            allFoldersById[d.folder_id].children.push({...d, type: "document"});
         });
-        return Object.entries(allFoldersById);
+        const allFolders = []
+        for (let folderId of Object.keys(allFoldersById)) {
+            const f = allFoldersById[folderId]
+            allFolders.push({...f, type: "folder"});
+        }
+        return allFolders;
     }
 
     const documentsTree = () => {
@@ -60,7 +65,7 @@ const FilesPage = () => {
             if (folder.parent_folder_id) {
                 remainingNonRootFolders.push(folder);
             } else {
-                tree.push(folder)
+                tree.push(folder);
             }
         }
         for (const rootFolder of tree) {

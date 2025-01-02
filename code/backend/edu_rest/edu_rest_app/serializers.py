@@ -23,7 +23,7 @@ def document_to_json(document):
         "name": document.name,
         "size": document.size,
         "mime_type": document.mime_type,
-        "folder_id": folder_id
+        "folder_id": document.folder_id
     }
 
 def group_to_json(group):
@@ -86,7 +86,7 @@ def folders_array_to_json(folders):
 def documents_array_to_json(documents):
     result = []
     for d in documents:
-        result.append(document_to_json(f))
+        result.append(document_to_json(d))
     return result
 
 def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id):

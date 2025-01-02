@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument
+from .models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder
 from .serializers import assignment_detail_to_json
 
 def create_post(request, classId):
@@ -52,6 +52,14 @@ def create_post(request, classId):
             new_post.assignment_due_date = json_assignment_due_date
         new_post.save()
         if json_files is not None:
+            folder_name = classroom.group.tag + " - " + classroom.name
+            try:
+                class_user_folder = Folder.objects.get(author=request.session.user, name=folder_name)
+            except Folder.DoesNotExist:
+                class_user_folder = Folder()
+                class_user_folder.author = request.session.user
+                class_user_folder.name = folder_name
+                class_user_folder.save()
             for f in json_files:
                 document = Document()
                 document.identifier = f["identifier"]
@@ -59,8 +67,7 @@ def create_post(request, classId):
                 document.size = f["size"]
                 document.mime_type = f["mime_type"]
                 document.author = request.session.user
-                #FIX-ME: Probably it's now breaking since I introduced 'folder' attribute
-                #TODO: Make (if not exists) a new folder with the class name and put files into it
+                document.folder = class_user_folder
                 document.save()
                 post_document = PostDocument()
                 post_document.document = document
