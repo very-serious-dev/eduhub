@@ -1,5 +1,8 @@
 const FolderElement = (props) => {
-    return <div>{props.name}</div>
+    return <div className="myFilesElementContainer"
+        onClick={() => { props.onFolderClicked(props.id, props.level) }}>
+        {props.name}
+    </div>
 }
 
 export default FolderElement;

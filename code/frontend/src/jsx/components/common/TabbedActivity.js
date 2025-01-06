@@ -4,7 +4,9 @@ const TabbedActivity = (props) => {
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
 
     const firstTabOffset = () => {
-        return `${-props.tabContentWidthPercentage * selectedTabIndex}%`
+        // When creating a new post inside a class, we let this component handle the selectedTabIndex
+        // But when browsing files page, we let the selected tab to be chosen externally
+        return `${-props.tabContentWidthPercentage * (props.forcedTabSelectedIndex ?? selectedTabIndex)}%`
     }
 
     const tabContentWidth = () => {
@@ -12,6 +14,7 @@ const TabbedActivity = (props) => {
     }
 
     return <div className="tabbedActivityOuterContainer">
+        {/* When browsing files page, titles aren't shown */}
         {props.showTitles &&
             <div className="tabbedActivityHeader">
                 {props.tabs.map((t, idx) => {

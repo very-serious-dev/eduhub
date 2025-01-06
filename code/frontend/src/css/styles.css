@@ -9,6 +9,7 @@
   --color-delete: #f65050;
   --color-destructive: #f52020;
   --color-success: #7dca7d;
+  --color-subtle-grey: #eee;
   --main-header-height: 60px;
   --class-header-search-width: 300px;
 }
@@ -288,7 +289,7 @@ body {
 }
 
 .classEntryFile {
-  background-color: #eee;
+  background-color: var(--color-subtle-grey);
   border-radius: 3px;
   padding: 4px;
   position: relative;
@@ -675,6 +676,21 @@ body {
   flex-wrap: wrap;
 }
 
+/**
+ * Files page
+ */
+
+.myFilesElementContainer {
+  padding: 10px;
+  margin: 6px;
+  border-radius: 6px;
+  background-color: var(--color-subtle-grey);
+}
+
+.myFilesElementContainer:hover {
+  cursor: pointer;
+  background-color: var(--color-secondary);
+}
 
 /**
  * Admin page

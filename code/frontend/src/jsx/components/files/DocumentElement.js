@@ -1,5 +1,5 @@
 const DocumentElement = (props) => {
-    return <div>{props.name}</div>
+    return <div className="myFilesElementContainer">{props.name}</div>
 }
 
 export default DocumentElement;
