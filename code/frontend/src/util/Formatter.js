@@ -68,9 +68,34 @@ const formatPseudoMarkdown = (str) => {
     return str.split('\n').map(subStr => <>{subStr}<br/></>);
 }
 
+const iconImgSrc = (mimeType) => {
+    // https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
+    /* Creative commons icons license */
+    /* TO-DO: Show this in the web somewhere: <a href="https://www.flaticon.com/free-icons/doc" title="doc icons">Doc icons created by Dimitry Miroliubov - Flaticon</a>*/
+    if (mimeType === "application/pdf") {
+        return "/icon_pdf.png";
+    } else if (mimeType.includes("video")) {
+        return "/icon_vid.png";
+    }
+    if (mimeType.includes("image")) {
+        return "/icon_img.png";
+    } else if ((mimeType === "application/msword") ||
+               (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+               (mimeType === "application/vnd.oasis.opendocument.text")) {
+        return "/icon_doc.png";
+    } else if ((mimeType === "application/vnd.ms-excel") ||
+               (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
+               (mimeType === "application/vnd.oasis.opendocument.spreadsheet")) {
+        return "/icon_xls.png";
+    } else {
+        return "/icon_other.png";
+    }
+}
+
 export { sizeToHumanReadable };
 export { footNoteAuthorDate };
 export { beautifullyDisplayDate };
 export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };
 export { formatPseudoMarkdown };
+export { iconImgSrc };

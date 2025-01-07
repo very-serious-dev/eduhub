@@ -692,6 +692,58 @@ body {
   background-color: var(--color-secondary);
 }
 
+.myFileUnselected {
+  background-color: var(--color-subtle-grey);
+}
+
+.myFileSelected {
+  background-color: var(--color-tertiary);
+}
+
+.myFilesElementTitleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.myFilesElementIcon {
+  width: 26px;
+  height: 26px;
+  margin-right: 8px;
+}
+
+.myFilesElementName {
+}
+
+.myFilesElementSubtitle {
+  font-size: 0.75em;
+  margin-left: 32px;
+}
+
+.firstFilesTab {
+  text-align: center;
+  padding: 32px;
+  margin: 6px;
+  border-radius: 6px;
+  background-color: var(--color-subtle-grey);
+}
+
+.firstFilesTabTitle {
+  font-size: 1.5em;
+  padding: 6px;
+}
+
+.firstFilesTabSubtitle {
+  margin: 2px;
+}
+
+.emptyFolderTab {
+  text-align: center;
+  padding: 32px;
+  margin: 6px;
+  border-radius: 6px;
+  background-color: var(--color-subtle-grey);
+}
+
 /**
  * Admin page
  */

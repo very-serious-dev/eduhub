@@ -47,12 +47,12 @@ const FilesPage = () => {
             allFoldersById[f.id] = { ...f, children: [] };
         });
         documentsAndFolders.documents.forEach(d => {
-            allFoldersById[d.folder_id].children.push({...d, type: "document"});
+            allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
         });
         const allFolders = []
         for (let folderId of Object.keys(allFoldersById)) {
             const f = allFoldersById[folderId]
-            allFolders.push({...f, type: "folder"});
+            allFolders.push({ ...f, type: "folder" });
         }
         return allFolders;
     }
@@ -78,7 +78,10 @@ const FilesPage = () => {
         <LoadingHUDPage />
         : isRequestFailed ?
             <ErrorPage errorMessage={requestErrorMessage} />
-            : <FilesBody tree={documentsTree()} onFilesChanged={onFilesChanged} />
+            : <FilesBody tree={documentsTree()}
+                onFilesChanged={onFilesChanged}
+                foldersCount={documentsAndFolders.folders.length}
+                documentsCount={documentsAndFolders.documents.length} />
 }
 
 export default FilesPage;
