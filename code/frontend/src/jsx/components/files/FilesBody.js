@@ -15,6 +15,26 @@ const FilesBody = (props) => {
         });
     }
 
+    const compareByName = (a, b) => {
+        return a.name.localeCompare(b.name);
+    }
+
+    const orderingCriteria = (a, b) => {
+        if (a.type === "folder") {
+            if (b.type === "folder") {
+                return compareByName(a, b);
+            } else if (b.type === "document") {
+                return 1;
+            }
+        } else if (a.type === "document") {
+            if (b.type === "folder") {
+                return -1;
+            } else if (b.type === "document") {
+                return compareByName(a, b);
+            }
+        }
+    }
+
     const tabsForSelectedPath = () => {
         const firstTabContent = { view: <FilesFirstTabContent foldersCount={props.foldersCount} documentsCount={props.documentsCount} /> }
         const rootFoldersTabContent = { view: [] }
@@ -35,7 +55,7 @@ const FilesBody = (props) => {
             if (folderBeingWalked.children.length === 0) {
                 newTab.view = <FilesEmptyFolderTabContent />
             } else {
-                folderBeingWalked.children.forEach(child => {
+                [...folderBeingWalked.children].sort(orderingCriteria).forEach(child => {
                     if (child.type === "folder") {
                         newTab.view.push(
                             <FolderElement id={child.id}
