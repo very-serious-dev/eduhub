@@ -21,5 +21,6 @@ urlpatterns = [
     path("posts/<int:postId>/amendments",            endpoints_posts.amend_post),
     path("assignments/<int:assignmentId>",           endpoints_posts.assignment_detail),
     path("assignments/<int:assignmentId>/submits",   endpoints_posts.create_assignment_submit),
-    path("documents",                                endpoints_documents.get_documents)
+    path("documents",                                endpoints_documents.get_documents),
+    path("folders",                                  endpoints_documents.create_folder)
 ]

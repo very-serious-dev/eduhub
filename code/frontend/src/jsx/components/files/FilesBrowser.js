@@ -7,38 +7,19 @@ import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 
 const FilesBrowser = (props) => {
     const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
-    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
+    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState(props.initialPosition);
 
     const onFolderSelected = (folderId, level) => {
         const newSelectedFolderIdsPath = selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
         setSelectedFolderIdsPath(newSelectedFolderIdsPath);
-        invokeOnFolderSelectedDelegateIfNeeded(newSelectedFolderIdsPath);
+        props.onFolderPathSelected(newSelectedFolderIdsPath);
     }
 
     const onRootSelected = (root) => {
         const newSelectedFolderIdsPath = []
         setSelectedFolderIdsPath(newSelectedFolderIdsPath);
         setSelectedRoot(root);
-        invokeOnFolderSelectedDelegateIfNeeded(newSelectedFolderIdsPath);
-    }
-
-    const invokeOnFolderSelectedDelegateIfNeeded = (actualSelectedFolderIdsPath) => {
-        if (props.onFolderSelected) {
-            const selectedFolderId = actualSelectedFolderIdsPath.length > 0 ? actualSelectedFolderIdsPath.slice(-1) : null;
-            const selectedFolderPath = getFullPathFromSelectedIds(actualSelectedFolderIdsPath);
-            props.onFolderSelected(selectedFolderId, selectedFolderPath);
-        }
-    }
-
-    const getFullPathFromSelectedIds = (actualSelectedFolderIdsPath) => {
-        let path = "/";
-        let subTreeBeingWalked = getTree();
-        for (let folderId of actualSelectedFolderIdsPath) {
-            const folderBeingWalked = subTreeBeingWalked.find(f => f.id === folderId);
-            path += `${folderBeingWalked.name}/`;
-            subTreeBeingWalked = folderBeingWalked.children;
-        }
-        return path;
+        props.onFolderPathSelected(newSelectedFolderIdsPath);
     }
 
     const compareByName = (a, b) => {

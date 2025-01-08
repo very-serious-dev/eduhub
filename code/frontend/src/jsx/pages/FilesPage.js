@@ -9,7 +9,6 @@ const FilesPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
-    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         EduAPIFetch("GET", "/api/v1/documents")
@@ -22,10 +21,15 @@ const FilesPage = () => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [refreshKey]);
+    }, []);
 
-    const onFilesChanged = () => {
-        setRefreshKey(x => x + 1);
+    const onFilesChanged = (result) => {
+        console.log("por aqui")
+        console.log(result)
+        if (result.operation === "folder_added") {
+            console.log("heyo")
+            setDocumentsAndFolders(old => { return { documents: old.documents, folders: old.folders.concat(result.folder) }});
+        }
     }
 
     const findAllChildrenAndRecursivelyInsertInto = (folder, remainingFoldersMutable) => {
