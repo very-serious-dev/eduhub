@@ -57,7 +57,7 @@ const FilesPage = () => {
         return allFolders;
     }
 
-    const documentsTree = () => {
+    const buildTree = () => {
         const allFolders = flatFoldersWithDocumentsInside();
         const tree = [];
         const remainingNonRootFolders = []
@@ -78,7 +78,7 @@ const FilesPage = () => {
         <LoadingHUDPage />
         : isRequestFailed ?
             <ErrorPage errorMessage={requestErrorMessage} />
-            : <FilesBody tree={documentsTree()}
+            : <FilesBody myFilesTree={buildTree()}
                 onFilesChanged={onFilesChanged}
                 foldersCount={documentsAndFolders.folders.length}
                 documentsCount={documentsAndFolders.documents.length} />

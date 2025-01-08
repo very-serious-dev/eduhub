@@ -149,18 +149,20 @@ body {
   background-color: var(--color-tertiary);
 }
 
-.classesAddNew {
+.floatingCardAddNew {
   position: fixed;
   bottom: 30px;
   right: 30px;
-  width: 200px;
   text-align: center;
-  padding: 16px;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 32px;
+  padding-right: 32px;
   border-radius: 999px;
   background-color: var(--color-secondary);
 }
 
-.classesAddNew:hover {
+.floatingCardAddNew:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }
@@ -687,17 +689,9 @@ body {
   background-color: var(--color-subtle-grey);
 }
 
-.myFilesElementContainer:hover {
+.myFilesElementContainerHoverable:hover {
   cursor: pointer;
   background-color: var(--color-secondary);
-}
-
-.myFileUnselected {
-  background-color: var(--color-subtle-grey);
-}
-
-.myFileSelected {
-  background-color: var(--color-tertiary);
 }
 
 .myFilesElementTitleContainer {
@@ -719,7 +713,7 @@ body {
   margin-left: 32px;
 }
 
-.firstFilesTab {
+.filesFirstTabElement {
   text-align: center;
   padding: 32px;
   margin: 6px;
@@ -727,12 +721,12 @@ body {
   background-color: var(--color-subtle-grey);
 }
 
-.firstFilesTabTitle {
+.filesFirstTabTitle {
   font-size: 1.5em;
   padding: 6px;
 }
 
-.firstFilesTabSubtitle {
+.filesFirstTabSubtitle {
   margin: 2px;
 }
 
@@ -742,6 +736,23 @@ body {
   margin: 6px;
   border-radius: 6px;
   background-color: var(--color-subtle-grey);
+}
+
+.filesElementUnselected {
+  background-color: var(--color-subtle-grey);
+}
+
+.filesElementSelected {
+  background-color: var(--color-tertiary);
+}
+
+.folderPathPickerContainer {
+  /* TODO: Max height? */
+}
+
+.folderPathPickerTitle {
+  margin-left: 24px;
+  margin-top: 8px;
 }
 
 /**
@@ -1249,12 +1260,12 @@ input:valid ~ .underline:before {
   margin-left: 35px;
 }
 
-.editClassOrParticipants {
+.twoOptionsDialogChoice {
   text-align: center;
   padding: 20px;
 }
 
-.editClassOrParticipants:hover {
+.twoOptionsDialogChoice:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }
@@ -1342,6 +1353,12 @@ input:valid ~ .underline:before {
    * in a flexbox.
    * Without important, it won't work */
   margin-top: 0 !important;
+}
+
+.formInputGreyBackground {
+  /* Override default .formInput input selector
+   * Without important, it won't work */
+  background-color: #ddd !important;
 }
 
 .formInputCreatePostTaskDate {
