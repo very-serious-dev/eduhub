@@ -24,11 +24,11 @@ const FilesPage = () => {
     }, []);
 
     const onFilesChanged = (result) => {
-        console.log("por aqui")
-        console.log(result)
         if (result.operation === "folder_added") {
-            console.log("heyo")
             setDocumentsAndFolders(old => { return { documents: old.documents, folders: old.folders.concat(result.folder) }});
+        }
+        if (result.operation === "documents_added") {
+            setDocumentsAndFolders(old => { return { documents: [...old.documents, ...result.documents], folders: old.folders }});
         }
     }
 

@@ -86,7 +86,7 @@ const DropFilesArea = (props) => {
             onDragEnter={e => { setDropAreaActive(true) }}
             onDragLeave={e => { setDropAreaActive(false) }}
             onDrop={onFilesDroped}>
-            {isReadingFiles ? "Cargando..." : "⬇️📄 Arrastra un fichero aquí para adjuntarlo" }
+            {isReadingFiles ? "Cargando..." : "⬇️📄 Arrastra tus ficheros aquí" }
         </div>
     </div>
 
