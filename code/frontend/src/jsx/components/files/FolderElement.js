@@ -1,6 +1,9 @@
+import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
+
 const FolderElement = (props) => {
     return <div className={`myFilesElementContainer myFilesElementContainerHoverable ${props.selected ? "filesElementSelected" : "filesElementUnselected"}`}
         onClick={() => { props.onFolderClicked(props.folder.id, props.level) }}>
+        {props.showContextMenu && <FilesElementContextMenuButton myFilesTree={props.myFilesTree} />}
         <div className="myFilesElementTitleContainer">
             <img className="myFilesElementIcon" src="./icon_folder.png"></img>
             <div className="myFilesElementName">{props.folder.name}</div>

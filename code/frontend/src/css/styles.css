@@ -683,6 +683,7 @@ body {
  */
 
 .myFilesElementContainer {
+  position: relative;
   padding: 10px;
   margin: 6px;
   border-radius: 6px;
@@ -697,6 +698,7 @@ body {
 .myFilesElementTitleContainer {
   display: flex;
   align-items: center;
+  margin-right: 30px;
 }
 
 .myFilesElementIcon {
@@ -706,6 +708,7 @@ body {
 }
 
 .myFilesElementName {
+  word-break: break-word;
 }
 
 .myFilesElementSize {
@@ -752,6 +755,28 @@ body {
 
 .filesElementSelected {
   background-color: var(--color-tertiary);
+}
+
+
+.filesElementThreeDotsImg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-right: 4px;
+  margin-top: 4px;
+  padding: 6px;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+}
+
+.filesElementThreeDotsImg:hover {
+  cursor: pointer;
+  background-color: #ccc
+}
+
+.tabbedActivityFilesEmptyFooter {
+  height: 70px;
 }
 
 /**
@@ -1369,6 +1394,36 @@ input:valid ~ .underline:before {
 
 .formInputDivCreatePostTaskDate {
   max-width: 120px;
+}
+
+.contextMenu {
+  position: absolute;
+  top: 38px;
+  right: 0;
+  z-index: 3;
+  margin: 2px;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.contextMenuItem {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.contextMenuItem:hover {
+  cursor: pointer;
+  background-color: var(--color-secondary);
+}
+
+.dialogScrollableSection {
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  max-height: 60vh;
 }
 
 /**

@@ -36,6 +36,10 @@ const TabbedActivity = (props) => {
                 : <></>
             }
         </div>
+        {props.emptyFooter && /* Simple extra space at the bottom to allow the context menu of
+                                 the last element to appear on screen without clipping 
+                                 when this TabbedActivity is used for presenting Files */
+            <div className="tabbedActivityFilesEmptyFooter"></div>}
     </div>
 }
 
