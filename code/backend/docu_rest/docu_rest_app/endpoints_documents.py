@@ -38,7 +38,7 @@ def document(request, identifier):
             return JsonResponse({"error": "Ese documento no existe"}, status=404) # NICE-TO-HAVE: More user friendly response
         response = HttpResponse(document.data, content_type=document.mime_type)
         response["Content-Disposition"] = "filename=" + document.name;
-        response["Last-Modified"] = document.created; # TO-DO: Browser is currently not sending If-Modified-Since. Check why and implement 304 response
+        response["Last-Modified"] = document.created_at; # TO-DO: Browser is currently not sending If-Modified-Since. Check why and implement 304 response
         response["Cache-Control"] = "private, max-age=604800"
         return response
     else:

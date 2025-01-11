@@ -5,16 +5,17 @@ const DocumentElement = (props) => {
 
     const onClickFile = () => {
         if (props.isClickable) {
-            window.open(`${DocuURL}/api/v1/documents/${props.identifier}`, "_blank");
+            window.open(`${DocuURL}/api/v1/documents/${props.document.identifier}`, "_blank");
         }
     }
 
     return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable" : ""}`} onClick={onClickFile}>
         <div className="myFilesElementTitleContainer">
             <img className="myFilesElementIcon" src={iconImgSrc(props.mimeType)}></img>
-            <div className="myFilesElementName">{props.name}</div>
+            <div className="myFilesElementName">{props.document.name}</div>
         </div>
-        <div className="myFilesElementSubtitle">{sizeToHumanReadable(props.size)}</div>
+        {props.document.is_protected && <div className="myFilesElementSpecialText">PROTEGIDO</div>}
+        <div className="myFilesElementSize">{sizeToHumanReadable(props.size)}</div>
     </div>
 }
 

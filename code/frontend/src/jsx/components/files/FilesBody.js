@@ -6,7 +6,7 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 
 const FilesBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_OR_UPLOAD, CREATE_FOLDER
-    const [createFolderDialogInitialPosition, setCreateFolderDialogInitialPosition] = useState([]);
+    const [currentFolderIdsPath, setCurrentFolderIdsPath] = useState([]);
     const setFeedback = useContext(FeedbackContext);
 
     const onFolderAdded = (result) => {
@@ -14,8 +14,15 @@ const FilesBody = (props) => {
         props.onFilesChanged(result);
     }
 
-    const onFolderPathSelected = (idsPath) => {
-        setCreateFolderDialogInitialPosition(idsPath);
+    const getStringPathForCurrentFolder = () => {
+        let path = "/";
+        let subTreeBeingWalked = props.myFilesTree;
+        for (let folderId of currentFolderIdsPath) {
+            const folderBeingWalked = subTreeBeingWalked.find(f => f.id === folderId);
+            path += `${folderBeingWalked.name}/`;
+            subTreeBeingWalked = folderBeingWalked.children;
+        }
+        return path;
     }
 
     return <div>
@@ -24,16 +31,13 @@ const FilesBody = (props) => {
             onCreateFolderClicked={() => { setPopupShown("CREATE_FOLDER") }}
             onUploadDocumentsClicked={() => { }} />
         <CreateFolderDialog show={popupShown === "CREATE_FOLDER"}
+            parentFolderStringPath={getStringPathForCurrentFolder()}
+            parentFolderIdsPath={currentFolderIdsPath}
             onDismiss={() => { setPopupShown("NONE") }}
             onSuccess={onFolderAdded}
-            onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }}
-            myFilesTree={props.myFilesTree}
-            initialPosition={createFolderDialogInitialPosition}
-            foldersCount={props.foldersCount}
-            documentsCount={props.documentsCount} />
+            onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
         <FilesBrowser myFilesTree={props.myFilesTree}
-            initialPosition={[]}
-            onFolderPathSelected={onFolderPathSelected}
+            onFolderPathSelected={(idsPath) => { setCurrentFolderIdsPath(idsPath); }}
             foldersCount={props.foldersCount}
             documentsCount={props.documentsCount}
             canClickFiles={true} />

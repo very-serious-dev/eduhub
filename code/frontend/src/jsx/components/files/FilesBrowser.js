@@ -7,7 +7,7 @@ import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 
 const FilesBrowser = (props) => {
     const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
-    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState(props.initialPosition);
+    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
 
     const onFolderSelected = (folderId, level) => {
         const newSelectedFolderIdsPath = selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
@@ -61,8 +61,7 @@ const FilesBrowser = (props) => {
         const rootFoldersTabContent = { view: [] }
         getTree().forEach(rootFolder => {
             rootFoldersTabContent.view.push(
-                <FolderElement id={rootFolder.id}
-                    name={rootFolder.name}
+                <FolderElement folder={rootFolder}
                     level={1}
                     onFolderClicked={onFolderSelected}
                     selected={selectedFolderIdsPath.length > 0 ? selectedFolderIdsPath[0] === rootFolder.id : false} />)
@@ -84,15 +83,13 @@ const FilesBrowser = (props) => {
                 [...folderBeingWalked.children].sort(orderingCriteria).forEach(child => {
                     if (child.type === "folder") {
                         newTab.view.push(
-                            <FolderElement id={child.id}
-                                name={child.name}
+                            <FolderElement folder={child}
                                 level={level}
                                 onFolderClicked={onFolderSelected}
                                 selected={selectedFolderIdsPath[level - 1] === child.id} />);
                     } else if (child.type === "document") {
                         newTab.view.push(
-                            <DocumentElement identifier={child.identifier}
-                                name={child.name}
+                            <DocumentElement document={child}
                                 mimeType={child.mime_type}
                                 size={child.size}
                                 isClickable={props.canClickFiles} />);

@@ -708,9 +708,17 @@ body {
 .myFilesElementName {
 }
 
-.myFilesElementSubtitle {
+.myFilesElementSize {
   font-size: 0.75em;
   margin-left: 32px;
+}
+
+.myFilesElementSpecialText {
+  color: #444;
+  font-size: 0.54em;
+  margin-left: 32px;
+  margin-bottom: 2px;
+  letter-spacing: 0.15em;
 }
 
 .filesFirstTabElement {
@@ -744,15 +752,6 @@ body {
 
 .filesElementSelected {
   background-color: var(--color-tertiary);
-}
-
-.folderPathPickerContainer {
-  /* TODO: Max height? */
-}
-
-.folderPathPickerTitle {
-  margin-left: 24px;
-  margin-top: 8px;
 }
 
 /**
