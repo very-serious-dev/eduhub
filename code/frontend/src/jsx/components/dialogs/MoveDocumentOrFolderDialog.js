@@ -1,36 +1,47 @@
 import { useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
-import { FilesBrowser, getStringPathForFolderIdsPath } from "../files/FilesBrowser";
+import FilesBrowser from "../files/FilesBrowser";
+import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
 
 const MoveDocumentOrFolderDialog = (props) => {
-    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState("");
+    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
     const [isLoading, setLoading] = useState(false);
+
+    const appropriateContainerFolderId = () => {
+        return selectedFolderIdsPath.length > 0 ? selectedFolderIdsPath.slice(-1)[0] : null;
+    }
 
     const onSubmitMoveElement = (event) => {
         event.preventDefault();
         setLoading(true);
+        let url;
         let body = {}
-        if (selectedFolderIdsPath.length > 0) {
-            body["parent_folder_id"] = selectedFolderIdsPath.slice(-1)[0];
+        if (props.folderId) {
+            url = `/api/v1/folders/${props.folderId}`;
+            body["parent_folder_id"] = appropriateContainerFolderId();
+        } else if (props.documentId) {
+            url = `/api/v1/documents/${props.documentId}`;
+            body["folder_id"] = appropriateContainerFolderId();
         }
-        /*
-        EduAPIFetch("POST", "/api/v1/folders", body)
+        console.log("ay")
+        EduAPIFetch("PUT", url, body)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
                     props.onSuccess(json.result);
-                    setFormFolderName("");
+                    setSelectedFolderIdsPath([]);
                 } else {
                     props.onFail("Se ha producido un error");
                 }
                 props.onDismiss();
             })
             .catch(error => {
+                console.log(error)
                 setLoading(false);
                 props.onFail(error.error ?? "Se ha producido un error");
                 props.onDismiss();
-            })*/
+            })
     }
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
@@ -39,11 +50,11 @@ const MoveDocumentOrFolderDialog = (props) => {
                 <div className="dialogTitle">Carpeta de destino</div>
                 <form onSubmit={onSubmitMoveElement}>
                     <div className="dialogScrollableSection">
-                    <FilesBrowser myFilesTree={props.myFilesTree}
-                        onFolderPathSelected={(idsPath) => { setSelectedFolderIdsPath(idsPath); }}
-                        canClickFiles={false}
-                        showContextMenus={false} />
-
+                        <FilesBrowser myFilesTree={props.myFilesTree}
+                            selectedFolderIdsPath={selectedFolderIdsPath}
+                            setSelectedFolderIdsPath={setSelectedFolderIdsPath}
+                            canClickFiles={false}
+                            showContextMenus={false} />
                     </div>
                     <div className="formInput">
                         <input className="formInputGreyBackground"

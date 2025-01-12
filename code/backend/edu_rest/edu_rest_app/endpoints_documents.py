@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse
 from .models import Document, Folder
-from .serializers import documents_array_to_json, folders_array_to_json, folder_to_json
+from .serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json
 
 def handle_documents(request):
     if request.method == "POST":
@@ -82,4 +82,65 @@ def create_folder(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
+def move_or_delete_document(request, document_identifier):
+    if request.method == "DELETE":
+        pass # TODO
+    elif request.method == "PUT":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            document = Document.objects.get(identifier=document_identifier, author=request.session.user)
+        except Document.DoesNotExist:
+            return JsonResponse({"error": "El documento especificado no existe"}, status=404)
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_folder_id = body_json.get("folder_id")
+        if json_folder_id is None:
+            return JsonResponse({"error": "Falta folder_id"}, status=400)
+        try:
+            folder = Folder.objects.get(id=json_folder_id, author=request.session.user)
+        except Folder.DoesNotExist:
+            return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
+        document.folder = folder
+        document.save()
+        return JsonResponse({"success": True,
+                                "result": {
+                                    "operation": "document_changed",
+                                    "document": document_to_json(document)
+                                }}, status=201)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
 
+def move_or_delete_folder(request, folder_id):
+    if request.method == "DELETE":
+        pass # TODO
+    elif request.method == "PUT":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            folder = Folder.objects.get(id=folder_id, author=request.session.user)
+        except Folder.DoesNotExist:
+            return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_parent_folder_id = body_json.get("parent_folder_id")
+        parent_folder = None
+        if json_parent_folder_id is not None:
+            try:
+                parent_folder = Folder.objects.get(id=json_parent_folder_id, author=request.session.user)
+            except Folder.DoesNotExist:
+                return JsonResponse({"error": "La carpeta padre especificada no existe"}, status=404)
+        folder.parent_folder = parent_folder
+        folder.save()
+        return JsonResponse({"success": True,
+                                "result": {
+                                    "operation": "folder_changed",
+                                    "folder": folder_to_json(folder)
+                                }}, status=201)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+    

@@ -1,5 +1,6 @@
 import DocuURL from "../../../client/DocuURL";
 import { iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
+import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
 
 const DocumentElement = (props) => {
 
@@ -9,7 +10,15 @@ const DocumentElement = (props) => {
         }
     }
 
+    const shouldShowContextMenu = () => {
+        return props.showContextMenu && props.document.is_protected !== true;
+    }
+
     return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable" : ""}`} onClick={onClickFile}>
+        {shouldShowContextMenu() && <FilesElementContextMenuButton documentId={props.document.identifier}
+            myFilesTree={props.myFilesTree}
+            onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+            onMoveDeleteFail={props.onMoveDeleteFail} />}
         <div className="myFilesElementTitleContainer">
             <img className="myFilesElementIcon" src={iconImgSrc(props.mimeType)}></img>
             <div className="myFilesElementName">{props.document.name}</div>

@@ -7,19 +7,15 @@ import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 
 const FilesBrowser = (props) => {
     const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
-    const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
 
     const onFolderSelected = (folderId, level) => {
-        const newSelectedFolderIdsPath = selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
-        setSelectedFolderIdsPath(newSelectedFolderIdsPath);
-        props.onFolderPathSelected(newSelectedFolderIdsPath);
+        const newSelectedFolderIdsPath = props.selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
+        props.setSelectedFolderIdsPath(newSelectedFolderIdsPath);
     }
 
     const onRootSelected = (root) => {
-        const newSelectedFolderIdsPath = []
-        setSelectedFolderIdsPath(newSelectedFolderIdsPath);
         setSelectedRoot(root);
-        props.onFolderPathSelected(newSelectedFolderIdsPath);
+        props.setSelectedFolderIdsPath([]);
     }
 
     const compareByName = (a, b) => {
@@ -64,9 +60,11 @@ const FilesBrowser = (props) => {
                 <FolderElement folder={rootFolder}
                     level={1}
                     onFolderClicked={onFolderSelected}
-                    selected={selectedFolderIdsPath.length > 0 ? selectedFolderIdsPath[0] === rootFolder.id : false} 
+                    selected={props.selectedFolderIdsPath.length > 0 ? props.selectedFolderIdsPath[0] === rootFolder.id : false}
                     showContextMenu={props.showContextMenus}
-                    myFilesTree={props.myFilesTree} />)
+                    myFilesTree={props.myFilesTree}
+                    onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+                    onMoveDeleteFail={props.onMoveDeleteFail} />)
         })
         return [firstTabContent, rootFoldersTabContent];
     }
@@ -76,7 +74,7 @@ const FilesBrowser = (props) => {
         const tabs = [];
         let level = 2;
         let subTreeBeingWalked = getTree();
-        for (let folderId of selectedFolderIdsPath) {
+        for (let folderId of props.selectedFolderIdsPath) {
             const newTab = { view: [] }
             const folderBeingWalked = subTreeBeingWalked.find(f => f.id === folderId);
             if (folderBeingWalked.children.length === 0) {
@@ -88,9 +86,11 @@ const FilesBrowser = (props) => {
                             <FolderElement folder={child}
                                 level={level}
                                 onFolderClicked={onFolderSelected}
-                                selected={selectedFolderIdsPath[level - 1] === child.id}
+                                selected={props.selectedFolderIdsPath[level - 1] === child.id}
                                 showContextMenu={props.showContextMenus}
-                                myFilesTree={props.myFilesTree} />);
+                                myFilesTree={props.myFilesTree}
+                                onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+                                onMoveDeleteFail={props.onMoveDeleteFail} />);
                     } else if (child.type === "document") {
                         newTab.view.push(
                             <DocumentElement document={child}
@@ -98,7 +98,9 @@ const FilesBrowser = (props) => {
                                 size={child.size}
                                 showContextMenu={props.showContextMenus}
                                 isClickable={props.canClickFiles}
-                                myFilesTree={props.myFilesTree} />);
+                                myFilesTree={props.myFilesTree}
+                                onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+                                onMoveDeleteFail={props.onMoveDeleteFail} />);
                     }
                 });
                 subTreeBeingWalked = folderBeingWalked.children;
@@ -116,20 +118,8 @@ const FilesBrowser = (props) => {
     return <TabbedActivity tabs={tabsForSelectedPath()}
         tabContentWidthPercentage={33}
         showTitles={false}
-        forcedTabSelectedIndex={Math.max(0, selectedFolderIdsPath.length - 1)} 
+        forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - 1)}
         emptyFooter={props.showContextMenus === true} />
 }
 
-const getStringPathForFolderIdsPath = (folderIdsPath, tree) => {
-    let path = "/";
-    let subTreeBeingWalked = tree;
-    for (let folderId of folderIdsPath) {
-        const folderBeingWalked = subTreeBeingWalked.find(f => f.id === folderId);
-        path += `${folderBeingWalked.name}/`;
-        subTreeBeingWalked = folderBeingWalked.children;
-    }
-    return path;
-}
-
-export { FilesBrowser };
-export { getStringPathForFolderIdsPath };
+export default FilesBrowser;

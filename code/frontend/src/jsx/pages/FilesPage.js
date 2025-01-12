@@ -30,6 +30,18 @@ const FilesPage = () => {
         if (result.operation === "documents_added") {
             setDocumentsAndFolders(old => { return { documents: [...old.documents, ...result.documents], folders: old.folders }});
         }
+        if (result.operation === "folder_changed") {
+            setDocumentsAndFolders(old => {
+                const newFolders = old.folders.map(f => { if (f.id === result.folder.id) return result.folder; else return f });
+                return { documents: old.documents, folders: newFolders }
+            });
+        }
+        if (result.operation === "document_changed") {
+            setDocumentsAndFolders(old => {
+                const newDocuments = old.documents.map(d => { if (d.identifier === result.document.identifier) return result.document; else return d });
+                return { documents: newDocuments, folders: old.folders }
+            });
+        }
     }
 
     const findAllChildrenAndRecursivelyInsertInto = (folder, remainingFoldersMutable) => {

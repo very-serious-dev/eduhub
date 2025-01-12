@@ -21,6 +21,10 @@ const FilesElementContextMenuButton = (props) => {
         }
         <MoveDocumentOrFolderDialog show={popupShown === "MOVE"}
             onDismiss={() => { setPopupShown("NONE"); }}
+            onSuccess={props.onMoveDeleteSuccess}
+            onFail={props.onMoveDeleteFail}
+            folderId={props.folderId}
+            documentId={props.documentId}
             myFilesTree={props.myFilesTree} />
     </>
 }
