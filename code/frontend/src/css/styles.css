@@ -1419,11 +1419,11 @@ input:valid ~ .underline:before {
   background-color: var(--color-secondary);
 }
 
-.dialogScrollableSection {
+.dialogScrollableFixedHeightSection {
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
-  max-height: 60vh;
+  height: 55vh;
 }
 
 /**

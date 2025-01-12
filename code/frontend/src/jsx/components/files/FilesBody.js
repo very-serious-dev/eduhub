@@ -28,6 +28,12 @@ const FilesBody = (props) => {
                 setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
             }
         }
+        if (moveOrDeleteResult.operation === "folder_deleted") {
+            const folderLevel = currentFolderIdsPath.indexOf(moveOrDeleteResult.folder_id);
+            if (folderLevel !== -1) {
+                setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
+            }
+        }
     }
 
     return <div>

@@ -84,7 +84,18 @@ def create_folder(request):
 
 def move_or_delete_document(request, document_identifier):
     if request.method == "DELETE":
-        pass # TODO
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            document = Document.objects.get(identifier=document_identifier, author=request.session.user)
+        except Document.DoesNotExist:
+            return JsonResponse({"error": "El documento especificado no existe"}, status=404)
+        document.delete()
+        return JsonResponse({"success": True,
+                                "result": {
+                                    "operation": "document_deleted",
+                                    "document_identifier": document_identifier
+                                }}, status=200)
     elif request.method == "PUT":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
@@ -109,13 +120,24 @@ def move_or_delete_document(request, document_identifier):
                                 "result": {
                                     "operation": "document_changed",
                                     "document": document_to_json(document)
-                                }}, status=201)
+                                }}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 def move_or_delete_folder(request, folder_id):
     if request.method == "DELETE":
-        pass # TODO
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            folder = Folder.objects.get(id=folder_id, author=request.session.user)
+        except Folder.DoesNotExist:
+            return JsonResponse({"error": "La carpeta no existe"}, status=404)
+        folder.delete()
+        return JsonResponse({"success": True,
+                                "result": {
+                                    "operation": "folder_deleted",
+                                    "folder_id": folder_id
+                                }}, status=200)
     elif request.method == "PUT":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
@@ -140,7 +162,7 @@ def move_or_delete_folder(request, folder_id):
                                 "result": {
                                     "operation": "folder_changed",
                                     "folder": folder_to_json(folder)
-                                }}, status=201)
+                                }}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     

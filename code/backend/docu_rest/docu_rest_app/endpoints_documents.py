@@ -5,7 +5,7 @@ from .models import Document
 def create_document(request):
     if request.method == "POST":
         if request.session is None:
-            return JsonResponse({"error": "Privilegios insuficientes"}, status=401)
+            return JsonResponse({"error": "No autenticado"}, status=401)
         try:
             body_json = json.loads(request.body)
         except json.decoder.JSONDecodeError:
@@ -41,6 +41,15 @@ def document(request, identifier):
         response["Last-Modified"] = document.created_at; # TO-DO: Browser is currently not sending If-Modified-Since. Check why and implement 304 response
         response["Cache-Control"] = "private, max-age=604800"
         return response
+    elif request.method == "DELETE":
+        if request.session is None:
+            return JsonResponse({"error": "No autenticado"}, status=401)
+        try:
+            document = Document.objects.get(identifier=identifier, author_uid=request.session.user_id)
+        except Document.DoesNotExist:
+            return JsonResponse({"error": "Ese documento no existe o no tienes privilegios suficientes"}, status=400)
+        document.delete()
+        return JsonResponse({"success": True})
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
         

@@ -55,7 +55,7 @@ const FilesBrowser = (props) => {
                 documentsCount={props.documentsCount} />
         }
         const rootFoldersTabContent = { view: [] }
-        getTree().forEach(rootFolder => {
+        getTree().sort(orderingCriteria).forEach(rootFolder => {
             rootFoldersTabContent.view.push(
                 <FolderElement folder={rootFolder}
                     level={1}

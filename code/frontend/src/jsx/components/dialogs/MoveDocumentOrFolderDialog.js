@@ -24,7 +24,6 @@ const MoveDocumentOrFolderDialog = (props) => {
             url = `/api/v1/documents/${props.documentId}`;
             body["folder_id"] = appropriateContainerFolderId();
         }
-        console.log("ay")
         EduAPIFetch("PUT", url, body)
             .then(json => {
                 setLoading(false);
@@ -37,7 +36,6 @@ const MoveDocumentOrFolderDialog = (props) => {
                 props.onDismiss();
             })
             .catch(error => {
-                console.log(error)
                 setLoading(false);
                 props.onFail(error.error ?? "Se ha producido un error");
                 props.onDismiss();
@@ -49,7 +47,7 @@ const MoveDocumentOrFolderDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Carpeta de destino</div>
                 <form onSubmit={onSubmitMoveElement}>
-                    <div className="dialogScrollableSection">
+                    <div className="dialogScrollableFixedHeightSection">
                         <FilesBrowser myFilesTree={props.myFilesTree}
                             selectedFolderIdsPath={selectedFolderIdsPath}
                             setSelectedFolderIdsPath={setSelectedFolderIdsPath}
@@ -62,7 +60,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.myFilesTree)} disabled={true} />
                     </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Mover" />
+                        <input type="submit" value="Mover" disabled={props.documentId && selectedFolderIdsPath.length === 0}/>
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>
