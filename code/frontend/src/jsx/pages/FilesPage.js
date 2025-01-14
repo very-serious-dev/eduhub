@@ -57,7 +57,6 @@ const FilesPage = () => {
     }
 
     const findAllChildrenAndRecursivelyInsertInto = (folder, remainingFoldersMutable) => {
-        if (remainingFoldersMutable.length === 0) { return; }
         for (let i = remainingFoldersMutable.length - 1; i >= 0; i--) {
             if (remainingFoldersMutable[i].parent_folder_id === folder.id) {
                 const childFolder = remainingFoldersMutable.splice(i, 1)[0];
@@ -75,7 +74,9 @@ const FilesPage = () => {
             allFoldersById[f.id] = { ...f, children: [] };
         });
         documentsAndFolders.documents.forEach(d => {
-            allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
+            if (allFoldersById[d.folder_id] !== undefined) { // After a folder deletion we might find orphaned documents
+                allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
+            }
         });
         const allFolders = []
         for (let folderId of Object.keys(allFoldersById)) {
@@ -107,9 +108,7 @@ const FilesPage = () => {
         : isRequestFailed ?
             <ErrorPage errorMessage={requestErrorMessage} />
             : <FilesBody myFilesTree={buildTree()}
-                onFilesChanged={onFilesChanged}
-                foldersCount={documentsAndFolders.folders.length}
-                documentsCount={documentsAndFolders.documents.length} />
+                onFilesChanged={onFilesChanged} />
 }
 
 export default FilesPage;

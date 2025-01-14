@@ -15,7 +15,7 @@ const DocumentElement = (props) => {
     }
 
     return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable" : ""}`} onClick={onClickFile}>
-        {shouldShowContextMenu() && <FilesElementContextMenuButton documentId={props.document.identifier}
+        {shouldShowContextMenu() && <FilesElementContextMenuButton document={props.document}
             myFilesTree={props.myFilesTree}
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}
             onMoveDeleteFail={props.onMoveDeleteFail} />}

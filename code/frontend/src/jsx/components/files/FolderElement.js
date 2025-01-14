@@ -8,7 +8,7 @@ const FolderElement = (props) => {
 
     return <div className={`myFilesElementContainer myFilesElementContainerHoverable ${props.selected ? "filesElementSelected" : "filesElementUnselected"}`}
         onClick={() => { props.onFolderClicked(props.folder.id, props.level) }}>
-        {shouldShowContextMenu() && <FilesElementContextMenuButton folderId={props.folder.id}
+        {shouldShowContextMenu() && <FilesElementContextMenuButton folder={props.folder}
             myFilesTree={props.myFilesTree}
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}
             onMoveDeleteFail={props.onMoveDeleteFail} />}

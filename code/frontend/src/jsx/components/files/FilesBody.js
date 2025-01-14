@@ -57,8 +57,6 @@ const FilesBody = (props) => {
         <FilesBrowser myFilesTree={props.myFilesTree}
             selectedFolderIdsPath={currentFolderIdsPath}
             setSelectedFolderIdsPath={setCurrentFolderIdsPath}
-            foldersCount={props.foldersCount}
-            documentsCount={props.documentsCount}
             canClickFiles={true}
             showContextMenus={true}
             onMoveDeleteSuccess={onMoveDeleteSuccess}

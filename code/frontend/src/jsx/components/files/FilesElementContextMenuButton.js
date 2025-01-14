@@ -13,19 +13,38 @@ const FilesElementContextMenuButton = (props) => {
         setPopupShown("CONTEXT_MENU");
     }
 
-    // TODO: Implement deleting non-empty folders by traversing them and
-    // removing all subitems 
-    // 
-    // Pending tasks:
+    const traverseTreeAndAccumulateDocuments = (folder, mutableAccumulatedDocumentIds) => {
+        if (folder.children.length > 0) {
+            for (const child of folder.children) {
+                if (child.type === "document") {
+                    mutableAccumulatedDocumentIds.push(child.identifier);
+                } else if (child.type === "folder") {
+                    traverseTreeAndAccumulateDocuments(child, mutableAccumulatedDocumentIds);
+                }
+            }
+        }
+    }
+
+    const getDocumentIds = () => {
+        if (props.document) { return [ props.document.identifier ] }
+        if (props.folder) {
+            const documentIds = []
+            traverseTreeAndAccumulateDocuments(props.folder, documentIds);
+            return documentIds;
+        }
+    }
+
+    // TODO: Pending tasks:
     // - Maximum number of files/documents/hard disk space per user
     // - Sharing files and folders
-    
+
     const onDelete = () => {
         setLoadingDelete(true);
-        if (props.folderId) {
+        const documentIds = getDocumentIds();
+        if (documentIds.length === 0) {
             sendEduAPIDeleteRequest();
-        } else if (props.documentId) {
-            DocuAPIFetch("DELETE", `/api/v1/documents/${props.documentId}`, {})
+        } else {
+            DocuAPIFetch("DELETE", `/api/v1/documents`, { ids: documentIds })
                 .then(json => {
                     if (json.success === true) {
                         sendEduAPIDeleteRequest();
@@ -46,10 +65,10 @@ const FilesElementContextMenuButton = (props) => {
     const sendEduAPIDeleteRequest = () => {
         setLoadingDelete(true);
         let url;
-        if (props.folderId) {
-            url = `/api/v1/folders/${props.folderId}`;
-        } else if (props.documentId) {
-            url = `/api/v1/documents/${props.documentId}`;
+        if (props.folder) {
+            url = `/api/v1/folders/${props.folder.id}`;
+        } else if (props.document) {
+            url = `/api/v1/documents/${props.document.id}`;
         }
         EduAPIFetch("DELETE", url, {})
             .then(json => {
