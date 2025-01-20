@@ -29,6 +29,8 @@ const FilesBody = (props) => {
             }
         }
         if (moveOrDeleteResult.operation === "folder_deleted") {
+            // TODO: If we were to implement local cache usage for files+folders...
+            //       We would need to prune orphaned folders and documents!
             const folderLevel = currentFolderIdsPath.indexOf(moveOrDeleteResult.folder_id);
             if (folderLevel !== -1) {
                 setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));

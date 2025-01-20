@@ -50,7 +50,8 @@ const FilesBrowser = (props) => {
         /* The first 2 tabs for the file browser */
         const firstTabContent = {
             view: <FilesFirstTabContent selectedRoot={selectedRoot}
-                onRootClicked={onRootSelected} />
+                onRootClicked={onRootSelected}
+                tree={props.myFilesTree} />
         }
         const rootFoldersTabContent = { view: [] }
         getTree().sort(orderingCriteria).forEach(rootFolder => {

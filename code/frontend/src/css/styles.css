@@ -737,6 +737,12 @@ body {
   padding: 6px;
 }
 
+.filesFirstTabSubtitle {
+  font-size: 0.75em;
+  color: #666;
+  padding-top: 4px;
+}
+
 .emptyFolderTab {
   text-align: center;
   padding: 32px;

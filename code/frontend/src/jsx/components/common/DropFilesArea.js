@@ -2,7 +2,7 @@ import { useState } from "react";
 import DropFilesAreaItem from "./DropFilesAreaItem";
 
 const DropFilesArea = (props) => {
-    const MAX_SIZE = {nBytes: 1024*1024*30, humanReadable: "30 Mb"}
+    const MAX_SIZE = {nBytes: 1024*1024*50, humanReadable: "50 MB"}
     const MAX_ATTACHMENTS = 5;
     const [dropAreaActive, setDropAreaActive] = useState(false);
     const [isReadingFiles, setReadingFiles] = useState(false);
