@@ -2,6 +2,7 @@ import bcrypt, json, re
 from django.http import JsonResponse
 from django.db.models import Q
 from .models import User, Group, Class, UserClass, UserSession
+from .models import TEACHER_MAX_DOCUMENTS_SIZE, TEACHER_MAX_DOCUMENTS, STUDENT_MAX_DOCUMENTS_SIZE, STUDENT_MAX_DOCUMENTS
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
 from .admin_secret import ADMIN_SECRET
 
@@ -147,7 +148,9 @@ def verify_session(request): # This is received from another server (DocuREST); 
             return JsonResponse({"error": "Error"}, status=400)
         user_session.one_time_token_already_used = True
         user_session.save()
-        return JsonResponse({"user_id": user_session.user.id})
+        return JsonResponse({"user_id": user_session.user.id,
+                             "max_documents_allowed": STUDENT_MAX_DOCUMENTS if user_session.user.role == User.UserRole.STUDENT else TEACHER_MAX_DOCUMENTS,
+                             "max_bytes_allowed": STUDENT_MAX_DOCUMENTS_SIZE if user_session.user.role == User.UserRole.STUDENT else TEACHER_MAX_DOCUMENTS_SIZE })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
     

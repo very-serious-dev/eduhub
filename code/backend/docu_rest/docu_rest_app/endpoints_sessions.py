@@ -23,12 +23,16 @@ def login_logout(request):
         try:
             edu_rest_json_response = edu_rest_response.json()
             json_edu_rest_user_id = edu_rest_json_response["user_id"]
+            json_edu_rest_max_docs_size = edu_rest_json_response["max_bytes_allowed"]
+            json_edu_rest_max_docs = edu_rest_json_response["max_documents_allowed"]
         except (requests.JSONDecodeError, KeyError):
             return JsonResponse({"error": "Error verificando identidad"}, status=502)
         # Let's create a new session
         random_token = secrets.token_hex(20)
         session = UserSession()
         session.user_id = json_edu_rest_user_id
+        session.max_docs_size = json_edu_rest_max_docs_size
+        session.max_docs = json_edu_rest_max_docs
         session.token = random_token
         session.save()
         response = JsonResponse({"success": True}, status=201)
