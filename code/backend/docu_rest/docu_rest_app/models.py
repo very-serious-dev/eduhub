@@ -2,15 +2,13 @@ from django.db import models
 
 class UserSession(models.Model):
     user_id = models.IntegerField()
-    max_docs_size = models.IntegerField()
-    max_docs = models.IntegerField()
     # Sent to client after successful login via HttpOnly Set-Cookie
     token = models.CharField(unique=True, max_length=50)
 
 class Document(models.Model):
+    identifier = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=150)
     author_uid = models.IntegerField()
-    identifier = models.CharField(max_length=20, unique=True)
     mime_type = models.CharField(max_length=50)
     created_at = models.DateTimeField(auto_now=True)
     size = models.IntegerField()

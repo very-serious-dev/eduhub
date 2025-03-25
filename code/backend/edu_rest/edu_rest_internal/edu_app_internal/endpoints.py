@@ -28,9 +28,6 @@ def verify_session(request): # See docs/auth_flow.txt for further information
             return JsonResponse({"error": "Error"}, status=400)
         user_session.one_time_token_already_used = True
         user_session.save()
-        return JsonResponse({"user_id": user_session.user.id,
-                             "max_folders_allowed": user_session.user.max_folders,
-                             "max_documents_allowed": user_session.user.max_documents,
-                             "max_bytes_allowed": user_session.user.max_documents_size })
+        return JsonResponse({"user_id": user_session.user.id })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
