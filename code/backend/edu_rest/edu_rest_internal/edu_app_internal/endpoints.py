@@ -33,7 +33,7 @@ def verify_session(request): # See docs/auth_flow.txt for further information
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def create_documents(request):
+def create_or_delete_documents(request):
     if request.method == "POST":
         try:
             body_json = json.loads(request.body)
@@ -44,10 +44,8 @@ def create_documents(request):
         json_user_id = body_json.get("user_id")
         json_current_quota_usage = body_json.get("current_quota_usage")
         json_parent_folder_id = body_json.get("parent_folder_id")
-        print("a")
         if json_internal_secret is None or json_documents is None or json_user_id is None or json_current_quota_usage is None:
             return JsonResponse({"error": "Error"}, status=400)
-        print("B")
         if json_internal_secret != INTERNAL_SECRET:
             return JsonResponse({"error": "Error"}, status=400)
         try:
@@ -87,5 +85,39 @@ def create_documents(request):
             document.created_at = datetime.today()
             document.save()
         return JsonResponse({"success": True})
+    elif request.method == "DELETE":
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_internal_secret = body_json.get("internal_secret")
+        json_document_ids = body_json.get("document_ids")
+        json_folder_ids = body_json.get("folder_ids")
+        json_user_id = body_json.get("user_id")
+        if json_internal_secret is None or json_document_ids is None or json_folder_ids is None or json_user_id is None:
+            return JsonResponse({"error": "Error"}, status=400)
+        if json_internal_secret != INTERNAL_SECRET:
+            return JsonResponse({"error": "Error"}, status=400)
+        try:
+            user = EduAppUser.objects.get(id=json_user_id)
+        except EduAppUser.DoesNotExist:
+            return JsonResponse({"error": "Error"}, status=400)
+        deleted_document_ids = []
+        deleted_folder_ids = []
+        for did in json_document_ids:
+            try:
+                document = EduAppDocument.objects.get(identifier=did, author=user)
+                document.delete()
+                deleted_document_ids.append(did)
+            except EduAppDocument.DoesNotExist:
+                pass
+        for fid in json_folder_ids:
+            try:
+                folder = EduAppFolder.objects.get(id=fid, author=user)
+                folder.delete()
+                deleted_folder_ids.append(fid)
+            except EduAppFolder.DoesNotExist:
+                pass
+        return JsonResponse({"success": True, "deleted_folder_ids": deleted_folder_ids, "deleted_document_ids": deleted_document_ids })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

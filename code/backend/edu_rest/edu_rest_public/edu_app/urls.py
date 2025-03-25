@@ -22,6 +22,6 @@ urlpatterns = [
     path("assignments/<int:assignmentId>/submits",   endpoints_posts.create_assignment_submit),
     path("documents",                                endpoints_documents.handle_documents),
     path("folders",                                  endpoints_documents.create_folder),
-    path("documents/<document_identifier>",          endpoints_documents.move_or_delete_document),
-    path("folders/<int:folder_id>",                  endpoints_documents.move_or_delete_folder)
+    path("documents/<document_identifier>",          endpoints_documents.move_document),
+    path("folders/<int:folder_id>",                  endpoints_documents.move_folder)
 ]

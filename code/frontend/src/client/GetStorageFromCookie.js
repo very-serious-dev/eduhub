@@ -4,8 +4,6 @@ const GetStorageFromCookie = () => {
         let keyValueArr = cookie.trim().split("=")
         if (keyValueArr[0] === "MaxStorage") {
             const foldersDocsBytesValue = keyValueArr[1].split("-")
-            console.log("hola")
-            console.log(foldersDocsBytesValue)
             result.folders = foldersDocsBytesValue[0]
             result.documents = foldersDocsBytesValue[1]
             result.bytes = foldersDocsBytesValue[2]

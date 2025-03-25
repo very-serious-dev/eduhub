@@ -42,16 +42,11 @@ const FilesPage = () => {
                 return { documents: newDocuments, folders: old.folders }
             });
         }
-        if (result.operation === "folder_deleted") {
+        if (result.operation === "files_deleted") {
             setDocumentsAndFolders(old => {
-                const newFolders = old.folders.filter(f => f.id !== result.folder_id);
-                return { documents: old.documents, folders: newFolders }
-            });
-        }
-        if (result.operation === "document_deleted") {
-            setDocumentsAndFolders(old => {
-                const newDocuments = old.documents.filter(d => d.identifier !== result.document_identifier);
-                return { documents: newDocuments, folders: old.folders }
+                const newFolders = old.folders.filter(f => !result.removed_folders_ids.includes(f.id));
+                const newDocuments = old.documents.filter(d => !result.removed_documents_ids.includes(d.identifier));
+                return { documents: newDocuments, folders: newFolders }
             });
         }
     }

@@ -27,12 +27,12 @@ const FilesBody = (props) => {
             if (folderLevel !== -1) {
                 setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
             }
-        }
-        if (moveOrDeleteResult.operation === "folder_deleted") {
-            // TODO: If we were to implement local cache usage for files+folders...
-            //       We would need to prune orphaned folders and documents!
-            const folderLevel = currentFolderIdsPath.indexOf(moveOrDeleteResult.folder_id);
-            if (folderLevel !== -1) {
+        } else if (moveOrDeleteResult.operation === "files_deleted") {
+            let folderLevel = Number.MAX_VALUE
+            moveOrDeleteResult.removed_folders_ids.forEach(oneFolderIdThatWasRemoved => {
+                folderLevel = Math.min(folderLevel, currentFolderIdsPath.indexOf(oneFolderIdThatWasRemoved))
+            });
+            if (folderLevel !== Number.MAX_VALUE) {
                 setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
             }
         }
