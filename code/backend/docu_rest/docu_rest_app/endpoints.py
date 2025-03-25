@@ -14,9 +14,10 @@ def allowed_gai_family_override():
 urllib3_cn.allowed_gai_family = allowed_gai_family_override
 
 
-EDU_REST_INTERNAL_BASE_URL        = "http://localhost:8002"
-VERIFY_SESSION_ENDPOINT           = "/internal/v1/sessions"
-CREATE_DELETE_DOCUMENTS_ENDPOINT  = "/internal/v1/documents"
+EDU_REST_INTERNAL_BASE_URL         = "http://localhost:8002"
+VERIFY_SESSION_ENDPOINT            = "/internal/v1/sessions"
+CREATE_DELETE_DOCUMENTS_ENDPOINT   = "/internal/v1/documents"
+DOCUMENTS_PERMISSIONS_ENDPOINT     = "/internal/v1/documents/permissions"
 
 def login_logout(request):
     if request.method == "POST":
@@ -154,17 +155,24 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
         return JsonResponse({"error": "Unsupported"}, status=405)
         
 def get_document(request, identifier):
-    # TO-DO: Right now all documents are public to everyone
-    # Implement visibility and privileges!
     if request.method == "GET":
+        if request.session is None:
+            return JsonResponse({"error": "No autenticado"}, status=401)
         try:
             document = Document.objects.get(identifier=identifier)
         except Document.DoesNotExist:
-            return JsonResponse({"error": "Ese documento no existe"}, status=404) # NICE-TO-HAVE: More user friendly response
+            return JsonResponse({"error": "Ese documento no existe"}, status=404)
+        edu_rest_json_body = { "internal_secret": INTERNAL_SECRET,
+                               "user_id": request.session.user_id }
+        edu_rest_response = requests.get(EDU_REST_INTERNAL_BASE_URL + DOCUMENTS_PERMISSIONS_ENDPOINT + "?identifier=" + identifier, json=edu_rest_json_body)
+        
+        if edu_rest_response.status_code == 403:
+            return JsonResponse({"error": "No tienes permisos para acceder a ese fichero"}, status=403)
+        elif edu_rest_response.status_code != 200:
+            return JsonResponse({"error": "Error"}, status=502)
+        # EduREST internal request was 200 OK - You can see the file
         response = HttpResponse(document.data, content_type=document.mime_type)
         response["Content-Disposition"] = "filename=" + document.name;
-        response["Last-Modified"] = document.created_at; # TO-DO: Browser is currently not sending If-Modified-Since. Check why and implement 304 response
-        response["Cache-Control"] = "private, max-age=604800"
         return response
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

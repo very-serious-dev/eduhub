@@ -121,3 +121,35 @@ def create_or_delete_documents(request):
         return JsonResponse({"success": True, "deleted_folder_ids": deleted_folder_ids, "deleted_document_ids": deleted_document_ids })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
+
+def documents_permissions(request):
+    if request.method == "GET":
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_internal_secret = body_json.get("internal_secret")
+        json_user_id = body_json.get("user_id")
+        document_identifier = request.GET.get("identifier")
+        if json_internal_secret is None or json_user_id is None or document_identifier is None:
+            return JsonResponse({"error": "Error"}, status=400)
+        if json_internal_secret != INTERNAL_SECRET:
+            return JsonResponse({"error": "Error"}, status=400)
+        try:
+            user = EduAppUser.objects.get(id=json_user_id)
+        except EduAppUser.DoesNotExist:
+            return JsonResponse({"error": "Error"}, status=400)
+        try:
+            document = EduAppDocument.objects.get(identifier=document_identifier)
+        except EduAppDocument.DoesNotExist:
+            return JsonResponse({"error": "Error"}, status=400)
+        if document.author == user:
+            return JsonResponse({"success": True}, status=200)
+        else:
+            # TO-DO: Thoroughly implement view permissions for documents
+            # (Not only you can access a document if you're the author)
+            # Also if:
+            # - It's posted by a teacher in a class you belong to
+            # - It's an assignment of a class you belong to as a teacher
+            # - Access was explicitly granted to you
+            return JsonResponse({"error": "Forbidden"}, status=403)
