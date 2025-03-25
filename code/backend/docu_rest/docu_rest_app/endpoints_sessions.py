@@ -2,10 +2,10 @@ import json, requests, secrets
 from django.http import JsonResponse
 from .middleware_auth import AUTH_COOKIE_KEY
 from .models import UserSession
-from .admin_secret import ADMIN_SECRET
+from .internal_secret import INTERNAL_SECRET
 
-EDU_REST_BASE_URL = "http://localhost:8000"
-EDU_REST_VERIFY_SESSION_ENDPOINT = "/api/v1/admin/sessions"
+EDU_REST_INTERNAL_BASE_URL = "http://localhost:8002"
+EDU_REST_INTERNAL_VERIFY_SESSION_ENDPOINT = "/internal/v1/sessions"
 
 def login_logout(request):
     if request.method == "POST":
@@ -16,8 +16,8 @@ def login_logout(request):
         json_one_time_token = body_json.get("one_time_token")
         if json_one_time_token is None:
             return JsonResponse({"error": "Falta one_time_token en el cuerpo de la petición"}, status=400)
-        verify_identity_request_body = { "admin_secret": ADMIN_SECRET, "one_time_token": json_one_time_token }
-        edu_rest_response = requests.post(EDU_REST_BASE_URL + EDU_REST_VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body)
+        verify_identity_request_body = { "internal_secret": INTERNAL_SECRET, "one_time_token": json_one_time_token }
+        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + EDU_REST_INTERNAL_VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error verificando identidad"}, status=502)
         try:

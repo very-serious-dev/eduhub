@@ -1,34 +1,45 @@
-# In EduPlatform we have two REST APIs:
+# Auth flow explained:
+#                                                                  Backend 
 #
-# - EduREST keeps the users information, classes, groups, etc.
-# - DocuREST keeps the users' documents.
+#  __________________________________                  ______________________
+# | <Server A>                       |_________   (4) | <Server B>           |
+# |                                  | EduREST | ←--- |                      |
+# | Database containing users,       | internal| ---→ | Database containing  |
+# | sessions, classes, assignments,  |_________|  (5) | documents raw data   |
+# | files permissions, etc.          |                |                      |
+# |__________________________________|                |______________________|
+#        | EduREST Public |                              | DocuREST |
+#        |________________|                              |__________|
 #
-# In order to login, a client makes 2 requests:
+#            ↑  |                                  _________↑     |
+#            |  |                                 |               |
+#         (1)|  |(2)                           (3)|    ___________|(6)
+# -  -  -  - |- | -  -  -  -  -  -  -  -  -  -  - | - |-  -  -  -  -  -  - 
+#            |  |                                 |   |
+#            |  |                                 |   |
+#            |  ↓                                 |   ↓          Frontend
+#  ______________________________________________________
+# |                                                      |
+# | Webpage JS making HTTP requests                      |
+# |                                                      |
+# | This webpage is loaded from a <Server C> (React app) |
+# |______________________________________________________|
 #
-# 1. React Client ----- POST /sessions (username+password) ----> EduREST
-#                                                                  |
-#         <------------ Set-Cookie (HttpOnly) session token -------|
-#                             JSON response: one_time_token
+# 1. POST /api/v1/sessions
+#    JSON body: username and password
 #
-# 2. React Client ----- POST /sessions (one_time_token) ------> DocuREST
-#                                                                  |
-#                 EduREST <---- POST /admin/sessions --------------|
-#                    |          (admin secret+one_time_token)
-#                    |
-#                    |--------- JSON response: user_id -------> DocuREST
-#                                                                  |
-#         <------------ Set-Cookie (HttpOnly) session token -------|
+# 2. 201
+#    Set-Cookie (HttpOnly) session token for EduREST
+#    JSON response: one_time_token
 #
-
-# In step 2, DocuREST HTTP POST to EduREST's /admin/sessions might be
-# forged, but still, an attacker can't easily steal the one_time_token.
+# 3. POST /api/v1/sessions
+#    JSON body: one_time_token
 #
-# If such one_time_token was stolen via XSS or other means, the EduREST
-# still checks that no duplicate calls to /admin/sessions with the same
-# one_time_token (for verification purposes) are made. If that happened,
-# EduREST would invalidate the session. So an attacker should not only
-# have to steal the one_time_token (XSS vulnerable due to not being HttpOnly)
-# to gain a DocuREST session; they should also prevent the legit DocuREST
-# request from happening.
+#    4. POST /internal/v1/sessions
+#       JSON body: one_time_token and internal secret
 #
-# Anyway, for extra security, an admin secret key is hardcoded in both servers
+#    5. 200
+#       JSON response: user_id
+#
+# 6. 201
+#    Set-Cookie (HttpOnly) session token for DocuREST

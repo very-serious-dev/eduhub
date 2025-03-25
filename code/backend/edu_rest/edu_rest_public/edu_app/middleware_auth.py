@@ -2,6 +2,7 @@ from .models import UserSession
 
 AUTH_COOKIE_KEY = "EduSessionToken"
 ROLES_COOKIE_KEY = "UserRoles"
+MAX_STORAGE_COOKIE_KEY = "MaxStorage"
 
 class AuthMiddleware:
     def __init__(self, get_response):

@@ -1,13 +1,6 @@
 from django.db import models
 
 TOKEN_SIZE=30
-# Note: These contants appear also in the React app
-TEACHER_MAX_FOLDERS = 500
-TEACHER_MAX_DOCUMENTS = 2000
-TEACHER_MAX_DOCUMENTS_SIZE = 20 * 1024 * 1024 * 1024 # 20Gb
-STUDENT_MAX_FOLDERS = 50
-STUDENT_MAX_DOCUMENTS = 200
-STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 1024 # 1Gb
 
 ##
 # USERS
@@ -27,6 +20,9 @@ class User(models.Model):
     encrypted_password = models.CharField(max_length=120)
     role = models.IntegerField(choices=UserRole)
     student_group = models.ForeignKey("Group", on_delete=models.SET_NULL, null=True, default=None)
+    max_folders = models.IntegerField()
+    max_documents = models.IntegerField()
+    max_documents_size = models.IntegerField()
 
 class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -58,6 +54,14 @@ class Document(models.Model):
     is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=True)
 
+class UserDocumentPermission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+
+class UserFolderPermission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
+
 ##
 # CLASSES
 #
@@ -69,8 +73,14 @@ class Group(models.Model):
     year = models.CharField(max_length=10)
 
 class Class(models.Model):
+
+    class ClassTheme(models.IntegerChoices):
+        RED = 0
+        GREEN = 1
+        BLUE = 2
+
     name = models.CharField(max_length=50)
-    color = models.CharField(max_length=7) #TODO: Remove this, use preselected choices
+    theme = models.IntegerField(choices=ClassTheme)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
 
@@ -94,14 +104,14 @@ class Post(models.Model):
         AMENDMENT_EDIT = 2
         AMENDMENT_DELETE = 3
 
-    title = models.CharField(max_length=100, null=True)
-    content = models.CharField(max_length=3000, null=True)
+    title = models.CharField(max_length=100)
+    content = models.CharField(max_length=3000)
     kind = models.IntegerField(choices=PostKind)
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
-    unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
-    assignment_due_date = models.DateField(null=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     publication_date = models.DateTimeField(auto_now=True)
+    unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
+    assignment_due_date = models.DateField(null=True)
     amendment_original_post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
 
 class PostDocument(models.Model):

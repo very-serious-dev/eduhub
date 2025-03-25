@@ -2,9 +2,14 @@ import bcrypt, json, re
 from django.http import JsonResponse
 from django.db.models import Q
 from .models import User, Group, Class, UserClass, UserSession
-from .models import TEACHER_MAX_DOCUMENTS_SIZE, TEACHER_MAX_DOCUMENTS, STUDENT_MAX_DOCUMENTS_SIZE, STUDENT_MAX_DOCUMENTS
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
-from .admin_secret import ADMIN_SECRET
+
+TEACHER_MAX_FOLDERS = 500
+TEACHER_MAX_DOCUMENTS = 2000
+TEACHER_MAX_DOCUMENTS_SIZE = 20 * 1024 * 1024 * 1024 # 20Gb
+STUDENT_MAX_FOLDERS = 50
+STUDENT_MAX_DOCUMENTS = 200
+STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 1024 # 1Gb
 
 def home(request):
     if request.method == "GET":
@@ -49,6 +54,9 @@ def create_user(request):
         new_user.encrypted_password = bcrypt.hashpw(json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
         if json_is_teacher:
             new_user.role = User.UserRole.TEACHER
+            new_user.max_folders = TEACHER_MAX_FOLDERS
+            new_user.max_documents = TEACHER_MAX_DOCUMENTS
+            new_user.max_documents_size = TEACHER_MAX_DOCUMENTS_SIZE
         elif json_student_group is not None:
             try:
                 group = Group.objects.get(tag=json_student_group)
@@ -56,6 +64,9 @@ def create_user(request):
                 return JsonResponse({"error": "El grupo especificado no existe"}, status=409)
             new_user.role = User.UserRole.STUDENT
             new_user.student_group = group
+            new_user.max_folders = STUDENT_MAX_FOLDERS
+            new_user.max_documents = STUDENT_MAX_DOCUMENTS
+            new_user.max_documents_size = STUDENT_MAX_DOCUMENTS_SIZE
         else:
             # School leader and Sysadmin must be manually added
             # Thus, if execution reaches here, request was incorrect
@@ -121,39 +132,6 @@ def get_teachers(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-
-def verify_session(request): # This is received from another server (DocuREST); not the React client
-                             # See docs/auth_flow.txt for further information
-    if request.method == "POST":
-        try:
-            body_json = json.loads(request.body)
-        except json.decoder.JSONDecodeError:
-            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-        json_admin_secret = body_json.get("admin_secret")
-        json_one_time_token = body_json.get("one_time_token")
-        if json_admin_secret is None or json_one_time_token is None:
-            return JsonResponse({"error": "Error"}, status=400)
-        if json_admin_secret != ADMIN_SECRET:
-            return JsonResponse({"error": "Error"}, status=400)
-        try:
-            user_session = UserSession.objects.get(one_time_token=json_one_time_token)
-        except UserSession.DoesNotExist:
-            return JsonResponse({"error": "Error"}, status=400)
-        if user_session.one_time_token_already_used == True:
-            # TODO: Implement an actual log system
-            print("[SEVERE] Security warning: The one_time_token " + json_one_time_token)
-            print("has been used twice in /admin/sessions. This should never happen in a regular")
-            print("authentication flow. Someone might trying to do something naughty")
-            user_session.delete()
-            return JsonResponse({"error": "Error"}, status=400)
-        user_session.one_time_token_already_used = True
-        user_session.save()
-        return JsonResponse({"user_id": user_session.user.id,
-                             "max_documents_allowed": STUDENT_MAX_DOCUMENTS if user_session.user.role == User.UserRole.STUDENT else TEACHER_MAX_DOCUMENTS,
-                             "max_bytes_allowed": STUDENT_MAX_DOCUMENTS_SIZE if user_session.user.role == User.UserRole.STUDENT else TEACHER_MAX_DOCUMENTS_SIZE })
-    else:
-        return JsonResponse({"error": "Unsupported"}, status=405)
-    
 def __admin_auth_json_error_response(request):
     if request.session.user is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

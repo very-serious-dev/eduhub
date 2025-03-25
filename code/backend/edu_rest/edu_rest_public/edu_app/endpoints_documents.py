@@ -1,10 +1,10 @@
 import json
 from django.http import JsonResponse
 from .models import Document, Folder, User
-from .models import TEACHER_MAX_FOLDERS, TEACHER_MAX_DOCUMENTS, STUDENT_MAX_FOLDERS, STUDENT_MAX_DOCUMENTS
 from .serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json
 
 def handle_documents(request):
+    # TODO This should be handled by internal API
     if request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
@@ -21,7 +21,7 @@ def handle_documents(request):
             except Folder.DoesNotExist:
                 return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
         n_documents = Document.objects.filter(author=request.session.user).count()
-        max_documents = STUDENT_MAX_DOCUMENTS if request.session.user.role == User.UserRole.STUDENT else TEACHER_MAX_DOCUMENTS
+        max_documents = 0 #####################
         if n_documents + len(json_files) > max_documents:
             return JsonResponse({"error": "Subir " + len(json_files) +" documentos más rebasa tu capacidad de almacenamiento"}, status=409)
         response_documents_created = []
@@ -53,6 +53,7 @@ def handle_documents(request):
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 def create_folder(request):
+    # TO-DO This should be handled by internal API
     if request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
@@ -71,7 +72,7 @@ def create_folder(request):
             except Folder.DoesNotExist:
                 return JsonResponse({"error": "La carpeta padre especificada no existe"}, status=404)
         n_folders = Folder.objects.filter(author=request.session.user).count()
-        max_folders = STUDENT_MAX_FOLDERS if request.session.user.role == User.UserRole.STUDENT else TEACHER_MAX_FOLDERS
+        max_folders = 0 ##############
         if n_folders + 1 > max_folders:
             return JsonResponse({"error": "No puedes crear más carpetas"}, status=409)
         try:

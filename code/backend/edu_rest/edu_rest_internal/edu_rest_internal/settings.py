@@ -12,9 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR_PARENT = BASE_DIR.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -27,19 +26,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
-# Application definition
+# TODO: Find a way to configure this so that only requests from a certain IP are allowed
+#       Only requests from DocuREST should arrive here
 
 INSTALLED_APPS = [
-    'edu_rest_app.apps.EduRestAppConfig'
+    'edu_app_internal.apps.EduAppInternalConfig'
 ]
 
 MIDDLEWARE = [
-    'edu_rest_app.middleware_cors.CORSMiddleware',
-    'edu_rest_app.middleware_auth.AuthMiddleware',
 ]
 
-ROOT_URLCONF = 'edu_rest.urls'
+ROOT_URLCONF = 'edu_rest_internal.urls'
 
 TEMPLATES = [
     {
@@ -57,7 +54,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'edu_rest.wsgi.application'
+WSGI_APPLICATION = 'edu_rest_internal.wsgi.application'
 
 
 # Database
@@ -66,7 +63,7 @@ WSGI_APPLICATION = 'edu_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR_PARENT / 'db.sqlite3',
     }
 }
 

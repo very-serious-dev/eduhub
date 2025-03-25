@@ -1,0 +1,1 @@
+INSERT INTO edu_app_user VALUES(1, "admin", "admin", "admin", "$2b$12$gH17GrRoRnsAV263uD9x8urF71L8p.eFODszRD0/9.NUTK.lOgzOS", 2, 500, 2000, 21474836480, NULL);
