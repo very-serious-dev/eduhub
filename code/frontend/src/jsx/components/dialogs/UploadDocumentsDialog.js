@@ -21,10 +21,10 @@ const UploadDocumentsDialog = (props) => {
                 if (json.success === true) {
                     props.onSuccess(json.result);
                 } else {
-                    setLoading(false);
-                    setAttachedFilesReady([]);
                     props.onFail("Se ha producido un error");
                 }
+                setLoading(false);
+                setAttachedFilesReady([]);
                 props.onDismiss();
             })
             .catch(error => {
