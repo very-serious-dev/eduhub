@@ -1,6 +1,5 @@
 import { useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
-import EduAPIFetch from "../../../client/EduAPIFetch";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
 import DropFilesArea from "../common/DropFilesArea";
 
@@ -11,16 +10,22 @@ const UploadDocumentsDialog = (props) => {
     const onSubmitUploadFiles = (event) => {
         event.preventDefault();
         setLoading(true);
-        DocuAPIFetch("POST", "/api/v1/documents", { files: attachedFilesReady })
+        const body = {
+            files: attachedFilesReady
+        }
+        if (props.parentFolderIdsPath.length > 0) {
+            body["parent_folder_id"] = props.parentFolderIdsPath.slice(-1)[0];
+        }
+        DocuAPIFetch("POST", "/api/v1/documents", body)
             .then(json => {
                 if (json.success === true) {
-                    sendEduPostRequest(json.uploaded_files);
+                    props.onSuccess(json.result);
                 } else {
                     setLoading(false);
                     setAttachedFilesReady([]);
                     props.onFail("Se ha producido un error");
-                    props.onDismiss();
                 }
+                props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
@@ -30,32 +35,6 @@ const UploadDocumentsDialog = (props) => {
             })
     }
 
-    const sendEduPostRequest = (attachedFiles) => {
-        setLoading(true);
-        const body = {
-            files: attachedFiles
-        }
-        if (props.parentFolderIdsPath.length > 0) {
-            body["parent_folder_id"] = props.parentFolderIdsPath.slice(-1)[0];
-        }
-        EduAPIFetch("POST", "/api/v1/documents", body)
-            .then(json => {
-                setLoading(false);
-                setAttachedFilesReady([]);
-                if (json.success === true) {
-                    props.onSuccess(json.result);
-                } else {
-                    props.onFail("Se ha producido un error");
-                }
-                props.onDismiss();
-            })
-            .catch(error => {
-                setLoading(false);
-                setAttachedFilesReady([]);
-                props.onFail(error.error ?? "Se ha producido un error");
-                props.onDismiss();
-            })
-    }
 
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>

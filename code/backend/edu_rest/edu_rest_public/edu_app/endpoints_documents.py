@@ -72,7 +72,7 @@ def create_folder(request):
             except Folder.DoesNotExist:
                 return JsonResponse({"error": "La carpeta padre especificada no existe"}, status=404)
         n_folders = Folder.objects.filter(author=request.session.user).count()
-        max_folders = 0 ##############
+        max_folders = 5 ##############
         if n_folders + 1 > max_folders:
             return JsonResponse({"error": "No puedes crear más carpetas"}, status=409)
         try:
