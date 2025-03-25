@@ -2,7 +2,6 @@ import { useState } from "react";
 import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
 import AreYouSureDeleteDialog from "../dialogs/AreYouSureDeleteDialog";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
-import EduAPIFetch from "../../../client/EduAPIFetch";
 
 const FilesElementContextMenuButton = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, MOVE, DELETE
@@ -70,8 +69,8 @@ const FilesElementContextMenuButton = (props) => {
             onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}
             onFail={props.onMoveDeleteFail}
-            folderId={props.folderId}
-            documentId={props.documentId}
+            folderId={props.folder ? props.folder.id : undefined}
+            documentId={props.document ? props.document.identifier : undefined}
             myFilesTree={props.myFilesTree} />
         {popupShown === "DELETE" && <AreYouSureDeleteDialog show={popupShown === "DELETE"}
             onDismiss={() => { setPopupShown("NONE"); }}
