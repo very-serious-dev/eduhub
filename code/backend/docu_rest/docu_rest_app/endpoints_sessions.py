@@ -1,8 +1,16 @@
-import json, requests, secrets
+import json, requests, secrets, socket
+import requests.packages.urllib3.util.connection as urllib3_cn
 from django.http import JsonResponse
 from .middleware_auth import AUTH_COOKIE_KEY
 from .models import UserSession
 from .internal_secret import INTERNAL_SECRET
+
+# Force IPv4 on requests library to improve connection speed
+# https://stackoverflow.com/a/46972341
+def allowed_gai_family_override():
+    return socket.AF_INET
+urllib3_cn.allowed_gai_family = allowed_gai_family_override
+
 
 EDU_REST_INTERNAL_BASE_URL = "http://localhost:8002"
 EDU_REST_INTERNAL_VERIFY_SESSION_ENDPOINT = "/internal/v1/sessions"
