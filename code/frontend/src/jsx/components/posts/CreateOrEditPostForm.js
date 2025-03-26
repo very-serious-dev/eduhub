@@ -36,22 +36,31 @@ const CreateOrEditPostForm = (props) => {
         //   The files that are new need to be uploaded previously to DocuREST, of course
         const newFilesThatMustBeUploaded = attachedFilesReady.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = attachedFilesReady.filter(f => f.identifier !== undefined);
-
-        DocuAPIFetch("POST", "/api/v1/documents", { files: newFilesThatMustBeUploaded })
-            .then(json => {
-                if (json.success === true) {
-                    sendEduPostRequest([...json.uploaded_files, ...filesThatAlreadyExistInDocuREST]);
-                } else {
+        const body = {
+            filetree_info: {
+                must_save_to_filetree: false
+            },
+            files: newFilesThatMustBeUploaded
+        }
+        if (newFilesThatMustBeUploaded.length > 0) {
+            DocuAPIFetch("POST", "/api/v1/documents", body)
+                .then(json => {
+                    if ((json.success === true) && (json.result.operation === "documents_added")) {
+                        sendEduPostRequest([...json.result.documents, ...filesThatAlreadyExistInDocuREST]);
+                    } else {
+                        setLoading(false);
+                        props.onFinished("Se ha producido un error");
+                        props.onDismiss();
+                    }
+                })
+                .catch(error => {
                     setLoading(false);
-                    props.onFinished("Se ha producido un error");
+                    props.onFinished(error.error ?? "Se ha producido un error");
                     props.onDismiss();
-                }
-            })
-            .catch(error => {
-                setLoading(false);
-                props.onFinished(error.error ?? "Se ha producido un error");
-                props.onDismiss();
-            })
+                })
+        } else {
+            sendEduPostRequest([...filesThatAlreadyExistInDocuREST]);
+        }
     }
 
     const sendEduPostRequest = (attachedFiles = []) => {
@@ -97,51 +106,51 @@ const CreateOrEditPostForm = (props) => {
 
 
     return <div className="createOrEditPostFormContainer">
-            <form onSubmit={onSubmitCreateOrEditPost}>
-                <div className="postFormFirstRowInputsContainer">
-                    <div className="formInputSelect">
-                        <select name="unit"
-                            value={formUnitId}
-                            onChange={e => { setFormUnitId(e.target.value); }} >
-                            <option value={UNIT_UNASSIGNED}>Sin tema</option>
-                            {props.units.map(g => {
-                                return <option value={g.id}>{g.name}</option>
-                            })}
-                        </select>
-                    </div>
-                    {props.showDatePicker &&
-                        <div className="formInput formInputDivCreatePostTaskDate">
-                            <input className="formInputCreatePostTaskDate"
-                                type="date"
-                                min={TODAY}
-                                value={formAssignmentDueDate}
-                                onChange={e => { setFormAssignmentDueDate(e.target.value) }} />
-                        </div>}
-                    <div className="formInput">
-                        <input className="formInputCreatePostTitle" type="text" value={formTitle}
-                            onChange={e => { setFormTitle(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
-                            onBlur={e => { e.target.placeholder = ""; }} required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Título</label>
-                    </div>
+        <form onSubmit={onSubmitCreateOrEditPost}>
+            <div className="postFormFirstRowInputsContainer">
+                <div className="formInputSelect">
+                    <select name="unit"
+                        value={formUnitId}
+                        onChange={e => { setFormUnitId(e.target.value); }} >
+                        <option value={UNIT_UNASSIGNED}>Sin tema</option>
+                        {props.units.map(g => {
+                            return <option value={g.id}>{g.name}</option>
+                        })}
+                    </select>
                 </div>
-                <div className="formTextArea formTextAreaBig">
-                    <textarea value={formContent}
-                        onChange={e => { setFormContent(e.target.value) }}
-                        onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
+                {props.showDatePicker &&
+                    <div className="formInput formInputDivCreatePostTaskDate">
+                        <input className="formInputCreatePostTaskDate"
+                            type="date"
+                            min={TODAY}
+                            value={formAssignmentDueDate}
+                            onChange={e => { setFormAssignmentDueDate(e.target.value) }} />
+                    </div>}
+                <div className="formInput">
+                    <input className="formInputCreatePostTitle" type="text" value={formTitle}
+                        onChange={e => { setFormTitle(e.target.value) }}
+                        onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
+                    <div className="underline"></div>
+                    <label htmlFor="">Título</label>
                 </div>
-                <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
-                <div className="formSubmit">
-                    <input type="submit" value={props.submitText} />
-                </div>
-                {props.showDeleteButton && <div className="buttonDelete">
-                    <button onClick={props.onDeleteClicked}>❌ Eliminar</button>
-                </div>}
-                {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
-            </form>
-        </div>
+            </div>
+            <div className="formTextArea formTextAreaBig">
+                <textarea value={formContent}
+                    onChange={e => { setFormContent(e.target.value) }}
+                    onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
+                    onBlur={e => { e.target.placeholder = ""; }} required />
+            </div>
+            <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
+            <div className="formSubmit">
+                <input type="submit" value={props.submitText} />
+            </div>
+            {props.showDeleteButton && <div className="buttonDelete">
+                <button onClick={props.onDeleteClicked}>❌ Eliminar</button>
+            </div>}
+            {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+        </form>
+    </div>
 }
 
 export default CreateOrEditPostForm;

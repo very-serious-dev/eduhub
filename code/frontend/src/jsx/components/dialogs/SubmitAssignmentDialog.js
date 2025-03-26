@@ -12,10 +12,16 @@ const SubmitAssignmentDialog = (props) => {
 
     const uploadFilesThenSendEduRequest = () => {
         setLoading(true);
-        DocuAPIFetch("POST", "/api/v1/documents", { files: filesReadyToUpload })
+        const body = {
+            filetree_info: {
+                must_save_to_filetree: false
+            },
+            files: filesReadyToUpload
+        }
+        DocuAPIFetch("POST", "/api/v1/documents", body)
             .then(json => {
-                if (json.success === true) {
-                    sendEduRequest(json.uploaded_files);
+                if ((json.success === true) && (json.result.operation === "documents_added")) {
+                    sendEduRequest([...json.result.documents]);
                 } else {
                     setLoading(false);
                     setShowAreYouSurePopup(false);
@@ -75,7 +81,7 @@ const SubmitAssignmentDialog = (props) => {
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Entregar tarea</div>
                     <form onSubmit={() => { setShowAreYouSurePopup(true); }}>
-                        <DropFilesArea filesReadyToUpload={filesReadyToUpload} setFilesReadyToUpload={setFilesReadyToUpload} />
+                        <DropFilesArea attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} />
                         <div className="formTextArea formTextAreaSmall">
                             <textarea value={formComment}
                                 onChange={e => { setFormComment(e.target.value) }}

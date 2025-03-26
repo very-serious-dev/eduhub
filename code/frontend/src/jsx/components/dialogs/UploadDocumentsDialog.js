@@ -11,10 +11,11 @@ const UploadDocumentsDialog = (props) => {
         event.preventDefault();
         setLoading(true);
         const body = {
+            filetree_info: {
+                must_save_to_filetree: true,
+                parent_folder_id: props.parentFolderIdsPath.slice(-1)[0]
+            },
             files: attachedFilesReady
-        }
-        if (props.parentFolderIdsPath.length > 0) {
-            body["parent_folder_id"] = props.parentFolderIdsPath.slice(-1)[0];
         }
         DocuAPIFetch("POST", "/api/v1/documents", body)
             .then(json => {

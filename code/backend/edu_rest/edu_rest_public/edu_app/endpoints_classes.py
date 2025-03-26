@@ -40,8 +40,7 @@ def handle_classes(request):
         new_class = Class()
         new_class.name = json_name
         new_class.group = Group.objects.get(tag=json_group)
-        r = lambda: random.randint(0,255)
-        new_class.color = '#{:02x}{:02x}{:02x}'.format(r(), r(), r()) # https://stackoverflow.com/a/14019260
+        new_class.theme = Class.ClassTheme.BLUE
         new_class.save()
         if json_automatically_add_teacher is True:
             new_user_class = UserClass()

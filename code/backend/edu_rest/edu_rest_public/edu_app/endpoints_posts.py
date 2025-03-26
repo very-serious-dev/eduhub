@@ -207,7 +207,7 @@ def create_assignment_submit(request, assignmentId):
             assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
         except Post.DoesNotExist:
             return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
-        if request.session.user.role not in [USER_STUDENT]:
+        if request.session.user.role not in [User.UserRole.STUDENT]:
             # Not a student - prevent from making a submit
             return JsonResponse({"error": "No tienes permisos para llevar a cabo esa acción"}, status=403)
         if UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() == 0:

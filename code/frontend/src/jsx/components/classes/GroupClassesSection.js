@@ -19,6 +19,7 @@ const GroupClassesSection = (props) => {
                     footer={c.group} 
                     onClickWithId={onClickClass}
                     skirtingBoardColor={c.color} />
+                    {/* TODO: replace color by theme, appropriately*/}
             })}
         </div>
     </div>

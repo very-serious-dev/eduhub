@@ -63,17 +63,19 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
             body_json = json.loads(request.body)
         except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-        json_parent_folder_id = body_json.get("parent_folder_id")
+        json_filetree_info = body_json.get("filetree_info")
         json_files = body_json.get("files")
-        if json_files is None:
+        if json_files is None or json_filetree_info is None:
             return JsonResponse({"error": "Falta files en el cuerpo de la petición"}, status=400)
+        json_must_internally_register_in_edu_rest = json_filetree_info.get("must_save_to_filetree", False)
+        json_parent_folder_id = json_filetree_info.get("parent_folder_id")
         # Calculate currently usaged quota
         total_docs = Document.objects.filter(author_uid=request.session.user_id).count()
         docs_size_query = Document.objects.filter(author_uid=request.session.user_id).aggregate(Sum("size"))
         current_quota_usage = docs_size_query.get('size__sum') or 0
 
         unsaved_files = []
-        edu_json_request_files = []
+        edu_json_request_files = [] # unused if must_save_to_filetree is False
         for f in json_files:
             decoded_file = base64.b64decode(f["data"])
             identifier = secrets.token_hex(20)
@@ -89,11 +91,14 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
             edu_json_request_files.append({ "identifier": document.identifier,
                                             "name": document.name,
                                             "size": document.size,
-                                            "mime_type": document.mime_type })    
+                                            "mime_type": document.mime_type })
         edu_rest_json_body = { "internal_secret": INTERNAL_SECRET,
                                "user_id": request.session.user_id,
                                "current_quota_usage": current_quota_usage,
                                "parent_folder_id": json_parent_folder_id,
+                                # If skip_saving_files is True, then internal EduREST API request
+                                # is only needed to check quota usage
+                               "skip_saving_files": not json_must_internally_register_in_edu_rest,
                                "documents": edu_json_request_files }
         edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body)
         if edu_rest_response.status_code == 409:
@@ -102,6 +107,7 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
         elif edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error subiendo ficheros"}, status=502)
         # EduREST internal request was 200 OK
+
         response_documents_created = []
         for ud in unsaved_files:
             ud.save()
@@ -115,11 +121,11 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
             if json_parent_folder_id is not None:
                 created_document["folder_id"] = json_parent_folder_id
             response_documents_created.append(created_document)
-            return JsonResponse({"success": True,
-                                 "result": {
-                                     "operation": "documents_added",
-                                     "documents": response_documents_created
-                                 }}, status=201)
+        return JsonResponse({"success": True,
+                             "result": {
+                                 "operation": "documents_added",
+                                 "documents": response_documents_created
+                             }}, status=201)
                                  
     elif request.method == "DELETE":
         if request.session is None:

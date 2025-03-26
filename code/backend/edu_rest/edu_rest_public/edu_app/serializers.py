@@ -39,7 +39,7 @@ def class_to_json(classroom):
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
-        "color": classroom.color
+        "theme": classroom.theme
     }
 
 def user_to_json(user):
@@ -124,7 +124,7 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
-        "color": classroom.color,
+        "theme": classroom.theme,
         "should_show_edit_button": isClassEditableByUser,
         "posts": posts,
         "units": units
