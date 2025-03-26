@@ -9,6 +9,8 @@ TOKEN_SIZE=30
 class User(models.Model):
     
     class UserRole(models.IntegerChoices):
+        # Maintainability note:
+        # EduREST internal API contains a is_teacher function in endpoints.py
         STUDENT = 0
         TEACHER = 1
         TEACHER_SYSADMIN = 2

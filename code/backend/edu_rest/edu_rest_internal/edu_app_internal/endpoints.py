@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder
+from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission
 from .internal_secret import INTERNAL_SECRET
 
 def verify_session(request): # See docs/auth_flow.txt for further information
@@ -123,7 +123,7 @@ def create_or_delete_documents(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-def documents_permissions(request):
+def document_permissions(request):
     if request.method == "GET":
         try:
             body_json = json.loads(request.body)
@@ -147,10 +147,21 @@ def documents_permissions(request):
         if document.author == user:
             return JsonResponse({"success": True}, status=200)
         else:
-            # TO-DO: Thoroughly implement view permissions for documents
-            # (Not only you can access a document if you're the author)
-            # Also if:
-            # - It's posted by a teacher in a class you belong to
-            # - It's an assignment of a class you belong to as a teacher
-            # - Access was explicitly granted to you
+            for pd in EduAppPostdocument.objects.filter(document=document):
+                post_class = pd.post.classroom
+                if EduAppUserclass.objects.filter(classroom=post_class, user=user).exists():
+                    return JsonResponse({"success": True}, status=200)
+                # TO-DO: return 403 if the post was amended (deleted/edited)
+            if is_teacher(user.role):
+                for asd in EduAppAssignmentsubmitdocument.objects.filter(document=document):
+                    assignment_class = asd.submit.assignment.classroom
+                    if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
+                        return JsonResponse({"success": True}, status=200)
+                    # TO-DO: return 403 if the post was amended (deleted/edited
+            if EduAppUserdocumentpermission.objects.filter(document=document, user=user).exists():
+                return JsonResponse({"success": True}, status=200)
             return JsonResponse({"error": "Forbidden"}, status=403)
+
+def is_teacher(role):
+    # To figure this out, go check EduREST public API models.py User.UserRole
+    return role == 1 or role == 2 or role == 3
