@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
-import AddParticipantToClassDialog from "../dialogs/AddParticipantToClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import CreateEditDeleteUnitDialog from "../dialogs/CreateEditDeleteUnitDialog";
 import PostsBoard from "../posts/PostsBoard";
@@ -9,17 +8,9 @@ import ClassDetailDrawerSectionTitle from "./ClassDetailDrawerSectionTitle";
 import ClassDetailDrawerSectionAssignments from "./ClassDetailDrawerSectionAssignments";
 
 const ClassDetailBody = (props) => {
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, ADD_PARTICIPANT, CREATE_EDIT_UNIT
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, CREATE_EDIT_UNIT
     const [unitForPopup, setUnitForPopup] = useState({ id: undefined, name: undefined });
     const setFeedback = useContext(FeedbackContext);
-
-    const onUserAdded = (errorMessage) => {
-        if (errorMessage === undefined || errorMessage === "") {
-            setFeedback({ type: "success", message: "Usuario(s) añadido(s) con éxito" });
-        } else {
-            setFeedback({ type: "error", message: errorMessage });
-        }
-    }
 
     const onOperationFinished = (errorMessage) => { // Unit Added/Edited/Deleted; Post Created/Edited/Deleted
         if (errorMessage === undefined || errorMessage === "") {
@@ -37,14 +28,8 @@ const ClassDetailBody = (props) => {
             onOperationDone={onOperationFinished}
             onDismiss={() => { setPopupShown("NONE"); setUnitForPopup({ id: undefined, name: undefined }) }} />
         <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
-            classId={props.classData.id}
+            classroom={props.classData}
             shouldShowEditButton={props.classData.should_show_edit_button}
-            onWantsToAddParticipant={() => { setPopupShown("ADD_PARTICIPANT") }}
-            onDismiss={() => { setPopupShown("NONE") }} />
-        <AddParticipantToClassDialog show={popupShown === "ADD_PARTICIPANT"}
-            classId={props.classData.id}
-            classroomName={props.classData.name}
-            onUserAdded={onUserAdded}
             onDismiss={() => { setPopupShown("NONE") }} />
         <div className="classDetailBodyContainer">
             <div className="classDetailBodyColumn1">

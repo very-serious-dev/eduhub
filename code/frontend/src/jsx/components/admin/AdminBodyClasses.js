@@ -7,14 +7,13 @@ import EditClassOrParticipantsDialog from "../dialogs/EditClassOrParticipantsDia
 import { FeedbackContext } from "../../main/GlobalContainer";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
-import AddParticipantToClassDialog from "../dialogs/AddParticipantToClassDialog";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
     const [classesChanged, setClassesChanged] = useState(0); // refresh key
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, PARTICIPANTS, ADD_PARTICIPANT
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, PARTICIPANTS
     const [classForPopup, setClassForPopup] = useState({id: undefined, name: undefined});
     const setFeedback = useContext(FeedbackContext);
 
@@ -102,14 +101,8 @@ const AdminBodyClasses = (props) => {
                 classId={classForPopup.id}/>
             <ClassParticipantsDialog  show={popupShown === "PARTICIPANTS"}
                 onDismiss={() => {setPopupShown("NONE")}} 
-                classId={classForPopup.id}
-                shouldShowEditButton={true}
-                onWantsToAddParticipant={() => {setPopupShown("ADD_PARTICIPANT")}} />
-            <AddParticipantToClassDialog show={popupShown === "ADD_PARTICIPANT"} 
-                classId={classForPopup.id}
-                classroomName={classForPopup.name}
-                onUserAdded={onUserAdded}
-                onDismiss={() => { setPopupShown("NONE") }} />
+                classroom={classForPopup}
+                shouldShowEditButton={true} />
                 
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">

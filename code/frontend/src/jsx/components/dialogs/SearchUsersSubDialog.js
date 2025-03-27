@@ -4,7 +4,7 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
 
-const AddParticipantToClassDialog = (props) => {
+const SearchUsersSubDialog = (props) => {
     const NUM_CHARS_TO_LOAD_SUGGESTIONS = 3;
     const [formUsername, setFormUsername] = useState("");
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
@@ -16,7 +16,7 @@ const AddParticipantToClassDialog = (props) => {
     const onSubmitAddUser = (event) => {
         event.preventDefault();
         setLoadingSubmit(true);
-        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}/users`, { username: formUsername })
+        EduAPIFetch("PUT", `/api/v1/classes/${props.classroom.id}/users`, { username: formUsername })
             .then(json => {
                 setLoadingSubmit(false);
                 setFormUsername("");
@@ -106,10 +106,10 @@ const AddParticipantToClassDialog = (props) => {
         }
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
-                <div className="dialogTitle">Añadir usuario a {props.classroomName}</div>
+                <div className="dialogTitle">Añadir usuario a {props.classroom.name}</div>
                 <form onSubmit={onSubmitAddUser}>
                     <div className="formInput">
                         <input type="text" value={formUsername}
@@ -132,7 +132,7 @@ const AddParticipantToClassDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
-export default AddParticipantToClassDialog;
+export default SearchUsersSubDialog;
