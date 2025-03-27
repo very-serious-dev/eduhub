@@ -80,7 +80,7 @@ const ClassParticipantsDialog = (props) => {
             <AreYouSureDeleteDialog onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
                 onActionConfirmed={onRemoveUserActionConfirmed}
                 isLoading={isLoadingDelete} />
-            : showAddParticipant === true ?
+            : showAddParticipant ?
                 <SearchUsersSubDialog classroom={props.classroom}
                     onUserAdded={onUserAdded}
                     onDismiss={() => { setShowAddParticipant(false) }} />

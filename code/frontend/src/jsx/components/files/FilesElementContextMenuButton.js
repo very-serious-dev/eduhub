@@ -60,7 +60,7 @@ const FilesElementContextMenuButton = (props) => {
         <img className="filesElementThreeDotsImg"
             onClick={onClickContextMenu} src="./three_dots.png"></img>
         {popupShown === "CONTEXT_MENU" && <>
-            <div className="popupOverlayBackground" onClick={() => { setPopupShown("NONE"); }} />
+            <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); setPopupShown("NONE"); }} />
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
                 <div className="contextMenuItem" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
                 <div className="contextMenuItem" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
