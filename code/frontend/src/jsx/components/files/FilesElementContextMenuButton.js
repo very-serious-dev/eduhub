@@ -2,9 +2,10 @@ import { useState } from "react";
 import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
 import AreYouSureDeleteDialog from "../dialogs/AreYouSureDeleteDialog";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import FilesPermissionsDialog from "../dialogs/FilesPermissionsDialog";
 
 const FilesElementContextMenuButton = (props) => {
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, MOVE, DELETE
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, SHARE, MOVE, DELETE
     const [isLoadingDelete, setLoadingDelete] = useState(false);
 
     const onClickContextMenu = (event) => {
@@ -61,10 +62,15 @@ const FilesElementContextMenuButton = (props) => {
         {popupShown === "CONTEXT_MENU" && <>
             <div className="popupOverlayBackground" onClick={() => { setPopupShown("NONE"); }} />
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
+                <div className="contextMenuItem" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
                 <div className="contextMenuItem" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
                 <div className="contextMenuItem" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>
             </div></>
         }
+        <FilesPermissionsDialog show={popupShown === "SHARE"}
+            onDismiss={() => { setPopupShown("NONE"); }}
+            folderId={props.folder ? props.folder.id : undefined}
+            documentId={props.document ? props.document.identifier : undefined} />
         <MoveDocumentOrFolderDialog show={popupShown === "MOVE"}
             onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}

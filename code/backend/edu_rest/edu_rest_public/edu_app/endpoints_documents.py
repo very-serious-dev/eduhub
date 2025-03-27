@@ -1,50 +1,11 @@
 import json
 from django.http import JsonResponse
-from .models import Document, Folder, User
-from .serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json
+from .models import Document, Folder, User, UserDocumentPermission, UserFolderPermission
+from .serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json
 
-def handle_documents(request):
-    # Handled by internal API
-    # What about attached documents to created POST ?
-    if request.method == "POST":
+def get_documents_and_folders(request):
+    if request.method == "GET":
         if request.session is None:
-            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        try:
-            body_json = json.loads(request.body)
-        except json.decoder.JSONDecodeError:
-            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-        json_files = body_json.get("files")
-        json_parent_folder_id = body_json.get("parent_folder_id")
-        parent_folder = None
-        if json_parent_folder_id is not None:
-            try:
-                parent_folder = Folder.objects.get(author=request.session.user, id=json_parent_folder_id)
-            except Folder.DoesNotExist:
-                return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
-        n_documents = Document.objects.filter(author=request.session.user).count()
-        max_documents = 0 #####################
-        if n_documents + len(json_files) > max_documents:
-            return JsonResponse({"error": "Subir " + len(json_files) +" documentos más rebasa tu capacidad de almacenamiento"}, status=409)
-        response_documents_created = []
-        for f in json_files:
-            document = Document()
-            document.identifier = f["identifier"]
-            document.name = f["name"]
-            document.size = f["size"]
-            document.mime_type = f["mime_type"]
-            document.author = request.session.user
-            document.folder = parent_folder
-            document.save()
-            response_documents_created.append(document)
-        # TODO: Add UNIQUE constraint to document name + parent folder id? (In that case, what about documents attached to posts?)
-        # REMINDER: Right now you can't have sibling folders with the same name... But you can have same-name sibling documents!
-        return JsonResponse({"success": True,
-                                "result": {
-                                "operation": "documents_added",
-                                "documents": documents_array_to_json(response_documents_created)
-                                }}, status=201)
-    elif request.method == "GET":
-        if request.session is None: # FIX-ME: So much CTRL+C CTRL+V :(
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         documents = Document.objects.filter(author=request.session.user)
         folders = Folder.objects.filter(author=request.session.user)
@@ -72,7 +33,7 @@ def create_folder(request):
             except Folder.DoesNotExist:
                 return JsonResponse({"error": "La carpeta padre especificada no existe"}, status=404)
         n_folders = Folder.objects.filter(author=request.session.user).count()
-        max_folders = 5 ##############
+        max_folders = request.session.user.max_folders
         if n_folders + 1 > max_folders:
             return JsonResponse({"error": "No puedes crear más carpetas"}, status=409)
         try:
@@ -149,4 +110,51 @@ def move_folder(request, folder_id):
                                 }}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
-    
+
+def handle_document_permissions(request, document_identifier):
+    if request.method == "GET":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            document = Document.objects.get(identifier=document_identifier)
+        except Document.DoesNotExist:
+            return JsonResponse({"error": "El documento especificado no existe"}, status=404)
+        granted_users = UserDocumentPermission.objects.filter(document=document)
+        user_belongs_to_document = False
+        if document.author == request.session.user:
+            user_belongs_to_document = True
+        else:
+            for u in granted_users:
+                if u.id == request.session.user.id:
+                    user_belongs_to_document = True
+                    break
+        if not user_belongs_to_document:
+            return JsonResponse({"error": "No tienes permisos para realizar esta consulta"}, status=403)
+        users = list(map(lambda udp: udp.user, granted_users))
+        return JsonResponse({"success": True, "users": users_array_to_json(users) }, status=200)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+def handle_folder_permissions(request, folder_id):
+    if request.method == "GET":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            folder = Folder.objects.get(id=folder_id)
+        except Folder.DoesNotExist:
+            return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
+        granted_users = UserFolderPermission.objects.filter(folder=folder)
+        user_belongs_to_folder = False
+        if folder.author == request.session.user:
+            user_belongs_to_folder = True
+        else:
+            for u in granted_users:
+                if u.id == request.session.user.id:
+                    user_belongs_to_folder = True
+                    break
+        if not user_belongs_to_folder:
+            return JsonResponse({"error": "No tienes permisos para realizar esta consulta"}, status=403)
+        users = list(map(lambda ufp: ufp.user, granted_users))
+        return JsonResponse({"success": True, "users": users_array_to_json(users) }, status=200)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)

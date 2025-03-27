@@ -10,13 +10,6 @@ JSON_ASSIGNMENT = "assignment"
 JSON_AMEND_EDIT = "amend_edit"
 JSON_AMEND_DELETE = "amend_delete"
 
-def user_to_json(user):
-    return {
-        "username": user.username if user is not None else "none",
-        "name": user.name if user is not None else "none",
-        "surname": user.surname if user is not None else "none",
-    }
-
 def document_to_json(document):
     return {
         "identifier": document.identifier,

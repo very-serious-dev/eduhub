@@ -42,7 +42,7 @@ const MoveDocumentOrFolderDialog = (props) => {
             })
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return props.show === true ? <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss()}}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Carpeta de destino</div>

@@ -20,8 +20,10 @@ urlpatterns = [
     path("posts/<int:postId>/amendments",            endpoints_posts.amend_post),
     path("assignments/<int:assignmentId>",           endpoints_posts.assignment_detail),
     path("assignments/<int:assignmentId>/submits",   endpoints_posts.create_assignment_submit),
-    path("documents",                                endpoints_documents.handle_documents),
+    path("documents",                                endpoints_documents.get_documents_and_folders),
     path("folders",                                  endpoints_documents.create_folder),
     path("documents/<document_identifier>",          endpoints_documents.move_document),
-    path("folders/<int:folder_id>",                  endpoints_documents.move_folder)
+    path("documents/<document_identifier>/users",    endpoints_documents.handle_document_permissions),
+    path("folders/<int:folder_id>",                  endpoints_documents.move_folder),
+    path("folders/<int:folder_id>/users",            endpoints_documents.handle_folder_permissions)
 ]

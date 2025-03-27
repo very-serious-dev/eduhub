@@ -1412,8 +1412,8 @@ input:valid ~ .underline:before {
 .contextMenuItem {
   padding-top: 10px;
   padding-bottom: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding-left: 15px;
+  padding-right: 40px;
 }
 
 .contextMenuItem:hover {
