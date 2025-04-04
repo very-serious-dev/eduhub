@@ -11,7 +11,7 @@ const DocumentElement = (props) => {
     }
 
     const shouldShowContextMenu = () => {
-        return props.showContextMenu && props.document.is_protected !== true;
+        return props.shouldShowContextMenu && props.document.is_protected !== true;
     }
 
     return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable" : ""}`} onClick={onClickFile}>

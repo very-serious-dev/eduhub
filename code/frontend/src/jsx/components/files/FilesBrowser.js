@@ -64,7 +64,7 @@ const FilesBrowser = (props) => {
                                 level={level}
                                 onFolderClicked={onFolderSelected}
                                 selected={levelBeingWalkedSelectedFolderId !== undefined ? levelBeingWalkedSelectedFolderId === element.id : false}
-                                showContextMenu={props.browserMode === "MAIN_SCREEN"}
+                                shouldShowContextMenu={props.browserMode === "MAIN_SCREEN" && selectedRoot == "MY_FILES"}
                                 myFilesTree={props.myFilesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
@@ -73,7 +73,7 @@ const FilesBrowser = (props) => {
                             <DocumentElement document={element}
                                 mimeType={element.mime_type}
                                 size={element.size}
-                                showContextMenu={props.browserMode === "MAIN_SCREEN"}
+                                shouldShowContextMenu={props.browserMode === "MAIN_SCREEN" && selectedRoot == "MY_FILES"}
                                 isClickable={props.browserMode === "MAIN_SCREEN"}
                                 myFilesTree={props.myFilesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
