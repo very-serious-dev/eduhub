@@ -11,13 +11,13 @@ const beautifullyDisplayDateHour = (date) => {
     return `${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)}`;
 }
 
-const footNoteAuthorDate = (author, originalDate, modificationDate) => {
+const footNoteDateAuthor = (originalDate, author, modificationDate) => {
     if (modificationDate) {
         const modificationDateObject = new Date(modificationDate);
-        return `${author}, ${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]` 
+        return `${author ? `${author}, ` : ""}${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]` 
     } else {
         const dateObject = new Date(originalDate);
-        return `${author}, ${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(originalDate)})`
+        return `${author ? `${author}, ` : ""}${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(originalDate)})`
     }
 }
 
@@ -93,7 +93,7 @@ const iconImgSrc = (mimeType) => {
 }
 
 export { sizeToHumanReadable };
-export { footNoteAuthorDate };
+export { footNoteDateAuthor };
 export { beautifullyDisplayDate };
 export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };

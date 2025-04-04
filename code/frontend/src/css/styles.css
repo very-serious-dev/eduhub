@@ -716,14 +716,22 @@ body {
   margin-left: 32px;
 }
 
+/* TODO Rename all of this from myFiles to just files (it's also used by shared with me tab)*/
 .myFilesElementSpecialText {
   color: #444;
   font-size: 0.54em;
   margin-left: 32px;
-  margin-bottom: 2px;
+  margin-bottom: -10px;
   letter-spacing: 0.15em;
 }
 
+.myFilesElementAuthorDate {
+  color: #333;
+  font-size: 0.675em;
+  text-align: right;
+  margin-top: -4px;
+  margin-right: 30px;
+}
 .filesFirstTabElement {
   text-align: center;
   padding: 32px;

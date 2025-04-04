@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { footNoteAuthorDate, formatNullableDueDate } from "../../../util/Formatter";
+import { footNoteDateAuthor, formatNullableDueDate } from "../../../util/Formatter";
 import { ASSIGNMENT_CONTENT_NAVIGATED_FROM_WITH_ID, ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID } from "../../pages/AssignmentPage";
 import PostsBoardEntryTopRightContent from "./PostsBoardEntryTopRightContent";
 
@@ -20,7 +20,7 @@ const PostsBoardAssignment = (props) => {
         <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>
         <div className="classDetailAssignmentDueDate">Se entrega: {formatNullableDueDate(props.post.assignment_due_date)}</div>
         <div className="classDetailEntryFootNote">
-            {footNoteAuthorDate(props.post.author, props.post.publication_date, props.post.modificationDate)}
+            {footNoteDateAuthor(props.post.author, props.post.publication_date, props.post.modificationDate)}
         </div>
     </div>
 }

@@ -1,5 +1,5 @@
 import DocuURL from "../../../client/DocuURL";
-import { iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
+import { footNoteDateAuthor, iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
 import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
 
 const DocumentElement = (props) => {
@@ -25,6 +25,7 @@ const DocumentElement = (props) => {
         </div>
         {props.document.is_protected && <div className="myFilesElementSpecialText">PROTEGIDO</div>}
         <div className="myFilesElementSize">{sizeToHumanReadable(props.size)}</div>
+        <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.document.created_at, props.hideAuthor ? null : props.document.author)}`}</div>
     </div>
 }
 
