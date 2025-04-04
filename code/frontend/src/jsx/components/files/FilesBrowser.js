@@ -46,68 +46,41 @@ const FilesBrowser = (props) => {
         }
     }
 
-    const baseTabsForCurrentTree = () => {
-        /* The first 2 tabs for the file browser */
-        const firstTabContent = {
+    const baseTabForCurrentTree = () => {
+        return {
             view: <FilesFirstTabContent selectedRoot={selectedRoot}
                 onRootClicked={onRootSelected}
                 tree={props.myFilesTree} />
         }
-        const rootElementsTabContent = { view: [] }
-        getTree().sort(orderingCriteria).forEach(rootElement => {
-            if (rootElement.type === "folder") {
-                rootElementsTabContent.view.push(
-                    <FolderElement folder={rootElement}
-                        level={1}
-                        onFolderClicked={onFolderSelected}
-                        selected={props.selectedFolderIdsPath.length > 0 ? props.selectedFolderIdsPath[0] === rootElement.id : false}
-                        showContextMenu={props.showContextMenus}
-                        myFilesTree={props.myFilesTree}
-                        onMoveDeleteSuccess={props.onMoveDeleteSuccess}
-                        onMoveDeleteFail={props.onMoveDeleteFail} />
-                );
-            } else if (rootElement.type === "document") {
-                rootElementsTabContent.view.push(
-                    <DocumentElement document={rootElement}
-                        mimeType={rootElement.mime_type}
-                        size={rootElement.size}
-                        showContextMenu={props.showContextMenus}
-                        isClickable={props.canClickFiles}
-                        myFilesTree={props.myFilesTree}
-                        onMoveDeleteSuccess={props.onMoveDeleteSuccess}
-                        onMoveDeleteFail={props.onMoveDeleteFail} />);
-            }
-        })
-        return [firstTabContent, rootElementsTabContent];
     }
 
-    const additionalTabsForCurrentTreeAndSelectedFolder = () => {
-        /* Sub-expanded tabs (level 2+) according to selected folder */
+    const tabsForCurrentTreeAndSelectedFolder = () => {
         const tabs = [];
-        let level = 2;
-        let subTreeBeingWalked = getTree();
-        for (let folderId of props.selectedFolderIdsPath) {
+        let level = 1;
+        let levelBeingWalked = getTree();
+        let levelBeingWalkedSelectedFolderId;
+        do {
             const newTab = { view: [] }
-            const folderBeingWalked = subTreeBeingWalked.find(f => f.id === folderId);
-            if (folderBeingWalked.children.length === 0) {
+            levelBeingWalkedSelectedFolderId = props.selectedFolderIdsPath.length > level - 1 ? props.selectedFolderIdsPath[level - 1] : undefined;
+            if (levelBeingWalked.length === 0) {
                 newTab.view = <FilesEmptyFolderTabContent />
             } else {
-                [...folderBeingWalked.children].sort(orderingCriteria).forEach(child => {
-                    if (child.type === "folder") {
+                [...levelBeingWalked].sort(orderingCriteria).forEach(element => {
+                    if (element.type === "folder") {
                         newTab.view.push(
-                            <FolderElement folder={child}
+                            <FolderElement folder={element}
                                 level={level}
                                 onFolderClicked={onFolderSelected}
-                                selected={props.selectedFolderIdsPath[level - 1] === child.id}
+                                selected={levelBeingWalkedSelectedFolderId !== undefined ? levelBeingWalkedSelectedFolderId === element.id : false}
                                 showContextMenu={props.showContextMenus}
                                 myFilesTree={props.myFilesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
-                    } else if (child.type === "document") {
+                    } else if (element.type === "document") {
                         newTab.view.push(
-                            <DocumentElement document={child}
-                                mimeType={child.mime_type}
-                                size={child.size}
+                            <DocumentElement document={element}
+                                mimeType={element.mime_type}
+                                size={element.size}
                                 showContextMenu={props.showContextMenus}
                                 isClickable={props.canClickFiles}
                                 myFilesTree={props.myFilesTree}
@@ -115,16 +88,18 @@ const FilesBrowser = (props) => {
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
                     }
                 });
-                subTreeBeingWalked = folderBeingWalked.children;
+            }
+            if (levelBeingWalkedSelectedFolderId !== undefined) {
                 level += 1;
+                levelBeingWalked = levelBeingWalked.find(e => e.id === levelBeingWalkedSelectedFolderId).children
             }
             tabs.push(newTab);
-        }
+        } while (levelBeingWalkedSelectedFolderId !== undefined);
         return tabs;
     }
 
     const tabsForSelectedPath = () => {
-        return [...baseTabsForCurrentTree(), ...additionalTabsForCurrentTreeAndSelectedFolder()];
+        return [baseTabForCurrentTree(), ...tabsForCurrentTreeAndSelectedFolder()];
     }
 
     return <TabbedActivity tabs={tabsForSelectedPath()}
