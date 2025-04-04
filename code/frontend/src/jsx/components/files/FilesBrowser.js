@@ -42,15 +42,7 @@ const FilesBrowser = (props) => {
         if (selectedRoot === "MY_FILES") {
             return props.myFilesTree;
         } else if (selectedRoot === "SHARED_WITH_ME") {
-            return undefined; // TODO: Tree shared with me?
-        }
-    }
-
-    const baseTabForCurrentTree = () => {
-        return {
-            view: <FilesFirstTabContent selectedRoot={selectedRoot}
-                onRootClicked={onRootSelected}
-                tree={props.myFilesTree} />
+            return props.sharedFilesTree;
         }
     }
 
@@ -63,7 +55,7 @@ const FilesBrowser = (props) => {
             const newTab = { view: [] }
             levelBeingWalkedSelectedFolderId = props.selectedFolderIdsPath.length > level - 1 ? props.selectedFolderIdsPath[level - 1] : undefined;
             if (levelBeingWalked.length === 0) {
-                newTab.view = <FilesEmptyFolderTabContent />
+                newTab.view = <FilesEmptyFolderTabContent isEmptyRoot={level === 1}/>
             } else {
                 [...levelBeingWalked].sort(orderingCriteria).forEach(element => {
                     if (element.type === "folder") {
@@ -72,7 +64,7 @@ const FilesBrowser = (props) => {
                                 level={level}
                                 onFolderClicked={onFolderSelected}
                                 selected={levelBeingWalkedSelectedFolderId !== undefined ? levelBeingWalkedSelectedFolderId === element.id : false}
-                                showContextMenu={props.showContextMenus}
+                                showContextMenu={props.browserMode === "MAIN_SCREEN"}
                                 myFilesTree={props.myFilesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
@@ -81,8 +73,8 @@ const FilesBrowser = (props) => {
                             <DocumentElement document={element}
                                 mimeType={element.mime_type}
                                 size={element.size}
-                                showContextMenu={props.showContextMenus}
-                                isClickable={props.canClickFiles}
+                                showContextMenu={props.browserMode === "MAIN_SCREEN"}
+                                isClickable={props.browserMode === "MAIN_SCREEN"}
                                 myFilesTree={props.myFilesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
@@ -99,14 +91,22 @@ const FilesBrowser = (props) => {
     }
 
     const tabsForSelectedPath = () => {
-        return [baseTabForCurrentTree(), ...tabsForCurrentTreeAndSelectedFolder()];
+        const tabs = [{
+            view: <FilesFirstTabContent selectedRoot={selectedRoot}
+                onRootClicked={onRootSelected}
+                myFilesTree={props.myFilesTree}
+                sharedFilesTree={props.sharedFilesTree}
+                showSharedFiles={props.browserMode === "MAIN_SCREEN"} />
+        }]
+        tabs.push(...tabsForCurrentTreeAndSelectedFolder());
+        return tabs;
     }
 
     return <TabbedActivity tabs={tabsForSelectedPath()}
         tabContentWidthPercentage={33}
         showTitles={false}
         forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - 1)}
-        emptyFooter={props.showContextMenus === true} />
+        emptyFooter={props.browserMode === "MAIN_SCREEN"} />
 }
 
 export default FilesBrowser;

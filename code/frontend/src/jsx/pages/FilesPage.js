@@ -5,7 +5,8 @@ import EduAPIFetch from "../../client/EduAPIFetch";
 import FilesBody from "../components/files/FilesBody";
 
 const FilesPage = () => {
-    const [documentsAndFolders, setDocumentsAndFolders] = useState({ documents: [], folders: [] });
+    const [myFiles, setMyFiles] = useState({ documents: [], folders: [] });
+    const [sharedFiles, setSharedFiles] = useState({ documents: [], folders: [] });
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
@@ -14,7 +15,8 @@ const FilesPage = () => {
         EduAPIFetch("GET", "/api/v1/documents")
             .then(json => {
                 setLoading(false);
-                setDocumentsAndFolders(json);
+                setMyFiles(json.my_files);
+                setSharedFiles(json.shared_with_me);
             })
             .catch(error => {
                 setLoading(false);
@@ -23,27 +25,27 @@ const FilesPage = () => {
             })
     }, []);
 
-    const onFilesChanged = (result) => {
+    const onMyFilesChanged = (result) => {
         if (result.operation === "folder_added") {
-            setDocumentsAndFolders(old => { return { documents: old.documents, folders: old.folders.concat(result.folder) }});
+            setMyFiles(old => { return { documents: old.documents, folders: old.folders.concat(result.folder) } });
         }
         if (result.operation === "documents_added") {
-            setDocumentsAndFolders(old => { return { documents: [...old.documents, ...result.documents], folders: old.folders }});
+            setMyFiles(old => { return { documents: [...old.documents, ...result.documents], folders: old.folders } });
         }
         if (result.operation === "folder_changed") {
-            setDocumentsAndFolders(old => {
+            setMyFiles(old => {
                 const newFolders = old.folders.map(f => { if (f.id === result.folder.id) return result.folder; else return f });
                 return { documents: old.documents, folders: newFolders }
             });
         }
         if (result.operation === "document_changed") {
-            setDocumentsAndFolders(old => {
+            setMyFiles(old => {
                 const newDocuments = old.documents.map(d => { if (d.identifier === result.document.identifier) return result.document; else return d });
                 return { documents: newDocuments, folders: old.folders }
             });
         }
         if (result.operation === "files_deleted") {
-            setDocumentsAndFolders(old => {
+            setMyFiles(old => {
                 const newFolders = old.folders.filter(f => !result.removed_folders_ids.includes(f.id));
                 const newDocuments = old.documents.filter(d => !result.removed_documents_ids.includes(d.identifier));
                 return { documents: newDocuments, folders: newFolders }
@@ -69,7 +71,7 @@ const FilesPage = () => {
      * - Orphan documents (e.g.: documents at root level) aren't taken into account
      * - Folders are still not put inside the 'children' attribute (the tree isn't fully built)
      */
-    const flatFoldersWithDocumentsInside = () => {
+    const flatFoldersWithDocumentsInside = (documentsAndFolders) => {
         const allFoldersById = {}
         documentsAndFolders.folders.forEach(f => {
             allFoldersById[f.id] = { ...f, children: [] };
@@ -91,8 +93,8 @@ const FilesPage = () => {
         return allFolders;
     }
 
-    const buildTree = () => {
-        const allFolders = flatFoldersWithDocumentsInside();
+    const buildTree = (documentsAndFolders) => {
+        const allFolders = flatFoldersWithDocumentsInside(documentsAndFolders);
         const tree = [];
         const remainingNonRootFolders = []
         for (const folder of allFolders) {
@@ -119,8 +121,9 @@ const FilesPage = () => {
         <LoadingHUDPage />
         : isRequestFailed ?
             <ErrorPage errorMessage={requestErrorMessage} />
-            : <FilesBody myFilesTree={buildTree()}
-                onFilesChanged={onFilesChanged} />
+            : <FilesBody myFilesTree={buildTree(myFiles)}
+                sharedFilesTree={buildTree(sharedFiles)}
+                onMyFilesChanged={onMyFilesChanged} />
 }
 
 export default FilesPage;

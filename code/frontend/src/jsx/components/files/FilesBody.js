@@ -13,7 +13,7 @@ const FilesBody = (props) => {
 
     const onFolderOrDocumentsChanged = (result) => {
         setFeedback({ type: "success", message: "Completado con éxito" });
-        props.onFilesChanged(result);
+        props.onMyFilesChanged(result);
     }
 
     const onMoveDeleteSuccess = (result) => {
@@ -56,10 +56,10 @@ const FilesBody = (props) => {
             onSuccess={onFolderOrDocumentsChanged}
             onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
         <FilesBrowser myFilesTree={props.myFilesTree}
+            sharedFilesTree={props.sharedFilesTree}
             selectedFolderIdsPath={currentFolderIdsPath}
             setSelectedFolderIdsPath={setCurrentFolderIdsPath}
-            canClickFiles={true}
-            showContextMenus={true}
+            browserMode={"MAIN_SCREEN"}
             onMoveDeleteSuccess={onMoveDeleteSuccess}
             onMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
         <div className="card floatingCardAddNew" onClick={() => { setPopupShown("CREATE_OR_UPLOAD") }}>➕ Nuevo</div>

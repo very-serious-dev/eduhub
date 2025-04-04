@@ -51,8 +51,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                         <FilesBrowser myFilesTree={props.myFilesTree}
                             selectedFolderIdsPath={selectedFolderIdsPath}
                             setSelectedFolderIdsPath={setSelectedFolderIdsPath}
-                            canClickFiles={false}
-                            showContextMenus={false} />
+                            browserMode={"MOVE_DIALOG"} />
                     </div>
                     <div className="formInput">
                         <input className="formInputGreyBackground"

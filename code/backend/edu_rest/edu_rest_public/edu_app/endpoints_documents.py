@@ -7,10 +7,18 @@ def get_documents_and_folders(request):
     if request.method == "GET":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        documents = Document.objects.filter(author=request.session.user)
-        folders = Folder.objects.filter(author=request.session.user)
-        return JsonResponse({"documents": documents_array_to_json(documents),
-                             "folders": folders_array_to_json(folders) })
+        my_documents = Document.objects.filter(author=request.session.user)
+        my_folders = Folder.objects.filter(author=request.session.user)
+        user_document_permissions = UserDocumentPermission.objects.filter(user=request.session.user)
+        user_folder_permissions = UserFolderPermission.objects.filter(user=request.session.user)
+        shared_with_me_documents = list(map(lambda udp: udp.document, user_document_permissions))
+        shared_with_me_folders = list(map(lambda ufp: ufp.folder, user_folder_permissions))
+        return JsonResponse({"my_files": {
+                                "documents": documents_array_to_json(my_documents),
+                                "folders": folders_array_to_json(my_folders) },
+                             "shared_with_me": {
+                                "documents": documents_array_to_json(shared_with_me_documents),
+                                "folders": folders_array_to_json(shared_with_me_folders) }})
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

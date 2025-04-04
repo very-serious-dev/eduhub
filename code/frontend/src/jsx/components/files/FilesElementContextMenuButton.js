@@ -63,6 +63,7 @@ const FilesElementContextMenuButton = (props) => {
     return <>
         <img className="filesElementThreeDotsImg"
             onClick={onClickContextMenu} src="./three_dots.png"></img>
+        {/* FIXME: right now the cursor: pointer is left on after clicking on the three dots (it shouldn't)*/}
         {popupShown === "CONTEXT_MENU" && <>
             <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); setPopupShown("NONE"); }} />
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
