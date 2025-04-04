@@ -719,10 +719,10 @@ body {
 /* TODO Rename all of this from myFiles to just files (it's also used by shared with me tab)*/
 .myFilesElementSpecialText {
   color: #444;
-  font-size: 0.54em;
+  font-size: 0.6em;
   margin-left: 32px;
-  margin-bottom: -10px;
-  letter-spacing: 0.15em;
+  margin-bottom: 2px;
+  letter-spacing: 0.1em;
 }
 
 .myFilesElementAuthorDate {

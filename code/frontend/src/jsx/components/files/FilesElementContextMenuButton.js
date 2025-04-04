@@ -84,7 +84,7 @@ const FilesElementContextMenuButton = (props) => {
             onFail={props.onMoveDeleteFail}
             folderId={props.folder ? props.folder.id : undefined}
             documentId={props.document ? props.document.identifier : undefined}
-            myFilesTree={props.myFilesTree} />
+            filesTree={props.filesTree} />
         {popupShown === "DELETE" &&
             <AreYouSureDialog onActionConfirmed={onDelete}
                 onDismiss={() => { setPopupShown("NONE"); }}

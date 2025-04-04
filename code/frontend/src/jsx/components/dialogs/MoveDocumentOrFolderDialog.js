@@ -3,6 +3,7 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
 import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
+import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
 
 const MoveDocumentOrFolderDialog = (props) => {
     const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
@@ -42,24 +43,35 @@ const MoveDocumentOrFolderDialog = (props) => {
             })
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss()}}>
+    const firstTabView = () => {
+        return <div>
+            <MyFilesFirstTabContent myFilesTree={props.filesTree}
+                isSelected={true}
+                onRootClicked={() => { setSelectedFolderIdsPath([]); }} />
+        </div>
+    }
+
+    return props.show === true ? <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Carpeta de destino</div>
                 <form onSubmit={onSubmitMoveElement}>
                     <div className="dialogScrollableFixedHeightSection">
-                        <FilesBrowser myFilesTree={props.myFilesTree}
+                        <FilesBrowser filesTree={props.filesTree}
                             selectedFolderIdsPath={selectedFolderIdsPath}
                             setSelectedFolderIdsPath={setSelectedFolderIdsPath}
-                            browserMode={"MOVE_DIALOG"} />
+                            firstTabView={firstTabView()}
+                            showContextMenu={false}
+                            showAuthor={false}
+                            canClickDocuments={false} />
                     </div>
                     <div className="formInput">
                         <input className="formInputGreyBackground"
                             type="text"
-                            value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.myFilesTree)} disabled={true} />
+                            value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.filesTree)} disabled={true} />
                     </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Mover"/>
+                        <input type="submit" value="Mover" />
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>

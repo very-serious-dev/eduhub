@@ -5,11 +5,19 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 import UploadDocumentsDialog from "../dialogs/UploadDocumentsDialog";
 import FilesBrowser from "./FilesBrowser";
 import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
+import MyFilesFirstTabContent from "./MyFilesFirstTabContent";
+import SharedFilesFirstTabContent from "./SharedFilesFirstTabContent";
 
 const FilesBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_OR_UPLOAD, CREATE_FOLDER, UPLOAD_DOCUMENTS
     const [currentFolderIdsPath, setCurrentFolderIdsPath] = useState([]);
+    const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
     const setFeedback = useContext(FeedbackContext);
+
+    const onRootClicked = (root) => {
+        setSelectedRoot(root);
+        setCurrentFolderIdsPath([]);
+    }
 
     const onFolderOrDocumentsChanged = (result) => {
         setFeedback({ type: "success", message: "Completado con éxito" });
@@ -38,28 +46,49 @@ const FilesBody = (props) => {
         }
     }
 
+    const getTree = () => {
+        if (selectedRoot === "MY_FILES") {
+            return props.myFilesTree;
+        } else if (selectedRoot === "SHARED_WITH_ME") {
+            return props.sharedFilesTree;
+        }
+    }
+
+    const firstTabView = () => {
+        return <div>
+            <MyFilesFirstTabContent myFilesTree={props.myFilesTree}
+                isSelected={selectedRoot === "MY_FILES"}
+                onRootClicked={onRootClicked} />
+            <SharedFilesFirstTabContent sharedFilesTree={props.sharedFilesTree}
+                isSelected={selectedRoot === "SHARED_WITH_ME"}
+                onRootClicked={onRootClicked} />
+        </div>
+    }
+
     return <div>
         <CreateFolderOrUploadFileDialog show={popupShown === "CREATE_OR_UPLOAD"}
             onDismiss={() => { setPopupShown("NONE") }}
             onCreateFolderClicked={() => { setPopupShown("CREATE_FOLDER") }}
             onUploadDocumentsClicked={() => { setPopupShown("UPLOAD_DOCUMENTS") }} />
         <CreateFolderDialog show={popupShown === "CREATE_FOLDER"}
-            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, props.myFilesTree)}
+            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, getTree())}
             parentFolderIdsPath={currentFolderIdsPath}
             onDismiss={() => { setPopupShown("NONE") }}
             onSuccess={onFolderOrDocumentsChanged}
             onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
         <UploadDocumentsDialog show={popupShown === "UPLOAD_DOCUMENTS"}
-            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, props.myFilesTree)}
+            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, getTree())}
             parentFolderIdsPath={currentFolderIdsPath}
             onDismiss={() => { setPopupShown("NONE") }}
             onSuccess={onFolderOrDocumentsChanged}
             onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
-        <FilesBrowser myFilesTree={props.myFilesTree}
-            sharedFilesTree={props.sharedFilesTree}
+        <FilesBrowser filesTree={getTree()}
             selectedFolderIdsPath={currentFolderIdsPath}
             setSelectedFolderIdsPath={setCurrentFolderIdsPath}
-            browserMode={"MAIN_SCREEN"}
+            firstTabView={firstTabView()}
+            showContextMenu={selectedRoot === "MY_FILES"}
+            showAuthor={selectedRoot === "SHARED_WITH_ME"}
+            canClickDocuments={true}
             onMoveDeleteSuccess={onMoveDeleteSuccess}
             onMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
         <div className="card floatingCardAddNew" onClick={() => { setPopupShown("CREATE_OR_UPLOAD") }}>➕ Nuevo</div>

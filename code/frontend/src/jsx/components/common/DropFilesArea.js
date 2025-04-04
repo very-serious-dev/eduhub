@@ -30,7 +30,7 @@ const DropFilesArea = (props) => {
         const processedFiles = []
         const reader = new FileReader();
         reader.addEventListener("loadend", () => {
-            const data = reader.result.split(',');
+            const data = reader.result.split(','); // FIXME: If you drop a folder, it fails
             processedFiles.push({
                 name: files[0].name,
                 size: files[0].size,

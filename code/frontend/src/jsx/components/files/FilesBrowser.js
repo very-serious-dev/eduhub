@@ -1,21 +1,13 @@
-import { useState } from "react";
 import TabbedActivity from "../common/TabbedActivity";
 import FolderElement from "./FolderElement";
 import DocumentElement from "./DocumentElement";
-import FilesFirstTabContent from "./FilesFirstTabContent";
 import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 
 const FilesBrowser = (props) => {
-    const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
 
     const onFolderSelected = (folderId, level) => {
         const newSelectedFolderIdsPath = props.selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
         props.setSelectedFolderIdsPath(newSelectedFolderIdsPath);
-    }
-
-    const onRootSelected = (root) => {
-        setSelectedRoot(root);
-        props.setSelectedFolderIdsPath([]);
     }
 
     const compareByName = (a, b) => {
@@ -38,18 +30,10 @@ const FilesBrowser = (props) => {
         }
     }
 
-    const getTree = () => {
-        if (selectedRoot === "MY_FILES") {
-            return props.myFilesTree;
-        } else if (selectedRoot === "SHARED_WITH_ME") {
-            return props.sharedFilesTree;
-        }
-    }
-
     const tabsForCurrentTreeAndSelectedFolder = () => {
         const tabs = [];
         let level = 1;
-        let levelBeingWalked = getTree();
+        let levelBeingWalked = props.filesTree;
         let levelBeingWalkedSelectedFolderId;
         do {
             const newTab = { view: [] }
@@ -64,9 +48,9 @@ const FilesBrowser = (props) => {
                                 level={level}
                                 onFolderClicked={onFolderSelected}
                                 selected={levelBeingWalkedSelectedFolderId !== undefined ? levelBeingWalkedSelectedFolderId === element.id : false}
-                                shouldShowContextMenu={props.browserMode === "MAIN_SCREEN" && selectedRoot == "MY_FILES"}
-                                hideAuthor={selectedRoot == "MY_FILES"}
-                                myFilesTree={props.myFilesTree}
+                                showContextMenu={props.showContextMenu}
+                                showAuthor={props.showAuthor}
+                                filesTree={props.filesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
                     } else if (element.type === "document") {
@@ -74,10 +58,10 @@ const FilesBrowser = (props) => {
                             <DocumentElement document={element}
                                 mimeType={element.mime_type}
                                 size={element.size}
-                                shouldShowContextMenu={props.browserMode === "MAIN_SCREEN" && selectedRoot == "MY_FILES"}
-                                hideAuthor={selectedRoot == "MY_FILES"}
-                                isClickable={props.browserMode === "MAIN_SCREEN"}
-                                myFilesTree={props.myFilesTree}
+                                showContextMenu={props.showContextMenu}
+                                showAuthor={props.showAuthor}
+                                isClickable={props.canClickDocuments}
+                                filesTree={props.filesTree}
                                 onMoveDeleteSuccess={props.onMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onMoveDeleteFail} />);
                     }
@@ -93,15 +77,7 @@ const FilesBrowser = (props) => {
     }
 
     const tabsForSelectedPath = () => {
-        const tabs = [{
-            view: <FilesFirstTabContent selectedRoot={selectedRoot}
-                onRootClicked={onRootSelected}
-                myFilesTree={props.myFilesTree}
-                sharedFilesTree={props.sharedFilesTree}
-                showSharedFiles={props.browserMode === "MAIN_SCREEN"} />
-        }]
-        tabs.push(...tabsForCurrentTreeAndSelectedFolder());
-        return tabs;
+        return [{view: props.firstTabView}, ...tabsForCurrentTreeAndSelectedFolder()];
     }
 
     return <TabbedActivity tabs={tabsForSelectedPath()}
