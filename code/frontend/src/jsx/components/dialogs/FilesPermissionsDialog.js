@@ -5,6 +5,7 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
+import GetUsernameFromCookie from "../../../client/GetUsernameFromCookie";
 
 const FilesPermissionsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -104,7 +105,8 @@ const FilesPermissionsDialog = (props) => {
                 <SearchUsersSubDialog addUsersUrl={filePermissionsSubTreeUrl()}
                     dialogTitle={`Dar acceso a`}
                     onUserAdded={onUserAdded}
-                    onDismiss={() => { setShowAddUsers(false) }} />
+                    onDismiss={() => { setShowAddUsers(false) }}
+                    usersToIgnore={[GetUsernameFromCookie()]} />
                 : <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">

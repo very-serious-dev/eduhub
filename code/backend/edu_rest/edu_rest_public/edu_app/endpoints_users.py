@@ -1,7 +1,7 @@
 import bcrypt, json, secrets
 from django.http import JsonResponse
 from django.db.models import Q
-from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY, MAX_STORAGE_COOKIE_KEY
+from .middleware_auth import AUTH_COOKIE_KEY, ROLES_COOKIE_KEY, MAX_STORAGE_COOKIE_KEY, USERNAME_COOKIE_KEY
 from .models import User, UserSession
 from .models import TOKEN_SIZE
 from .serializers import roles_array, users_array_to_json
@@ -34,6 +34,7 @@ def login_logout(request):
             # https://docs.djangoproject.com/en/5.1/ref/request-response/#django.http.HttpResponse.set_cookie
             response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
             response.set_cookie(key=ROLES_COOKIE_KEY, value='-'.join(roles), path="/", samesite="Strict")
+            response.set_cookie(key=USERNAME_COOKIE_KEY, value=db_user.username, path="/", samesite="Strict")
             max_storage_cookie = str(db_user.max_folders) + "-" + str(db_user.max_documents) + "-" + str(db_user.max_documents_size)
             response.set_cookie(key=MAX_STORAGE_COOKIE_KEY, value=max_storage_cookie, path="/", samesite="Strict")
             return response

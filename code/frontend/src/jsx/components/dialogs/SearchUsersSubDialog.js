@@ -77,13 +77,15 @@ const SearchUsersSubDialog = (props) => {
      * Server side suggestions are cleared if the client removes characters (< NUM_CHARS_TO_LOAD_SUGGESTIONS)
      */
     const clientFilteredSuggestions = () => {
-        // TODO: Maybe implement blacklist?
-        // That way we can avoid:
-        // - ClassParticipantsDialog: Autocomplete users that already belong to a class
-        // - FilePermissionsDialog: Autocomplete users that already have permission to a file, and also, the author of the file itself
+        // TODO: Expand usage of props.usersToIgnore so that in:
+        // - ClassParticipantsDialog: Autocomplete users that already belong to a class are filtered out
+        // - FilePermissionsDialog: Autocomplete users that already have permission to a file are filtered out
+        //    (right now, the logged in user itself is already filtered out)
         const clientText = lastFormUsernameTyped()
         return serverSuggestedUsers.filter(u => {
             return u.username.toLowerCase().includes(clientText.toLowerCase()) || u.name.toLowerCase().includes(clientText.toLowerCase()) || u.surname.toLowerCase().includes(clientText.toLowerCase())
+        }).filter(u => {
+            return !props.usersToIgnore.includes(u.username)
         })
     }
 

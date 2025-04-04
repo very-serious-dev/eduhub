@@ -85,7 +85,8 @@ const ClassParticipantsDialog = (props) => {
                 <SearchUsersSubDialog addUsersUrl={`/api/v1/classes/${props.classroom.id}/users`}
                     dialogTitle={`Añadir participantes a ${props.classroom.name}`}
                     onUserAdded={onUserAdded}
-                    onDismiss={() => { setShowAddParticipant(false) }} />
+                    onDismiss={() => { setShowAddParticipant(false) }} 
+                    usersToIgnore={[]}/>
                 : <div className="popupOverlayBackground" onClick={props.onDismiss}>
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">
