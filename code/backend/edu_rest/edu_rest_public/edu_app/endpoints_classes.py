@@ -150,10 +150,11 @@ def handle_class_participants(request, classId):
         json_username = body_json.get("username")
         if json_username is None:
             return JsonResponse({"error": "Falta username en el cuerpo de la petición"}, status=400)
+        non_trimmed_usernames = json_username.split(",")
+        usernames = list(map(lambda x: x.strip(), non_trimmed_usernames))
         failed_inexistent_users = []
         failed_already_added_users = []
-        for non_trimmed_username in json_username.split(","):
-            username = non_trimmed_username.strip()
+        for username in usernames:
             if len(username) > 0:
                 try:
                     user = User.objects.get(username=username)
@@ -166,7 +167,7 @@ def handle_class_participants(request, classId):
                         new_user_class.save()
                 except User.DoesNotExist:
                     failed_inexistent_users.append(username)
-        if len(failed_inexistent_users) == 0 and (failed_already_added_users) == 0:
+        if len(failed_inexistent_users) == 0 and len(failed_already_added_users) == 0:
             return JsonResponse({"success": True}, status=201)
         else:
             error_msg = ""

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
-import AreYouSureDeleteDialog from "../dialogs/AreYouSureDeleteDialog";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
 import FilesPermissionsDialog from "../dialogs/FilesPermissionsDialog";
+import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 
 const FilesElementContextMenuButton = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, SHARE, MOVE, DELETE
@@ -26,7 +26,7 @@ const FilesElementContextMenuButton = (props) => {
         mutableFolderIds.push(folder.id)
     }
 
-    const getIdsToRemove = () => {
+    const getSelfAndChildrenIds = () => {
         if (props.document) { return { document_ids: [props.document.identifier], folder_ids: [] } }
         if (props.folder) {
             const documentIds = []
@@ -36,9 +36,13 @@ const FilesElementContextMenuButton = (props) => {
         }
     }
 
+    const elementName = () => {
+        return props.document ? props.document.name : props.folder.name;
+    }
+
     const onDelete = () => {
         setLoadingDelete(true);
-        const body = getIdsToRemove();
+        const body = getSelfAndChildrenIds();
         DocuAPIFetch("DELETE", `/api/v1/documents`, body)
             .then(json => {
                 if (json.success === true) {
@@ -69,8 +73,10 @@ const FilesElementContextMenuButton = (props) => {
         }
         <FilesPermissionsDialog show={popupShown === "SHARE"}
             onDismiss={() => { setPopupShown("NONE"); }}
+            documentId={props.document ? props.document.identifier : undefined}
             folderId={props.folder ? props.folder.id : undefined}
-            documentId={props.document ? props.document.identifier : undefined} />
+            title={`"${elementName()}" está compartido  con...`}
+            subTreeIds={getSelfAndChildrenIds()} />
         <MoveDocumentOrFolderDialog show={popupShown === "MOVE"}
             onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}
@@ -78,10 +84,12 @@ const FilesElementContextMenuButton = (props) => {
             folderId={props.folder ? props.folder.id : undefined}
             documentId={props.document ? props.document.identifier : undefined}
             myFilesTree={props.myFilesTree} />
-        {popupShown === "DELETE" && <AreYouSureDeleteDialog show={popupShown === "DELETE"}
-            onDismiss={() => { setPopupShown("NONE"); }}
-            onActionConfirmed={onDelete}
-            isLoading={isLoadingDelete} />}
+        {popupShown === "DELETE" &&
+            <AreYouSureDialog onActionConfirmed={onDelete}
+                onDismiss={() => { setPopupShown("NONE"); }}
+                isLoading={isLoadingDelete}
+                dialogMode="DELETE"
+                warningMessage={`¿Deseas eliminar "${elementName()}"?${props.folder ? " Todo su contenido será eliminado, y aquello que estaba compartido dejará de ser accesible. Esta acción no se puede deshacer" : " Si estaba compartido, dejará de ser accesible. Esta acción no se puede deshacer"}`} />}
     </>
 }
 

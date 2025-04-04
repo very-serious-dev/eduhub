@@ -16,7 +16,7 @@ const SearchUsersSubDialog = (props) => {
     const onSubmitAddUser = (event) => {
         event.preventDefault();
         setLoadingSubmit(true);
-        EduAPIFetch("PUT", `/api/v1/classes/${props.classroom.id}/users`, { username: formUsername })
+        EduAPIFetch("PUT", props.addUsersUrl, { username: formUsername })
             .then(json => {
                 setLoadingSubmit(false);
                 setFormUsername("");
@@ -77,6 +77,10 @@ const SearchUsersSubDialog = (props) => {
      * Server side suggestions are cleared if the client removes characters (< NUM_CHARS_TO_LOAD_SUGGESTIONS)
      */
     const clientFilteredSuggestions = () => {
+        // TODO: Maybe implement blacklist?
+        // That way we can avoid:
+        // - ClassParticipantsDialog: Autocomplete users that already belong to a class
+        // - FilePermissionsDialog: Autocomplete users that already have permission to a file, and also, the author of the file itself
         const clientText = lastFormUsernameTyped()
         return serverSuggestedUsers.filter(u => {
             return u.username.toLowerCase().includes(clientText.toLowerCase()) || u.name.toLowerCase().includes(clientText.toLowerCase()) || u.surname.toLowerCase().includes(clientText.toLowerCase())
@@ -109,7 +113,7 @@ const SearchUsersSubDialog = (props) => {
     return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
-                <div className="dialogTitle">Añadir usuario a {props.classroom.name}</div>
+                <div className="dialogTitle">{props.dialogTitle}</div>
                 <form onSubmit={onSubmitAddUser}>
                     <div className="formInput">
                         <input type="text" value={formUsername}
@@ -120,7 +124,7 @@ const SearchUsersSubDialog = (props) => {
                         <div className="underline"></div>
                         <label htmlFor="">Nombre de usuario</label>
                     </div>
-                    <div className="hint">Puedes añadir más de un estudiante a la vez si los introduces en una lista separados por comas</div>
+                    <div className="hint">Puedes añadir más de un usuario si los introduces en una lista separados por comas</div>
                     {isLoadingSearch && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     <div className="participantsSearchContainer">
                         {serverSuggestedUsers.length > 0 ? clientFilteredSuggestions().map(u => <UserCard user={u} onClickWithUsername={onSuggestionClicked}/>) : <></>}

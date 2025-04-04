@@ -3,8 +3,8 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
-import AreYouSureDeleteDialog from "./AreYouSureDeleteDialog";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
+import AreYouSureDialog from "./AreYouSureDialog";
 
 const ClassParticipantsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -36,15 +36,6 @@ const ClassParticipantsDialog = (props) => {
         setAreYouSureDeleteUsername(username);
     }
 
-    const onUserAdded = (errorMessage) => {
-        setRefreshKey(x => x + 1)
-        if (errorMessage === undefined || errorMessage === "") {
-            setFeedback({type: "success", message: "Usuario(s) añadido(s) con éxito"});
-        } else {
-            setFeedback({type: "error", message: errorMessage});
-        }
-    }
-
     const onRemoveUserActionConfirmed = () => {
         if (isLoadingDelete) { return; }
         setLoadingDelete(true);
@@ -66,6 +57,14 @@ const ClassParticipantsDialog = (props) => {
             })
     }
 
+    const onUserAdded = (errorMessage) => {
+        setRefreshKey(x => x + 1)
+        if (errorMessage === undefined || errorMessage === "") {
+            setFeedback({ type: "success", message: "Usuario(s) añadido(s) con éxito" });
+        } else {
+            setFeedback({ type: "error", message: errorMessage });
+        }
+    }
 
     const userCardForUser = (user) => {
         if (props.shouldShowEditButton) {
@@ -77,11 +76,14 @@ const ClassParticipantsDialog = (props) => {
 
     return props.show === true ?
         areYouSureDeleteUsername !== undefined ?
-            <AreYouSureDeleteDialog onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
-                onActionConfirmed={onRemoveUserActionConfirmed}
-                isLoading={isLoadingDelete} />
+            <AreYouSureDialog onActionConfirmed={onRemoveUserActionConfirmed}
+                onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
+                isLoading={isLoadingDelete}
+                dialogMode="DELETE"
+                warningMessage={`¿Deseas eliminar a ${areYouSureDeleteUsername} de la clase?`} />
             : showAddParticipant ?
-                <SearchUsersSubDialog classroom={props.classroom}
+                <SearchUsersSubDialog addUsersUrl={`/api/v1/classes/${props.classroom.id}/users`}
+                    dialogTitle={`Añadir participantes a ${props.classroom.name}`}
                     onUserAdded={onUserAdded}
                     onDismiss={() => { setShowAddParticipant(false) }} />
                 : <div className="popupOverlayBackground" onClick={props.onDismiss}>

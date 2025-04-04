@@ -3,7 +3,6 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
-import AreYouSureDeleteDialog from "../dialogs/AreYouSureDeleteDialog";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];

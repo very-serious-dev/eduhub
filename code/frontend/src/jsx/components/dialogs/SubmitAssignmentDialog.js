@@ -1,8 +1,8 @@
 import { useState } from "react";
-import AreYouSureSubmitDialog from "./AreYouSureSubmitDialog";
 import DropFilesArea from "../common/DropFilesArea";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import AreYouSureDialog from "./AreYouSureDialog";
 
 const SubmitAssignmentDialog = (props) => {
     const [formComment, setFormComment] = useState("");
@@ -72,10 +72,11 @@ const SubmitAssignmentDialog = (props) => {
     }
 
     return props.show === true ? showAreYouSurePopup ?
-        <AreYouSureSubmitDialog onActionConfirmed={onSubmit}
-            onGoBack={() => { setShowAreYouSurePopup(false);}}
-            onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss(); }}
-            isLoading={isLoading} />
+        <AreYouSureDialog onActionConfirmed={onSubmit}
+            onDismiss={() => { setShowAreYouSurePopup(false); }}
+            isLoading={isLoading}
+            dialogMode="SUBMIT"
+            warningMessage="⚠️ Tu entrega es definitiva y no se puede corregir. Asegúrate de revisar los documentos que entregues" />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">

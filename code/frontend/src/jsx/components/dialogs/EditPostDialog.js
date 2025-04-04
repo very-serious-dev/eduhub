@@ -1,7 +1,7 @@
 import { useState } from "react";
 import CreateOrEditPostForm from "../posts/CreateOrEditPostForm";
-import AreYouSureDeleteDialog from "./AreYouSureDeleteDialog";
 import EduAPIFetch from "../../../client/EduAPIFetch";
+import AreYouSureDialog from "./AreYouSureDialog";
 
 const EditPostDialog = (props) => {
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
@@ -30,9 +30,11 @@ const EditPostDialog = (props) => {
     }
 
     return props.show === true ? showAreYouSurePopup ?
-        <AreYouSureDeleteDialog onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss() }}
-            onActionConfirmed={onDeletePost}
-            isLoading={isLoadingDelete} />
+        <AreYouSureDialog onActionConfirmed={onDeletePost}
+            onDismiss={() => { setShowAreYouSurePopup(false); }}
+            isLoading={isLoadingDelete}
+            dialogMode="DELETE"
+            warningMessage={`¿Deseas eliminar esta publicación?`} />
         : <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">

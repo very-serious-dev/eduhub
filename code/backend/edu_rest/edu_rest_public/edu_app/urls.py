@@ -23,7 +23,8 @@ urlpatterns = [
     path("documents",                                endpoints_documents.get_documents_and_folders),
     path("folders",                                  endpoints_documents.create_folder),
     path("documents/<document_identifier>",          endpoints_documents.move_document),
-    path("documents/<document_identifier>/users",    endpoints_documents.handle_document_permissions),
+    path("documents/<document_identifier>/users",    endpoints_documents.get_document_users),
     path("folders/<int:folder_id>",                  endpoints_documents.move_folder),
-    path("folders/<int:folder_id>/users",            endpoints_documents.handle_folder_permissions)
+    path("folders/<int:folder_id>/users",            endpoints_documents.get_folder_users),
+    path("files/permissions",                        endpoints_documents.update_files_users)
 ]

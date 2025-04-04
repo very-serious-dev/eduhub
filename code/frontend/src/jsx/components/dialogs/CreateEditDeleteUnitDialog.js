@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
-import AreYouSureDeleteDialog from "./AreYouSureDeleteDialog";
+import AreYouSureDialog from "./AreYouSureDialog";
 
 const CreateEditDeleteUnitDialog = (props) => {
     const [formName, setFormName] = useState("");
@@ -19,9 +19,9 @@ const CreateEditDeleteUnitDialog = (props) => {
         event.preventDefault();
         setLoading(true);
         const httpMethod = isEditingUnit() ? "PUT" : "POST"
-        const url = isEditingUnit() ? 
-                    `/api/v1/classes/${props.classId}/units/${props.unit.id}`
-                    : `/api/v1/classes/${props.classId}/units`
+        const url = isEditingUnit() ?
+            `/api/v1/classes/${props.classId}/units/${props.unit.id}`
+            : `/api/v1/classes/${props.classId}/units`
         EduAPIFetch(httpMethod, url, { name: formName })
             .then(json => {
                 setLoading(false);
@@ -62,36 +62,38 @@ const CreateEditDeleteUnitDialog = (props) => {
                 props.onDismiss();
             })
     }
-    
-    return props.show === true ? showAreYouSurePopup ? 
-    <AreYouSureDeleteDialog onDismiss={() => { setShowAreYouSurePopup(false); props.onDismiss(); }}
-        onActionConfirmed={onDeleteUnit}
-        isLoading={isLoading} />
-    : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popup" onClick={e => { e.stopPropagation(); }}>
-            <div className="card dialogBackground">
-                <div className="dialogTitle">{isEditingUnit() ? "Modificar tema" : "Nuevo tema"}</div>
-                <form onSubmit={onSubmitAddOrEditUnit}>
-                    <div className="formInput">
-                        <input type="text" value={formName}
-                            onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Tema 1: Ecuaciones"; }}
-                            onBlur={e => { e.target.placeholder = ""; }}
-                            required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre</label>
-                    </div>
-                    <div className="formSubmit">
-                        <input type="submit" value={isEditingUnit() ? "Modificar" : "Crear"} />
-                    </div>
-                    {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
-                </form>
-                { isEditingUnit() && <div className="buttonDelete">
-                    <button onClick={ () => { setShowAreYouSurePopup(true); }}>❌ Eliminar tema</button>
-                </div> }
+
+    return props.show === true ? showAreYouSurePopup ?
+        <AreYouSureDialog onActionConfirmed={onDeleteUnit}
+            onDismiss={() => { setShowAreYouSurePopup(false); }}
+            isLoading={isLoading}
+            dialogMode="DELETE"
+            warningMessage={`¿Deseas eliminar el tema? Las publicaciones seguirán existiendo, pero ya no estarán asociadas`} />
+        : <div className="popupOverlayBackground" onClick={props.onDismiss}>
+            <div className="popup" onClick={e => { e.stopPropagation(); }}>
+                <div className="card dialogBackground">
+                    <div className="dialogTitle">{isEditingUnit() ? "Modificar tema" : "Nuevo tema"}</div>
+                    <form onSubmit={onSubmitAddOrEditUnit}>
+                        <div className="formInput">
+                            <input type="text" value={formName}
+                                onChange={e => { setFormName(e.target.value) }}
+                                onFocus={e => { e.target.placeholder = "Tema 1: Ecuaciones"; }}
+                                onBlur={e => { e.target.placeholder = ""; }}
+                                required />
+                            <div className="underline"></div>
+                            <label htmlFor="">Nombre</label>
+                        </div>
+                        <div className="formSubmit">
+                            <input type="submit" value={isEditingUnit() ? "Modificar" : "Crear"} />
+                        </div>
+                        {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    </form>
+                    {isEditingUnit() && <div className="buttonDelete">
+                        <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar tema</button>
+                    </div>}
+                </div>
             </div>
-        </div>
-    </div> : <></>
+        </div> : <></>
 }
 
 export default CreateEditDeleteUnitDialog;

@@ -16,7 +16,6 @@ const CreateGroupDialog = (props) => {
         setLoadingTeachers(true);
         EduAPIFetch("GET", "/api/v1/admin/users/teachers")
             .then(json => {
-                console.log(json)
                 setLoadingTeachers(false);
                 setAvailableTeachers(json.teachers);
                 if (json.teachers.length > 0) {

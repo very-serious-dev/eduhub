@@ -1338,6 +1338,11 @@ input:valid ~ .underline:before {
   background-color: var(--color-secondary);
 }
 
+.areYouSureMessage {
+  text-align: center;
+  margin: 15px;
+}
+
 .areYouSureOption:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);

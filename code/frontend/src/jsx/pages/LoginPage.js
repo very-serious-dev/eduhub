@@ -49,6 +49,7 @@ const LoginPage = () => {
                 <div className="formInput">
                     <input type="text" value={formUser} 
                       onChange={e => { setFormUser(e.target.value) }} 
+                      autoFocus
                       required />
                     <div className="underline"></div>
                     <label htmlFor="">Usuario</label>
