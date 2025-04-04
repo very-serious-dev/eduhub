@@ -64,10 +64,12 @@ def create_or_delete_documents(request):
             return JsonResponse({"error": "Subir esos documentos rebasa tu capacidad de almacenamiento"}, status=409)
         # Proceed
         if not json_skip_saving_files:
-            try:
-                parent_folder = EduAppFolder.objects.get(author=user, id=json_parent_folder_id)
-            except EduAppFolder.DoesNotExist:
-                return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
+            parent_folder = None
+            if json_parent_folder_id is not None:
+                try:
+                    parent_folder = EduAppFolder.objects.get(author=user, id=json_parent_folder_id)
+                except EduAppFolder.DoesNotExist:
+                    return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
             for d in json_documents:
                 # TODO: Add UNIQUE constraint to document name + parent folder id?
                 # (In that case, what about documents attached to posts?)

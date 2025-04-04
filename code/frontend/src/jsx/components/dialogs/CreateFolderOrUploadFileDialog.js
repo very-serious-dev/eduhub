@@ -3,7 +3,7 @@ const CreateFolderOrUploadFileDialog = (props) => {
     <div className="popup" onClick={e => { e.stopPropagation(); }}>
         <div className="card dialogBackground">
             <div className="card twoOptionsDialogChoice" onClick={() => { props.onCreateFolderClicked() }}>📁 Crear carpeta</div>
-            {props.hideUploadDocumentsOption !== true && <div className="card twoOptionsDialogChoice" onClick={() => { props.onUploadDocumentsClicked() }}>📄 Subir documentos</div>}
+            <div className="card twoOptionsDialogChoice" onClick={() => { props.onUploadDocumentsClicked() }}>📄 Subir documentos</div>
         </div>
     </div>
 </div> : <></>

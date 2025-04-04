@@ -42,8 +42,7 @@ const FilesBody = (props) => {
         <CreateFolderOrUploadFileDialog show={popupShown === "CREATE_OR_UPLOAD"}
             onDismiss={() => { setPopupShown("NONE") }}
             onCreateFolderClicked={() => { setPopupShown("CREATE_FOLDER") }}
-            onUploadDocumentsClicked={() => { setPopupShown("UPLOAD_DOCUMENTS") }}
-            hideUploadDocumentsOption={currentFolderIdsPath.length === 0} />
+            onUploadDocumentsClicked={() => { setPopupShown("UPLOAD_DOCUMENTS") }} />
         <CreateFolderDialog show={popupShown === "CREATE_FOLDER"}
             parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, props.myFilesTree)}
             parentFolderIdsPath={currentFolderIdsPath}

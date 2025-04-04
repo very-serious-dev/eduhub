@@ -55,7 +55,7 @@ class EduAppDocument(models.Model):
     mime_type = models.CharField(max_length=50)
     is_protected = models.BooleanField()
     created_at = models.DateTimeField()
-    folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING)
+    folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:

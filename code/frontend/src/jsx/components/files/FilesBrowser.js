@@ -27,11 +27,11 @@ const FilesBrowser = (props) => {
             if (b.type === "folder") {
                 return compareByName(a, b);
             } else if (b.type === "document") {
-                return 1;
+                return -1;
             }
         } else if (a.type === "document") {
             if (b.type === "folder") {
-                return -1;
+                return 1;
             } else if (b.type === "document") {
                 return compareByName(a, b);
             }
@@ -53,19 +53,32 @@ const FilesBrowser = (props) => {
                 onRootClicked={onRootSelected}
                 tree={props.myFilesTree} />
         }
-        const rootFoldersTabContent = { view: [] }
-        getTree().sort(orderingCriteria).forEach(rootFolder => {
-            rootFoldersTabContent.view.push(
-                <FolderElement folder={rootFolder}
-                    level={1}
-                    onFolderClicked={onFolderSelected}
-                    selected={props.selectedFolderIdsPath.length > 0 ? props.selectedFolderIdsPath[0] === rootFolder.id : false}
-                    showContextMenu={props.showContextMenus}
-                    myFilesTree={props.myFilesTree}
-                    onMoveDeleteSuccess={props.onMoveDeleteSuccess}
-                    onMoveDeleteFail={props.onMoveDeleteFail} />)
+        const rootElementsTabContent = { view: [] }
+        getTree().sort(orderingCriteria).forEach(rootElement => {
+            if (rootElement.type === "folder") {
+                rootElementsTabContent.view.push(
+                    <FolderElement folder={rootElement}
+                        level={1}
+                        onFolderClicked={onFolderSelected}
+                        selected={props.selectedFolderIdsPath.length > 0 ? props.selectedFolderIdsPath[0] === rootElement.id : false}
+                        showContextMenu={props.showContextMenus}
+                        myFilesTree={props.myFilesTree}
+                        onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+                        onMoveDeleteFail={props.onMoveDeleteFail} />
+                );
+            } else if (rootElement.type === "document") {
+                rootElementsTabContent.view.push(
+                    <DocumentElement document={rootElement}
+                        mimeType={rootElement.mime_type}
+                        size={rootElement.size}
+                        showContextMenu={props.showContextMenus}
+                        isClickable={props.canClickFiles}
+                        myFilesTree={props.myFilesTree}
+                        onMoveDeleteSuccess={props.onMoveDeleteSuccess}
+                        onMoveDeleteFail={props.onMoveDeleteFail} />);
+            }
         })
-        return [firstTabContent, rootFoldersTabContent];
+        return [firstTabContent, rootElementsTabContent];
     }
 
     const additionalTabsForCurrentTreeAndSelectedFolder = () => {

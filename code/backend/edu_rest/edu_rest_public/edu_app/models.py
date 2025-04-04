@@ -52,7 +52,7 @@ class Document(models.Model):
     size = models.IntegerField() # in bytes; safe max value is 2147483647 (=2048 MB)
     mime_type = models.CharField(max_length=50)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
+    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
     is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now=True)
 

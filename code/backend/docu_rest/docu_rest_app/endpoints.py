@@ -116,10 +116,9 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
                 "name": ud.name,
                 "size": ud.size,
                 "is_protected": False,
-                "mime_type": ud.mime_type
+                "mime_type": ud.mime_type,
+                "folder_id": json_parent_folder_id # might be None
             }
-            if json_parent_folder_id is not None:
-                created_document["folder_id"] = json_parent_folder_id
             response_documents_created.append(created_document)
         return JsonResponse({"success": True,
                              "result": {

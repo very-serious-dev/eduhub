@@ -13,7 +13,7 @@ const UploadDocumentsDialog = (props) => {
         const body = {
             filetree_info: {
                 must_save_to_filetree: true,
-                parent_folder_id: props.parentFolderIdsPath.slice(-1)[0]
+                parent_folder_id: props.parentFolderIdsPath.length > 0 ? props.parentFolderIdsPath.slice(-1)[0] : null
             },
             files: attachedFilesReady
         }

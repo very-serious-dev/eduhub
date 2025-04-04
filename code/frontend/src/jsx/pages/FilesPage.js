@@ -63,13 +63,23 @@ const FilesPage = () => {
         }
     }
 
+    /**
+     * Returns an array containing all the folders with a new synthetic attribute 'children'
+     * where documents that belong to a folder are.
+     * - Orphan documents (e.g.: documents at root level) aren't taken into account
+     * - Folders are still not put inside the 'children' attribute (the tree isn't fully built)
+     */
     const flatFoldersWithDocumentsInside = () => {
         const allFoldersById = {}
         documentsAndFolders.folders.forEach(f => {
             allFoldersById[f.id] = { ...f, children: [] };
         });
         documentsAndFolders.documents.forEach(d => {
-            if (allFoldersById[d.folder_id] !== undefined) { // After a folder deletion we might find orphaned documents
+            // d.folder_id is null if the document doesn't belong to a folder (e.g.: is at root level)
+            // allFoldersById[d.folder_id] is undefined if the folder containing the document isn't found
+            // I'm not sure whether this could ever happen, but I'm leaving that here as that might happen
+            // after deletion errors, I believe
+            if ((d.folder_id !== null) && (allFoldersById[d.folder_id] !== undefined)) {
                 allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
             }
         });
@@ -95,6 +105,13 @@ const FilesPage = () => {
         for (const rootFolder of tree) {
             findAllChildrenAndRecursivelyInsertInto(rootFolder, remainingNonRootFolders);
         }
+        // As a final step, add the root-level documents that have noot been taken into
+        // consideration yet (see `flatFoldersWithDocumentsInside`)
+        documentsAndFolders.documents.forEach(d => {
+            if (d.folder_id === null) {
+                tree.push({ ...d, type: "document" })
+            }
+        });
         return tree;
     }
 
