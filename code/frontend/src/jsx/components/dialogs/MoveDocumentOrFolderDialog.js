@@ -60,7 +60,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.myFilesTree)} disabled={true} />
                     </div>
                     <div className="formSubmit">
-                        <input type="submit" value="Mover" disabled={props.documentId && selectedFolderIdsPath.length === 0}/>
+                        <input type="submit" value="Mover"/>
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>

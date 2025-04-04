@@ -66,12 +66,12 @@ def move_document(request, document_identifier):
         except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_folder_id = body_json.get("folder_id")
-        if json_folder_id is None:
-            return JsonResponse({"error": "Falta folder_id"}, status=400)
-        try:
-            folder = Folder.objects.get(id=json_folder_id, author=request.session.user)
-        except Folder.DoesNotExist:
-            return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
+        folder = None
+        if json_folder_id is not None:
+            try:
+                folder = Folder.objects.get(id=json_folder_id, author=request.session.user)
+            except Folder.DoesNotExist:
+                return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
         document.folder = folder
         document.save()
         return JsonResponse({"success": True,
