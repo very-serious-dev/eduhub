@@ -15,7 +15,7 @@ const PostsBoardEntry = (props) => {
             {props.post.files.map(f => <PostsBoardEntryFile file={f} />)}
         </div>
         <div className="classDetailEntryFootNote">
-            {footNoteDateAuthor(props.post.author, props.post.publication_date, props.post.modificationDate)}
+            {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}
         </div>
     </div>
 }

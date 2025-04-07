@@ -20,7 +20,7 @@ const PostsBoardAssignment = (props) => {
         <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>
         <div className="classDetailAssignmentDueDate">Se entrega: {formatNullableDueDate(props.post.assignment_due_date)}</div>
         <div className="classDetailEntryFootNote">
-            {footNoteDateAuthor(props.post.author, props.post.publication_date, props.post.modificationDate)}
+            {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}
         </div>
     </div>
 }
