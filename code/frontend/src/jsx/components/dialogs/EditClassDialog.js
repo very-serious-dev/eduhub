@@ -81,7 +81,7 @@ const EditClassDialog = (props) => {
                         </div>
                         {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     </form>
-                    <div className="buttonDelete">
+                    <div className="formSecondSubmit formSecondSubmitDestructive">
                         <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar clase</button>
                     </div>
                 </div>

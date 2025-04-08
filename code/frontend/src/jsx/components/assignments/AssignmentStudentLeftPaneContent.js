@@ -34,7 +34,11 @@ const AssignmentStudentLeftPaneContent = (props) => {
         <div className="classDetailSectionUnderline" />
         {props.assignmentData.your_submit !== undefined
             ? <>
-                <AssignmentUserStatus submit={props.assignmentData.your_submit} author={props.assignmentData.your_submit.author} />
+                <AssignmentUserStatus submit={props.assignmentData.your_submit}
+                    author={props.assignmentData.your_submit.author}
+                    assignmentId={null}
+                    onScoreChanged={null} /> {/*assignmentId | onScoreChanged are only needed when rendering from
+                                                AssignmentTeacherLeftPaneContent.js; so as to PUT scores (TODO: refactor?)*/ }
                 <p>🎉 ¡Ya has entregado la tarea!</p>
             </>
             : <>

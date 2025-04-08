@@ -40,11 +40,24 @@ const AssignmentPage = (props) => {
         }
     }, [])
 
+    const onScoreChanged = (result) => {
+        if (result.operation === "score_updated") {
+            setAssignmentData(old => {
+                const updatedSubmit = old.submits.find(s => s.author.username === result.author_username);
+                updatedSubmit.score = result.score;
+                updatedSubmit.is_score_published = result.is_score_published;
+                const newSubmits = old.submits.filter(s => s.author.username === result.author_username).concat(updatedSubmit);
+                return {...old, newSubmits}
+            });
+        }
+    }
+
     return isRequestFailed ?
         <ErrorPage errorMessage={requestErrorMessage} />
         : <AssignmentBody assignmentData={assignmentData}
             isLoading={isLoading}
-            onShouldRefresh={() => { setNumTimesChanged(x => x + 1) }} />
+            onShouldRefresh={() => { setNumTimesChanged(x => x + 1) }} 
+            onScoreChanged={onScoreChanged}/>
 }
 
 export { AssignmentPage };

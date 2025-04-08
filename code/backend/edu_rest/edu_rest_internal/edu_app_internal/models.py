@@ -22,6 +22,8 @@ class EduAppAssignmentsubmit(models.Model):
     submit_date = models.DateTimeField()
     assignment = models.ForeignKey('EduAppPost', models.DO_NOTHING)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    score = models.FloatField(blank=True, null=True)
+    is_score_published = models.BooleanField()
 
     class Meta:
         managed = False

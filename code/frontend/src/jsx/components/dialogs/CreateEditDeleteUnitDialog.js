@@ -88,7 +88,7 @@ const CreateEditDeleteUnitDialog = (props) => {
                         </div>
                         {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     </form>
-                    {isEditingUnit() && <div className="buttonDelete">
+                    {isEditingUnit() && <div className="formSecondSubmit formSecondSubmitDestructive">
                         <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar tema</button>
                     </div>}
                 </div>

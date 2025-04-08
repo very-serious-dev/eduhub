@@ -149,10 +149,13 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
         for s in AssignmentSubmit.objects.filter(assignment=original_assignment):
             submit = {
               "author": user_to_json(s.author),
-              "submit_date": s.submit_date
+              "submit_date": s.submit_date,
+              "is_score_published": s.is_score_published
             }
             if s.comment is not None:
                 submit["comment"] = s.comment
+            if s.score is not None:
+                submit["score"] = s.score
             submit_documents = []
             for sd in AssignmentSubmitDocument.objects.filter(submit=s):
                 submit_documents.append(document_to_json(sd.document))
@@ -174,6 +177,9 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
               "author": user_to_json(s.author),
               "submit_date": s.submit_date
             }
+            if s.is_score_published: # Only send score to students if boolean flag says 'published'
+                submit["is_score_published"] = True
+                submit["score"] = s.score
             if s.comment is not None:
                 submit["comment"] = s.comment
             submit_documents = []

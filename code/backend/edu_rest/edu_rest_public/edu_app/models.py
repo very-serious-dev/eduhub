@@ -125,6 +125,8 @@ class AssignmentSubmit(models.Model):
     assignment = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.CharField(max_length=1000, null=True)
     submit_date = models.DateTimeField(auto_now=True)
+    score = models.FloatField(null=True)
+    is_score_published = models.BooleanField(default=False)
 
 class AssignmentSubmitDocument(models.Model):
     submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)

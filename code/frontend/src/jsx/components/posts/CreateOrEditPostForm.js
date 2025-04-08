@@ -144,7 +144,7 @@ const CreateOrEditPostForm = (props) => {
             <div className="formSubmit">
                 <input type="submit" value={props.submitText} />
             </div>
-            {props.showDeleteButton && <div className="buttonDelete">
+            {props.showDeleteButton && <div className="formSecondSubmit formSecondSubmitDestructive">
                 <button onClick={props.onDeleteClicked}>❌ Eliminar</button>
             </div>}
             {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
