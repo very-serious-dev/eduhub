@@ -50,6 +50,15 @@ const AssignmentPage = (props) => {
                 return {...old, newSubmits}
             });
         }
+        if (result.operation === "score_deleted") {
+            setAssignmentData(old => {
+                const updatedSubmit = old.submits.find(s => s.author.username === result.author_username);
+                updatedSubmit.score = undefined;
+                updatedSubmit.is_score_published = undefined;
+                const newSubmits = old.submits.filter(s => s.author.username === result.author_username).concat(updatedSubmit);
+                return {...old, newSubmits}
+            });
+        }
     }
 
     return isRequestFailed ?

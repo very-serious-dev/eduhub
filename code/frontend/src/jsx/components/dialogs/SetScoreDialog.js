@@ -34,8 +34,24 @@ const SetScoreDialog = (props) => {
             })
     }
 
-    const removeScore = () => {
-        // TODO
+    const removeScore = () => { //TODO merge with above function? This is almost the same
+        setLoading(true);
+        EduAPIFetch("DELETE", `/api/v1/assignments/${props.assignmentId}/submits/${props.username}/score`)
+            .then(json => {
+                setLoading(false);
+                if (json.success === true) {
+                    setFeedback({ type: "success", message: "Calificación eliminada" });
+                    props.onSuccess(json.result);
+                } else {
+                    setFeedback({ type: "error", message: "Se ha producido un error" });
+                }
+                props.onDismiss();
+            })
+            .catch(error => {
+                setLoading(false);
+                setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
+                props.onDismiss();
+            })
     }
 
     return <div className="popupOverlayBackground" onClick={props.onDismiss}>

@@ -269,44 +269,76 @@ def create_assignment_submit(request, assignmentId):
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 def score_assignment_submit(request, assignmentId, username):
-    if request.method != "PUT":
+    if request.method == "PUT":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
+        hasPermission = False
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
+            hasPermission = True
+        if request.session.user.role in [User.UserRole.TEACHER]:
+            hasPermission = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
+        if not hasPermission:
+            return JsonResponse({"error": "No tienes permisos para evaluar esta tarea"}, status=403)
+        try:
+            student = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Ese usuario no existe"}, status=404)
+        try:
+            submit = AssignmentSubmit.objects.get(author=student, assignment=assignment)
+        except AssignmentSubmit.DoesNotExist:
+            return JsonResponse({"error": "Ese estudiante aún no ha entregado su tarea"}, status=404)
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_should_publish = body_json.get("is_published", False)
+        json_score = body_json.get("score")
+        if not json_score:
+            return JsonResponse({"error": "Falta score en el cuerpo de la petición"}, status=400)
+        submit.score = json_score
+        submit.is_score_published = json_should_publish
+        submit.save()
+        return JsonResponse({"success": True,
+                             "result": {
+                                 "operation": "score_updated",
+                                 "author_username": submit.author.username,
+                                 "score": submit.score,
+                                 "is_score_published": submit.is_score_published
+                             } }, status=200)
+    elif request.method == "DELETE":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
+        hasPermission = False
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
+            hasPermission = True
+        if request.session.user.role in [User.UserRole.TEACHER]:
+            hasPermission = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
+        if not hasPermission:
+            return JsonResponse({"error": "No tienes permisos para evaluar esta tarea"}, status=403)
+        try:
+            student = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Ese usuario no existe"}, status=404)
+        try:
+            submit = AssignmentSubmit.objects.get(author=student, assignment=assignment)
+        except AssignmentSubmit.DoesNotExist:
+            return JsonResponse({"error": "Ese estudiante aún no ha entregado su tarea"}, status=404)
+        submit.score = None
+        submit.is_score_published = False
+        submit.save()
+        return JsonResponse({"success": True,
+                             "result": {
+                                 "operation": "score_deleted",
+                                 "author_username": submit.author.username
+                             } }, status=200)
+    else:
         return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
-    if request.session is None:
-        return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-    try:
-        assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
-    canScore = False
-    if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
-        canScore = True
-    if request.session.user.role in [User.UserRole.TEACHER]:
-        canScore = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
-    if not canScore:
-        return JsonResponse({"error": "No tienes permisos para evaluar esta tarea"}, status=403)
-    try:
-        student = User.objects.get(username=username)
-    except User.DoesNotExist:
-        return JsonResponse({"error": "Ese usuario no existe"}, status=404)
-    try:
-        submit = AssignmentSubmit.objects.get(author=student, assignment=assignment)
-    except AssignmentSubmit.DoesNotExist:
-        return JsonResponse({"error": "Ese estudiante aún no ha entregado su tarea"}, status=404)
-    try:
-        body_json = json.loads(request.body)
-    except json.decoder.JSONDecodeError:
-        return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
-    json_should_publish = body_json.get("is_published", False)
-    json_score = body_json.get("score")
-    if not json_score:
-        return JsonResponse({"error": "Falta score en el cuerpo de la petición"}, status=400)
-    submit.score = json_score
-    submit.is_score_published = json_should_publish
-    submit.save()
-    return JsonResponse({"success": True,
-                         "result": {
-                             "operation": "score_updated",
-                             "author_username": submit.author.username,
-                             "score": submit.score,
-                             "is_score_published": submit.is_score_published
-                         } }, status=200)
+        

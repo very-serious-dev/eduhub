@@ -15,8 +15,7 @@ const AssignmentUserStatus = (props) => {
         <div className="assignmentCell" onClick={() => { setShowSubmitDialog(true); }}>
             <div className="assignmentCellHeader">
                 <div className="assignmentCellHeaderSurnameAndName">{`${props.author.surname}, ${props.author.name}`}</div>
-                {((props.submit !== undefined) &&
-                 (props.submit.score !== null) /* This happens when a student visits his assignment and there's an unpublished score */) &&
+                {(props.submit && props.submit.score) &&
                   <div className="assignmentCellHeaderScoreContainer">
                     {props.submit.is_score_published === false && <div className="assignmentCellHeaderScoreUnpublishedHint">Sin<br/>publicar</div>}
                     <div className={`assignmentCellHeaderScore ${props.submit.is_score_published === false ? "scoreUnpublished" : "scorePublished"}`}>{props.submit.score}</div>
