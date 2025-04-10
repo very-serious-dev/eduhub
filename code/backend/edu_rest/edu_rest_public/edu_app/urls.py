@@ -16,6 +16,7 @@ urlpatterns = [
     path("classes/<int:classId>/users/<username>",   endpoints_classes.delete_class_participant),
     path("classes/<int:classId>/units",              endpoints_classes.create_class_unit),
     path("classes/<int:classId>/units/<int:unitId>", endpoints_classes.handle_class_unit),
+    path("classes/<int:classId>/scores",             endpoints_classes.download_scores),
     path("classes/<int:classId>/posts",              endpoints_posts.create_post),
     path("posts/<int:postId>/amendments",            endpoints_posts.amend_post),
     path("assignments/<int:assignmentId>",           endpoints_posts.assignment_detail),

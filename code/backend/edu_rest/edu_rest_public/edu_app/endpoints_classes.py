@@ -1,6 +1,7 @@
 import json, random
-from django.http import JsonResponse
-from .models import User, Class, UserClass, Group, Unit
+from datetime import datetime
+from django.http import JsonResponse, HttpResponse
+from .models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json, class_detail_to_json
 
 # TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
@@ -276,5 +277,53 @@ def handle_class_unit(request, classId, unitId):
                 return JsonResponse({"error": "Server error"}, status=500)
         except Unit.DoesNotExist:
             return JsonResponse({"error": "No existe ese tema"}, status=404)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
+
+def download_scores(request, classId):
+    if request.method == "GET":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            classroom = Class.objects.get(id=classId)
+        except Class.DoesNotExist:
+            return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
+            has_permission_to_see = True
+        else:
+            regular_teachers_in_class = UserClass.objects.filter(classroom=classroom, user__role__in=[User.UserRole.TEACHER])
+            has_permission_to_see = request.session.user in regular_teachers_in_class
+        if not(has_permission_to_see):
+            return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        csv = ""
+        original_assignments = Post.objects.filter(classroom=classroom, kind=Post.PostKind.ASSIGNMENT)
+        assignments = []
+        for oa in original_assignments:
+            assignment_real_title = oa.title
+            if Post.objects.filter(amendment_original_post=oa).count() > 0:
+                newest_amendment = Post.objects.filter(amendment_original_post=oa).order_by("-id")[0]
+                if newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
+                    continue
+                elif newest_amendment.kind == Post.PostKind.AMENDMENT_EDIT:
+                    assignment_real_title = newest_amendment.title
+            assignments.append({"assignment": oa, "real_title": assignment_real_title})
+        for a in assignments:
+            csv += "," + a["real_title"] # FIXME, commas in assignment titles will break this?
+        csv += "\n"
+        students_class = UserClass.objects.filter(classroom=classroom, user__role__in=[User.UserRole.STUDENT]).order_by("user__surname")
+        students = list(map(lambda sc: sc.user, students_class))
+        for s in students:
+            csv += '"'+ s.surname + ', ' + s.name + '"'
+            for a in assignments:
+                try:
+                    submit = AssignmentSubmit.objects.get(author=s, assignment=a["assignment"], score__isnull=False)
+                    score = submit.score
+                except AssignmentSubmit.DoesNotExist:
+                    score = ""
+                csv += "," + str(score)
+            csv += "\n"
+        response = HttpResponse(csv, content_type="text/csv")
+        response["Content-Disposition"] = "filename=Notas de " + classroom.name + " [" + classroom.group.tag + "] (" + datetime.today().strftime('%d-%m-%Y') + "]";
+        return response
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

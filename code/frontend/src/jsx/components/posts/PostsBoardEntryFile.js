@@ -1,10 +1,10 @@
-import DocuURL from "../../../client/DocuURL";
+import { DOCU_SERVER } from "../../../client/Servers";
 import { iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
 
 const PostsBoardEntryFile = (props) => {
 
     const onClickFile = () => {
-        window.open(`${DocuURL}/api/v1/documents/${props.file.identifier}`, "_blank")
+        window.open(`${DOCU_SERVER}/api/v1/documents/${props.file.identifier}`, "_blank")
     }
 
     return <div className="classEntryFile" onClick={onClickFile}>

@@ -1,4 +1,4 @@
-import DocuURL from "../../../client/DocuURL";
+import { DOCU_SERVER } from "../../../client/Servers";
 import { footNoteDateAuthor, iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
 import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
 
@@ -6,7 +6,7 @@ const DocumentElement = (props) => {
 
     const onClickFile = () => {
         if (props.isClickable) {
-            window.open(`${DocuURL}/api/v1/documents/${props.document.identifier}`, "_blank");
+            window.open(`${DOCU_SERVER}/api/v1/documents/${props.document.identifier}`, "_blank");
         }
     }
 

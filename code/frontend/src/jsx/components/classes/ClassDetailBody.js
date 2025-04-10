@@ -6,6 +6,7 @@ import PostsBoard from "../posts/PostsBoard";
 import ClassDetailDrawerSectionUnits from "./ClassDetailDrawerSectionUnits";
 import ClassDetailDrawerSectionTitle from "./ClassDetailDrawerSectionTitle";
 import ClassDetailDrawerSectionAssignments from "./ClassDetailDrawerSectionAssignments";
+import { EDU_SERVER } from "../../../client/Servers";
 
 const ClassDetailBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, CREATE_EDIT_UNIT
@@ -19,6 +20,10 @@ const ClassDetailBody = (props) => {
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }
+    }
+
+    const onClickDownloadScores = () => {
+        window.open(`${EDU_SERVER}/api/v1/classes/${props.classData.id}/scores`, "_blank");
     }
 
     return <>
@@ -45,6 +50,11 @@ const ClassDetailBody = (props) => {
                     <ClassDetailDrawerSectionTitle title="👤 Participantes" />
                     <div className="card classDetailBubbleButton" onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div>
                 </div>
+                {props.classData.should_show_edit_button && /** TODO: rename property? */
+                    <div>
+                        <ClassDetailDrawerSectionTitle title="🎓 Calificaciones" />
+                        <div className="card classDetailBubbleButton" onClick={onClickDownloadScores}>⬇️ Descargar notas</div>
+                    </div>}
             </div>
         </div>
     </>

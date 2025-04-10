@@ -1,7 +1,8 @@
 // https://stackoverflow.com/a/32488827
 
+import { EDU_SERVER } from "./Servers";
+
 const EduAPIFetch = (httpMethod, urlPath, body) => {
-    const SERVER = "http://localhost:8000"
 
     const options = {
         method: httpMethod,
@@ -9,7 +10,7 @@ const EduAPIFetch = (httpMethod, urlPath, body) => {
         credentials: "include"
     };
 
-    return fetch(SERVER + urlPath, options).then(response => {
+    return fetch(EDU_SERVER + urlPath, options).then(response => {
         return response.json().then(json => {
             return response.ok ? json : Promise.reject(json);
         });
