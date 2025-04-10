@@ -1,6 +1,13 @@
+import { useContext, useState } from "react";
+import EduAPIFetch from "../../../client/EduAPIFetch";
 import AssignmentUserStatus from "./AssignmentUserStatus";
+import { FeedbackContext } from "../../main/GlobalContainer";
+import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 
 const AssignmentTeacherLeftPaneContent = (props) => {
+    const [isLoadingPublishAll, setLoadingPublishAll] = useState(false);
+    const [showAreYouSure, setShowAreYouSure] = useState(false);
+    const setFeedback = useContext(FeedbackContext);
 
     const numberAssigneesWhoDidntSubmit = () => {
         return props.assignmentData.assignees.reduce((acc, assignee) => {
@@ -34,10 +41,32 @@ const AssignmentTeacherLeftPaneContent = (props) => {
     const nUnpublishedScores = numberUnpublishedScores();
 
     const publishAll = () => {
-        // TODO
+        setLoadingPublishAll(true);
+        EduAPIFetch("POST", `/api/v1/assignments/${props.assignmentData.id}/scores`)
+            .then(json => {
+                setLoadingPublishAll(false);
+                if (json.success === true) {
+                    setFeedback({ type: "success", message: "Calificaciones publicadas" });
+                    props.onShouldRefresh();
+                } else {
+                    setFeedback({ type: "error", message: "Se ha producido un error" });
+                }
+                setShowAreYouSure(false);
+            })
+            .catch(error => {
+                setLoadingPublishAll(false);
+                setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
+                setShowAreYouSure(false);
+            })
     }
 
     return <>
+        {showAreYouSure &&
+            <AreYouSureDialog onActionConfirmed={publishAll}
+                onDismiss={() => { setShowAreYouSure(false); }}
+                isLoading={isLoadingPublishAll}
+                dialogMode="SUBMIT"
+                warningMessage="¿Deseas entregar todas las calificaciones guardadas que aún no has publicado? Cada estudiante podrá ver su puntuación" />}
         <div className="assignmentDetailLeftPaneInfoContainer">
             {nAssigneesWhoDidntSubmit > 0 && <div className="assignmentDetailLeftPaneInfo">
                 ℹ️ No entregada por {nAssigneesWhoDidntSubmit} {nAssigneesWhoDidntSubmit > 1 ? "estudiantes" : "estudiante"}
@@ -48,9 +77,9 @@ const AssignmentTeacherLeftPaneContent = (props) => {
             {nUnpublishedScores > 0 && <><div className="assignmentDetailLeftPaneInfo">
                 ⚠️ {nUnpublishedScores} {nUnpublishedScores > 1 ? "calificaciones están" : "calificación está"} sin publicar
             </div>
-            <div onClick={publishAll} className="card assignmentTeacherPanePublishAll">
-                Publicar todas
-            </div>
+                <div onClick={() => { setShowAreYouSure(true); }} className="card assignmentTeacherPanePublishAll">
+                    Publicar todas
+                </div>
             </>}
         </div>
         <div className="assignmentDetailLeftPaneTitle">
@@ -62,7 +91,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
             return <AssignmentUserStatus submit={submit}
                 author={a}
                 assignmentId={props.assignmentData.id}
-                canEditScore={props.assignmentData.should_show_teacher_options}
+                canEditScore={props.assignmentData.should_show_teacher_options /* TODO: Always true ??*/}
                 onScoreChanged={props.onScoreChanged} />
         })}
     </>

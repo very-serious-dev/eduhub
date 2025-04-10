@@ -17,7 +17,8 @@ const AssignmentBody = (props) => {
         } else if (props.assignmentData.should_show_teacher_options === true) {
             return <AssignmentTeacherLeftPaneContent
                 assignmentData={props.assignmentData}
-                onScoreChanged={props.onScoreChanged} />
+                onScoreChanged={props.onScoreChanged}
+                onShouldRefresh={props.onShouldRefresh} />
         } else {
             return <AssignmentStudentLeftPaneContent
                 assignmentData={props.assignmentData}

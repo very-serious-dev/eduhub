@@ -341,4 +341,24 @@ def score_assignment_submit(request, assignmentId, username):
                              } }, status=200)
     else:
         return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
+
+
+def publish_all_scores(request, assignmentId):
+    if request.method == "POST":
+        if request.session is None:
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
+        try:
+            assignment = Post.objects.get(id=assignmentId, kind=Post.PostKind.ASSIGNMENT)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "La tarea que buscas no existe"}, status=404)
+        hasPermission = False
+        if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
+            hasPermission = True
+        if request.session.user.role in [User.UserRole.TEACHER]:
+            hasPermission = UserClass.objects.filter(user=request.session.user, classroom=assignment.classroom).count() > 0
+        if not hasPermission:
+            return JsonResponse({"error": "No tienes permisos para evaluar esta tarea"}, status=403)
+        all_scored_submits = AssignmentSubmit.objects.filter(assignment=assignment, score__isnull=False)
+        all_scored_submits.update(is_score_published=True)
+        return JsonResponse({"success": True}, status=200)
         

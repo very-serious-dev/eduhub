@@ -21,6 +21,7 @@ urlpatterns = [
     path("assignments/<int:assignmentId>",           endpoints_posts.assignment_detail),
     path("assignments/<int:assignmentId>/submits",   endpoints_posts.create_assignment_submit),
     path("assignments/<int:assignmentId>/submits/<username>/score", endpoints_posts.score_assignment_submit),
+    path("assignments/<int:assignmentId>/scores",    endpoints_posts.publish_all_scores),
     path("documents",                                endpoints_documents.get_documents_and_folders),
     path("folders",                                  endpoints_documents.create_folder),
     path("documents/<document_identifier>",          endpoints_documents.move_document),
