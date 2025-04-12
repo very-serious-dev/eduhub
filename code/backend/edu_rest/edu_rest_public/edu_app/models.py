@@ -131,3 +131,19 @@ class AssignmentSubmit(models.Model):
 class AssignmentSubmitDocument(models.Model):
     submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
+
+##
+# ANNOUNCEMENTS
+#
+
+class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.CharField(max_length=3000)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    publication_date = models.DateTimeField(auto_now=True)
+    modification_date = models.DateTimeField(default=None, null=True)
+    
+class AnnouncementDocument(models.Model):
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)

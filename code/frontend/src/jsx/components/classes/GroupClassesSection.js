@@ -10,6 +10,7 @@ const GroupClassesSection = (props) => {
 
     return <div className="classesSectionContainer">
         <div className="classesSectionTitle">{props.group}</div>
+        <div className="classesSectionAnnouncementsButton">📢 Tablón de anuncios</div>
         <div className="classesSectionTitleUnderline"></div>
         <div className="classesSectionInnerContainer">
             {props.classes.map(c => {
