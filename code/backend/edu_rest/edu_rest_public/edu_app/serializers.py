@@ -58,6 +58,18 @@ def folder_to_json(folder):
         "created_at": folder.created_at
     }
 
+def announcement_to_json(announcement):
+    json = {
+        "id": announcement.id,
+        "title": announcement.title,
+        "content": announcement.content,
+        "author": folder.author.username,
+        "created_at": folder.created_at
+    }
+    if (announcement.modification_date is not None):
+        json["last_modified_at"] = announcement.modification_date
+    return json
+
 def groups_array_to_json(groups):
     result = []
     for g in groups:
@@ -86,6 +98,12 @@ def documents_array_to_json(documents):
     result = []
     for d in documents:
         result.append(document_to_json(d))
+    return result
+
+def announcements_array_to_json(announcements):
+    result = []
+    for a in announcements:
+        result.append(announcement_to_json(a))
     return result
 
 def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id):

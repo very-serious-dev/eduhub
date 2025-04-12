@@ -1,5 +1,5 @@
 from django.urls import path
-from . import endpoints_users, endpoints_classes, endpoints_admin, endpoints_posts, endpoints_documents
+from . import endpoints_users, endpoints_groups, endpoints_classes, endpoints_admin, endpoints_posts, endpoints_documents
 
 urlpatterns = [
     path("admin/home",                               endpoints_admin.home),
@@ -9,7 +9,8 @@ urlpatterns = [
     path("admin/classes",                            endpoints_admin.get_all_classes),
     path("users",                                    endpoints_users.get_users),
     path("sessions",                                 endpoints_users.login_logout),
-    path("groups",                                   endpoints_classes.get_all_groups),
+    path("groups",                                   endpoints_groups.get_all_groups),
+    path("groups/<groupTag>/announcements",          endpoints_groups.handle_group_announcements),
     path("classes",                                  endpoints_classes.handle_classes),
     path("classes/<int:classId>",                    endpoints_classes.handle_class_detail),
     path("classes/<int:classId>/users",              endpoints_classes.handle_class_participants),
