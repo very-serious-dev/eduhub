@@ -1,4 +1,4 @@
-from .models import User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass
+from .models import User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -59,15 +59,19 @@ def folder_to_json(folder):
     }
 
 def announcement_to_json(announcement):
+    announcement_documents = []
+    for ad in AnnouncementDocument.objects.filter(announcement=announcement):
+        announcement_documents.append(document_to_json(ad.document))
     json = {
         "id": announcement.id,
         "title": announcement.title,
         "content": announcement.content,
-        "author": folder.author.username,
-        "created_at": folder.created_at
+        "files": announcement_documents,
+        "author": announcement.author.username,
+        "publication_date": announcement.publication_date
     }
     if (announcement.modification_date is not None):
-        json["last_modified_at"] = announcement.modification_date
+        json["modification_date"] = announcement.modification_date
     return json
 
 def groups_array_to_json(groups):

@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission
+from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument
 from .internal_secret import INTERNAL_SECRET
 
 def verify_session(request): # See docs/auth_flow.txt for further information
@@ -148,20 +148,27 @@ def document_permissions(request):
             return JsonResponse({"error": "Error"}, status=400)
         if document.author == user:
             return JsonResponse({"success": True}, status=200)
+        elif EduAppUserdocumentpermission.objects.filter(document=document, user=user).exists():
+            return JsonResponse({"success": True}, status=200)
         else:
+            if is_teacher(user.role):
+                if EduAppAnnouncementdocument.objects.filter(document=document).exists():
+                    return JsonResponse({"success": True}, status=200) # All teachers can, potentially, see all group announcements
+                for asd in EduAppAssignmentsubmitdocument.objects.filter(document=document):
+                    assignment_class = asd.submit.assignment.classroom
+                    if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
+                        return JsonResponse({"success": True}, status=200)
+                    # TO-DO: return 403 if the post was amended (deleted/edited)
+            for ad in EduAppAnnouncementdocument.objects.filter(document=document):
+                annoucement_group = ad.announcement.group
+                if user.student_group == annoncement.group:
+                    return JsonResponse({"success": True}, status=200)
             for pd in EduAppPostdocument.objects.filter(document=document):
                 post_class = pd.post.classroom
                 if EduAppUserclass.objects.filter(classroom=post_class, user=user).exists():
                     return JsonResponse({"success": True}, status=200)
                 # TO-DO: return 403 if the post was amended (deleted/edited)
-            if is_teacher(user.role):
-                for asd in EduAppAssignmentsubmitdocument.objects.filter(document=document):
-                    assignment_class = asd.submit.assignment.classroom
-                    if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
-                        return JsonResponse({"success": True}, status=200)
-                    # TO-DO: return 403 if the post was amended (deleted/edited
-            if EduAppUserdocumentpermission.objects.filter(document=document, user=user).exists():
-                return JsonResponse({"success": True}, status=200)
+
             return JsonResponse({"error": "Forbidden"}, status=403)
 
 def is_teacher(role):

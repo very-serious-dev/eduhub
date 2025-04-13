@@ -19,7 +19,7 @@ const PostsBoardAssignment = (props) => {
             onPostsChanged={props.onPostsChanged} />
         <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>
         <div className="classDetailAssignmentDueDate">Se entrega: {formatNullableDueDate(props.post.assignment_due_date)}</div>
-        <div className="classDetailEntryFootNote">
+        <div className="dateAuthorFootNote">
             {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}
         </div>
     </div>

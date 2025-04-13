@@ -1,18 +1,15 @@
 import { useState } from "react";
-import CreateOrEditPostForm from "../posts/CreateOrEditPostForm";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
+import CreateOrEditAnnouncementForm from "../announcements/CreateOrEditAnnouncementForm";
 
-const EditPostDialog = (props) => {
+const EditAnnouncementDialog = (props) => {
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const [isLoadingDelete, setLoadingDelete] = useState(false);
 
-    const onDeletePost = () => {
+    const onDeleteAnnouncement = () => {
         setLoadingDelete(true);
-        let body = {
-            post_type: "amend_delete"
-        }
-        EduAPIFetch("POST", `/api/v1/posts/${props.post.id}/amendments`, body)
+        EduAPIFetch("DELETE", `/api/v1/announcements/${props.announcement.id}`)
             .then(json => {
                 setLoadingDelete(false);
                 if (json.success === true) {
@@ -29,29 +26,26 @@ const EditPostDialog = (props) => {
             })
     }
 
-    return props.show === true ? showAreYouSurePopup ?
-        <AreYouSureDialog onActionConfirmed={onDeletePost}
+    return showAreYouSurePopup ?
+        <AreYouSureDialog onActionConfirmed={onDeleteAnnouncement}
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoadingDelete}
             dialogMode="DELETE"
-            warningMessage={`¿Deseas eliminar esta publicación?`} />
+            warningMessage={`¿Deseas eliminar este anuncio?`} />
         : <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
-                    <CreateOrEditPostForm postType="amend_edit"
-                        classIdForPostCreation={null}
-                        postBeingEdited={props.post}
-                        units={props.units}
-                        titlePlaceholder="Nuevo título"
-                        contentPlaceholder="Edita aquí el contenido"
+                    <CreateOrEditAnnouncementForm
+                        groupTag={null}
+                        announcementBeingEdited={props.announcement}
                         submitText="Publicar modificación"
-                        showDatePicker={props.post.kind === "assignment"}
                         showDeleteButton={true}
                         onDeleteClicked={() => { setShowAreYouSurePopup(true); }}
                         onFinished={props.onFinished}
                         onDismiss={props.onDismiss} />
                 </div>
-            </div></div> : <></>
+            </div>
+        </div>
 }
 
-export default EditPostDialog;
+export default EditAnnouncementDialog;

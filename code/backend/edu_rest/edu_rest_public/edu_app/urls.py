@@ -11,6 +11,7 @@ urlpatterns = [
     path("sessions",                                 endpoints_users.login_logout),
     path("groups",                                   endpoints_groups.get_all_groups),
     path("groups/<groupTag>/announcements",          endpoints_groups.handle_group_announcements),
+    path("announcements/<int:announcementId>",       endpoints_groups.handle_announcement),
     path("classes",                                  endpoints_classes.handle_classes),
     path("classes/<int:classId>",                    endpoints_classes.handle_class_detail),
     path("classes/<int:classId>/users",              endpoints_classes.handle_class_participants),

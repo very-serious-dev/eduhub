@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { beautifullyDisplayDate, beautifullyDisplayDateHour } from "../../../util/Formatter";
-import PostsBoardEntryFile from "../posts/PostsBoardEntryFile";
 import SetScoreDialog from "./SetScoreDialog";
+import SmallFilesListFile from "../common/SmallFilesListFile";
 
 const AssignmentSubmitDialog = (props) => {
     const [showSetScore, setShowSetScore] = useState(false);
@@ -14,7 +14,7 @@ const AssignmentSubmitDialog = (props) => {
             onDismiss={() => { setShowSetScore(false); }} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup" onClick={e => { e.stopPropagation(); }}>
-                <div className="card dialogBackground assignmentSubmitDialog">
+                <div className="card dialogBackground overflowScrollableDialog">
                     <div className="dialogTitle">Detalles de la entrega</div>
                     <div className="assignmentSubmitDialogAuthorFullName">{`Entrega de: ${props.author.name} ${props.author.surname}`}</div>
                     <div className="assignmentSubmitDialogAuthorUsername">{`(${props.author.username})`}</div>
@@ -28,7 +28,7 @@ const AssignmentSubmitDialog = (props) => {
                             <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
                             <div>{props.submit.files.length > 0 ?
                                 <div className="assignmentSubmitDialogFiles">
-                                    {props.submit.files.map(f => <PostsBoardEntryFile file={f} />)}
+                                    {props.submit.files.map(f => <SmallFilesListFile file={f} />)}
                                 </div>
                                 : <div className="assignmentSubmitDialogSectionContent">No se ha entregado ningún fichero</div>}
                             </div>

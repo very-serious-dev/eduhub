@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { formatNullableDueDate, formatPseudoMarkdown } from "../../../util/Formatter";
 import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent";
-import PostsBoardEntryFile from "../posts/PostsBoardEntryFile";
+import SmallFilesListFile from "../common/SmallFilesListFile";
 import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent";
 import LoadingHUD from "../common/LoadingHUD";
 import { useState } from "react";
@@ -57,7 +57,7 @@ const AssignmentBody = (props) => {
                             <div className="assignmentDetailBodyFiles">
                                 {props.assignmentData.files !== undefined && (
                                     props.assignmentData.files.length > 0 ?
-                                        props.assignmentData.files.map(f => <PostsBoardEntryFile file={f} />)
+                                        props.assignmentData.files.map(f => <SmallFilesListFile file={f} />)
                                         : <p>No hay ficheros adjuntos</p>
                                 )}
                             </div>

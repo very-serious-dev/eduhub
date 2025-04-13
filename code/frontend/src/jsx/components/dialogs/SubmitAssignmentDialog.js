@@ -39,12 +39,11 @@ const SubmitAssignmentDialog = (props) => {
 
     const sendEduRequest = (uploadedFiles = []) => {
         setLoading(true);
-        let body = {}
+        let body = {
+            files: uploadedFiles
+        }
         if (formComment !== undefined && formComment !== "") {
             body["comment"] = formComment;
-        }
-        if (uploadedFiles.length > 0) {
-            body["files"] = uploadedFiles;
         }
         EduAPIFetch("POST", `/api/v1/assignments/${props.assignmentId}/submits`, body)
             .then(json => {

@@ -17,13 +17,35 @@
 
 from django.db import models
 
+class EduAppAnnouncement(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.CharField(max_length=3000)
+    publication_date = models.DateTimeField()
+    modification_date = models.DateTimeField(blank=True, null=True)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    group = models.ForeignKey('EduAppGroup', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'edu_app_announcement'
+
+
+class EduAppAnnouncementdocument(models.Model):
+    announcement = models.ForeignKey(EduAppAnnouncement, models.DO_NOTHING)
+    document = models.ForeignKey('EduAppDocument', models.DO_NOTHING)
+
+    class Meta:
+        managed = False
+        db_table = 'edu_app_announcementdocument'
+
+
 class EduAppAssignmentsubmit(models.Model):
     comment = models.CharField(max_length=1000, blank=True, null=True)
     submit_date = models.DateTimeField()
     assignment = models.ForeignKey('EduAppPost', models.DO_NOTHING)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    score = models.FloatField(blank=True, null=True)
     is_score_published = models.BooleanField()
+    score = models.FloatField(blank=True, null=True)
 
     class Meta:
         managed = False
@@ -57,8 +79,8 @@ class EduAppDocument(models.Model):
     mime_type = models.CharField(max_length=50)
     is_protected = models.BooleanField()
     created_at = models.DateTimeField()
-    folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False

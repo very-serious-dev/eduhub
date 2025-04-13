@@ -1,5 +1,5 @@
 import { footNoteDateAuthor, formatPseudoMarkdown } from "../../../util/Formatter";
-import PostsBoardEntryFile from "./PostsBoardEntryFile";
+import SmallFilesListFile from "../common/SmallFilesListFile";
 import PostsBoardEntryTopRightContent from "./PostsBoardEntryTopRightContent";
 
 const PostsBoardEntry = (props) => {
@@ -11,10 +11,10 @@ const PostsBoardEntry = (props) => {
             onPostsChanged={props.onPostsChanged} />
         <div className="classDetailEntryTitle">{props.post.title}</div>
         <div className="classDetailEntryContent">{formatPseudoMarkdown(props.post.content)}</div>
-        <div className="classDetailEntryFiles">
-            {props.post.files.map(f => <PostsBoardEntryFile file={f} />)}
+        <div className="smallFilesList">
+            {props.post.files.map(f => <SmallFilesListFile file={f} />)}
         </div>
-        <div className="classDetailEntryFootNote">
+        <div className="dateAuthorFootNote">
             {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}
         </div>
     </div>

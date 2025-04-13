@@ -305,14 +305,14 @@ body {
   padding-bottom: 4px;
 }
 
-.classDetailEntryFiles {
+.smallFilesList {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
   width: 100%;
 }
 
-.classEntryFile {
+.smallFilesListFile {
   background-color: var(--color-subtle-grey);
   border-radius: 3px;
   padding: 4px;
@@ -320,34 +320,34 @@ body {
   margin: 8px;
 }
 
-.classEntryFile:hover {
+.smallFilesListFile:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }
 
-.classEntryFileImage {
+.smallFilesListFileImage {
   display: inline-block;
   width: 26px;
   height: 26px;
   margin-right: 4px;
 }
 
-.classEntryFileRightContainer {
+.smallFilesListFileRightContainer {
   display: inline-block;
 }
 
-.classEntryFileTitle {
+.smallFilesListFileTitle {
   font-size: 0.875rem;
   color: var(--color-accent);
   margin-right: 4px;
 }
 
-.classEntryFileSubtitle {
+.smallFilesListFileSubtitle {
   font-size: 0.7rem;
   color: var(--color-accent);
 }
 
-.classDetailEntryFootNote {
+.dateAuthorFootNote {
   position: absolute;
   right: 8px;
   bottom: 2px;
@@ -406,7 +406,6 @@ body {
 .classDetailEntryTopRightEdit:hover {
   cursor: pointer;
   background-color: var(--color-secondary);
-
 }
 
 .classDetailBodyColumn2 {
@@ -717,7 +716,7 @@ body {
   background-color: var(--color-delete);
 }
 
-.assignmentSubmitDialog {
+.overflowScrollableDialog {
   max-height: 90vh;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -813,6 +812,13 @@ body {
  * Announcements
  */
 
+.announcementsHeaderIcon {
+  text-align: center;
+  font-size: 1.5em;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
 .noAnnouncements {
   text-align: center;
   margin-top: 80px;
@@ -822,7 +828,32 @@ body {
 }
 
 .announcementButtonFooter {
-  height: 70px;
+  height: 90px;
+}
+
+.announcementContainer {
+  position: relative;
+  padding: 15px;
+  margin: 10px;
+  background-color: var(--color-subtle-grey);
+}
+
+.announcementTitle {
+  text-align: center;
+  font-size: 1.125em;
+  font-weight: bold;
+}
+
+.announcementTopRightGear {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 3px;
+}
+
+.announcementTopRightGear:hover {
+  cursor: pointer;
+  background-color: var(--color-secondary);
 }
 
 /**

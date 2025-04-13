@@ -1,20 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
-const CreateOrEditPostForm = (props) => {
-    const TODAY = new Date().toISOString().split("T")[0];
-    const UNIT_UNASSIGNED = -1;
-    const [formTitle, setFormTitle] = useState(props.postBeingEdited ? props.postBeingEdited.title : "");
-    const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
-    const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
-    const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(props.postBeingEdited ? props.postBeingEdited.assignment_due_date : TODAY);
-    const [attachedFilesReady, setAttachedFilesReady] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
+const CreateOrEditAnnouncementForm = (props) => {
+    const [formTitle, setFormTitle] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.title : "");
+    const [formContent, setFormContent] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.content : "");
+    const [attachedFilesReady, setAttachedFilesReady] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
 
-    const onSubmitCreateOrEditPost = (event) => {
+    const onSubmitCreateOrEditAnnouncement = (event) => {
         event.preventDefault();
 
         if (attachedFilesReady.length === 0) {
@@ -27,12 +24,11 @@ const CreateOrEditPostForm = (props) => {
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
         // `attachedFilesReady` are those in the drop area. Bear in mind that:
-        // - If we are creating a new post, all of them must be uploaded to DocuREST who will baptise them with identifiers
-        // - If we are editing a post maybe none, some or all have already been uploaded (this is, they
-        //   come from props.postBeingEdited.files) in which case they already have an identifier
-        //   We don't need to reupload them to DocuREST! We just need to put them in the amendment json body 
-        //   with their identifiers; so that EduREST knows that they aren't being modified.
-        //   The files that are new need to be uploaded previously to DocuREST, of course
+        // - If we are creating a new announcement, all of them must be uploaded to DocuREST who will baptise them with identifiers
+        // - If we are editing an announcement maybe none, some or all have already been uploaded (this is, they
+        //   come from props.announcementBeingEdited.files) in which case they already have an identifier
+        //   We don't need to reupload them to DocuREST!
+        //   @see CreateOrEditPostForm (same logic)
         const newFilesThatMustBeUploaded = attachedFilesReady.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = attachedFilesReady.filter(f => f.identifier !== undefined);
         const body = {
@@ -67,22 +63,17 @@ const CreateOrEditPostForm = (props) => {
         let body = {
             title: formTitle,
             content: formContent,
-            files: attachedFiles,
-            post_type: props.postType
+            files: attachedFiles
         }
-        if (formUnitId !== UNIT_UNASSIGNED) {
-            body["unit_id"] = formUnitId;
-        }
-        if (props.showDatePicker && formAssignmentDueDate !== "") {
-            body["assignment_due_date"] = formAssignmentDueDate;
-        }
-        let url;
-        if (props.postBeingEdited) {
-            url = `/api/v1/posts/${props.postBeingEdited.id}/amendments`;
+        let url, method;
+        if (props.announcementBeingEdited) {
+            method = "PUT";
+            url = `/api/v1/announcements/${props.announcementBeingEdited.id}`;
         } else {
-            url = `/api/v1/classes/${props.classIdForPostCreation}/posts`;
+            method = "POST";
+            url = `/api/v1/groups/${props.groupTag}/announcements`;
         }
-        EduAPIFetch("POST", url, body)
+        EduAPIFetch(method, url, body)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -103,30 +94,12 @@ const CreateOrEditPostForm = (props) => {
 
 
     return <div className="createOrEditPostFormContainer">
-        <form onSubmit={onSubmitCreateOrEditPost}>
+        <form onSubmit={onSubmitCreateOrEditAnnouncement}>
             <div className="postFormFirstRowInputsContainer">
-                <div className="formInputSelect">
-                    <select name="unit"
-                        value={formUnitId}
-                        onChange={e => { setFormUnitId(e.target.value); }} >
-                        <option value={UNIT_UNASSIGNED}>Sin tema</option>
-                        {props.units.map(g => {
-                            return <option value={g.id}>{g.name}</option>
-                        })}
-                    </select>
-                </div>
-                {props.showDatePicker &&
-                    <div className="formInput formInputDivCreatePostTaskDate">
-                        <input className="formInputCreatePostTaskDate"
-                            type="date"
-                            min={TODAY}
-                            value={formAssignmentDueDate}
-                            onChange={e => { setFormAssignmentDueDate(e.target.value) }} />
-                    </div>}
                 <div className="formInput">
                     <input className="formInputCreatePostTitle" type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
-                        onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
+                        onFocus={e => { e.target.placeholder = "Fotos de la graduación"; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
                     <div className="underline"></div>
                     <label htmlFor="">Título</label>
@@ -135,7 +108,7 @@ const CreateOrEditPostForm = (props) => {
             <div className="formTextArea formTextAreaBig">
                 <textarea value={formContent}
                     onChange={e => { setFormContent(e.target.value) }}
-                    onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
+                    onFocus={e => { e.target.placeholder = "Las fotos serán..."; }}
                     onBlur={e => { e.target.placeholder = ""; }} required />
             </div>
             <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
@@ -150,4 +123,4 @@ const CreateOrEditPostForm = (props) => {
     </div>
 }
 
-export default CreateOrEditPostForm;
+export default CreateOrEditAnnouncementForm;
