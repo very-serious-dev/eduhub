@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { RemoveClientCache } from "../../../client/ClientCache";
 
 const MainHeader = (props) => {
     const [isLoadingLogout, setLoadingLogout] = useState(false);
@@ -18,6 +19,7 @@ const MainHeader = (props) => {
                     DocuAPIFetch("DELETE", "/api/v1/sessions").then(json => {
                             setLoadingLogout(false);
                             if (json.success === true) {
+                                RemoveClientCache()
                                 navigate("/login");
                                 setFeedback({type: "info", message: "Has cerrado tu sesión"});
                             } else {

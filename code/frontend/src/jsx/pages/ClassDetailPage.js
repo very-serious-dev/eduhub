@@ -4,7 +4,7 @@ import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import ClassDetailBodyWithHeader from "../components/classes/ClassDetailBodyWithHeader";
-import { GetCachedPosts, SetCachedPosts } from "../../client/PostsCache";
+import { GetCachedPosts, SetCachedPosts } from "../../client/ClientCache";
 
 const ClassDetailPage = () => {
     const [classData, setClassData] = useState();

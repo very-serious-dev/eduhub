@@ -7,67 +7,43 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 
 const ClassesBody = (props) => {
     const [showAddClassPopup, setShowAddClassPopup] = useState(false);
-    const [isLoadingGroups, setLoadingGroups] = useState(false);
-    const [groups, setGroups] = useState([]);
+    const [isLoadingAllGroups, setLoadingAllGroups] = useState(false);
+    const [allGroups, setAllGroups] = useState([]);
     const setFeedback = useContext(FeedbackContext);
     const roles = GetRolesFromCookie();
 
-    const sections = () => {
-        // Elegant reduce (I hope so) to transform an array like this:
-        //
-        // [{"name": "Philosophy", "group": "BACH1"},
-        //  {"name": "Chemistry", "group": "BACH1"},
-        //  {"name": "Maths", "group": "BACH2"}]
-        //
-        // ...into this:
-        // {
-        //   "BACH1": [{"name": "Philosophy", "group": "BACH1"},
-        //             {"name": "Chemistry", "group": "BACH1"}],
-        //   "BACH2": [{"name": "Maths", "group": "BACH2"}]
-        // }
-        // ...so that it can be easily presented in different sections.
-        return props.classes.reduce(
-            (groups, currentClass) => {
-                if (!(currentClass.group in groups)) {
-                    groups[currentClass.group] = []
-                }
-                groups[currentClass.group].push(currentClass);
-                return groups
-            }, {})
-    }
-
     const onClickAddClass = () => {
-        if (isLoadingGroups) { return; }
-        if (groups.length > 0) {
+        if (isLoadingAllGroups) { return; }
+        if (allGroups.length > 0) {
             setShowAddClassPopup(true);
             return;
         }
 
-        setLoadingGroups(true);
+        setLoadingAllGroups(true);
         EduAPIFetch("GET", "/api/v1/groups")
             .then(json => {
-                setLoadingGroups(false);
-                setGroups(json.groups);
+                setLoadingAllGroups(false);
+                setAllGroups(json.groups);
                 setShowAddClassPopup(true);
             })
             .catch(error => {
-                setLoadingGroups(false);
-                setFeedback({type: "error", message: "Ha habido un error cargando los grupos"})
+                setLoadingAllGroups(false);
+                setFeedback({ type: "error", message: "Ha habido un error cargando los grupos" })
             })
     }
 
     return <div>
         <CreateClassDialog show={showAddClassPopup}
-                onDismiss={() => { setShowAddClassPopup(false) }}
-                onClassAdded={ props.onClassAdded }
-                groups={groups} 
-                automaticallyAddTeacher={true} /> 
-        {Object.entries(sections()).map(([groupTag, classes])=> {
-            return <GroupClassesSection group={groupTag}
-                classes={classes} />
+            onDismiss={() => { setShowAddClassPopup(false) }}
+            onClassAdded={props.onClassAdded}
+            groups={allGroups}
+            automaticallyAddTeacher={true} />
+        {props.groups.map(g => {
+            const classes = props.classes.filter(c => c.group === g.tag)
+            return <GroupClassesSection groupTag={g.tag} latestUpdate={g.latest_update} classes={classes} />
         })}
-        { roles.includes("teacher") === true &&
-        <div className="card floatingCardAddNew" onClick={onClickAddClass}>{ isLoadingGroups ? "Cargando..." : "➕ Añadir clase" }</div> }
+        {roles.includes("teacher") === true &&
+            <div className="card floatingCardAddNew" onClick={onClickAddClass}>{isLoadingAllGroups ? "Cargando..." : "➕ Añadir clase"}</div>}
     </div>
 }
 

@@ -3,7 +3,6 @@ from datetime import datetime
 from django.http import JsonResponse
 from .models import User, Group, Announcement, Folder, AnnouncementDocument, Document
 from .serializers import groups_array_to_json, announcements_array_to_json
-
 from .endpoints_posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
 def get_all_groups(request):

@@ -1,8 +1,8 @@
 import json, random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
-from .models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit
-from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json, class_detail_to_json
+from .models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement
+from .serializers import groups_array_to_json, users_array_to_json, class_detail_to_json
 
 # TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
 
@@ -19,9 +19,39 @@ def handle_classes(request):
     if request.method == "GET":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        users_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
-        classes = list(map(lambda uc: uc.classroom, users_classes))
-        return JsonResponse({"classes": classes_array_to_json(classes)})
+        user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
+        classes = list(map(lambda uc: uc.classroom, user_classes))
+        groups = []
+        classes_json = []
+        groups_json = []
+        for c in classes:
+            if Post.objects.filter(classroom=c).exists():
+                latest_post = Post.objects.filter(classroom=c).order_by("-id")[0]
+                latest_class_update = latest_post.publication_date
+            else:
+                latest_class_update = "never"
+            json = {
+                "id": c.id,
+                "name": c.name,
+                "group": c.group_id,
+                "theme": c.theme,
+                "latest_update": latest_class_update
+            }
+            classes_json.append(json)
+            groups.append(c.group)
+        for g in groups:
+            if Announcement.objects.filter(group=g).exists():
+                latest_announcement = Announcement.objects.filter(group=g).order_by("-id")[0]
+                latest_group_update = latest_announcement.publication_date
+            else:
+                latest_group_update = "never"
+            json = {
+                "tag": g.tag,
+                "latest_update": latest_group_update
+            }
+            groups_json.append(json)
+            
+        return JsonResponse({"classes": classes_json, "groups": groups_json})
     elif request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)

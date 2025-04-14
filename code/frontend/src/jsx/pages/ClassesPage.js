@@ -5,7 +5,7 @@ import ErrorPage from "./ErrorPage";
 import ClassesBody from "../components/classes/ClassesBody";
 
 const ClassesPage = () => {
-    const [classes, setClasses] = useState([]);
+    const [response, setResponse] = useState({});
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
@@ -15,7 +15,7 @@ const ClassesPage = () => {
         EduAPIFetch("GET", "/api/v1/classes")
             .then(json => {
                 setLoading(false);
-                setClasses(json.classes);
+                setResponse(json);
             })
             .catch(error => {
                 setLoading(false);
@@ -32,7 +32,7 @@ const ClassesPage = () => {
             <LoadingHUDPage />
             : isRequestFailed ?
                 <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassesBody classes={classes} onClassAdded={onClassAdded}/>
+                : <ClassesBody classes={response.classes} groups={response.groups} onClassAdded={onClassAdded}/>
 }
 
 export default ClassesPage;
