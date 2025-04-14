@@ -5,14 +5,13 @@ import AreYouSureDialog from "./AreYouSureDialog";
 
 const EditClassDialog = (props) => {
     const [formName, setFormName] = useState();
-    const [formColor, setFormColor] = useState();
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
 
     const onSubmitEditClass = (event) => {
         event.preventDefault();
         setLoading(true);
-        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}`, { name: formName, color: formColor })
+        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}`, { name: formName })
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -70,11 +69,6 @@ const EditClassDialog = (props) => {
                                 required />
                             <div className="underline"></div>
                             <label htmlFor="">Nombre</label>
-                        </div>
-                        <div className="formInput formInputColor">
-                            <input type="color" value={formColor}
-                                onChange={e => { setFormColor(e.target.value) }} />
-                            <label htmlFor="">Color del tema</label>
                         </div>
                         <div className="formSubmit">
                             <input type="submit" value="Guardar cambios" />

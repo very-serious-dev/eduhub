@@ -86,11 +86,9 @@ def handle_class_detail(request, classId):
         except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_name = body_json.get("name")
-        json_color = body_json.get("color")
-        if json_name is None or json_color is None:
-            return JsonResponse({"error": "Falta name o color en el cuerpo de la petición"}, status=400)
+        if json_name is None:
+            return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
         classroom.name = json_name
-        classroom.color = json_color
         classroom.save()
         return JsonResponse({"success": True}, status=200)
     elif request.method == "DELETE":
