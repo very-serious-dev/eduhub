@@ -88,7 +88,7 @@ const AdminBodyClasses = (props) => {
                 onDismiss={() => { setPopupShown("NONE") }}
                 options={[
                     {
-                        label: "Editar",
+                        label: "⚙️ Editar",
                         onClick: () => { setPopupShown("EDIT_CLASS") },
                     },
                     {
