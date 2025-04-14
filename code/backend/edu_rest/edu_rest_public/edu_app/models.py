@@ -78,9 +78,14 @@ class Group(models.Model):
 class Class(models.Model):
 
     class ClassTheme(models.IntegerChoices):
-        RED = 0
-        GREEN = 1
-        BLUE = 2
+        BLUE = 0
+        DARK_BLUE = 1
+        GREEN = 2
+        PURPLE = 3
+        BROWN = 4
+        RED = 5
+        ORANGE = 6
+        YELLOW = 7
 
     name = models.CharField(max_length=50)
     theme = models.IntegerField(choices=ClassTheme)

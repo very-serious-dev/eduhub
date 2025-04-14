@@ -1,4 +1,4 @@
-from .models import User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
+from .models import Class, User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -9,6 +9,15 @@ JSON_PUBLICATION = "publication"
 JSON_ASSIGNMENT = "assignment"
 JSON_AMEND_EDIT = "amend_edit"
 JSON_AMEND_DELETE = "amend_delete"
+
+JSON_BLUE = "blue"
+JSON_DARK_BLUE = "darkblue"
+JSON_GREEN = "green"
+JSON_PURPLE = "purple"
+JSON_BROWN = "brown"
+JSON_RED = "red"
+JSON_ORANGE = "orange"
+JSON_YELLOW = "yellow"
 
 def document_to_json(document):
     return {
@@ -34,7 +43,7 @@ def class_to_json(classroom):
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
-        "theme": classroom.theme
+        "theme": class_theme(classroom)
     }
 
 def user_to_json(user):
@@ -143,7 +152,7 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
         "id": classroom.id,
         "name": classroom.name,
         "group": classroom.group_id,
-        "theme": classroom.theme,
+        "theme": class_theme(classroom),
         "should_show_edit_button": isClassEditableByUser,
         "posts": posts,
         "units": units
@@ -236,3 +245,21 @@ def post_kind(p):
         return JSON_AMEND_EDIT
     if p.kind == Post.PostKind.AMENDMENT_DELETE:
         return JSON_AMEND_DELETE
+
+def class_theme(c):
+    if c.theme == Class.ClassTheme.BLUE:
+        return JSON_BLUE
+    if c.theme == Class.ClassTheme.DARK_BLUE:
+        return JSON_DARK_BLUE
+    if c.theme == Class.ClassTheme.GREEN:
+        return JSON_GREEN
+    if c.theme == Class.ClassTheme.PURPLE:
+        return JSON_PURPLE
+    if c.theme == Class.ClassTheme.BROWN:
+        return JSON_BROWN
+    if c.theme == Class.ClassTheme.RED:
+        return JSON_RED
+    if c.theme == Class.ClassTheme.ORANGE:
+        return JSON_ORANGE
+    if c.theme == Class.ClassTheme.YELLOW:
+        return JSON_YELLOW

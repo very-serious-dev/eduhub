@@ -73,23 +73,45 @@ const iconImgSrc = (mimeType) => {
     /* Creative commons icons license */
     /* TO-DO: Show this in the web somewhere: <a href="https://www.flaticon.com/free-icons/doc" title="doc icons">Doc icons created by Dimitry Miroliubov - Flaticon</a>*/
     if (mimeType === "application/pdf") {
-        return "/icon_pdf.png";
+        return "/icons/icon_pdf.png";
     } else if (mimeType.includes("video")) {
-        return "/icon_vid.png";
+        return "/icons/icon_vid.png";
     }
     if (mimeType.includes("image")) {
-        return "/icon_img.png";
+        return "/icons/icon_img.png";
     } else if ((mimeType === "application/msword") ||
                (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
                (mimeType === "application/vnd.oasis.opendocument.text")) {
-        return "/icon_doc.png";
+        return "/icons/icon_doc.png";
     } else if ((mimeType === "application/vnd.ms-excel") ||
                (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
                (mimeType === "application/vnd.oasis.opendocument.spreadsheet")) {
-        return "/icon_xls.png";
+        return "/icons/icon_xls.png";
     } else {
-        return "/icon_other.png";
+        return "/icons/icon_other.png";
     }
+}
+
+const backgroundImageSrc = (theme) => {
+    if (theme === "blue") return "/themes/card_bg_blue.png"
+    if (theme === "darkblue") return "/themes/card_bg_darkblue.png"
+    if (theme === "green") return "/themes/card_bg_green.png"
+    if (theme === "purple") return "/themes/card_bg_purple.png"
+    if (theme === "brown") return "/themes/card_bg_brown.png"
+    if (theme === "red") return "/themes/card_bg_red.png"
+    if (theme === "orange") return "/themes/card_bg_orange.png"
+    if (theme === "yellow") return "/themes/card_bg_yellow.png"
+}
+
+const bannerImageSrc = (theme) => {
+    if (theme === "blue") return "/themes/banner_blue.png"
+    if (theme === "darkblue") return "/themes/banner_darkblue.png"
+    if (theme === "green") return "/themes/banner_green.png"
+    if (theme === "purple") return "/themes/banner_purple.png"
+    if (theme === "brown") return "/themes/banner_brown.png"
+    if (theme === "red") return "/themes/banner_red.png"
+    if (theme === "orange") return "/themes/banner_orange.png"
+    if (theme === "yellow") return "/themes/banner_yellow.png"
 }
 
 export { sizeToHumanReadable };
@@ -99,3 +121,5 @@ export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };
 export { formatPseudoMarkdown };
 export { iconImgSrc };
+export { backgroundImageSrc };
+export { bannerImageSrc };

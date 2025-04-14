@@ -2,7 +2,7 @@ import json, random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
 from .models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement
-from .serializers import groups_array_to_json, users_array_to_json, class_detail_to_json
+from .serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme
 
 # TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
 
@@ -34,7 +34,7 @@ def handle_classes(request):
                 "id": c.id,
                 "name": c.name,
                 "group": c.group_id,
-                "theme": c.theme,
+                "theme": class_theme(c),
                 "latest_update": latest_class_update
             }
             classes_json.append(json)
@@ -71,7 +71,7 @@ def handle_classes(request):
         new_class = Class()
         new_class.name = json_name
         new_class.group = Group.objects.get(tag=json_group)
-        new_class.theme = Class.ClassTheme.BLUE
+        new_class.theme = Class.ClassTheme.BLUE # TODO: Make this random, nonrepeating for same group
         new_class.save()
         if json_automatically_add_teacher is True:
             new_user_class = UserClass()

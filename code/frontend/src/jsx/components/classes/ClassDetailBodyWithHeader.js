@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
+import { bannerImageSrc } from "../../../util/Formatter";
 
 const ClassDetailBodyWithHeader = (props) => {
     const EXPANDED_HEADER_HEIGHT = 200;
@@ -52,7 +53,7 @@ const ClassDetailBodyWithHeader = (props) => {
             onClassDeleted={onClassDeleted}
             classId={props.classData.id} />
         <div className="classDetailHeader" style={{ height: headerHeight() }}>
-            <img className="classDetailHeaderImage" src="/header.jpg" />
+            <img className="classDetailHeaderImage" src={bannerImageSrc(props.classData.theme)} /> {/* TODO work on this*/}
             <div className="classDetailHeaderTitleSearchContainer">
                 <div className="classDetailHeaderTitle">{props.classData.name}</div>
                 <form className="classDetailHeaderSearchForm" onSubmit={(e) => { e.preventDefault(); }}>

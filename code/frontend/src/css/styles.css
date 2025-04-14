@@ -184,11 +184,6 @@ body {
   flex-flow: row wrap;
 }
 
-.classClickableGenericCard:hover {
-  cursor: pointer;
-  background-color: var(--color-tertiary);
-}
-
 .classCellContainerWithRedDot {
   position: relative;
 }
@@ -226,7 +221,6 @@ body {
 .classDetailHeaderImage {
   position: absolute;
   top: 0px;
-  opacity: 0.9;
   height: 100%;
   width: 100%;
   object-fit: cover;
@@ -1121,10 +1115,12 @@ body {
 }
 
 .genericCardPreTitle {
+  position: relative; /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
   font-size: 1.125rem;
 }
 
 .genericCardTitle {
+  position: relative; /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
   font-weight: bold;
   font-size: 1.375rem;
 }
@@ -1140,6 +1136,25 @@ body {
 .cardClickable:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
+}
+
+.cardClickable:hover .genericCardBackgroundHoverImage {
+  visibility: visible;
+}
+
+.genericCardBackgroundHoverImage {
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 4px;
+  height: 100%;
+  width: 100%;
+  opacity: 0.5;
+  object-fit: cover;
+  /* Crop when scaling */
+  object-position: left;
+  /* Crop when scaling */
 }
 
 .adminAddButtonHeader {

@@ -3,6 +3,7 @@ import GenericCard from "../common/GenericCard";
 import { useState } from "react";
 import AnnouncementsDialog from "../dialogs/AnnouncementsDialog";
 import { GetCachedPosts, GetLastKnownClassUpdateTimestamp, GetLastKnownGroupAnnouncementTimestamp, SetLastKnownClassUpdateTimestamp, SetLastKnownGroupAnnouncementTimestamp } from "../../../client/ClientCache";
+import { backgroundImageSrc } from "../../../util/Formatter";
 
 const GroupClassesSection = (props) => {
     const [showAnnouncementsDialog, setShowAnnouncementsDialog] = useState(false);
@@ -54,7 +55,7 @@ const GroupClassesSection = (props) => {
             <div className="classesSectionInnerContainer">
                 {props.classes.map(c => {
                     return <div className="classCellContainerWithRedDot">
-                        <GenericCard additionalCssClass="classClickableGenericCard"
+                        <GenericCard backgroundHoverImage={backgroundImageSrc(c.theme)}
                             cardId={c.id}
                             title={c.name}
                             footer={c.group}
