@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import CreateFolderOrUploadFileDialog from "../dialogs/CreateFolderOrUploadFileDialog";
 import CreateFolderDialog from "../dialogs/CreateFolderDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import UploadDocumentsDialog from "../dialogs/UploadDocumentsDialog";
@@ -7,6 +6,7 @@ import FilesBrowser from "./FilesBrowser";
 import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "./MyFilesFirstTabContent";
 import SharedFilesFirstTabContent from "./SharedFilesFirstTabContent";
+import OptionsDialog from "../dialogs/OptionsDialog";
 
 const FilesBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_OR_UPLOAD, CREATE_FOLDER, UPLOAD_DOCUMENTS
@@ -66,10 +66,18 @@ const FilesBody = (props) => {
     }
 
     return <div>
-        <CreateFolderOrUploadFileDialog show={popupShown === "CREATE_OR_UPLOAD"}
+        <OptionsDialog show={popupShown === "CREATE_OR_UPLOAD"}
             onDismiss={() => { setPopupShown("NONE") }}
-            onCreateFolderClicked={() => { setPopupShown("CREATE_FOLDER") }}
-            onUploadDocumentsClicked={() => { setPopupShown("UPLOAD_DOCUMENTS") }} />
+            options={[
+                {
+                    label: "📁 Crear carpeta",
+                    onClick: () => { setPopupShown("CREATE_FOLDER") },
+                },
+                {
+                    label: "📄 Subir documentos",
+                    onClick: () => { setPopupShown("UPLOAD_DOCUMENTS") },
+                },
+            ]}/>
         <CreateFolderDialog show={popupShown === "CREATE_FOLDER"}
             parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, getTree())}
             parentFolderIdsPath={currentFolderIdsPath}

@@ -1476,12 +1476,12 @@ input:valid~.underline:before {
   margin-left: 35px;
 }
 
-.twoOptionsDialogChoice {
+.optionsDialogChoice {
   text-align: center;
   padding: 20px;
 }
 
-.twoOptionsDialogChoice:hover {
+.optionsDialogChoice:hover {
   cursor: pointer;
   background-color: var(--color-tertiary);
 }

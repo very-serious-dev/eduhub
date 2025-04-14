@@ -3,10 +3,10 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import GenericCard from "../common/GenericCard";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
-import EditClassOrParticipantsDialog from "../dialogs/EditClassOrParticipantsDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
+import OptionsDialog from "../dialogs/OptionsDialog";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
@@ -14,7 +14,7 @@ const AdminBodyClasses = (props) => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, PARTICIPANTS
-    const [classForPopup, setClassForPopup] = useState({id: undefined, name: undefined});
+    const [classForPopup, setClassForPopup] = useState({ id: undefined, name: undefined });
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ const AdminBodyClasses = (props) => {
 
     const onClassAdded = (errorMessage) => {
         if (errorMessage === undefined) {
-            setFeedback({type: "success", message: "Nueva clase creada con éxito"});
+            setFeedback({ type: "success", message: "Nueva clase creada con éxito" });
             setClassesChanged(value => value + 1); // Refresh the list
             {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
@@ -39,22 +39,22 @@ const AdminBodyClasses = (props) => {
                 */}
             props.onShouldRefresh();
         } else {
-            setFeedback({type: "error", message: errorMessage});
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
 
     const onClassEdited = (errorMessage) => {
         if (errorMessage === undefined) {
-            setFeedback({type: "success", message: "Clase modificada con éxito"});
+            setFeedback({ type: "success", message: "Clase modificada con éxito" });
             setClassesChanged(value => value + 1); // Refresh the list
         } else {
-            setFeedback({type: "error", message: errorMessage});
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
 
     const onClassDeleted = (errorMessage) => {
         if (errorMessage === undefined) {
-            setFeedback({type: "success", message: "Clase eliminada con éxito"});
+            setFeedback({ type: "success", message: "Clase eliminada con éxito" });
             setClassesChanged(value => value + 1); // Refresh the list
             {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
@@ -62,15 +62,7 @@ const AdminBodyClasses = (props) => {
                 */}
             props.onShouldRefresh();
         } else {
-            setFeedback({type: "error", message: errorMessage});
-        }
-    }
-
-    const onUserAdded = (errorMessage) => {
-        if (errorMessage === undefined || errorMessage === "") {
-            setFeedback({type: "success", message: "Usuario(s) añadido(s) con éxito"});
-        } else {
-            setFeedback({type: "error", message: errorMessage});
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
 
@@ -86,24 +78,34 @@ const AdminBodyClasses = (props) => {
             <div>
                 <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
             </div>
+            {/* TODO: Remove all usages of show prop, and let the boolean flag with &&
+              *       decide to not render the stuff beforehand; many usages across the app!*/}
             <CreateClassDialog show={popupShown === "ADD_CLASS"}
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
                 groups={props.groups} />
-            <EditClassOrParticipantsDialog show={popupShown === "MENU_PARTICIPANTS_OR_EDIT"} 
+            <OptionsDialog show={popupShown === "MENU_PARTICIPANTS_OR_EDIT"}
                 onDismiss={() => { setPopupShown("NONE") }}
-                onEditClicked={() => { setPopupShown("EDIT_CLASS") }}
-                onParticipantsClicked={() => { setPopupShown("PARTICIPANTS") }} />
+                options={[
+                    {
+                        label: "Editar",
+                        onClick: () => { setPopupShown("EDIT_CLASS") },
+                    },
+                    {
+                        label: "🎓 Participantes",
+                        onClick: () => { setPopupShown("PARTICIPANTS") },
+                    },
+                ]}/>
             <EditClassDialog show={popupShown === "EDIT_CLASS"}
                 onDismiss={() => { setPopupShown("NONE") }}
                 onClassEdited={onClassEdited}
                 onClassDeleted={onClassDeleted}
-                classId={classForPopup.id}/>
-            <ClassParticipantsDialog  show={popupShown === "PARTICIPANTS"}
-                onDismiss={() => {setPopupShown("NONE")}} 
+                classId={classForPopup.id} />
+            <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
+                onDismiss={() => { setPopupShown("NONE") }}
                 classroom={classForPopup}
                 shouldShowEditButton={true} />
-                
+
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
                     {classes.map(c => {
