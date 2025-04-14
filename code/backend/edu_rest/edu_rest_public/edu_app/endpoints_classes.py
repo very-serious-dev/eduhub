@@ -118,7 +118,7 @@ def handle_class_participants(request, classId):
             classroom = Class.objects.get(id=classId)
         except Class.DoesNotExist:
             return JsonResponse({"error": "La clase que buscas no existe"}, status=404)
-        users_class = UserClass.objects.filter(classroom=classroom)
+        users_class = UserClass.objects.filter(classroom=classroom, user__archived=False)
         if request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
             has_permission_to_see = True
         else:
@@ -156,7 +156,7 @@ def handle_class_participants(request, classId):
         for username in usernames:
             if len(username) > 0:
                 try:
-                    user = User.objects.get(username=username)
+                    user = User.objects.get(username=username, archived=False)
                     if UserClass.objects.filter(user=user, classroom=classroom).exists():
                         failed_already_added_users.append(username)
                     else:
@@ -195,7 +195,7 @@ def delete_class_participant(request, classId, username):
         if not(has_permission_to_edit):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         try:
-            user_class = UserClass.objects.get(classroom=classroom, user__username=username)
+            user_class = UserClass.objects.get(classroom=classroom, user__username=username, user__archived=False)
             user_class.delete()
             return JsonResponse({"success": True}, status=200)
         except UserClass.DoesNotExist:
@@ -308,7 +308,7 @@ def download_scores(request, classId):
         for a in assignments:
             csv += "," + a["real_title"] # FIXME, commas in assignment titles will break this?
         csv += "\n"
-        students_class = UserClass.objects.filter(classroom=classroom, user__role__in=[User.UserRole.STUDENT]).order_by("user__surname")
+        students_class = UserClass.objects.filter(classroom=classroom, user__archived=False, user__role__in=[User.UserRole.STUDENT]).order_by("user__surname")
         students = list(map(lambda sc: sc.user, students_class))
         for s in students:
             csv += '"'+ s.surname + ', ' + s.name + '"'

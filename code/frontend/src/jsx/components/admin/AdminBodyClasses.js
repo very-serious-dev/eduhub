@@ -105,7 +105,6 @@ const AdminBodyClasses = (props) => {
                 onDismiss={() => { setPopupShown("NONE") }}
                 classroom={classForPopup}
                 shouldShowEditButton={true} />
-
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
                     {classes.map(c => {

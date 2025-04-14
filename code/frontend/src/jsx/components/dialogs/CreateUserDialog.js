@@ -91,19 +91,19 @@ const CreateUserDialog = (props) => {
                         <label htmlFor="">Apellidos</label>
                     </div>
                     <div className="formInput">
-                        <input type="text" value={formPassword}
-                            onChange={e => { setFormPassword(e.target.value) }}
-                            required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Contraseña</label>
-                    </div>
-                    <div className="formInput">
                         <input type="text" value={formUsername}
                             onChange={e => { setFormUsername(e.target.value) }}
                             onFocus={onUsernameDidGainFocus}
                             required />
                         <div className="underline"></div>
                         <label htmlFor="">Nombre de usuario</label>
+                    </div>
+                    <div className="formInput">
+                        <input type="text" value={formPassword}
+                            onChange={e => { setFormPassword(e.target.value) }}
+                            required />
+                        <div className="underline"></div>
+                        <label htmlFor="">Contraseña</label>
                     </div>
                     <div className="formInputRadio">
                         <input type="radio" name="rolType" value="isTeacher"

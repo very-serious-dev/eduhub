@@ -50,7 +50,7 @@ def create_or_delete_documents(request):
         if json_internal_secret != INTERNAL_SECRET:
             return JsonResponse({"error": "Error"}, status=400)
         try:
-            user = EduAppUser.objects.get(id=json_user_id)
+            user = EduAppUser.objects.get(id=json_user_id, archived=False)
         except EduAppUser.DoesNotExist:
             return JsonResponse({"error": "Error"}, status=400)
         # Max storage capacity checks

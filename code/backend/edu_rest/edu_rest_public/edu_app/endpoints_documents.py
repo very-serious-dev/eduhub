@@ -127,7 +127,7 @@ def get_document_users(request, document_identifier):
             document = Document.objects.get(identifier=document_identifier)
         except Document.DoesNotExist:
             return JsonResponse({"error": "El documento especificado no existe"}, status=404)
-        granted_users = UserDocumentPermission.objects.filter(document=document)
+        granted_users = UserDocumentPermission.objects.filter(document=document, user__archived=False)
         user_belongs_to_document = False
         if document.author == request.session.user:
             user_belongs_to_document = True
@@ -151,7 +151,7 @@ def get_folder_users(request, folder_id):
             folder = Folder.objects.get(id=folder_id)
         except Folder.DoesNotExist:
             return JsonResponse({"error": "La carpeta especificada no existe"}, status=404)
-        granted_users = UserFolderPermission.objects.filter(folder=folder)
+        granted_users = UserFolderPermission.objects.filter(folder=folder, user__archived=False)
         user_belongs_to_folder = False
         if folder.author == request.session.user:
             user_belongs_to_folder = True

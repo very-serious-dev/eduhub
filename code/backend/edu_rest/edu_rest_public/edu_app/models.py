@@ -25,6 +25,7 @@ class User(models.Model):
     max_folders = models.IntegerField()
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
+    archived = models.BooleanField(default=False)
 
 class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

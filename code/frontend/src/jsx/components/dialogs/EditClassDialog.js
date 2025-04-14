@@ -55,7 +55,7 @@ const EditClassDialog = (props) => {
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoading}
             dialogMode="DELETE"
-            warningMessage={`¿Deseas eliminar esta clase?`} />
+            warningMessage={`¿Deseas eliminar esta clase? Será archivada y dejará de ser accesible. Para restablecerla deberás contactar con un administrador`} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">

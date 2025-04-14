@@ -17,7 +17,7 @@ def login_logout(request):
         if json_username is None or json_password is None:
             return JsonResponse({"error": "Falta username o password en el cuerpo de la petición"}, status=400)
         try:
-            db_user = User.objects.get(username=json_username)
+            db_user = User.objects.get(username=json_username, archived=False)
         except User.DoesNotExist:
             return JsonResponse({"error": "El usuario no existe"}, status=404)
         # Let's create a new session
@@ -56,9 +56,9 @@ def get_users(request):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=401)
         q = request.GET.get("search", None)
         if q is None:
-            users = User.objects.all()
+            users = User.objects.filter(archived=False)
         else:
-            users = User.objects.filter(Q(username__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
+            users = User.objects.filter(archived=False).filter(Q(username__icontains=q) | Q(name__icontains=q) | Q(surname__icontains=q))
         return JsonResponse({"users": users_array_to_json(users)})
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

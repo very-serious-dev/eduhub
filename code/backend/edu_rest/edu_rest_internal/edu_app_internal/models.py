@@ -154,6 +154,7 @@ class EduAppUser(models.Model):
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
     student_group = models.ForeignKey(EduAppGroup, models.DO_NOTHING, blank=True, null=True)
+    archived = models.BooleanField()
 
     class Meta:
         managed = False

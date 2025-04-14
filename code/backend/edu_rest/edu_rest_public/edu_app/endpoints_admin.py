@@ -16,7 +16,7 @@ def home(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        users_count = User.objects.all().count()
+        users_count = User.objects.filter(archived=False).count()
         classes_count = Class.objects.filter(archived=False).count()
         serialized_groups = []
         groups = Group.objects.all()
@@ -76,6 +76,51 @@ def create_user(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
+def handle_user(request, username):
+    if request.method == "PUT":
+        admin_auth_error = __admin_auth_json_error_response(request)
+        if admin_auth_error is not None:
+            return admin_auth_error
+        try:
+            body_json = json.loads(request.body)
+        except json.decoder.JSONDecodeError:
+            return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        json_username = body_json.get("username")
+        json_name = body_json.get("name")
+        json_surname = body_json.get("surname")
+        json_password = body_json.get("password")
+        if json_username is None or json_name is None or json_surname is None:
+            return JsonResponse({"error": "Falta username, name, surname o password en el cuerpo de la petición"}, status=400)
+        if not(re.match("^[a-z0-9.]+$", json_username)):
+            return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=409)
+        if json_username != username:
+            if User.objects.filter(username=json_username).exists():
+                return JsonResponse({"error": "Ese nombre de usuario ya está en uso"}, status=409)
+        try:
+            user = User.objects.get(username=username, archived=False)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "El usuario que quieres editar no existe"}, status=404)
+        user.username = json_username
+        user.name = json_name
+        user.surname = json_surname
+        if json_password is not None:
+            user.encrypted_password = bcrypt.hashpw(json_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
+        user.save()
+        return JsonResponse({"success": True}, status=201)
+    elif request.method == "DELETE":
+        admin_auth_error = __admin_auth_json_error_response(request)
+        if admin_auth_error is not None:
+            return admin_auth_error
+        try:
+            user = User.objects.get(username=username, archived=False)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "El usuario que quieres eliminar no existe"}, status=404)
+        user.archived = True
+        user.save()
+        UserSession.objects.filter(user=user).delete()
+        return JsonResponse({"success": True}, status=200)
+    else:
+        return JsonResponse({"error": "Unsupported"}, status=405)
 
 def create_group(request):
     if request.method == "POST":
@@ -98,7 +143,7 @@ def create_group(request):
             return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=409)
         if Group.objects.filter(tag=json_tag, year=json_year).exists():
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
-        if User.objects.filter(username=json_tutor_username).exists() == False:
+        if not User.objects.filter(username=json_tutor_username, archived=False).exists():
             return JsonResponse({"error": "El tutor indicado no existe"}, status=409)
         new_group = Group()
         new_group.tag = json_tag
@@ -127,7 +172,7 @@ def get_teachers(request):
         admin_auth_error = __admin_auth_json_error_response(request)
         if admin_auth_error is not None:
             return admin_auth_error
-        users = User.objects.filter(Q(role=User.UserRole.TEACHER) | Q(role=User.UserRole.TEACHER_SYSADMIN) | Q(role=User.UserRole.TEACHER_LEADER))
+        users = User.objects.filter(Q(role=User.UserRole.TEACHER) | Q(role=User.UserRole.TEACHER_SYSADMIN) | Q(role=User.UserRole.TEACHER_LEADER)).filter(archived=False)
         return JsonResponse({"teachers": users_array_to_json(users) })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

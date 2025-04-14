@@ -4,7 +4,8 @@ from . import endpoints_users, endpoints_groups, endpoints_classes, endpoints_ad
 urlpatterns = [
     path("admin/home",                               endpoints_admin.home),
     path("admin/users",                              endpoints_admin.create_user),
-    path("admin/users/teachers",                     endpoints_admin.get_teachers),
+    path("admin/users/<username>",                   endpoints_admin.handle_user),
+    path("admin/teachers",                           endpoints_admin.get_teachers),
     path("admin/groups",                             endpoints_admin.create_group),
     path("admin/classes",                            endpoints_admin.get_all_classes),
     path("users",                                    endpoints_users.get_users),
