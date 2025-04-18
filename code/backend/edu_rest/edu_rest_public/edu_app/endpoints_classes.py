@@ -21,7 +21,7 @@ def handle_classes(request):
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
         classes = list(map(lambda uc: uc.classroom, user_classes))
-        groups = []
+        distinct_groups = {}
         classes_json = []
         groups_json = []
         for c in classes:
@@ -30,27 +30,26 @@ def handle_classes(request):
                 latest_class_update = latest_post.publication_date
             else:
                 latest_class_update = "never"
-            json = {
+            json_obj = {
                 "id": c.id,
                 "name": c.name,
                 "group": c.group_id,
                 "theme": class_theme(c),
                 "latest_update": latest_class_update
             }
-            classes_json.append(json)
-            groups.append(c.group)
-        for g in groups:
+            classes_json.append(json_obj)
+            distinct_groups[c.group.tag] = c.group
+        for g in distinct_groups.values():
             if Announcement.objects.filter(group=g).exists():
                 latest_announcement = Announcement.objects.filter(group=g).order_by("-id")[0]
                 latest_group_update = latest_announcement.publication_date
             else:
                 latest_group_update = "never"
-            json = {
+            json_obj = {
                 "tag": g.tag,
                 "latest_update": latest_group_update
             }
-            groups_json.append(json)
-            
+            groups_json.append(json_obj)
         return JsonResponse({"classes": classes_json, "groups": groups_json})
     elif request.method == "POST":
         if request.session is None:
@@ -68,10 +67,11 @@ def handle_classes(request):
             return JsonResponse({"error": "Falta name o group en el cuerpo de la petición"}, status=400)
         if Group.objects.filter(tag=json_group).exists() == False:
             return JsonResponse({"error": "El grupo indicado al que debe pertenecer la clase no existe"}, status=409)
+        group = Group.objects.get(tag=json_group)
         new_class = Class()
         new_class.name = json_name
-        new_class.group = Group.objects.get(tag=json_group)
-        new_class.theme = Class.ClassTheme.BLUE # TODO: Make this random, nonrepeating for same group
+        new_class.group = group
+        new_class.theme = __class_theme_for_new_class(group)
         new_class.save()
         if json_automatically_add_teacher is True:
             new_user_class = UserClass()
@@ -355,3 +355,62 @@ def download_scores(request, classId):
         return response
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
+
+def __class_theme_for_new_class(group):
+    """
+    Students belong to a group and predictably will belong to all (or most)
+    of the group's classes.
+
+    We want students to see classes with different themes so that their
+    home screen is more diverse.
+
+    Thus, we will try to choose a theme for new class trying to avoid
+    themes already in use for classes belonging to the same group.
+    """
+    INFINITE = 1000
+    used_themes_count = {}
+    less_used_theme_count = INFINITE
+    for theme in Class.ClassTheme:
+        n_times_used = Class.objects.filter(group=group, archived=False, theme=theme).count()
+        used_themes_count[theme] = n_times_used
+        if n_times_used < less_used_theme_count:
+            less_used_theme_count = n_times_used
+    """
+    At this point we have a dictionary saying how many themes are in use
+    for the classes of a group. For this scenario:
+
+    (Let's imagine that only the themes RED, GREEN and BLUE exist)
+
+    GROUP: Science
+            |
+            |-- Maths        RED
+            |-- Engineering  GREEN
+            |-- Physics      BLUE
+            |-- Biology      RED
+    
+    ...we would have:
+
+    {
+      RED: 2,
+      GREEN: 1,
+      BLUE: 1
+    {
+    
+    And now we transform it into a normalized dictionary:
+
+    {
+      RED: 1,
+      GREEN: 0,
+      BLUE: 0
+    {
+    """
+    for theme in Class.ClassTheme:
+        used_themes_count[theme] = used_themes_count[theme] - less_used_theme_count
+    """
+    And finally we choose among the least used ones - GREEN and BLUE in the example
+    """
+    least_used_themes = []
+    for theme in Class.ClassTheme:
+        if used_themes_count[theme] == 0:
+            least_used_themes.append(theme)
+    return random.choice(least_used_themes)
