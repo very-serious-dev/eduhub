@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { bannerImageSrc } from "../../../util/Formatter";
 
 const ClassDetailBodyWithHeader = (props) => {
@@ -13,6 +13,7 @@ const ClassDetailBodyWithHeader = (props) => {
     const [searchedText, setSearchedText] = useState("");
     const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => {
         const handleScroll = (e) => {
@@ -53,7 +54,7 @@ const ClassDetailBodyWithHeader = (props) => {
             onClassDeleted={onClassDeleted}
             classId={props.classData.id} />
         <div className="classDetailHeader" style={{ height: headerHeight() }}>
-            <img className="classDetailHeaderImage" src={bannerImageSrc(props.classData.theme)} /> {/* TODO work on this*/}
+            <img className="classDetailHeaderImage" src={bannerImageSrc(theme)} />
             <div className="classDetailHeaderTitleSearchContainer">
                 <div className="classDetailHeaderTitle">{props.classData.name}</div>
                 <form className="classDetailHeaderSearchForm" onSubmit={(e) => { e.preventDefault(); }}>

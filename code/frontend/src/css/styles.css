@@ -1,10 +1,37 @@
 :root {
-  --color-background: #f5f5fa;
-  --color-primary: #f2f2fc;
-  --color-secondary: #bdece6;
-  --color-tertiary: #bccef8;
-  --color-quaternary: #d1c3f9;
-  --color-accent: #0029a5;
+  --color-background: #fbfbfb;
+  --theme-blue-primary: #bdece6;
+  --theme-blue-secondary: #bccef8;
+  --theme-blue-tertiary: #838bff;
+  --theme-blue-accent: #0029a5;
+  --theme-darkblue-primary: #77b3c2;
+  --theme-darkblue-secondary: #88aafa;
+  --theme-darkblue-tertiary: #4662fd;
+  --theme-darkblue-accent: #00185f;
+  --theme-green-primary: #89e0c3;
+  --theme-green-secondary: #70e693;
+  --theme-green-tertiary: #33cc91;
+  --theme-green-accent: #1ca823;
+  --theme-purple-primary: #e6b7f8;
+  --theme-purple-secondary: #b572ec;
+  --theme-purple-tertiary: #804ab3;
+  --theme-purple-accent: #4d1ca8;
+  --theme-brown-primary: #c79a85;
+  --theme-brown-secondary: #bba69d;
+  --theme-brown-tertiary: #4897d8;
+  --theme-brown-accent: #692f00;
+  --theme-red-primary: #eebcbc;
+  --theme-red-secondary: #f08da3;
+  --theme-red-tertiary: #da796d;
+  --theme-red-accent: #c70000;
+  --theme-orange-primary: #f1c49e;
+  --theme-orange-secondary: #e6a570;
+  --theme-orange-tertiary: #fc9768;
+  --theme-orange-accent: #ff7300;
+  --theme-yellow-primary: #e7e4b9;
+  --theme-yellow-secondary: #c3ca61;
+  --theme-yellow-tertiary: #ced65d;
+  --theme-yellow-accent: #fffb00;
   --color-error: #f37979;
   --color-delete: #f65050;
   --color-destructive: #f52020;
@@ -70,7 +97,6 @@ body {
   width: 40%;
   display: flex;
   justify-content: center;
-  background-color: var(--color-primary);
 }
 
 .loginHUDCentered {
@@ -131,7 +157,7 @@ body {
   display: inline-block;
   font-weight: light;
   letter-spacing: 0.15em;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
   margin-left: 15px;
   margin-bottom: 4px;
 }
@@ -148,7 +174,7 @@ body {
 
 .classesSectionAnnouncementsButton:hover {
   cursor: pointer;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .announcementsSmallRedDot {
@@ -174,7 +200,7 @@ body {
 .classesSectionTitleUnderline {
   width: calc(100% - 30px);
   height: 1px;
-  background-color: var(--color-accent);
+  background-color: var(--theme-blue-accent);
   margin-left: 15px;
   margin-right: 15px;
 }
@@ -198,12 +224,12 @@ body {
   padding-left: 32px;
   padding-right: 32px;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .floatingCardAddNew:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 /**
@@ -291,7 +317,7 @@ body {
 
 .classDetailHeaderIcon:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -341,7 +367,7 @@ body {
 
 .smallFilesListFile:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .smallFilesListFileImage {
@@ -357,13 +383,13 @@ body {
 
 .smallFilesListFileTitle {
   font-size: 0.875rem;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
   margin-right: 4px;
 }
 
 .smallFilesListFileSubtitle {
   font-size: 0.7rem;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .dateAuthorFootNote {
@@ -376,12 +402,12 @@ body {
 }
 
 .classDetailEntryAssignment {
-  background-color: var(--color-quaternary);
+  background-color: var(--theme-blue-tertiary);
 }
 
 .classDetailEntryAssignment:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailAssignmentTitle {
@@ -415,7 +441,7 @@ body {
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 999px;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailEntryTopRightEdit {
@@ -424,7 +450,7 @@ body {
 
 .classDetailEntryTopRightEdit:hover {
   cursor: pointer;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .classDetailBodyColumn2 {
@@ -436,13 +462,13 @@ body {
 }
 
 .classDetailSectionTitle {
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .classDetailSectionUnderline {
   height: 1px;
   width: 90%;
-  background-color: var(--color-accent);
+  background-color: var(--theme-blue-accent);
 }
 
 .classDetailBubbleButton {
@@ -450,12 +476,12 @@ body {
   width: 85%;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .classDetailBubbleButton:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailSectionSubitem {
@@ -478,7 +504,7 @@ body {
 
 .classDetailSectionSubitem:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailSectionSubitemEditBtn {
@@ -495,14 +521,14 @@ body {
 }
 
 .classDetailSectionSubitemEditBtn:hover {
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
 .classDetailSectionAssignmentDueDateCapsule {
   display: inline-block;
   font-size: 0.6em;
-  background-color: var(--color-quaternary);
+  background-color: var(--theme-blue-tertiary);
   padding-top: 1px;
   padding-bottom: 2px;
   padding-left: 4px;
@@ -520,12 +546,12 @@ body {
   width: 200px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .addParticipant:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .participantsContainer {
@@ -562,12 +588,12 @@ body {
   width: calc(100% - 20px);
   text-align: center;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .postsBoardPublishButton:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .createOrEditPostFormContainer {
@@ -651,12 +677,12 @@ body {
   padding-top: 10px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .submitAssignmentButton:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCell {
@@ -666,7 +692,7 @@ body {
 
 .assignmentCell:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCellHeader {
@@ -684,12 +710,12 @@ body {
   margin-top: 12px;
   text-align: center;
   border-radius: 0px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .assignmentTeacherPanePublishAll:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCellHeaderScoreContainer {
@@ -728,7 +754,7 @@ body {
 }
 
 .assignmentOk {
-  background-color: var(--color-quaternary);
+  background-color: var(--theme-blue-tertiary);
 }
 
 .assignmentKo {
@@ -795,7 +821,7 @@ body {
 }
 
 .scorePublished {
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .scoreUnpublished {
@@ -819,12 +845,12 @@ body {
   padding: 10px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .assignmentSetScoreButton:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 /**
@@ -872,7 +898,7 @@ body {
 
 .announcementTopRightGear:hover {
   cursor: pointer;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 /**
@@ -889,7 +915,7 @@ body {
 
 .myFilesElementContainerHoverable:hover {
   cursor: pointer;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .myFilesElementTitleContainer {
@@ -962,7 +988,7 @@ body {
 }
 
 .filesElementSelected {
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 
@@ -1000,8 +1026,7 @@ body {
 
 .adminColumn1GoBack {
   height: 50px;
-  background-color: var(--color-primary);
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
   display: grid;
   place-content: center;
   font-size: 1.125rem;
@@ -1009,12 +1034,12 @@ body {
 
 .adminColumn1GoBack:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .adminColumn1MenuItem {
   height: 100px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
   display: grid;
   place-content: center;
   font-size: 1.375rem;
@@ -1022,7 +1047,7 @@ body {
 
 .adminColumn1MenuItem:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .adminBodyColumn2 {
@@ -1035,7 +1060,6 @@ body {
 .adminBodyColumn2Content {
   min-height: calc(100% - 24px);
   margin: 12px;
-  background-color: var(--color-primary);
 }
 
 .adminSubpanelList {
@@ -1135,7 +1159,7 @@ body {
 
 .cardClickable:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .cardClickable:hover .genericCardBackgroundHoverImage {
@@ -1165,7 +1189,7 @@ body {
 
 .adminAddButtonHeader:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .hint {
@@ -1190,7 +1214,6 @@ body {
   width: 60%;
   display: flex;
   justify-content: center;
-  background-color: var(--color-primary);
 }
 
 .generalErrorMessage {
@@ -1216,7 +1239,7 @@ body {
 }
 
 .globalUserFeedbackInfo {
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .globalUserFeedbackSuccess {
@@ -1262,7 +1285,7 @@ body {
   font-size: 17px;
   border-bottom: 2px solid rgba(0, 0, 0, 0.12);
   margin-top: 15px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
   border-radius: 5px;
 }
 
@@ -1270,7 +1293,7 @@ body {
 .formInput input:valid~label {
   transform: translateY(-23px);
   font-size: 14px;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .formInput label {
@@ -1294,7 +1317,7 @@ body {
   content: "";
   height: 2px;
   width: 100%;
-  background: var(--color-accent);
+  background: var(--theme-blue-accent);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.3s ease;
@@ -1320,7 +1343,7 @@ input:valid~.underline:before {
 
 .formInputSelect select {
   appearance: none;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
   font-size: 15px;
   min-width: 110px;
   outline: none;
@@ -1358,7 +1381,7 @@ input:valid~.underline:before {
   border: none;
   font-size: 17px;
   margin-top: 35px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .formSubmitNoMarginTop input {
@@ -1367,7 +1390,7 @@ input:valid~.underline:before {
 
 .formSubmit input:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .formTextArea textarea {
@@ -1378,7 +1401,7 @@ input:valid~.underline:before {
   border: none;
   resize: none;
   font-family: inherit;
-  border: 1px solid var(--color-secondary);
+  border: 1px solid var(--theme-blue-primary);
   overflow: auto;
 }
 
@@ -1412,7 +1435,7 @@ input:valid~.underline:before {
 }
 
 .formFilesDropableAreaActive {
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .dropFilesAreaItem {
@@ -1425,12 +1448,12 @@ input:valid~.underline:before {
 
 .dropFilesAreaItemTitle {
   font-size: 0.875rem;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .dropFilesAreaItemSubtitle {
   font-size: 0.7rem;
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
 }
 
 .dropFilesAreaItemDeleteButton {
@@ -1513,7 +1536,7 @@ input:valid~.underline:before {
 
 .optionsDialogChoice:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .dialogHUDCentered {
@@ -1586,7 +1609,7 @@ input:valid~.underline:before {
   margin-top: 10px;
   text-align: center;
   border-radius: 0px;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .areYouSureMessage {
@@ -1596,7 +1619,7 @@ input:valid~.underline:before {
 
 .areYouSureOption:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .areYouSureOptionDestructive {
@@ -1675,7 +1698,7 @@ input:valid~.underline:before {
 
 .contextMenuItem:hover {
   cursor: pointer;
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .dialogScrollableFixedHeightSection {
@@ -1720,11 +1743,11 @@ input:valid~.underline:before {
 
 .tabbedActivityHeaderItem:hover {
   cursor: pointer;
-  background-color: var(--color-tertiary);
+  background-color: var(--theme-blue-secondary);
 }
 
 .tabHeaderItemActive {
-  background-color: var(--color-secondary);
+  background-color: var(--theme-blue-primary);
 }
 
 .tabbedActivityContainer {
@@ -1794,7 +1817,7 @@ input:valid~.underline:before {
   content: "";
   height: 2px;
   width: 100%;
-  background: var(--color-accent);
+  background: var(--theme-blue-accent);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.3s ease;
@@ -1805,7 +1828,7 @@ input:valid~.underline:before {
 }
 
 .animatedButtonContainer button:hover {
-  color: var(--color-accent);
+  color: var(--theme-blue-accent);
   cursor: pointer;
 }
 
@@ -1837,7 +1860,7 @@ input:valid~.underline:before {
   width: 13.33333px;
   height: 13.33333px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--theme-blue-accent);
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 

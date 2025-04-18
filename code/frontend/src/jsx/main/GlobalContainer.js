@@ -3,6 +3,7 @@ import App from "./App";
 import { createContext, useEffect, useState } from "react";
 
 const FeedbackContext = createContext(null);
+const ThemeContext = createContext(null);
 
 const GlobalContainer = () => {
     const [desiredFeedback, setFeedback] = useState(null);
@@ -26,3 +27,4 @@ const GlobalContainer = () => {
 
 export { GlobalContainer };
 export { FeedbackContext };
+export { ThemeContext };

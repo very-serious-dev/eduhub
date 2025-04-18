@@ -5,6 +5,7 @@ import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import ClassDetailBodyWithHeader from "../components/classes/ClassDetailBodyWithHeader";
 import { GetCachedPosts, SetCachedPosts } from "../../client/ClientCache";
+import { ThemeContext } from "../main/GlobalContainer";
 
 const ClassDetailPage = () => {
     const [classData, setClassData] = useState();
@@ -17,7 +18,7 @@ const ClassDetailPage = () => {
     useEffect(() => {
         setLoading(true);
         const cachedPosts = GetCachedPosts(params.classId);
-        EduAPIFetch("GET", `/api/v1/classes/${params.classId}${cachedPosts.length > 0 ? "?newerThanPostWithId="+cachedPosts[0].id : ""}`)
+        EduAPIFetch("GET", `/api/v1/classes/${params.classId}${cachedPosts.length > 0 ? "?newerThanPostWithId=" + cachedPosts[0].id : ""}`)
             .then(json => {
                 setLoading(false);
                 const mergedPosts = [...json.posts, ...cachedPosts]
@@ -34,10 +35,12 @@ const ClassDetailPage = () => {
     }, [numTimesClassWasEdited])
 
     return isLoading ?
-            <LoadingHUDPage />
-            : isRequestFailed ?
-                <ErrorPage errorMessage={requestErrorMessage} />
-                : <ClassDetailBodyWithHeader classData={classData} onShouldRefresh={() => {setNumTimesClassWasEdited(numTimesClassWasEdited + 1);}} />
+        <LoadingHUDPage />
+        : isRequestFailed ?
+            <ErrorPage errorMessage={requestErrorMessage} />
+            : <ThemeContext.Provider value={classData.theme}>
+                <ClassDetailBodyWithHeader classData={classData} onShouldRefresh={() => { setNumTimesClassWasEdited(numTimesClassWasEdited + 1); }} />
+            </ThemeContext.Provider>
 }
 
 export default ClassDetailPage;
