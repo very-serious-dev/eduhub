@@ -4,12 +4,15 @@ import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent
 import SmallFilesListFile from "../common/SmallFilesListFile";
 import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent";
 import LoadingHUD from "../common/LoadingHUD";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import EditPostDialog from "../dialogs/EditPostDialog";
+import { accent, pointableSecondary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const AssignmentBody = (props) => {
     const [showEditAssignmentPopup, setShowEditAssignmentPopup] = useState(false);
     const navigate = useNavigate();
+    const theme = useContext(ThemeContext);
 
     const appropriateLeftPaneContent = () => {
         if (props.isLoading) {
@@ -35,13 +38,13 @@ const AssignmentBody = (props) => {
         <div>
             <div className="classDetailHeaderTopIcons">
                 {props.assignmentData.should_show_teacher_options === true &&
-                    <div className="classDetailHeaderIcon" onClick={() => { setShowEditAssignmentPopup(true); }}>⚙️</div>}
-                <div className="classDetailHeaderIcon" onClick={() => { navigate(-1); }}>✖️</div>
+                    <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setShowEditAssignmentPopup(true); }}>⚙️</div>}
+                <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { navigate(-1); }}>✖️</div>
             </div>
             <div className="assignmentDetailTitleHeader">
                 <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
                 <div className="assignmentDetailDueDate">Se entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
-                <div className="classDetailSectionUnderline" />
+                <div className={`classDetailSectionUnderline ${accent(theme)}`} />
             </div>
             <div className="assignmentDetailBodyContainer">
                 <div className="assignmentDetailBodyColumn1">

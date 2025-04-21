@@ -61,15 +61,15 @@ const FilesElementContextMenuButton = (props) => {
     }
 
     return <>
-        <img className="filesElementThreeDotsImg"
+        <img className="filesElementThreeDotsImg pointable"
             onClick={onClickContextMenu} src="./three_dots.png"></img>
         {/* FIXME: right now the cursor: pointer is left on after clicking on the three dots (it shouldn't)*/}
         {popupShown === "CONTEXT_MENU" && <>
             <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); setPopupShown("NONE"); }} />
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
-                <div className="contextMenuItem" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
-                <div className="contextMenuItem" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
-                <div className="contextMenuItem" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>
+                <div className="contextMenuItem pointable" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
+                <div className="contextMenuItem pointable" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
+                <div className="contextMenuItem pointable" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>
             </div></>
         }
         <FilesPermissionsDialog show={popupShown === "SHARE"}

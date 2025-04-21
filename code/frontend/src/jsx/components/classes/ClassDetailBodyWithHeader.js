@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
-import { bannerImageSrc } from "../../../util/Formatter";
+import { bannerImageSrc, pointableSecondary } from "../../../util/Themes";
 
 const ClassDetailBodyWithHeader = (props) => {
     const EXPANDED_HEADER_HEIGHT = 200;
@@ -68,8 +68,8 @@ const ClassDetailBodyWithHeader = (props) => {
             </div>
             <div className="classDetailHeaderTopIcons">
                 {props.classData.should_show_edit_button === true &&
-                    <div className="classDetailHeaderIcon" onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
-                <div className="classDetailHeaderIcon" onClick={() => { navigate(-1); }}>✖️</div>
+                    <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
+                <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { navigate(-1); }}>✖️</div>
             </div>
         </div>
         <div style={{ marginTop: EXPANDED_HEADER_HEIGHT }}>

@@ -10,7 +10,7 @@ const AnnouncementCell = (props) => {
 
     return <div className="announcementContainer">
         <div className="announcementTitle">{props.announcement.title}</div>
-        {props.showEdit && <div className="announcementTopRightGear" onClick={onEdit}>⚙️</div>}
+        {props.showEdit && <div className="announcementTopRightGear pointable" onClick={onEdit}>⚙️</div>}
         <div>{formatPseudoMarkdown(props.announcement.content)}</div>
         <div className="smallFilesList">
             {props.announcement.files.map(f => <SmallFilesListFile file={f} />)}

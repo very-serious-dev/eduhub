@@ -58,7 +58,7 @@ const AnnouncementsDialog = (props) => {
                     {announcements.map(a => <AnnouncementCell announcement={a} showEdit={canCreateAnnouncement} onEditAnnouncement={onEditAnnouncement} />)}
                     {(!isLoading && canCreateAnnouncement) &&
                         <div className="announcementButtonFooter">
-                            <div className="card floatingCardAddNew" onClick={() => { setShowCreateOrEdit(true) }}>➕ Nuevo anuncio</div>
+                            <div className="card floatingCardAddNew pointable" onClick={() => { setShowCreateOrEdit(true) }}>➕ Nuevo anuncio</div>
                         </div>}
                 </div>
             </div>

@@ -28,7 +28,7 @@
   --theme-orange-secondary: #e6a570;
   --theme-orange-tertiary: #fc9768;
   --theme-orange-accent: #ff7300;
-  --theme-yellow-primary: #e7e4b9;
+  --theme-yellow-primary: #f3ec8d;
   --theme-yellow-secondary: #c3ca61;
   --theme-yellow-tertiary: #ced65d;
   --theme-yellow-accent: #fffb00;
@@ -65,6 +65,315 @@ html {
 body {
   background-color: var(--color-background);
 }
+
+/**
+ * Themes-related (common)
+ **/
+
+.pointable:hover {
+  cursor: pointer;
+}
+
+/* PRIMARY color (classes) */
+
+.primaryBlue {
+  background-color: var(--theme-blue-primary);
+}
+
+.primaryDarkblue {
+  background-color: var(--theme-darkblue-primary);
+}
+
+.primaryGreen {
+  background-color: var(--theme-green-primary);
+}
+
+.primaryPurple {
+  background-color: var(--theme-purple-primary);
+}
+
+.primaryBrown {
+  background-color: var(--theme-brown-primary);
+}
+
+.primaryRed {
+  background-color: var(--theme-red-primary);
+}
+
+.primaryOrange {
+  background-color: var(--theme-orange-primary);
+}
+
+.primaryYellow {
+  background-color: var(--theme-yellow-primary);
+}
+
+/* SECONDARY color (classes) */
+
+.secondaryBlue {
+  background-color: var(--theme-blue-secondary);
+}
+
+.secondaryDarkblue {
+  background-color: var(--theme-darkblue-secondary);
+}
+
+.secondaryGreen {
+  background-color: var(--theme-green-secondary);
+}
+
+.secondaryPurple {
+  background-color: var(--theme-purple-secondary);
+}
+
+.secondaryBrown {
+  background-color: var(--theme-brown-secondary);
+}
+
+.secondaryRed {
+  background-color: var(--theme-red-secondary);
+}
+
+.secondaryOrange {
+  background-color: var(--theme-orange-secondary);
+}
+
+.secondaryYellow {
+  background-color: var(--theme-yellow-secondary);
+}
+
+/* TERTIARY color (classes) */
+
+.tertiaryBlue {
+  background-color: var(--theme-blue-tertiary);
+}
+
+.tertiaryDarkblue {
+  background-color: var(--theme-darkblue-tertiary);
+}
+
+.tertiaryGreen {
+  background-color: var(--theme-green-tertiary);
+}
+
+.tertiaryPurple {
+  background-color: var(--theme-purple-tertiary);
+}
+
+.tertiaryBrown {
+  background-color: var(--theme-brown-tertiary);
+}
+
+.tertiaryRed {
+  background-color: var(--theme-red-tertiary);
+}
+
+.tertiaryOrange {
+  background-color: var(--theme-orange-tertiary);
+}
+
+.tertiaryYellow {
+  background-color: var(--theme-yellow-tertiary);
+}
+
+/* ACCENT color (classes) */
+
+.accentBlue {
+  background-color: var(--theme-blue-accent);
+}
+
+.accentDarkblue {
+  background-color: var(--theme-darkblue-accent);
+}
+
+.accentGreen {
+  background-color: var(--theme-green-accent);
+}
+
+.accentPurple {
+  background-color: var(--theme-purple-accent);
+}
+
+.accentBrown {
+  background-color: var(--theme-brown-accent);
+}
+
+.accentRed {
+  background-color: var(--theme-red-accent);
+}
+
+.accentOrange {
+  background-color: var(--theme-orange-accent);
+}
+
+.accentYellow {
+  background-color: var(--theme-yellow-accent);
+}
+
+.accentForegroundBlue {
+  color: var(--theme-blue-accent);
+}
+
+.accentForegroundDarkblue {
+  color: var(--theme-darkblue-accent);
+}
+
+.accentForegroundGreen {
+  color: var(--theme-green-accent);
+}
+
+.accentForegroundPurple {
+  color: var(--theme-purple-accent);
+}
+
+.accentForegroundBrown {
+  color: var(--theme-brown-accent);
+}
+
+.accentForegroundRed {
+  color: var(--theme-red-accent);
+}
+
+.accentForegroundOrange {
+  color: var(--theme-orange-accent);
+}
+
+.accentForegroundYellow {
+  color: var(--theme-yellow-accent);
+}
+
+/* Pointable PRIMARY color (classes for hover + active status) */
+
+.pointablePrimaryBlue:hover {
+  background-color: var(--theme-blue-primary);
+}
+
+.pointablePrimaryDarkblue:hover {
+  background-color: var(--theme-darkblue-primary);
+}
+
+.pointablePrimaryGreen:hover {
+  background-color: var(--theme-green-primary);
+}
+
+.pointablePrimaryPurple:hover {
+  background-color: var(--theme-purple-primary);
+}
+
+.pointablePrimaryBrown:hover {
+  background-color: var(--theme-brown-primary);
+}
+
+.pointablePrimaryRed:hover {
+  background-color: var(--theme-red-primary);
+}
+
+.pointablePrimaryOrange:hover {
+  background-color: var(--theme-orange-primary);
+}
+
+.pointablePrimaryYellow:hover {
+  background-color: var(--theme-yellow-primary);
+}
+
+.pointablePrimaryBlue:active {
+  background-color: var(--theme-blue-primary);
+}
+
+.pointablePrimaryDarkblue:active {
+  background-color: var(--theme-darkblue-primary);
+}
+
+.pointablePrimaryGreen:active {
+  background-color: var(--theme-green-primary);
+}
+
+.pointablePrimaryPurple:active {
+  background-color: var(--theme-purple-primary);
+}
+
+.pointablePrimaryBrown:active {
+  background-color: var(--theme-brown-primary);
+}
+
+.pointablePrimaryRed:active {
+  background-color: var(--theme-red-primary);
+}
+
+.pointablePrimaryOrange:active {
+  background-color: var(--theme-orange-primary);
+}
+
+.pointablePrimaryYellow:active {
+  background-color: var(--theme-yellow-primary);
+}
+
+/* Pointable SECONDARY color (classes for hover + active status) */
+
+.pointableSecondaryBlue:hover {
+  background-color: var(--theme-blue-secondary);
+}
+
+.pointableSecondaryDarkblue:hover {
+  background-color: var(--theme-darkblue-secondary);
+}
+
+.pointableSecondaryGreen:hover {
+  background-color: var(--theme-green-secondary);
+}
+
+.pointableSecondaryPurple:hover {
+  background-color: var(--theme-purple-secondary);
+}
+
+.pointableSecondaryBrown:hover {
+  background-color: var(--theme-brown-secondary);
+}
+
+.pointableSecondaryRed:hover {
+  background-color: var(--theme-red-secondary);
+}
+
+.pointableSecondaryOrange:hover {
+  background-color: var(--theme-orange-secondary);
+}
+
+.pointableSecondaryYellow:hover {
+  background-color: var(--theme-yellow-secondary);
+}
+
+.pointableSecondaryBlue:active {
+  background-color: var(--theme-blue-secondary);
+}
+
+.pointableSecondaryDarkblue:active {
+  background-color: var(--theme-darkblue-secondary);
+}
+
+.pointableSecondaryGreen:active {
+  background-color: var(--theme-green-secondary);
+}
+
+.pointableSecondaryPurple:active {
+  background-color: var(--theme-purple-secondary);
+}
+
+.pointableSecondaryBrown:active {
+  background-color: var(--theme-brown-secondary);
+}
+
+.pointableSecondaryRed:active {
+  background-color: var(--theme-red-secondary);
+}
+
+.pointableSecondaryOrange:active {
+  background-color: var(--theme-orange-secondary);
+}
+
+.pointableSecondaryYellow:active {
+  background-color: var(--theme-yellow-secondary);
+}
+
 
 /**
  * Loading HUD page 
@@ -173,7 +482,6 @@ body {
 }
 
 .classesSectionAnnouncementsButton:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-primary);
 }
 
@@ -228,7 +536,6 @@ body {
 }
 
 .floatingCardAddNew:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-secondary);
 }
 
@@ -316,8 +623,6 @@ body {
 }
 
 .classDetailHeaderIcon:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
@@ -365,11 +670,6 @@ body {
   margin: 8px;
 }
 
-.smallFilesListFile:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
 .smallFilesListFileImage {
   display: inline-block;
   width: 26px;
@@ -383,13 +683,11 @@ body {
 
 .smallFilesListFileTitle {
   font-size: 0.875rem;
-  color: var(--theme-blue-accent);
   margin-right: 4px;
 }
 
 .smallFilesListFileSubtitle {
   font-size: 0.7rem;
-  color: var(--theme-blue-accent);
 }
 
 .dateAuthorFootNote {
@@ -399,15 +697,6 @@ body {
   color: #555;
   font-size: 0.6rem;
   font-weight: lighter;
-}
-
-.classDetailEntryAssignment {
-  background-color: var(--theme-blue-tertiary);
-}
-
-.classDetailEntryAssignment:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailAssignmentTitle {
@@ -432,7 +721,6 @@ body {
   gap: 10px;
 }
 
-
 .classDetailEntryTopRightUnit {
   font-size: 0.7em;
   font-weight: bold;
@@ -441,16 +729,10 @@ body {
   padding-left: 6px;
   padding-right: 6px;
   border-radius: 999px;
-  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailEntryTopRightEdit {
   padding: 3px;
-}
-
-.classDetailEntryTopRightEdit:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-primary);
 }
 
 .classDetailBodyColumn2 {
@@ -461,14 +743,9 @@ body {
   padding-top: 15px;
 }
 
-.classDetailSectionTitle {
-  color: var(--theme-blue-accent);
-}
-
 .classDetailSectionUnderline {
   height: 1px;
   width: 90%;
-  background-color: var(--theme-blue-accent);
 }
 
 .classDetailBubbleButton {
@@ -476,12 +753,6 @@ body {
   width: 85%;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--theme-blue-primary);
-}
-
-.classDetailBubbleButton:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .classDetailSectionSubitem {
@@ -502,11 +773,6 @@ body {
   padding-bottom: 6px;
 }
 
-.classDetailSectionSubitem:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
 .classDetailSectionSubitemEditBtn {
   font-weight: bold;
   height: 90%;
@@ -520,15 +786,9 @@ body {
   margin-top: 3px;
 }
 
-.classDetailSectionSubitemEditBtn:hover {
-  background-color: var(--theme-blue-primary);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-}
-
 .classDetailSectionAssignmentDueDateCapsule {
   display: inline-block;
   font-size: 0.6em;
-  background-color: var(--theme-blue-tertiary);
   padding-top: 1px;
   padding-bottom: 2px;
   padding-left: 4px;
@@ -546,12 +806,6 @@ body {
   width: 200px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--theme-blue-primary);
-}
-
-.addParticipant:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .participantsContainer {
@@ -588,12 +842,6 @@ body {
   width: calc(100% - 20px);
   text-align: center;
   border-radius: 999px;
-  background-color: var(--theme-blue-primary);
-}
-
-.postsBoardPublishButton:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .createOrEditPostFormContainer {
@@ -677,22 +925,11 @@ body {
   padding-top: 10px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--theme-blue-primary);
-}
-
-.submitAssignmentButton:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCell {
   padding: 4px;
   margin-top: 4px;
-}
-
-.assignmentCell:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCellHeader {
@@ -710,12 +947,6 @@ body {
   margin-top: 12px;
   text-align: center;
   border-radius: 0px;
-  background-color: var(--theme-blue-primary);
-}
-
-.assignmentTeacherPanePublishAll:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .assignmentCellHeaderScoreContainer {
@@ -751,10 +982,6 @@ body {
   padding-left: 5px;
   padding-right: 5px;
   padding-bottom: 2px;
-}
-
-.assignmentOk {
-  background-color: var(--theme-blue-tertiary);
 }
 
 .assignmentKo {
@@ -820,10 +1047,6 @@ body {
   margin-bottom: 15px;
 }
 
-.scorePublished {
-  color: var(--theme-blue-accent);
-}
-
 .scoreUnpublished {
   color: #000;
 }
@@ -845,12 +1068,6 @@ body {
   padding: 10px;
   text-align: center;
   border-radius: 999px;
-  background-color: var(--theme-blue-primary);
-}
-
-.assignmentSetScoreButton:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 /**
@@ -897,7 +1114,6 @@ body {
 }
 
 .announcementTopRightGear:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-primary);
 }
 
@@ -914,7 +1130,6 @@ body {
 }
 
 .myFilesElementContainerHoverable:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-primary);
 }
 
@@ -1005,7 +1220,6 @@ body {
 }
 
 .filesElementThreeDotsImg:hover {
-  cursor: pointer;
   background-color: #ccc
 }
 
@@ -1033,7 +1247,6 @@ body {
 }
 
 .adminColumn1GoBack:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-secondary);
 }
 
@@ -1046,7 +1259,6 @@ body {
 }
 
 .adminColumn1MenuItem:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-secondary);
 }
 
@@ -1128,7 +1340,6 @@ body {
 }
 
 .userCardDeleteButton:hover {
-  cursor: pointer;
   background-color: var(--color-destructive);
 }
 
@@ -1157,12 +1368,7 @@ body {
   font-size: 0.75rem;
 }
 
-.cardClickable:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
-.cardClickable:hover .genericCardBackgroundHoverImage {
+.genericCard:hover .genericCardBackgroundHoverImage {
   visibility: visible;
 }
 
@@ -1188,7 +1394,6 @@ body {
 }
 
 .adminAddButtonHeader:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-secondary);
 }
 
@@ -1434,10 +1639,6 @@ input:valid~.underline:before {
   border: 3px dashed white;
 }
 
-.formFilesDropableAreaActive {
-  background-color: var(--theme-blue-primary);
-}
-
 .dropFilesAreaItem {
   background-color: white;
   border-radius: 999px;
@@ -1448,12 +1649,10 @@ input:valid~.underline:before {
 
 .dropFilesAreaItemTitle {
   font-size: 0.875rem;
-  color: var(--theme-blue-accent);
 }
 
 .dropFilesAreaItemSubtitle {
   font-size: 0.7rem;
-  color: var(--theme-blue-accent);
 }
 
 .dropFilesAreaItemDeleteButton {
@@ -1463,7 +1662,6 @@ input:valid~.underline:before {
 }
 
 .dropFilesAreaItemDeleteButton:hover {
-  cursor: pointer;
   background-color: var(--color-destructive);
 }
 
@@ -1534,11 +1732,6 @@ input:valid~.underline:before {
   padding: 20px;
 }
 
-.optionsDialogChoice:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
 .dialogHUDCentered {
   width: fit-content;
   margin-left: 42%;
@@ -1602,6 +1795,11 @@ input:valid~.underline:before {
   background-color: var(--color-delete);
 }
 
+.areYouSureMessage {
+  text-align: center;
+  margin: 15px;
+}
+
 .areYouSureOption {
   box-shadow: none;
   height: 40px;
@@ -1609,17 +1807,6 @@ input:valid~.underline:before {
   margin-top: 10px;
   text-align: center;
   border-radius: 0px;
-  background-color: var(--theme-blue-primary);
-}
-
-.areYouSureMessage {
-  text-align: center;
-  margin: 15px;
-}
-
-.areYouSureOption:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
 }
 
 .areYouSureOptionDestructive {
@@ -1627,7 +1814,6 @@ input:valid~.underline:before {
 }
 
 .areYouSureOptionDestructive:hover {
-  cursor: pointer;
   background-color: var(--color-destructive);
 }
 
@@ -1636,7 +1822,6 @@ input:valid~.underline:before {
 }
 
 .areYouSureOptionDangerouslyConstructive:hover {
-  cursor: pointer;
   background-color: var(--color-constructive);
 }
 
@@ -1697,7 +1882,6 @@ input:valid~.underline:before {
 }
 
 .contextMenuItem:hover {
-  cursor: pointer;
   background-color: var(--theme-blue-primary);
 }
 
@@ -1739,15 +1923,6 @@ input:valid~.underline:before {
   padding-right: 15px;
   line-height: 50px;
   /* Vertically center text via setting line-height same height as container */
-}
-
-.tabbedActivityHeaderItem:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
-.tabHeaderItemActive {
-  background-color: var(--theme-blue-primary);
 }
 
 .tabbedActivityContainer {

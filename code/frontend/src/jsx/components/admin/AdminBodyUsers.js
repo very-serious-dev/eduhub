@@ -77,7 +77,7 @@ const AdminBodyUsers = (props) => {
         <LoadingHUD /> :
         <>
             <div>
-                <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("CREATE_USER") }}>➕ Añadir nuevo usuario</div>
+                <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("CREATE_USER") }}>➕ Añadir nuevo usuario</div>
             </div>
             <CreateUserDialog show={popupShown === "CREATE_USER"}
                 onDismiss={() => { setPopupShown("NONE") }}

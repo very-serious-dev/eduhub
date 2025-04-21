@@ -1,10 +1,11 @@
 import { useContext, useEffect, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
+import { accent, accentForeground, pointableSecondary, primary } from "../../../util/Themes";
 
 const ClassParticipantsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -15,6 +16,7 @@ const ClassParticipantsDialog = (props) => {
     const [students, setStudents] = useState([]);
     const [refreshKey, setRefreshKey] = useState(0);
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => {
         if (!props.show) { return; }
@@ -85,24 +87,28 @@ const ClassParticipantsDialog = (props) => {
                 <SearchUsersSubDialog addUsersUrl={`/api/v1/classes/${props.classroom.id}/users`}
                     dialogTitle={`Añadir participantes a ${props.classroom.name}`}
                     onUserAdded={onUserAdded}
-                    onDismiss={() => { setShowAddParticipant(false) }} 
-                    usersToIgnore={[]}/>
+                    onDismiss={() => { setShowAddParticipant(false) }}
+                    usersToIgnore={[]} />
                 : <div className="popupOverlayBackground" onClick={props.onDismiss}>
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">
                             <div className="dialogTitle">Participantes</div>
                             {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
-                            <div className="classDetailSectionTitle">💼 Profesores</div>
-                            <div className="classDetailSectionUnderline" />
+                            <div className={accentForeground(theme)}>💼 Profesores</div>
+                            <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                             <div className="participantsContainer">
                                 {teachers && teachers.length > 0 ? teachers.map(u => userCardForUser(u)) : <div className="emptyParticipants">No hay docentes asignados</div>}
                             </div>
-                            <div className="classDetailSectionTitle">📗 Estudiantes</div>
-                            <div className="classDetailSectionUnderline" />
+                            <div className={accentForeground(theme)}>📗 Estudiantes</div>
+                            <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                             <div className="participantsContainer">
                                 {students && students.length > 0 ? students.map(u => userCardForUser(u)) : <div className="emptyParticipants">No hay estudiantes asignados</div>}
                             </div>
-                            {props.shouldShowEditButton && <div className="card addParticipant" onClick={() => { setShowAddParticipant(true); }}>➕ Añadir participante</div>}
+                            {props.shouldShowEditButton &&
+                                <div className={`card addParticipant pointable ${primary(theme)} ${pointableSecondary(theme)}`}
+                                    onClick={() => { setShowAddParticipant(true); }}>
+                                    ➕ Añadir participante
+                                </div>}
                         </div>
                     </div>
                 </div> : <></>

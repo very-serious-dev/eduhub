@@ -6,7 +6,7 @@ const MyFilesFirstTabContent = (props) => {
     const max_storage = GetStorageFromCookie();
     const Gb = 1024 * 1024 * 1024;
 
-    return <div className={`filesFirstTabElement myFilesElementContainerHoverable ${props.isSelected ? "filesElementSelected" : "filesElementUnselected"}`}
+    return <div className={`filesFirstTabElement myFilesElementContainerHoverable pointable ${props.isSelected ? "filesElementSelected" : "filesElementUnselected"}`}
         onClick={() => { props.onRootClicked("MY_FILES") }}>
         <div className="filesFirstTabTitle">🖥️ Tu unidad</div>
         <div className="filesFirstTabSubtitle">{Math.round(myFilesCount.nBytes / max_storage.bytes).toFixed(2)}% usado de {max_storage.bytes / Gb}GB</div>

@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const EditClassDialog = (props) => {
     const [formName, setFormName] = useState();
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
+    const theme = useContext(ThemeContext); // TODO use this! (is null in admin panel)
 
     const onSubmitEditClass = (event) => {
         event.preventDefault();

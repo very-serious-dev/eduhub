@@ -99,7 +99,7 @@ const FilesBody = (props) => {
             canClickDocuments={true}
             onMoveDeleteSuccess={onMoveDeleteSuccess}
             onMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
-        <div className="card floatingCardAddNew" onClick={() => { setPopupShown("CREATE_OR_UPLOAD") }}>➕ Nuevo</div>
+        <div className="card floatingCardAddNew pointable" onClick={() => { setPopupShown("CREATE_OR_UPLOAD") }}>➕ Nuevo</div>
     </div>
 }
 

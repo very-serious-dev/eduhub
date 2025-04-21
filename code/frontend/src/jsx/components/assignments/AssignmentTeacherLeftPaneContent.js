@@ -1,13 +1,15 @@
 import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AssignmentUserStatus from "./AssignmentUserStatus";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
+import { accent, pointableSecondary, primary } from "../../../util/Themes";
 
 const AssignmentTeacherLeftPaneContent = (props) => {
     const [isLoadingPublishAll, setLoadingPublishAll] = useState(false);
     const [showAreYouSure, setShowAreYouSure] = useState(false);
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     const numberAssigneesWhoDidntSubmit = () => {
         return props.assignmentData.assignees.reduce((acc, assignee) => {
@@ -77,7 +79,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
             {nUnpublishedScores > 0 && <><div className="assignmentDetailLeftPaneInfo">
                 ⚠️ {nUnpublishedScores} {nUnpublishedScores > 1 ? "calificaciones están" : "calificación está"} sin publicar
             </div>
-                <div onClick={() => { setShowAreYouSure(true); }} className="card assignmentTeacherPanePublishAll">
+                <div onClick={() => { setShowAreYouSure(true); }} className={`card assignmentTeacherPanePublishAll pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
                     Publicar todas
                 </div>
             </>}
@@ -85,7 +87,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
         <div className="assignmentDetailLeftPaneTitle">
             💼 Trabajo de la clase
         </div>
-        <div className="classDetailSectionUnderline" />
+        <div className={`classDetailSectionUnderline ${accent(theme)}`} />
         {props.assignmentData.assignees.map(a => {
             const submit = props.assignmentData.submits.find(s => s.author.username === a.username)
             return <AssignmentUserStatus submit={submit}

@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { beautifullyDisplayDate, beautifullyDisplayDateHour } from "../../../util/Formatter";
 import SetScoreDialog from "./SetScoreDialog";
 import SmallFilesListFile from "../common/SmallFilesListFile";
+import { accentForeground, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const AssignmentSubmitDialog = (props) => {
     const [showSetScore, setShowSetScore] = useState(false);
+    const theme = useContext(ThemeContext);
 
     return props.show === true ? showSetScore ?
         <SetScoreDialog assignmentId={props.assignmentId}
@@ -37,11 +40,11 @@ const AssignmentSubmitDialog = (props) => {
                             <div className="assignmentSubmitScoreTitle">Calificación</div>
                             {props.submit.score !== undefined ?
                                 <>
-                                    <div className={`assignmentSubmitScore ${props.submit.is_score_published ? "scorePublished" : "scoreUnpublished"}`}>{props.submit.score}</div>
+                                    <div className={`assignmentSubmitScore ${props.submit.is_score_published ? accentForeground(theme) : "scoreUnpublished"}`}>{props.submit.score}</div>
                                     {props.submit.is_score_published === false && <div className="unpublishedScoreHint">Esta puntuación no está publicada para el estudiante todavía</div>}
                                 </>
                                 : <div className="assignmentSubmitScoreNotReceived">🍂 No hay una calificación todavía</div>}
-                            {props.canEditScore === true && <div className="card assignmentSetScoreButton" onClick={() => { setShowSetScore(true); }}>
+                            {props.canEditScore === true && <div className={`card assignmentSetScoreButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={() => { setShowSetScore(true); }}>
                                 ➕ Editar calificación
                             </div>}
                         </>}

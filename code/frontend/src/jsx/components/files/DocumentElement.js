@@ -14,7 +14,7 @@ const DocumentElement = (props) => {
         return props.showContextMenu && props.document.is_protected !== true;
     }
 
-    return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable" : ""}`} onClick={onClickFile}>
+    return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable pointable" : ""}`} onClick={onClickFile}>
         {shouldShowContextMenu() && <FilesElementContextMenuButton document={props.document}
             filesTree={props.filesTree}
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}

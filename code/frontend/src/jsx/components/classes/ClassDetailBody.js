@@ -1,17 +1,19 @@
 import { useContext, useState } from "react";
 import ClassParticipantsDialog from "../dialogs/ClassParticipantsDialog";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import CreateEditDeleteUnitDialog from "../dialogs/CreateEditDeleteUnitDialog";
 import PostsBoard from "../posts/PostsBoard";
 import ClassDetailDrawerSectionUnits from "./ClassDetailDrawerSectionUnits";
 import ClassDetailDrawerSectionTitle from "./ClassDetailDrawerSectionTitle";
 import ClassDetailDrawerSectionAssignments from "./ClassDetailDrawerSectionAssignments";
 import { EDU_SERVER } from "../../../client/Servers";
+import { pointableSecondary, primary } from "../../../util/Themes";
 
 const ClassDetailBody = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, PARTICIPANTS, CREATE_EDIT_UNIT
     const [unitForPopup, setUnitForPopup] = useState({ id: undefined, name: undefined });
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     const onOperationFinished = (errorMessage) => { // Unit Added/Edited/Deleted; Post Created/Edited/Deleted
         if (errorMessage === undefined || errorMessage === "") {
@@ -48,12 +50,12 @@ const ClassDetailBody = (props) => {
                     onClickNewUnit={() => { setPopupShown("CREATE_EDIT_UNIT"); }} />
                 <div>
                     <ClassDetailDrawerSectionTitle title="👤 Participantes" />
-                    <div className="card classDetailBubbleButton" onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div>
+                    <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div>
                 </div>
                 {props.classData.should_show_edit_button && /** TODO: rename property? */
                     <div>
                         <ClassDetailDrawerSectionTitle title="🎓 Calificaciones" />
-                        <div className="card classDetailBubbleButton" onClick={onClickDownloadScores}>⬇️ Descargar notas</div>
+                        <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={onClickDownloadScores}>⬇️ Descargar notas</div>
                     </div>}
             </div>
         </div>

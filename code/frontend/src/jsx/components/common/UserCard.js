@@ -1,4 +1,10 @@
+import { useContext } from "react";
+import { ThemeContext } from "../../main/GlobalContainer";
+import { pointableSecondary } from "../../../util/Themes";
+
 const UserCard = (props) => {
+    const theme = useContext(ThemeContext);
+
     const contentForTags = () => {
         const tags = [];
         if (props.user.roles.includes("student")) {
@@ -27,13 +33,13 @@ const UserCard = (props) => {
         props.onDeleteWithUsername(props.user.username);
     }
 
-    return <div className={`card userCard ${props.onClickWithUsername !== undefined ? "cardClickable" : ""}`} key={props.user.username} onClick={onClick}>
+    return <div className={`card userCard ${props.onClickWithUsername !== undefined ? `${pointableSecondary(theme)} pointable` : ""}`} key={props.user.username} onClick={onClick}>
         <div className="userCardUsername">{`${props.user.username}`}</div>
         <div className="userCardName">{`${props.user.name} ${props.user.surname}`}</div>
         <div className="userCardTagsContainer">
             {contentForTags()}
         </div>
-        {props.onDeleteWithUsername && <div className="userCardDeleteButton" onClick={onDelete}>❌</div>}
+        {props.onDeleteWithUsername && <div className="userCardDeleteButton pointable" onClick={onDelete}>❌</div>}
     </div>
 }
 

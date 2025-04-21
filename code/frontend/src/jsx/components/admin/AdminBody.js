@@ -21,10 +21,10 @@ const AdminBody = (props) => {
 
     return <div className="mainBody">
             <div className="adminBodyColumn1">
-                <div className="adminColumn1GoBack card" onClick={() => { navigate("/"); }}>← Volver a inicio</div>
-                <div className="adminColumn1MenuItem card" onClick={() => { setCurrentTab("users"); }}>Usuarios ({props.dashboardData.usersCount})</div>
-                <div className="adminColumn1MenuItem card" onClick={() => { setCurrentTab("classes"); }}>Clases ({props.dashboardData.classesCount})</div>
-                <div className="adminColumn1MenuItem card" onClick={() => { setCurrentTab("groups"); }}>Grupos ({props.dashboardData.groups.length})</div>
+                <div className="adminColumn1GoBack pointable card" onClick={() => { navigate("/"); }}>← Volver a inicio</div>
+                <div className="adminColumn1MenuItem pointable card" onClick={() => { setCurrentTab("users"); }}>Usuarios ({props.dashboardData.usersCount})</div>
+                <div className="adminColumn1MenuItem pointable card" onClick={() => { setCurrentTab("classes"); }}>Clases ({props.dashboardData.classesCount})</div>
+                <div className="adminColumn1MenuItem pointable card" onClick={() => { setCurrentTab("groups"); }}>Grupos ({props.dashboardData.groups.length})</div>
             </div>
             <div className="adminBodyColumn2">
                 <div className="adminBodyColumn2Content">

@@ -1,7 +1,12 @@
+import { useContext } from "react";
+import { pointableSecondary, primary } from "../../../util/Themes";
 import ClassDetailDrawerSectionTitle from "./ClassDetailDrawerSectionTitle";
 import ClassDetailUnitItem from "./ClassDetailUnitItem";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const ClassDetailDrawerSectionUnits = (props) => {
+    const theme = useContext(ThemeContext);
+
     return <div>
         <ClassDetailDrawerSectionTitle title="📚 Temario" />
         <div>
@@ -15,7 +20,7 @@ const ClassDetailDrawerSectionUnits = (props) => {
                 : <p>No hay temas</p>}
         </div>
         {props.classData.should_show_edit_button === true &&
-            <div className="card classDetailBubbleButton" onClick={props.onClickNewUnit}>
+            <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={props.onClickNewUnit}>
                 ➕ Añadir tema
             </div>}
     </div>

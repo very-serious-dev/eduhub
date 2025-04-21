@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import GenericCard from "../common/GenericCard";
 import { useState } from "react";
 import AnnouncementsDialog from "../dialogs/AnnouncementsDialog";
-import { GetCachedPosts, GetLastKnownClassUpdateTimestamp, GetLastKnownGroupAnnouncementTimestamp, SetLastKnownClassUpdateTimestamp, SetLastKnownGroupAnnouncementTimestamp } from "../../../client/ClientCache";
-import { backgroundImageSrc } from "../../../util/Formatter";
+import { GetCachedPosts, GetLastKnownGroupAnnouncementTimestamp, SetLastKnownGroupAnnouncementTimestamp } from "../../../client/ClientCache";
+import { backgroundImageSrc } from "../../../util/Themes";
 
 const GroupClassesSection = (props) => {
     const [showAnnouncementsDialog, setShowAnnouncementsDialog] = useState(false);
@@ -46,7 +46,7 @@ const GroupClassesSection = (props) => {
                 onDismiss={() => { setShowAnnouncementsDialog(false); }} />}
         <div className="classesSectionContainer">
             <div className="classesSectionTitle">{props.groupTag}</div>
-            <div className="classesSectionAnnouncementsButton"
+            <div className="classesSectionAnnouncementsButton pointable"
                 onClick={onClickAnnouncements}>
                 📢 Tablón de anuncios
                 {groupSmallRedDotIfNeeded()}

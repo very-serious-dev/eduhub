@@ -166,7 +166,8 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
         "author": original_assignment.author.username,
         "publication_date": original_assignment.publication_date,
         "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
-        "kind": post_kind(original_assignment)
+        "kind": post_kind(original_assignment),
+        "theme": class_theme(original_assignment.classroom)
     }
     response_documents = []
     # REFACTOR: serializers.py shouldn't contain ORM code

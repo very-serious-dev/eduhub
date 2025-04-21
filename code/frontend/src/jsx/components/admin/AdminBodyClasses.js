@@ -76,7 +76,7 @@ const AdminBodyClasses = (props) => {
         <LoadingHUD /> :
         <>
             <div>
-                <div className="card adminAddButtonHeader" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
+                <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
             </div>
             {/* TODO: Remove all usages of show prop, and let the boolean flag with &&
               *       decide to not render the stuff beforehand; many usages across the app!*/}

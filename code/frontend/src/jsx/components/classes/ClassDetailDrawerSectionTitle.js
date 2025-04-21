@@ -1,7 +1,13 @@
+import { useContext } from "react";
+import { accent, accentForeground } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
+
 const ClassDetailDrawerSectionTitle = (props) => {
+    const theme = useContext(ThemeContext);
+    
     return <>
-        <div className="classDetailSectionTitle">{props.title}</div>
-        <div className="classDetailSectionUnderline" />
+        <div className={accentForeground(theme)}>{props.title}</div>
+        <div className={`classDetailSectionUnderline ${accent(theme)}`} />
     </>
 }
 

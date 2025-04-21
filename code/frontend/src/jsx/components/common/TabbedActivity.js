@@ -1,7 +1,10 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const TabbedActivity = (props) => {
     const [selectedTabIndex, setSelectedTabIndex] = useState(0);
+    const theme = useContext(ThemeContext);
 
     const firstTabOffset = () => {
         // When creating a new post inside a class, we let this component handle the selectedTabIndex
@@ -18,7 +21,7 @@ const TabbedActivity = (props) => {
         {props.showTitles &&
             <div className="tabbedActivityHeader">
                 {props.tabs.map((t, idx) => {
-                    return <div className={`tabbedActivityHeaderItem${selectedTabIndex === idx ? " tabHeaderItemActive" : ""}`}
+                    return <div className={`tabbedActivityHeaderItem pointable ${pointableSecondary(theme)} ${selectedTabIndex === idx ? primary(theme) : ""}`}
                         onClick={() => { setSelectedTabIndex(idx) }}>{t.title}</div>
                 })}
             </div>}

@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
 import SubmitAssignmentDialog from "../dialogs/SubmitAssignmentDialog";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import AssignmentUserStatus from "./AssignmentUserStatus";
+import { accent, pointableSecondary, primary } from "../../../util/Themes";
 
 const AssignmentStudentLeftPaneContent = (props) => {
     const [showSubmit, setShowSubmit] = useState(false);
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     const onSubmitCreated = (errorMessage) => {
         if (errorMessage === undefined || errorMessage === "") {
@@ -31,7 +33,7 @@ const AssignmentStudentLeftPaneContent = (props) => {
         <div className="assignmentDetailLeftPaneTitle">
             💼 Tu trabajo
         </div>
-        <div className="classDetailSectionUnderline" />
+        <div className={`classDetailSectionUnderline ${accent(theme)}`} />
         {props.assignmentData.your_submit !== undefined
             ? <>
                 <AssignmentUserStatus submit={props.assignmentData.your_submit}
@@ -45,7 +47,7 @@ const AssignmentStudentLeftPaneContent = (props) => {
                 <p>No has entregado la tarea todavía</p>
                 {isAssignmentPast()
                     ? <p>😔 <i>Ya ha pasado el plazo de entrega</i></p>
-                    : <div className="card submitAssignmentButton"
+                    : <div className={`card submitAssignmentButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
                         onClick={() => { setShowSubmit(true); }}>➕ Subir entrega</div>}
             </>}
     </>

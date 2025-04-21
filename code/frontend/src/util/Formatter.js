@@ -92,28 +92,6 @@ const iconImgSrc = (mimeType) => {
     }
 }
 
-const backgroundImageSrc = (theme) => {
-    if (theme === "blue") return "/themes/card_bg_blue.png"
-    if (theme === "darkblue") return "/themes/card_bg_darkblue.png"
-    if (theme === "green") return "/themes/card_bg_green.png"
-    if (theme === "purple") return "/themes/card_bg_purple.png"
-    if (theme === "brown") return "/themes/card_bg_brown.png"
-    if (theme === "red") return "/themes/card_bg_red.png"
-    if (theme === "orange") return "/themes/card_bg_orange.png"
-    if (theme === "yellow") return "/themes/card_bg_yellow.png"
-}
-
-const bannerImageSrc = (theme) => {
-    if (theme === "blue") return "/themes/banner_blue.png"
-    if (theme === "darkblue") return "/themes/banner_darkblue.png"
-    if (theme === "green") return "/themes/banner_green.png"
-    if (theme === "purple") return "/themes/banner_purple.png"
-    if (theme === "brown") return "/themes/banner_brown.png"
-    if (theme === "red") return "/themes/banner_red.png"
-    if (theme === "orange") return "/themes/banner_orange.png"
-    if (theme === "yellow") return "/themes/banner_yellow.png"
-}
-
 export { sizeToHumanReadable };
 export { footNoteDateAuthor };
 export { beautifullyDisplayDate };
@@ -121,5 +99,3 @@ export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };
 export { formatPseudoMarkdown };
 export { iconImgSrc };
-export { backgroundImageSrc };
-export { bannerImageSrc };

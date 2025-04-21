@@ -3,12 +3,13 @@ import { useParams } from "react-router-dom";
 import ErrorPage from "./ErrorPage";
 import AssignmentBody from "../components/assignments/AssignmentBody";
 import EduAPIFetch from "../../client/EduAPIFetch";
+import { ThemeContext } from "../main/GlobalContainer";
 
 const ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID = (id) => `assignmentWithId${id}Title`;
 const ASSIGNMENT_CONTENT_NAVIGATED_FROM_WITH_ID = (id) => `assignmentWithId${id}Content`;
 
 const AssignmentPage = (props) => {
-    const [assignmentData, setAssignmentData] = useState({ title: "", content: "" });
+    const [assignmentData, setAssignmentData] = useState({ title: "", content: "", theme: "" });
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
@@ -47,7 +48,7 @@ const AssignmentPage = (props) => {
                 updatedSubmit.score = result.score;
                 updatedSubmit.is_score_published = result.is_score_published;
                 const newSubmits = old.submits.filter(s => s.author.username === result.author_username).concat(updatedSubmit);
-                return {...old, newSubmits}
+                return { ...old, newSubmits }
             });
         }
         if (result.operation === "score_deleted") {
@@ -56,17 +57,19 @@ const AssignmentPage = (props) => {
                 updatedSubmit.score = undefined;
                 updatedSubmit.is_score_published = undefined;
                 const newSubmits = old.submits.filter(s => s.author.username === result.author_username).concat(updatedSubmit);
-                return {...old, newSubmits}
+                return { ...old, newSubmits }
             });
         }
     }
 
     return isRequestFailed ?
         <ErrorPage errorMessage={requestErrorMessage} />
-        : <AssignmentBody assignmentData={assignmentData}
-            isLoading={isLoading}
-            onShouldRefresh={() => { setNumTimesChanged(x => x + 1) }} 
-            onScoreChanged={onScoreChanged}/>
+        : <ThemeContext.Provider value={assignmentData.theme}>
+            <AssignmentBody assignmentData={assignmentData}
+                isLoading={isLoading}
+                onShouldRefresh={() => { setNumTimesChanged(x => x + 1) }}
+                onScoreChanged={onScoreChanged} />
+        </ThemeContext.Provider>
 }
 
 export { AssignmentPage };

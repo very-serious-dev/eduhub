@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CreatePostDialog from "../dialogs/CreatePostDialog";
 import PostsBoardEntry from "./PostsBoardEntry";
 import PostsBoardAssignment from "./PostsBoardAssignment";
 import { squashedPosts } from "../../../util/PostsUtil";
+import { pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const PostsBoard = (props) => {
     const [showNewPost, setShowNewPost] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const shouldFilterPosts = () => {
         if (props.searchedText === undefined || props.searchedText === "") { return false; }
@@ -25,7 +28,7 @@ const PostsBoard = (props) => {
             onFinished={props.onPostsChanged}
             onDismiss={() => { setShowNewPost(false); }} />
         <div className="postsBoardContainer">
-            {props.classData.should_show_edit_button && <div className="card postsBoardPublishButton"
+            {props.classData.should_show_edit_button && <div className={`card postsBoardPublishButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
                 onClick={() => { setShowNewPost(true); }}>➕ Nueva publicación</div>}
             {squashedPosts(props.classData.posts)
                 .map(p => {

@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DropFilesAreaItem from "./DropFilesAreaItem";
+import { primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const DropFilesArea = (props) => {
     const MAX_SIZE = {nBytes: 1024*1024*50, humanReadable: "50 MB"}
     const MAX_ATTACHMENTS = 5;
     const [dropAreaActive, setDropAreaActive] = useState(false);
     const [isReadingFiles, setReadingFiles] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onFilesDroped = (event) => {
         event.preventDefault();
@@ -81,7 +84,7 @@ const DropFilesArea = (props) => {
         <div className="formFilesAttached">
             {props.attachedFilesReady.map(f => <DropFilesAreaItem file={f} onDelete={onRemoveReadyFile}/>)}
         </div>
-        <div className={`formFilesDropableArea${dropAreaActive ? " formFilesDropableAreaActive" : ""}`}
+        <div className={`formFilesDropableArea ${dropAreaActive ? primary(theme) : ""}`}
             onDragOver={e => { e.preventDefault() }}
             onDragEnter={e => { setDropAreaActive(true) }}
             onDragLeave={e => { setDropAreaActive(false) }}
