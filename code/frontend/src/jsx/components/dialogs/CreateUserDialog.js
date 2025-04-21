@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateUserDialog = (props) => {
     const NOT_VALID = "NOT_VALID";
@@ -16,6 +18,7 @@ const CreateUserDialog = (props) => {
     const [formStudentGroup, setFormStudentGroup] = useState(initialStudentGroupValue());
     const [isLoading, setLoading] = useState(false);
     const [usernameDidGainFocusOnce, setUsernameDidGainFocusOnce] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onSubmitAddUser = (event) => {
         event.preventDefault();
@@ -76,34 +79,38 @@ const CreateUserDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nuevo usuario</div>
                 <form onSubmit={onSubmitAddUser}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formName}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormName(e.target.value) }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                     </div>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formSurname}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormSurname(e.target.value) }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Apellidos</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Apellidos</label>
                     </div>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formUsername}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormUsername(e.target.value) }}
                             onFocus={onUsernameDidGainFocus}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre de usuario</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de usuario</label>
                     </div>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formPassword}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormPassword(e.target.value) }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Contraseña</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Contraseña</label>
                     </div>
                     <div className="formInputRadio">
                         <input type="radio" name="rolType" value="isTeacher"
@@ -117,9 +124,10 @@ const CreateUserDialog = (props) => {
                             required />
                         <label htmlFor="">ESTUDIANTE</label>
                     </div>
-                    <div className={"formInputSelect selectWithTopMargin addUserSelect" + (formIsTeacher === undefined || formIsTeacher === true ? " formInputSelectHidden" : "")}>
+                    <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formIsTeacher === undefined || formIsTeacher === true ? " formInputSelectHidden" : "")}>
                         <select name="studentGroup"
                             value={formStudentGroup}
+                            className={`formInputSelect ${primary(theme)}`}
                             onChange={e => { setFormStudentGroup(e.target.value); }}>
                             {props.groups.length > 0 ?
                                 props.groups.map(g => {
@@ -129,8 +137,8 @@ const CreateUserDialog = (props) => {
                             }
                         </select>
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={formStudentGroup === NOT_VALID && formIsTeacher === false} />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroup === NOT_VALID && formIsTeacher === false} />
                     </div>
                     {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>

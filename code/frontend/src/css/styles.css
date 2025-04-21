@@ -8,30 +8,30 @@
   --theme-darkblue-secondary: #88aafa;
   --theme-darkblue-tertiary: #4662fd;
   --theme-darkblue-accent: #00185f;
-  --theme-green-primary: #89e0c3;
-  --theme-green-secondary: #70e693;
+  --theme-green-primary: #70e693;
+  --theme-green-secondary: #89e0c3;
   --theme-green-tertiary: #33cc91;
-  --theme-green-accent: #1ca823;
+  --theme-green-accent: #09bb35;
   --theme-purple-primary: #e6b7f8;
-  --theme-purple-secondary: #b572ec;
-  --theme-purple-tertiary: #804ab3;
+  --theme-purple-secondary: #d4aaf7;
+  --theme-purple-tertiary: #a07df1;
   --theme-purple-accent: #4d1ca8;
-  --theme-brown-primary: #c79a85;
-  --theme-brown-secondary: #bba69d;
-  --theme-brown-tertiary: #4897d8;
-  --theme-brown-accent: #692f00;
-  --theme-red-primary: #eebcbc;
-  --theme-red-secondary: #f08da3;
-  --theme-red-tertiary: #da796d;
+  --theme-brown-primary: #d6b8aa;
+  --theme-brown-secondary: #ad958b;
+  --theme-brown-tertiary: #9ed0f8;
+  --theme-brown-accent: #5a2900;
+  --theme-red-primary: #f3c1c1;
+  --theme-red-secondary: #f5a6b7;
+  --theme-red-tertiary: #da7ca0;
   --theme-red-accent: #c70000;
   --theme-orange-primary: #f1c49e;
   --theme-orange-secondary: #e6a570;
   --theme-orange-tertiary: #fc9768;
-  --theme-orange-accent: #ff7300;
-  --theme-yellow-primary: #f3ec8d;
-  --theme-yellow-secondary: #c3ca61;
+  --theme-orange-accent: #d66000;
+  --theme-yellow-primary: #f0df96;
+  --theme-yellow-secondary: #d2df88;
   --theme-yellow-tertiary: #ced65d;
-  --theme-yellow-accent: #fffb00;
+  --theme-yellow-accent: #8d7f00;
   --color-error: #f37979;
   --color-delete: #f65050;
   --color-destructive: #f52020;
@@ -374,6 +374,81 @@ body {
   background-color: var(--theme-yellow-secondary);
 }
 
+/* Form specific - ACCENT (label) */
+
+.formInput:focus~.formLabelAccentBlue,
+.formInput:valid~.formLabelAccentBlue {
+  color: var(--theme-blue-accent)
+}
+
+.formInput:focus~.formLabelAccentDarkblue,
+.formInput:valid~.formLabelAccentDarkblue {
+  color: var(--theme-darkblue-accent)
+}
+
+.formInput:focus~.formLabelAccentGreen,
+.formInput:valid~.formLabelAccentGreen {
+  color: var(--theme-green-accent)
+}
+
+.formInput:focus~.formLabelAccentPurple,
+.formInput:valid~.formLabelAccentPurple {
+  color: var(--theme-purple-accent)
+}
+
+.formInput:focus~.formLabelAccentBrown,
+.formInput:valid~.formLabelAccentBrown {
+  color: var(--theme-brown-accent)
+}
+
+.formInput:focus~.formLabelAccentRed,
+.formInput:valid~.formLabelAccentRed {
+  color: var(--theme-red-accent)
+}
+
+.formInput:focus~.formLabelAccentOrange,
+.formInput:valid~.formLabelAccentOrange {
+  color: var(--theme-orange-accent)
+}
+
+.formInput:focus~.formLabelAccentYellow,
+.formInput:valid~.formLabelAccentYellow {
+  color: var(--theme-yellow-accent)
+}
+
+/* Form specific - Border primary */
+
+.primaryBorderBlue {
+  border: 1px solid var(--theme-blue-primary);
+}
+
+.primaryBorderDarkblue {
+  border: 1px solid var(--theme-darkblue-primary);
+}
+
+.primaryBorderGreen {
+  border: 1px solid var(--theme-green-primary);
+}
+
+.primaryBorderPurple {
+  border: 1px solid var(--theme-purple-primary);
+}
+
+.primaryBorderBrown {
+  border: 1px solid var(--theme-brown-primary);
+}
+
+.primaryBorderRed {
+  border: 1px solid var(--theme-red-primary);
+}
+
+.primaryBorderOrange {
+  border: 1px solid var(--theme-orange-primary);
+}
+
+.primaryBorderYellow {
+  border: 1px solid var(--theme-yellow-primary);
+}
 
 /**
  * Loading HUD page 
@@ -1474,14 +1549,13 @@ body {
  * https://codepen.io/Metty/pen/NWpzexj
  */
 
-.formInput,
-.formSubmit {
+.formInputContainer {
   width: 100%;
   height: 40px;
   position: relative;
 }
 
-.formInput input {
+.formInput {
   display: block;
   width: 100%;
   height: 100%;
@@ -1490,18 +1564,10 @@ body {
   font-size: 17px;
   border-bottom: 2px solid rgba(0, 0, 0, 0.12);
   margin-top: 15px;
-  background-color: var(--theme-blue-primary);
   border-radius: 5px;
 }
 
-.formInput input:focus~label,
-.formInput input:valid~label {
-  transform: translateY(-23px);
-  font-size: 14px;
-  color: var(--theme-blue-accent);
-}
-
-.formInput label {
+.formLabel {
   position: absolute;
   pointer-events: none;
   bottom: 10px;
@@ -1510,26 +1576,24 @@ body {
   transition: all 0.3s ease;
 }
 
+.formInput:focus~.formLabel,
+.formInput:valid~.formLabel {
+  transform: translateY(-23px);
+  font-size: 14px;
+}
+
 .underline {
   position: absolute;
   bottom: 0;
   height: 2px;
   width: 100%;
-}
-
-.underline:before {
-  position: absolute;
-  content: "";
-  height: 2px;
-  width: 100%;
-  background: var(--theme-blue-accent);
   transform: scaleX(0);
   transform-origin: center;
   transition: transform 0.3s ease;
 }
 
-input:focus~.underline:before,
-input:valid~.underline:before {
+.formInput:focus~.underline,
+.formInput:valid~.underline {
   transform: scale(1);
 }
 
@@ -1542,13 +1606,25 @@ input:valid~.underline:before {
   margin-left: 10px;
 }
 
-.formInputSelect {
+.formInputSelectContainer {
   position: relative;
 }
 
-.formInputSelect select {
+.formInputSelectContainer::after {
+  content: "▼";
+  font-size: 0.6em;
+  top: 9px;
+  right: 9px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.formInputSelectContainer option {
+  font-size: 15px;
+}
+
+.formInputSelect {
   appearance: none;
-  background-color: var(--theme-blue-primary);
   font-size: 15px;
   min-width: 110px;
   outline: none;
@@ -1558,27 +1634,7 @@ input:valid~.underline:before {
   width: 100%;
 }
 
-.formInputSelect::after {
-  content: "▼";
-  font-size: 0.6em;
-  top: 9px;
-  right: 9px;
-  position: absolute;
-  pointer-events: none;
-}
-
-.formInputSelect option {
-  font-size: 15px;
-}
-
-.formInputColor input {
-  padding-top: 8px;
-  padding-bottom: 6px;
-  padding-left: 16px;
-  padding-right: 16px;
-}
-
-.formSubmit input {
+.formInputSubmit {
   display: block;
   width: 100%;
   height: 100%;
@@ -1586,35 +1642,27 @@ input:valid~.underline:before {
   border: none;
   font-size: 17px;
   margin-top: 35px;
-  background-color: var(--theme-blue-primary);
 }
 
-.formSubmitNoMarginTop input {
+.formInputSubmitNoMarginTop {
   margin-top: 0px;
 }
 
-.formSubmit input:hover {
-  cursor: pointer;
-  background-color: var(--theme-blue-secondary);
-}
-
-.formTextArea textarea {
+.formTextArea {
   margin-top: 8px;
   padding: 3px;
   width: 100%;
   outline: none;
-  border: none;
   resize: none;
   font-family: inherit;
-  border: 1px solid var(--theme-blue-primary);
   overflow: auto;
 }
 
-.formTextAreaBig textarea {
+.bigText {
   height: 280px;
 }
 
-.formTextAreaSmall textarea {
+.smallText {
   height: 70px;
 }
 
@@ -1636,7 +1684,7 @@ input:valid~.underline:before {
   text-align: center;
   height: 60px;
   width: 100%;
-  border: 3px dashed white;
+  border: 2px dashed #ccc;
 }
 
 .dropFilesAreaItem {
@@ -1838,7 +1886,7 @@ input:valid~.underline:before {
 }
 
 .formInputCreatePostTitle {
-  /* Override default .formInput input selector
+  /* Override default .formInput selector - TODO: Review this comment, is it still correct?
    * margin-top, as this is exceptionally contained
    * in a flexbox.
    * Without important, it won't work */
@@ -1846,7 +1894,7 @@ input:valid~.underline:before {
 }
 
 .formInputGreyBackground {
-  /* Override default .formInput input selector
+  /* Override default .formInput selector
    * Without important, it won't work */
   background-color: #ddd !important;
 }
@@ -1854,7 +1902,7 @@ input:valid~.underline:before {
 .formInputCreatePostTaskDate {
   margin-top: 0 !important;
   font-size: 0.9em !important;
-  /* Override 17px from .formInput input*/
+  /* Override 17px from .formInput*/
   appearance: none;
   font-family: inherit;
 }

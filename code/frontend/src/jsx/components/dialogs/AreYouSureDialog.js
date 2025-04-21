@@ -17,18 +17,18 @@ const AreYouSureDialog = (props) => {
     }
 
     const yesOptionText = () => {
-        return  (props.dialogMode == "SUBMIT") ? "⬆️ Entregar" : "❌ Eliminar";
+        return (props.dialogMode == "SUBMIT") ? "⬆️ Entregar" : "❌ Eliminar";
     }
 
     const noOptionText = () => {
-        return  (props.dialogMode == "SUBMIT") ? "Volver" : "No";
+        return (props.dialogMode == "SUBMIT") ? "Volver" : "No";
     }
 
-    return <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss()}}>
+    return <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="areYouSureMessage">{props.warningMessage}</div>
-                <div className="card areYouSureOption pointable" onClick={props.onDismiss}>{noOptionText()}</div>
+                <div className={`card areYouSureOption pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={props.onDismiss}>{noOptionText()}</div>
                 <div className={yesOptionCss()} onClick={props.onActionConfirmed}>{yesOptionText()}</div>
                 {props.isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
             </div>

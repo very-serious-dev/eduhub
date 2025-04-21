@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
-import { bannerImageSrc, pointableSecondary } from "../../../util/Themes";
+import { accent, bannerImageSrc, pointableSecondary } from "../../../util/Themes";
 
 const ClassDetailBodyWithHeader = (props) => {
     const EXPANDED_HEADER_HEIGHT = 200;
@@ -63,7 +63,7 @@ const ClassDetailBodyWithHeader = (props) => {
                         value={searchedText}
                         onChange={e => { setSearchedText(e.target.value); }}
                         required />
-                    <div className="underline"></div>
+                    <div className={`underline ${accent(theme)}`}/>
                 </form>
             </div>
             <div className="classDetailHeaderTopIcons">

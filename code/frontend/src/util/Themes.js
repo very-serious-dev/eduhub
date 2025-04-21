@@ -97,6 +97,28 @@ const pointableSecondary = (theme) => {
     return "pointableSecondaryBlue"
 }
 
+const accentFormLabel = (theme) => {
+    if (theme === "darkblue") return "formLabelAccentDarkblue"
+    if (theme === "green") return "formLabelAccentGreen"
+    if (theme === "purple") return "formLabelAccentPurple"
+    if (theme === "brown") return "formLabelAccentBrown"
+    if (theme === "red") return "formLabelAccentRed"
+    if (theme === "orange") return "formLabelAccentOrange"
+    if (theme === "yellow") return "formLabelAccentYellow"
+    return "formLabelAccentBlue"
+}
+
+const borderPrimary = (theme) => {
+    if (theme === "darkblue") return "primaryBorderDarkblue"
+    if (theme === "green") return "primaryBorderGreen"
+    if (theme === "purple") return "primaryBorderPurple"
+    if (theme === "brown") return "primaryBorderBrown"
+    if (theme === "red") return "primaryBorderRed"
+    if (theme === "orange") return "primaryBorderOrange"
+    if (theme === "yellow") return "primaryBorderYellow"
+    return "primaryBorderBlue"
+}
+
 export { backgroundImageSrc };
 export { bannerImageSrc };
 export { primary };
@@ -106,3 +128,5 @@ export { accent };
 export { accentForeground };
 export { pointablePrimary };
 export { pointableSecondary };
+export { accentFormLabel };
+export { borderPrimary };

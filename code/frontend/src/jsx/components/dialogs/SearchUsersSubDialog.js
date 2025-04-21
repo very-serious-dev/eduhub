@@ -1,8 +1,9 @@
 import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 
 const SearchUsersSubDialog = (props) => {
     const NUM_CHARS_TO_LOAD_SUGGESTIONS = 3;
@@ -12,7 +13,8 @@ const SearchUsersSubDialog = (props) => {
     const [serverSuggestedUsers, setServerSuggestedUsers] = useState([]);
     const [lastSuccessfulSearch, setLastSuccessfulSearch] = useState();
     const setFeedback = useContext(FeedbackContext);
-    
+    const theme = useContext(ThemeContext);
+
     const onSubmitAddUser = (event) => {
         event.preventDefault();
         setLoadingSubmit(true);
@@ -117,22 +119,23 @@ const SearchUsersSubDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">{props.dialogTitle}</div>
                 <form onSubmit={onSubmitAddUser}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formUsername}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormUsername(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "pepe.depura"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre de usuario</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de usuario</label>
                     </div>
                     <div className="hint">Puedes añadir más de un usuario si los introduces en una lista separados por comas</div>
                     {isLoadingSearch && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     <div className="participantsSearchContainer">
-                        {serverSuggestedUsers.length > 0 ? clientFilteredSuggestions().map(u => <UserCard user={u} onClickWithUsername={onSuggestionClicked}/>) : <></>}
+                        {serverSuggestedUsers.length > 0 ? clientFilteredSuggestions().map(u => <UserCard user={u} onClickWithUsername={onSuggestionClicked} />) : <></>}
                     </div>
-                    <div className="formSubmit formSubmitNoMarginTop">
-                        <input type="submit" value="Añadir" disabled={isLoadingSubmit} />
+                    <div className="formInputContainer formSubmitNoMarginTop">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Añadir" disabled={isLoadingSubmit} />
                     </div>
                     {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>

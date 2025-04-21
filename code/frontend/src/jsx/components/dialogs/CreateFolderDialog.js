@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateFolderDialog = (props) => {
     const [formFolderName, setFormFolderName] = useState("");
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onSubmitCreateFolder = (event) => {
         event.preventDefault();
@@ -39,19 +42,20 @@ const CreateFolderDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Crear carpeta</div>
                 <form onSubmit={onSubmitCreateFolder}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formFolderName}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormFolderName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Mi carpeta"; }}
                             onBlur={e => { e.target.placeholder = ""; }} required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre de carpeta</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de carpeta</label>
                     </div>
-                    <div className="formInput">
-                        <input className="formInputGreyBackground" type="text" value={`${props.parentFolderStringPath}${formFolderName}${formFolderName.length > 0 ? "/" : ""}`} disabled={true} />
+                    <div className="formInputContainer">
+                        <input className="formInput formInputGreyBackground" type="text" value={`${props.parentFolderStringPath}${formFolderName}${formFolderName.length > 0 ? "/" : ""}`} disabled={true} />
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Crear carpeta" />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear carpeta" />
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>

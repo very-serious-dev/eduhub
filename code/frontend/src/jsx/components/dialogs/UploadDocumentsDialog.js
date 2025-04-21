@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
 import DropFilesArea from "../common/DropFilesArea";
+import { pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const UploadDocumentsDialog = (props) => {
     const [attachedFilesReady, setAttachedFilesReady] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onSubmitUploadFiles = (event) => {
         event.preventDefault();
@@ -44,11 +47,11 @@ const UploadDocumentsDialog = (props) => {
                 <form onSubmit={onSubmitUploadFiles}>
                     <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
                     <p>Se subirán a la siguiente carpeta:</p>
-                    <div className="formInput">
-                        <input className="formInputGreyBackground" type="text" value={props.parentFolderStringPath} disabled={true} />
+                    <div className="formInputContainer">
+                        <input className="formInput formInputGreyBackground" type="text" value={props.parentFolderStringPath} disabled={true} />
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Subir documentos" disabled={attachedFilesReady.length === 0}/>
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Subir documentos" disabled={attachedFilesReady.length === 0}/>
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>

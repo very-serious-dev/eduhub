@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateGroupDialog = (props) => {
     const NOT_VALID = "NOT_VALID"
@@ -11,6 +13,7 @@ const CreateGroupDialog = (props) => {
     const [availableTeachers, setAvailableTeachers] = useState([]);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
     const [isLoadingTeachers, setLoadingTeachers] = useState(false);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => {
         setLoadingTeachers(true);
@@ -62,39 +65,42 @@ const CreateGroupDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nuevo grupo</div>
                 <form onSubmit={onSubmitAddGroup}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formName}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Bachillerato 1º"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                     </div>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formTag}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormTag(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "BACH1"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Etiqueta</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Etiqueta</label>
                     </div>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formYear}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormYear(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "24-25"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Año</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Año</label>
                     </div>
                     {isLoadingTeachers && <div className="dialogHUDCentered"><LoadingHUD /></div>}
-                    <div className="formInputSelect selectWithTopMargin hidableFormSelectContainer">
+                    <div className="formInputSelectContainer selectWithTopMargin hidableFormSelectContainer">
                         <select name="tutorUsername"
                             value={formTutorUsername}
                             onChange={e => { setFormTutorUsername(e.target.value); }}
-                            className={isLoadingTeachers === true ? "hidableFormSelectHidden" : "hidableFormSelectShown"}>
+                            className={`formInputSelect ${primary(theme)} ${isLoadingTeachers === true ? "hidableFormSelectHidden" : "hidableFormSelectShown"}`}>
                             {availableTeachers.length > 0 ?
                                 availableTeachers.map(t => {
                                     return <option value={t.username}>{`Tutor: ${t.name} ${t.surname}`}</option>
@@ -103,8 +109,8 @@ const CreateGroupDialog = (props) => {
                             }
                         </select>
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={formTutorUsername === NOT_VALID || isLoadingTeachers === true} />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formTutorUsername === NOT_VALID || isLoadingTeachers === true} />
                     </div>
                     {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>

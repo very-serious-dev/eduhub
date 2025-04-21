@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
 import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
+import { pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const MoveDocumentOrFolderDialog = (props) => {
     const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const appropriateContainerFolderId = () => {
         return selectedFolderIdsPath.length > 0 ? selectedFolderIdsPath.slice(-1)[0] : null;
@@ -65,13 +68,13 @@ const MoveDocumentOrFolderDialog = (props) => {
                             showAuthor={false}
                             canClickDocuments={false} />
                     </div>
-                    <div className="formInput">
-                        <input className="formInputGreyBackground"
+                    <div className="formInputContainer">
+                        <input className="formInput formInputGreyBackground"
                             type="text"
                             value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.filesTree)} disabled={true} />
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Mover" />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Mover" />
                     </div>
                     {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
                 </form>

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateClassDialog = (props) => {
     const NOT_VALID = "NOT_VALID";
@@ -11,9 +13,10 @@ const CreateClassDialog = (props) => {
     const [formName, setFormName] = useState("");
     const [formGroup, setFormGroup] = useState(initialGroupValue());
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => { // FIX: This ensures that formGroup isn't NOT_VALID when displayed
-                      // Otherwise, the submit button would appear disabled initially
+        // Otherwise, the submit button would appear disabled initially
         if (formGroup === NOT_VALID) {
             setFormGroup(initialGroupValue());
         }
@@ -50,20 +53,22 @@ const CreateClassDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nueva clase</div>
                 <form onSubmit={onSubmitAddClass}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="text" value={formName}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Literatura universal"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Nombre</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                     </div>
-                    <div className="formInputSelect selectWithTopMargin">
+                    <div className="formInputSelectContainer selectWithTopMargin">
                         <select name="group"
                             value={formGroup}
+                            className={`formInputSelect ${primary(theme)}`}
                             onChange={e => { setFormGroup(e.target.value); }} >
-                                {props.groups.length > 0 ?
+                            {props.groups.length > 0 ?
                                 props.groups.map(g => {
                                     return <option value={g.tag}>{g.tag}</option>
                                 }) :
@@ -71,8 +76,8 @@ const CreateClassDialog = (props) => {
                             }
                         </select>
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Crear" disabled={formGroup === NOT_VALID} />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formGroup === NOT_VALID} />
                     </div>
                     {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                 </form>

@@ -3,12 +3,13 @@ import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 import { ThemeContext } from "../../main/GlobalContainer";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 
 const EditClassDialog = (props) => {
     const [formName, setFormName] = useState();
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
-    const theme = useContext(ThemeContext); // TODO use this! (is null in admin panel)
+    const theme = useContext(ThemeContext);
 
     const onSubmitEditClass = (event) => {
         event.preventDefault();
@@ -63,17 +64,18 @@ const EditClassDialog = (props) => {
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Editar clase</div>
                     <form onSubmit={onSubmitEditClass}>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formName}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormName(e.target.value) }}
                                 onFocus={e => { e.target.placeholder = "Literatura universal"; }}
                                 onBlur={e => { e.target.placeholder = ""; }}
                                 required />
-                            <div className="underline"></div>
-                            <label htmlFor="">Nombre</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                         </div>
-                        <div className="formSubmit">
-                            <input type="submit" value="Guardar cambios" />
+                        <div className="formInputContainer">
+                            <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Guardar cambios" />
                         </div>
                         {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     </form>

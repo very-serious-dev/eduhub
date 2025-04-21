@@ -1,8 +1,11 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
+import { textAreaDefaultPlaceholder } from "../../../util/Formatter";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];
@@ -13,6 +16,7 @@ const CreateOrEditPostForm = (props) => {
     const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(props.postBeingEdited ? props.postBeingEdited.assignment_due_date : TODAY);
     const [attachedFilesReady, setAttachedFilesReady] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
@@ -105,9 +109,10 @@ const CreateOrEditPostForm = (props) => {
     return <div className="createOrEditPostFormContainer">
         <form onSubmit={onSubmitCreateOrEditPost}>
             <div className="postFormFirstRowInputsContainer">
-                <div className="formInputSelect">
+                <div className="formInputSelectContainer">
                     <select name="unit"
                         value={formUnitId}
+                        className={`formInputSelect ${primary(theme)}`}
                         onChange={e => { setFormUnitId(e.target.value); }} >
                         <option value={UNIT_UNASSIGNED}>Sin tema</option>
                         {props.units.map(g => {
@@ -116,31 +121,31 @@ const CreateOrEditPostForm = (props) => {
                     </select>
                 </div>
                 {props.showDatePicker &&
-                    <div className="formInput formInputDivCreatePostTaskDate">
-                        <input className="formInputCreatePostTaskDate"
+                    <div className="formInputContainer formInputDivCreatePostTaskDate">
+                        <input className={`formInput formInputCreatePostTaskDate ${primary(theme)}`}
                             type="date"
                             min={TODAY}
                             value={formAssignmentDueDate}
                             onChange={e => { setFormAssignmentDueDate(e.target.value) }} />
                     </div>}
-                <div className="formInput">
-                    <input className="formInputCreatePostTitle" type="text" value={formTitle}
+                <div className="formInputContainer">
+                    <input className={`formInput formInputCreatePostTitle ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
                         onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
-                    <div className="underline"></div>
-                    <label htmlFor="">Título</label>
+                    <div className={`underline ${accent(theme)}`} />
+                    <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <div className="formTextArea formTextAreaBig">
-                <textarea value={formContent}
-                    onChange={e => { setFormContent(e.target.value) }}
-                    onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
-                    onBlur={e => { e.target.placeholder = ""; }} required />
-            </div>
+            <textarea value={formContent}
+                className={`formTextArea bigText ${borderPrimary(theme)}`}
+                onChange={e => { setFormContent(e.target.value) }}
+                placeholder={textAreaDefaultPlaceholder}
+                onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
+                onBlur={e => { e.target.placeholder = textAreaDefaultPlaceholder; }} required />
             <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
-            <div className="formSubmit">
-                <input type="submit" value={props.submitText} />
+            <div className="formInputContainer">
+                <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={props.submitText} />
             </div>
             {props.showDeleteButton && <div className="formSecondSubmit formSecondSubmitDestructive">
                 <button onClick={props.onDeleteClicked}>❌ Eliminar</button>

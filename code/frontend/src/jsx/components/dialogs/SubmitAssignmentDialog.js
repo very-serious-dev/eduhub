@@ -1,14 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DropFilesArea from "../common/DropFilesArea";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
+import { borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const SubmitAssignmentDialog = (props) => {
     const [formComment, setFormComment] = useState("");
     const [filesReadyToUpload, setFilesReadyToUpload] = useState([]);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const uploadFilesThenSendEduRequest = () => {
         setLoading(true);
@@ -82,13 +85,12 @@ const SubmitAssignmentDialog = (props) => {
                     <div className="dialogTitle">Entregar tarea</div>
                     <form onSubmit={() => { setShowAreYouSurePopup(true); }}>
                         <DropFilesArea attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} />
-                        <div className="formTextArea formTextAreaSmall">
-                            <textarea value={formComment}
-                                onChange={e => { setFormComment(e.target.value) }}
-                                placeholder="Sobre esta entrega, quiero comentar que..." />
-                            </div>
-                        <div className="formSubmit">
-                            <input type="submit" value="Entregar" disabled={formComment === "" && filesReadyToUpload.length === 0}/>
+                        <textarea value={formComment}
+                            className={`formTextArea smallText ${borderPrimary(theme)}`}
+                            onChange={e => { setFormComment(e.target.value) }}
+                            placeholder="Sobre esta entrega, quiero comentar que..." />
+                        <div className="formInputContainer">
+                            <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Entregar" disabled={formComment === "" && filesReadyToUpload.length === 0} />
                         </div>
                     </form>
                 </div>

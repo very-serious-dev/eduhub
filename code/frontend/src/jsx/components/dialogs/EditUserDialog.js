@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const EditUserDialog = (props) => {
     const [formName, setFormName] = useState("");
@@ -10,6 +12,7 @@ const EditUserDialog = (props) => {
     const [formPassword, setFormPassword] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => {
         setFormName(props.user.name);
@@ -84,38 +87,42 @@ const EditUserDialog = (props) => {
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Editar usuario</div>
                     <form onSubmit={onSubmitEditUser}>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formName}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormName(e.target.value) }}
                                 required />
-                            <div className="underline"></div>
-                            <label htmlFor="">Nombre</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                         </div>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formSurname}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormSurname(e.target.value) }}
                                 required />
-                            <div className="underline"></div>
-                            <label htmlFor="">Apellidos</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Apellidos</label>
                         </div>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formUsername}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormUsername(e.target.value) }}
                                 required />
-                            <div className="underline"></div>
-                            <label htmlFor="">Nombre de usuario</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de usuario</label>
                         </div>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formPassword}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormPassword(e.target.value) }}
                                 placeholder={keepPasswordHint}
                                 onFocus={e => { e.target.placeholder = "Introduce nueva contraseña..."; }}
                                 onBlur={e => { e.target.placeholder = keepPasswordHint; }} />
-                            <div className="underline"></div>
-                            <label htmlFor="">Contraseña</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Contraseña</label>
                         </div>
-                        <div className="formSubmit">
-                            <input type="submit" value="Modificar usuario" />
+                        <div className="formInputContainer">
+                            <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Modificar usuario" />
                         </div>
                         {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     </form>

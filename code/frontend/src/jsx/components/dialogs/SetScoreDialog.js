@@ -1,12 +1,14 @@
 import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 
 const SetScoreDialog = (props) => {
     const [formScore, setFormScore] = useState(props.currentScore);
     const [isLoading, setLoading] = useState(false);
     const setFeedback = useContext(FeedbackContext);
+    const theme = useContext(ThemeContext);
 
     const onSubmit = (event) => {
         event.preventDefault();
@@ -59,19 +61,20 @@ const SetScoreDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">Editar calificación</div>
                 <form onSubmit={onSubmit}>
-                    <div className="formInput">
+                    <div className="formInputContainer">
                         <input type="number" value={formScore}
                             min={0}
                             max={10}
                             step={.01}
+                            className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormScore(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "7.5"; }}
                             onBlur={e => { e.target.placeholder = ""; }} required />
-                        <div className="underline"></div>
-                        <label htmlFor="">Puntuación</label>
+                        <div className={`underline ${accent(theme)}`} />
+                        <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Puntuación</label>
                     </div>
-                    <div className="formSubmit">
-                        <input type="submit" value="Guardar calificación" disabled={isLoading} />
+                    <div className="formInputContainer">
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Guardar calificación" disabled={isLoading} />
                     </div>
                     <div className="formSecondSubmit formSecondSubmitConstructive">
                         <button disabled={isLoading} onClick={(e) => { e.preventDefault(); putScore(true); }}>Guardar y enviar al estudiante</button>

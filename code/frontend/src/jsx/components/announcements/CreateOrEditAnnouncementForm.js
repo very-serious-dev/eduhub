@@ -3,13 +3,16 @@ import EduAPIFetch from "../../../client/EduAPIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
 import DocuAPIFetch from "../../../client/DocuAPIFetch";
-import { FeedbackContext } from "../../main/GlobalContainer";
+import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
+import { textAreaDefaultPlaceholder } from "../../../util/Formatter";
 
 const CreateOrEditAnnouncementForm = (props) => {
     const [formTitle, setFormTitle] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.title : "");
     const [formContent, setFormContent] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.content : "");
     const [attachedFilesReady, setAttachedFilesReady] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
+    const theme = useContext(ThemeContext);
 
     const onSubmitCreateOrEditAnnouncement = (event) => {
         event.preventDefault();
@@ -92,28 +95,27 @@ const CreateOrEditAnnouncementForm = (props) => {
             })
     }
 
-
     return <div className="createOrEditPostFormContainer">
         <form onSubmit={onSubmitCreateOrEditAnnouncement}>
             <div className="postFormFirstRowInputsContainer">
-                <div className="formInput">
-                    <input className="formInputCreatePostTitle" type="text" value={formTitle}
+                <div className="formInputContainer">
+                    <input className={`formInput formInputCreatePostTitle ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
                         onFocus={e => { e.target.placeholder = "Fotos de la graduación"; }}
                         onBlur={e => { e.target.placeholder = ""; }} required />
-                    <div className="underline"></div>
-                    <label htmlFor="">Título</label>
+                    <div className={`underline ${accent(theme)}`}></div>
+                    <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <div className="formTextArea formTextAreaBig">
-                <textarea value={formContent}
-                    onChange={e => { setFormContent(e.target.value) }}
-                    onFocus={e => { e.target.placeholder = "Las fotos serán..."; }}
-                    onBlur={e => { e.target.placeholder = ""; }} required />
-            </div>
+            <textarea value={formContent}
+                className={`formTextArea bigText ${borderPrimary(theme)}`}
+                placeholder={textAreaDefaultPlaceholder}
+                onChange={e => { setFormContent(e.target.value) }}
+                onFocus={e => { e.target.placeholder = "Las fotos serán el próximo jueves. Acordaos de:\n\n- Tener dinero para pagar al fotógrafo\n- ¡Venir con una sonrisa! (a pesar de las notas)"; }}
+                onBlur={e => { e.target.placeholder = textAreaDefaultPlaceholder; }} required />
             <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
-            <div className="formSubmit">
-                <input type="submit" value={props.submitText} />
+            <div className="formInputContainer">
+                <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />
             </div>
             {props.showDeleteButton && <div className="formSecondSubmit formSecondSubmitDestructive">
                 <button onClick={props.onDeleteClicked}>❌ Eliminar</button>

@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateEditDeleteUnitDialog = (props) => {
     const [formName, setFormName] = useState("");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
+    const theme = useContext(ThemeContext);
 
     useEffect(() => {
         setFormName(props.unit.name ?? "")
@@ -74,17 +77,18 @@ const CreateEditDeleteUnitDialog = (props) => {
                 <div className="card dialogBackground">
                     <div className="dialogTitle">{isEditingUnit() ? "Modificar tema" : "Nuevo tema"}</div>
                     <form onSubmit={onSubmitAddOrEditUnit}>
-                        <div className="formInput">
+                        <div className="formInputContainer">
                             <input type="text" value={formName}
+                                className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormName(e.target.value) }}
                                 onFocus={e => { e.target.placeholder = "Tema 1: Ecuaciones"; }}
                                 onBlur={e => { e.target.placeholder = ""; }}
                                 required />
-                            <div className="underline"></div>
-                            <label htmlFor="">Nombre</label>
+                            <div className={`underline ${accent(theme)}`} />
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                         </div>
-                        <div className="formSubmit">
-                            <input type="submit" value={isEditingUnit() ? "Modificar" : "Crear"} />
+                        <div className="formInputContainer">
+                            <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={isEditingUnit() ? "Modificar" : "Crear"} />
                         </div>
                         {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     </form>

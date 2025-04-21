@@ -92,6 +92,8 @@ const iconImgSrc = (mimeType) => {
     }
 }
 
+const textAreaDefaultPlaceholder = "Escribe aquí...";
+
 export { sizeToHumanReadable };
 export { footNoteDateAuthor };
 export { beautifullyDisplayDate };
@@ -99,3 +101,4 @@ export { beautifullyDisplayDateHour };
 export { formatNullableDueDate };
 export { formatPseudoMarkdown };
 export { iconImgSrc };
+export { textAreaDefaultPlaceholder };
