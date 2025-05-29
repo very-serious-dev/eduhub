@@ -13,8 +13,9 @@ def allowed_gai_family_override():
     return socket.AF_INET
 urllib3_cn.allowed_gai_family = allowed_gai_family_override
 
+EDU_REST_INTERNAL_BASE_URL='http://localhost:8002'
+EDU_REST_INTERNAL_CERTIFICATE=None
 
-EDU_REST_INTERNAL_BASE_URL         = "http://localhost:8002"
 VERIFY_SESSION_ENDPOINT            = "/internal/v1/sessions"
 CREATE_DELETE_DOCUMENTS_ENDPOINT   = "/internal/v1/documents"
 DOCUMENTS_PERMISSIONS_ENDPOINT     = "/internal/v1/documents/permissions"
@@ -29,7 +30,7 @@ def login_logout(request):
         if json_one_time_token is None:
             return JsonResponse({"error": "Falta one_time_token en el cuerpo de la petición"}, status=400)
         verify_identity_request_body = { "internal_secret": INTERNAL_SECRET, "one_time_token": json_one_time_token }
-        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body)
+        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error verificando identidad"}, status=502)
         try:
@@ -100,7 +101,7 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
                                 # is only needed to check quota usage
                                "skip_saving_files": not json_must_internally_register_in_edu_rest,
                                "documents": edu_json_request_files }
-        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body)
+        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code == 409:
             # Forward 409 errors to React client (they're about exceeding allowed storage)
             return JsonResponse({"error": json.loads(edu_rest_response.body)["error"]}, status=409)
@@ -142,7 +143,7 @@ def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.Requ
                                "document_ids": json_document_ids,
                                "folder_ids": json_folder_ids }
 
-        edu_rest_response = requests.delete(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body)
+        edu_rest_response = requests.delete(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error eliminando ficheros"}, status=502)
         edu_rest_response_body = edu_rest_response.json()
@@ -169,7 +170,7 @@ def get_document(request, identifier):
             return JsonResponse({"error": "Ese documento no existe"}, status=404)
         edu_rest_json_body = { "internal_secret": INTERNAL_SECRET,
                                "user_id": request.session.user_id }
-        edu_rest_response = requests.get(EDU_REST_INTERNAL_BASE_URL + DOCUMENTS_PERMISSIONS_ENDPOINT + "?identifier=" + identifier, json=edu_rest_json_body)
+        edu_rest_response = requests.get(EDU_REST_INTERNAL_BASE_URL + DOCUMENTS_PERMISSIONS_ENDPOINT + "?identifier=" + identifier, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         
         if edu_rest_response.status_code == 403:
             return JsonResponse({"error": "No tienes permisos para acceder a ese fichero"}, status=403)

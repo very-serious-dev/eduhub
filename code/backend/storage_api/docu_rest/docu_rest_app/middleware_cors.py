@@ -1,5 +1,7 @@
 from django.http import HttpResponse
 
+ORIGIN_SERVER='http://localhost:3000'
+
 class CORSMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
@@ -10,10 +12,10 @@ class CORSMiddleware:
             # https://developer.mozilla.org/en-US/docs/Glossary/Preflight_request
             response = HttpResponse()
             response["Access-Control-Allow-Methods"] = "PUT, DELETE"
-            
+
         else:
             response = self.get_response(request)
-            
-        response["Access-Control-Allow-Origin"] = "http://localhost:3000"
+
+        response["Access-Control-Allow-Origin"] = ORIGIN_SERVER
         response["Access-Control-Allow-Credentials"] = "true"
         return response
