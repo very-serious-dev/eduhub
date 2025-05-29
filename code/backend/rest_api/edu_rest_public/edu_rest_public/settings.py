@@ -26,17 +26,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# TODO: Find a way to configure this so that only requests from a certain IP are allowed
-#       Only requests from DocuREST should arrive here
 
 INSTALLED_APPS = [
-    'edu_app_internal.apps.EduAppInternalConfig'
+    'edu_app.apps.EduAppConfig'
 ]
 
 MIDDLEWARE = [
+    'edu_app.middleware_cors.CORSMiddleware',
+    'edu_app.middleware_auth.AuthMiddleware',
 ]
 
-ROOT_URLCONF = 'edu_rest_internal.urls'
+ROOT_URLCONF = 'edu_rest_public.urls'
 
 TEMPLATES = [
     {
@@ -54,7 +54,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'edu_rest_internal.wsgi.application'
+WSGI_APPLICATION = 'edu_rest_public.wsgi.application'
 
 
 # Database
@@ -63,7 +63,7 @@ WSGI_APPLICATION = 'edu_rest_internal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR_PARENT / 'db.sqlite3',
+        'NAME': BASE_DIR_PARENT / 'database' / 'db.sqlite3',
     }
 }
 

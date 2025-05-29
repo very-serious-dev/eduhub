@@ -53,7 +53,7 @@ const AnnouncementsDialog = (props) => {
                     <div className="announcementsHeaderIcon">📢</div>
                     {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
                     {/* If you put a time.sleep(5) in the backend, then, after removing an announcement, you can interact with it while
-                        they are being refreshed. TO-DO: Thoroughly check this kind of behaviour in the rest of the places of the app */}
+                        they are being refreshed. TODO: Thoroughly check this kind of behaviour in the rest of the places of the app */}
                     {(!isLoading && announcements.length === 0) && <div className="noAnnouncements">No hay anuncios todavía</div>}
                     {announcements.map(a => <AnnouncementCell announcement={a} showEdit={canCreateAnnouncement} onEditAnnouncement={onEditAnnouncement} />)}
                     {(!isLoading && canCreateAnnouncement) &&

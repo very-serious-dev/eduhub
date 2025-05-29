@@ -64,31 +64,31 @@ const formatNullableDueDate = (dueDate) => {
 
 const formatPseudoMarkdown = (str) => {
     // For now, just transform line breaks
-    // Nice-to-have: Bold (**) and lists (- )
+    // TODO: Nice-to-have: Bold (**) and lists (- )
     return str.split('\n').map(subStr => <>{subStr}<br/></>);
 }
 
 const iconImgSrc = (mimeType) => {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
     /* Creative commons icons license */
-    /* TO-DO: Show this in the web somewhere: <a href="https://www.flaticon.com/free-icons/doc" title="doc icons">Doc icons created by Dimitry Miroliubov - Flaticon</a>*/
+    /* TODO: Show this in the web somewhere: <a href="https://www.flaticon.com/free-icons/doc" title="doc icons">Doc icons created by Dimitry Miroliubov - Flaticon</a>*/
     if (mimeType === "application/pdf") {
-        return "/icons/icon_pdf.png";
+        return "/small/icon_pdf.png";
     } else if (mimeType.includes("video")) {
-        return "/icons/icon_vid.png";
+        return "/small/icon_vid.png";
     }
     if (mimeType.includes("image")) {
-        return "/icons/icon_img.png";
+        return "/small/icon_img.png";
     } else if ((mimeType === "application/msword") ||
                (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
                (mimeType === "application/vnd.oasis.opendocument.text")) {
-        return "/icons/icon_doc.png";
+        return "/small/icon_doc.png";
     } else if ((mimeType === "application/vnd.ms-excel") ||
                (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
                (mimeType === "application/vnd.oasis.opendocument.spreadsheet")) {
-        return "/icons/icon_xls.png";
+        return "/small/icon_xls.png";
     } else {
-        return "/icons/icon_other.png";
+        return "/small/icon_other.png";
     }
 }
 

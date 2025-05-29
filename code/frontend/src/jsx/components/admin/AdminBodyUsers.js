@@ -33,7 +33,7 @@ const AdminBodyUsers = (props) => {
             setFeedback({ type: "success", message: "Nuevo usuario creado con éxito" });
             setRefreshKey(x => x + 1);
             {/*
-              TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
+              TODO: Possible optimization: Instead of triggering a /admin/home refresh,
               manually set a +1. In the end, this just aims to keep the left panel
               number updated
              */}
@@ -57,7 +57,7 @@ const AdminBodyUsers = (props) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Usuario eliminado con éxito" });
             setRefreshKey(x => x + 1);
-            {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
+            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
                 number updated
                 */}

@@ -14,6 +14,7 @@ from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR_PARENT = BASE_DIR.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -66,7 +67,7 @@ WSGI_APPLICATION = 'docu_rest.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR_PARENT / 'database' / 'db.sqlite3',
     }
 }
 

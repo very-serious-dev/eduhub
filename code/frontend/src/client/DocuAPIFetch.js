@@ -1,4 +1,4 @@
-// TO-DO: Antipattern, copied from EduAPIFetch !!
+// TODO: Antipattern, copied from EduAPIFetch !!
 
 import { DOCU_SERVER } from "./Servers";
 

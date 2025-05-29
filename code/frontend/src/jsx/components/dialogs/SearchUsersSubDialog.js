@@ -101,7 +101,7 @@ const SearchUsersSubDialog = (props) => {
             for (let i = 0; i < variousUsernames.length - 1; i++) {
                 // Here we iterate over every username and append it
                 // to a final result, but discarding the last one
-                // FIX-ME: Find a more efficient way of doing this
+                // TODO: Find a more efficient way of doing this
                 // (It's not really needed to re-split the string)
                 resultFormUsername += variousUsernames[i] + ",";
             }

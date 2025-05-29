@@ -33,7 +33,7 @@ const AdminBodyClasses = (props) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Nueva clase creada con éxito" });
             setClassesChanged(value => value + 1); // Refresh the list
-            {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
+            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
                 number updated
                 */}
@@ -56,7 +56,7 @@ const AdminBodyClasses = (props) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Clase eliminada con éxito" });
             setClassesChanged(value => value + 1); // Refresh the list
-            {/* TO-DO: Possible optimization: Instead of triggering a /admin/home refresh,
+            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
                 manually set a +1. In the end, this just aims to keep the left panel
                 number updated
                 */}
