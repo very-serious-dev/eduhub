@@ -72,7 +72,7 @@ const LoginPage = () => {
                     <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Login" />
                 </div>
                 {isLoading &&
-                    <div className="loginHUDCentered"><LoadingHUD /></div>
+                    <div className="loadingHUDCentered"><LoadingHUD /></div>
                 }
             </form>
         </div>

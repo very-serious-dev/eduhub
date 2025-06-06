@@ -130,14 +130,14 @@ const SearchUsersSubDialog = (props) => {
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de usuario</label>
                     </div>
                     <div className="hint">Puedes añadir más de un usuario si los introduces en una lista separados por comas</div>
-                    {isLoadingSearch && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSearch && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     <div className="participantsSearchContainer">
                         {serverSuggestedUsers.length > 0 ? clientFilteredSuggestions().map(u => <UserCard user={u} onClickWithUsername={onSuggestionClicked} />) : <></>}
                     </div>
                     <div className="formInputContainer formSubmitNoMarginTop">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Añadir" disabled={isLoadingSubmit} />
                     </div>
-                    {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSubmit && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

@@ -466,11 +466,16 @@ body {
  **/
 
 .loginMain {
-  margin-top: 20vh;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+}
+
+@media (min-width: 480px) {
+  .loginMain {
+    margin-top: 20vh;
+  }
 }
 
 .loginLogo {
@@ -478,14 +483,14 @@ body {
 }
 
 .loginContainer {
-  width: 40%;
   display: flex;
   justify-content: center;
 }
 
-.loginHUDCentered {
-  width: fit-content;
-  margin-left: 28%;
+@media (min-width: 480px) {
+  .loginContainer {
+    width: 40%;
+  }
 }
 
 .loginErrorContainer {
@@ -1430,12 +1435,14 @@ body {
 }
 
 .genericCardPreTitle {
-  position: relative; /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
+  position: relative;
+  /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
   font-size: 1.125rem;
 }
 
 .genericCardTitle {
-  position: relative; /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
+  position: relative;
+  /* So that genericCardBackgroundHoverImage doesn't appear on top of this */
   font-weight: bold;
   font-size: 1.375rem;
 }
@@ -1785,16 +1792,6 @@ body {
   padding: 20px;
 }
 
-.dialogHUDCentered {
-  width: fit-content;
-  margin-left: 42%;
-}
-
-.dialogScreenHUDCentered {
-  width: fit-content;
-  margin-left: 46%;
-}
-
 .formSecondSubmit {
   width: 100%;
   height: 40px;
@@ -2069,6 +2066,11 @@ body {
  * Loading-spinner
  * https://loading.io/css/
  */
+
+.loadingHUDCentered {
+  display: flex;
+  justify-content: center;
+}
 
 .lds-ellipsis,
 .lds-ellipsis div {

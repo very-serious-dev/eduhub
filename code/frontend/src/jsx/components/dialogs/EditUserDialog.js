@@ -124,7 +124,7 @@ const EditUserDialog = (props) => {
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Modificar usuario" />
                         </div>
-                        {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                        {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     </form>
                     <div className="formSecondSubmit formSecondSubmitDestructive">
                         <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar usuario</button>

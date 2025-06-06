@@ -90,7 +90,7 @@ const CreateEditDeleteUnitDialog = (props) => {
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={isEditingUnit() ? "Modificar" : "Crear"} />
                         </div>
-                        {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                        {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     </form>
                     {isEditingUnit() && <div className="formSecondSubmit formSecondSubmitDestructive">
                         <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar tema</button>

@@ -79,7 +79,7 @@ const CreateClassDialog = (props) => {
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formGroup === NOT_VALID} />
                     </div>
-                    {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

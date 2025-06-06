@@ -111,7 +111,7 @@ const FilesPermissionsDialog = (props) => {
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">
                             <div className="dialogTitle">{props.title}</div>
-                            {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+                            {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                             <div className="participantsContainer">
                                 {users && users.length > 0 ? users.map(u => <UserCard user={u} onDeleteWithUsername={onRemoveUserClicked} />) : <div className="emptyParticipants">No has dado permisos de lectura a nadie para este fichero.<br /></div>}
                             </div>

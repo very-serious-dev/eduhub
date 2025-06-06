@@ -93,7 +93,7 @@ const ClassParticipantsDialog = (props) => {
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">
                             <div className="dialogTitle">Participantes</div>
-                            {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+                            {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                             <div className={accentForeground(theme)}>💼 Profesores</div>
                             <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                             <div className="participantsContainer">

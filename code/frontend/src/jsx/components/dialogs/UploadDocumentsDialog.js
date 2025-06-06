@@ -53,7 +53,7 @@ const UploadDocumentsDialog = (props) => {
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Subir documentos" disabled={attachedFilesReady.length === 0}/>
                     </div>
-                    {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

@@ -140,7 +140,7 @@ const CreateUserDialog = (props) => {
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroup === NOT_VALID && formIsTeacher === false} />
                     </div>
-                    {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

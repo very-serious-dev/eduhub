@@ -95,7 +95,7 @@ const CreateGroupDialog = (props) => {
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Año</label>
                     </div>
-                    {isLoadingTeachers && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingTeachers && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     <div className="formInputSelectContainer selectWithTopMargin hidableFormSelectContainer">
                         <select name="tutorUsername"
                             value={formTutorUsername}
@@ -112,7 +112,7 @@ const CreateGroupDialog = (props) => {
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formTutorUsername === NOT_VALID || isLoadingTeachers === true} />
                     </div>
-                    {isLoadingSubmit && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                    {isLoadingSubmit && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

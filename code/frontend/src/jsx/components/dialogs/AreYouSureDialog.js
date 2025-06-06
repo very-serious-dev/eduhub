@@ -30,7 +30,7 @@ const AreYouSureDialog = (props) => {
                 <div className="areYouSureMessage">{props.warningMessage}</div>
                 <div className={`card areYouSureOption pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={props.onDismiss}>{noOptionText()}</div>
                 <div className={yesOptionCss()} onClick={props.onActionConfirmed}>{yesOptionText()}</div>
-                {props.isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                {props.isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
             </div>
         </div>
     </div>

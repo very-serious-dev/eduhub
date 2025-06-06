@@ -120,7 +120,7 @@ const CreateOrEditAnnouncementForm = (props) => {
             {props.showDeleteButton && <div className="formSecondSubmit formSecondSubmitDestructive">
                 <button onClick={props.onDeleteClicked}>❌ Eliminar</button>
             </div>}
-            {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+            {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
         </form>
     </div>
 }

@@ -76,7 +76,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Mover" />
                     </div>
-                    {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

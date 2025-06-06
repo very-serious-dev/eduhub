@@ -83,7 +83,7 @@ const SetScoreDialog = (props) => {
                         <div className="formSecondSubmit formSecondSubmitDestructive">
                             <button disabled={isLoading} onClick={(e) => { e.preventDefault(); removeScore(); }}>❌ Retirar calificación</button>
                         </div>}
-                    {isLoading && <div className="dialogScreenHUDCentered"><LoadingHUD /></div>}
+                    {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
             </div>
         </div>

@@ -77,7 +77,7 @@ const EditClassDialog = (props) => {
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Guardar cambios" />
                         </div>
-                        {isLoading && <div className="dialogHUDCentered"><LoadingHUD /></div>}
+                        {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     </form>
                     <div className="formSecondSubmit formSecondSubmitDestructive">
                         <button onClick={() => { setShowAreYouSurePopup(true); }}>❌ Eliminar clase</button>
