@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import EduAPIFetch from "../../client/EduAPIFetch";
 import LoadingHUD from "../components/common/LoadingHUD";
 import DocuAPIFetch from "../../client/DocuAPIFetch";

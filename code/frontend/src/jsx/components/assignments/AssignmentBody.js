@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { formatNullableDueDate, formatPseudoMarkdown } from "../../../util/Formatter";
 import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent";
 import SmallFilesListFile from "../common/SmallFilesListFile";

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import GenericCard from "../common/GenericCard";
 import { useState } from "react";
 import AnnouncementsDialog from "../dialogs/AnnouncementsDialog";

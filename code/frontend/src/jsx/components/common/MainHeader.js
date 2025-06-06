@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import AnimatedButton from "./AnimatedButton";
 import { useContext, useState } from "react";
 import EduAPIFetch from "../../../client/EduAPIFetch";
