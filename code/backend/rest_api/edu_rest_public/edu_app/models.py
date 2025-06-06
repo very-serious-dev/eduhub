@@ -153,3 +153,14 @@ class AssignmentSubmit(models.Model):
 class AssignmentSubmitDocument(models.Model):
     submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
+
+##
+# SECURITY, STATISTICS,...
+#
+
+class FailedLoginAttempt(models.Model):
+    username = models.CharField(max_length=50)
+    datetime = models.DateTimeField(auto_now_add=True)
+    client_ip = models.CharField(max_length=128, null=True)
+    client_user_agent = models.CharField(max_length=200, null=True)
+    

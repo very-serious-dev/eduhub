@@ -1,10 +1,12 @@
-import bcrypt, json, secrets
+import bcrypt, json, secrets, datetime
 from django.http import JsonResponse
 from django.db.models import Q
 from .middleware_auth import AUTH_COOKIE_KEY
-from .models import User, UserSession
+from .models import User, UserSession, FailedLoginAttempt
 from .models import TOKEN_SIZE
 from .serializers import roles_array, users_array_to_json
+
+MAX_FAILED_LOGINS_IN_24_HOURS = 10
 
 def login_logout(request):
     if request.method == "POST":
@@ -16,9 +18,17 @@ def login_logout(request):
         json_password = body_json.get("password")
         if json_username is None or json_password is None:
             return JsonResponse({"error": "Falta username o password en el cuerpo de la petición"}, status=400)
+        yesterday = datetime.date.today() - datetime.timedelta(1)
+        if FailedLoginAttempt.objects.filter(username=json_username, datetime__gte=yesterday).count() > MAX_FAILED_LOGINS_IN_24_HOURS:
+            return JsonResponse({"error": "La cuenta está bloqueada debido a actividad sospechosa"}, status=403)
         try:
             db_user = User.objects.get(username=json_username, archived=False)
         except User.DoesNotExist:
+            fla = FailedLoginAttempt()
+            fla.username = json_username
+            fla.client_ip = request.META.get('REMOTE_ADDR')
+            fla.client_user_agent = request.META.get('HTTP_USER_AGENT')
+            fla.save()
             return JsonResponse({"error": "El usuario no existe"}, status=404)
         # Let's create a new session
         if bcrypt.checkpw(json_password.encode('utf8'), db_user.encrypted_password.encode('utf8')):
@@ -43,6 +53,11 @@ def login_logout(request):
             response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
             return response
         else:
+            fla = FailedLoginAttempt()
+            fla.username = json_username
+            fla.client_ip = request.META.get('REMOTE_ADDR')
+            fla.client_user_agent = request.META.get('HTTP_USER_AGENT')
+            fla.save()
             return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
     elif request.method == "DELETE":
         if request.session is None:
