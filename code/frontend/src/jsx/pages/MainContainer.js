@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 import MainHeader from "../components/common/MainHeader";
-import GetRolesFromCookie from "../../client/GetRolesFromCookie";
+import { GetSessionUserRoles } from "../../client/ClientCache";
 
 const MainContainer = (props) => {
-    const roles = GetRolesFromCookie();
+    const roles = GetSessionUserRoles();
 
     return <div className="mainPageFlexContainer">
         <MainHeader showAdminLink={ roles.includes("sysadmin") || roles.includes("school_leader") } />

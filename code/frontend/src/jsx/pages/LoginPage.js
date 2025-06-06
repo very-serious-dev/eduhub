@@ -5,6 +5,7 @@ import LoadingHUD from "../components/common/LoadingHUD";
 import DocuAPIFetch from "../../client/DocuAPIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../util/Themes";
 import { ThemeContext } from "../main/GlobalContainer";
+import { SetSessionInfo } from "../../client/ClientCache";
 
 const LoginPage = () => {
     const [isLoading, setLoading] = useState(false);
@@ -19,12 +20,13 @@ const LoginPage = () => {
         setLoading(true);
         setError(null);
         EduAPIFetch("POST", "/api/v1/sessions", { username: formUser, password: formPassword })
-            .then(json => {
-                if (json.success === true) {
-                    DocuAPIFetch("POST", "/api/v1/sessions", { one_time_token: json.one_time_token })
-                        .then(json => {
+            .then(eduJson => {
+                if (eduJson.success === true) {
+                    DocuAPIFetch("POST", "/api/v1/sessions", { one_time_token: eduJson.one_time_token })
+                        .then(docuJson => {
                             setLoading(false);
-                            if (json.success === true) {
+                            if (docuJson.success === true) {
+                                SetSessionInfo(eduJson.session_info)
                                 navigate("/");
                             } else {
                                 setError("Se ha producido un error");

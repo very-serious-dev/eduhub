@@ -5,7 +5,7 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 import UserCard from "../common/UserCard";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
-import GetUsernameFromCookie from "../../../client/GetUsernameFromCookie";
+import { GetSessionUsername } from "../../../client/ClientCache";
 
 const FilesPermissionsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -106,7 +106,7 @@ const FilesPermissionsDialog = (props) => {
                     dialogTitle={`Dar acceso a`}
                     onUserAdded={onUserAdded}
                     onDismiss={() => { setShowAddUsers(false) }}
-                    usersToIgnore={[GetUsernameFromCookie()]} />
+                    usersToIgnore={[GetSessionUsername()]} />
                 : <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                         <div className="card dialogBackground">

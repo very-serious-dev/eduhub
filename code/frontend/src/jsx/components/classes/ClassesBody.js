@@ -2,15 +2,15 @@ import { useContext, useState } from "react";
 import GroupClassesSection from "./GroupClassesSection";
 import EduAPIFetch from "../../../client/EduAPIFetch";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
-import GetRolesFromCookie from "../../../client/GetRolesFromCookie";
 import { FeedbackContext } from "../../main/GlobalContainer";
+import { GetSessionUserRoles } from "../../../client/ClientCache";
 
 const ClassesBody = (props) => {
     const [showAddClassPopup, setShowAddClassPopup] = useState(false);
     const [isLoadingAllGroups, setLoadingAllGroups] = useState(false);
     const [allGroups, setAllGroups] = useState([]);
     const setFeedback = useContext(FeedbackContext);
-    const roles = GetRolesFromCookie();
+    const roles = GetSessionUserRoles();
 
     const onClickAddClass = () => {
         if (isLoadingAllGroups) { return; }

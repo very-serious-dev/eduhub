@@ -1,17 +1,17 @@
-import GetStorageFromCookie from "../../../client/GetStorageFromCookie";
+import { GetSessionUserMaxStorage } from "../../../client/ClientCache";
 import { getElementsCount } from "../../../util/FilesBrowserContainerUtil";
 
 const MyFilesFirstTabContent = (props) => {
     const myFilesCount = getElementsCount(props.myFilesTree);
-    const max_storage = GetStorageFromCookie();
+    const MAX_STORAGE = GetSessionUserMaxStorage();
     const Gb = 1024 * 1024 * 1024;
 
     return <div className={`filesFirstTabElement myFilesElementContainerHoverable pointable ${props.isSelected ? "filesElementSelected" : "filesElementUnselected"}`}
         onClick={() => { props.onRootClicked("MY_FILES") }}>
         <div className="filesFirstTabTitle">🖥️ Tu unidad</div>
-        <div className="filesFirstTabSubtitle">{Math.round(myFilesCount.nBytes / max_storage.bytes).toFixed(2)}% usado de {max_storage.bytes / Gb}GB</div>
-        <div className="filesFirstTabSubtitle">{myFilesCount.nDocuments}/{max_storage.documents} documentos</div>
-        <div className="filesFirstTabSubtitle">{myFilesCount.nFolders}/{max_storage.folders} carpetas</div>
+        {MAX_STORAGE.bytes && <div className="filesFirstTabSubtitle">{Math.round(myFilesCount.nBytes / MAX_STORAGE.bytes).toFixed(2)}% usado de {MAX_STORAGE.bytes / Gb}GB</div>}
+        {MAX_STORAGE.documents && <div className="filesFirstTabSubtitle">{myFilesCount.nDocuments}/{MAX_STORAGE.documents} documentos</div>}
+        {MAX_STORAGE.folders && <div className="filesFirstTabSubtitle">{myFilesCount.nFolders}/{MAX_STORAGE.folders} carpetas</div>}
     </div>
 }
 
