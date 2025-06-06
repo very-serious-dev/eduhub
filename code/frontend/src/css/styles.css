@@ -522,6 +522,11 @@ body {
   align-items: center;
 }
 
+.mainPageHeaderLogo {
+  margin-left: 10px;
+  margin-top: 12px;
+}
+
 .mainBody {
   min-height: calc(100vh - var(--main-header-height));
   display: flex;

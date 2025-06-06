@@ -42,7 +42,7 @@ const MainHeader = (props) => {
     }
 
     return <div className="mainPageFlexHeader">
-        <img src="/logo.png" />
+        <img className="mainPageHeaderLogo" src="/logo_main.png" />
         { isLoadingLogout ? <p>Cerrando sesión...</p> 
           : <>
             <AnimatedButton onClick={() => { navigate("/"); }} text="📚 Clases" />
