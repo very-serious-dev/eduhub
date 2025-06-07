@@ -1257,9 +1257,16 @@ body {
  * Files page
  */
 
+.mobileFileBrowserGoBack {
+  text-align: center;
+}
+
 .myFilesElementContainer {
   position: relative;
-  padding: 10px;
+  padding-top: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
+  padding-bottom: 4px;
   margin: 6px;
   border-radius: 6px;
   background-color: var(--color-subtle-grey);
@@ -1301,10 +1308,9 @@ body {
 
 .myFilesElementAuthorDate {
   color: #333;
-  font-size: 0.675em;
+  font-size: 0.55em;
   text-align: right;
-  margin-top: -4px;
-  margin-right: 30px;
+  margin-top: 2px;
 }
 
 .filesFirstTabElement {
@@ -2055,17 +2061,6 @@ body {
   transition-duration: 0.8s;
 }
 
-.firstTab.tabSelectedIs0 {
-  margin-left: 0;
-}
-
-.firstTab.tabSelectedIs1 {
-  margin-left: -100%;
-}
-
-.firstTab.tabSelectedIs2 {
-  margin-left: -200%;
-}
 
 /* ...we would need more of these if ever used in TabbedActivity */
 

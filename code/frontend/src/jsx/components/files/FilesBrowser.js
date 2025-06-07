@@ -2,6 +2,7 @@ import TabbedActivity from "../common/TabbedActivity";
 import FolderElement from "./FolderElement";
 import DocumentElement from "./DocumentElement";
 import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
+import { isMobile } from "../../../util/Responsive";
 
 const FilesBrowser = (props) => {
 
@@ -39,7 +40,7 @@ const FilesBrowser = (props) => {
             const newTab = { view: [] }
             levelBeingWalkedSelectedFolderId = props.selectedFolderIdsPath.length > level - 1 ? props.selectedFolderIdsPath[level - 1] : undefined;
             if (levelBeingWalked.length === 0) {
-                newTab.view = <FilesEmptyFolderTabContent isEmptyRoot={level === 1}/>
+                newTab.view = <FilesEmptyFolderTabContent isEmptyRoot={level === 1} />
             } else {
                 [...levelBeingWalked].sort(orderingCriteria).forEach(element => {
                     if (element.type === "folder") {
@@ -77,14 +78,16 @@ const FilesBrowser = (props) => {
     }
 
     const tabsForSelectedPath = () => {
-        return [{view: props.firstTabView}, ...tabsForCurrentTreeAndSelectedFolder()];
+        return [{ view: props.firstTabView }, ...tabsForCurrentTreeAndSelectedFolder()];
     }
 
-    return <TabbedActivity tabs={tabsForSelectedPath()}
-        tabContentWidthPercentage={33}
-        showTitles={false}
-        forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - 1)}
-        emptyFooter={props.browserMode === "MAIN_SCREEN"} />
+    return <>
+        {isMobile() && <div className="card mobileFileBrowserGoBack" onClick={() => { props.setSelectedFolderIdsPath(x => x.slice(0, -1)); }}>← Subir</div>}
+        <TabbedActivity tabs={tabsForSelectedPath()}
+            tabContentWidthPercentage={isMobile() ? 50: 33}
+            showTitles={false}
+            forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - (isMobile() ? 0 : 1))}
+            emptyFooter={props.browserMode === "MAIN_SCREEN"} /></>
 }
 
 export default FilesBrowser;

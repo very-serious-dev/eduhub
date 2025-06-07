@@ -4,10 +4,11 @@ import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { accent, bannerImageSrc, pointableSecondary } from "../../../util/Themes";
+import { isMobile } from "../../../util/Responsive";
 
 const ClassDetailBodyWithHeader = (props) => {
     const EXPANDED_HEADER_HEIGHT = 200;
-    const COLLAPSED_HEADER_HEIGHT = window.screen.width >= 480 ? 60 : 120;
+    const COLLAPSED_HEADER_HEIGHT = isMobile() ? 120 : 60;
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
     const [amountScrolled, setAmountScrolled] = useState(0);
     const [searchedText, setSearchedText] = useState("");
