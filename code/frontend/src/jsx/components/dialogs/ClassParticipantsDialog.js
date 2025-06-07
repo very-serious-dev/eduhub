@@ -91,7 +91,7 @@ const ClassParticipantsDialog = (props) => {
                     usersToIgnore={[]} />
                 : <div className="popupOverlayBackground" onClick={props.onDismiss}>
                     <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
-                        <div className="card dialogBackground">
+                        <div className="card dialogBackground overflowScrollableDialog">
                             <div className="dialogTitle">Participantes</div>
                             {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                             <div className={accentForeground(theme)}>💼 Profesores</div>
