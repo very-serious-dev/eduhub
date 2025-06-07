@@ -7,7 +7,7 @@ import { accent, bannerImageSrc, pointableSecondary } from "../../../util/Themes
 
 const ClassDetailBodyWithHeader = (props) => {
     const EXPANDED_HEADER_HEIGHT = 200;
-    const COLLAPSED_HEADER_HEIGHT = 60;
+    const COLLAPSED_HEADER_HEIGHT = window.screen.width >= 480 ? 60 : 120;
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
     const [amountScrolled, setAmountScrolled] = useState(0);
     const [searchedText, setSearchedText] = useState("");

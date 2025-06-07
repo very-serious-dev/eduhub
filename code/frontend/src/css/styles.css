@@ -39,7 +39,7 @@
   --color-constructive: #2eea20;
   --color-success: #7dca7d;
   --color-subtle-grey: #eee;
-  --class-header-search-width: 300px;
+  --class-header-search-width: 340px;
 }
 
 * {
@@ -659,18 +659,31 @@ body {
   left: 15px;
   bottom: 8px;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
 }
 
 .classDetailHeaderTitle {
-  font-size: 2em;
+  font-size: 1.5em;
   color: white;
   font-weight: bold;
 }
 
+@media (min-width: 480px) {
+  .classDetailHeaderTitle {
+    font-size: 2em;
+  }
+}
+
 .classDetailHeaderSearchForm {
-  margin-left: 24px;
   width: var(--class-header-search-width);
+}
+
+@media (min-width: 480px) {
+  .classDetailHeaderSearchForm {
+    margin-left: 24px;
+  }
 }
 
 .classDetailHeaderSearchForm input {
@@ -720,13 +733,24 @@ body {
 
 .classDetailBodyContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column-reverse;
+}
+
+@media (min-width: 480px) {
+  .classDetailBodyContainer {
+    flex-direction: row;
+  }
 }
 
 .classDetailBodyColumn1 {
   display: flex;
   flex-direction: column;
-  width: 75%;
+}
+
+@media (min-width: 480px) {
+  .classDetailBodyColumn1 {
+    width: 75%;
+  }
 }
 
 .classDetailEntry {
@@ -830,9 +854,15 @@ body {
 .classDetailBodyColumn2 {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  width: 25%;
   padding-top: 15px;
+  padding-left: 4px;
+}
+
+@media (min-width: 480px) {
+  .classDetailBodyColumn2 {
+    gap: 10px;
+    width: 25%;
+  }
 }
 
 .classDetailSectionUnderline {
@@ -842,7 +872,6 @@ body {
 
 .classDetailBubbleButton {
   padding-right: 10px;
-  width: 85%;
   text-align: center;
   border-radius: 999px;
 }
@@ -1756,11 +1785,18 @@ body {
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
-  width: 40%;
-  top: 50%;
+  width: 95%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
+}
+
+@media (min-width: 480px) {
+  .popup {
+    width: 40%;
+    top: 50%;
+  }
 }
 
 /* https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp */
@@ -1769,8 +1805,10 @@ body {
   display: none;
 }
 
-.widePopup {
-  width: 80%;
+@media (min-width: 480px) {
+  .widePopup {
+    width: 80%;
+  }
 }
 
 .dialogBackground {
@@ -1891,7 +1929,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 15px;
+  gap: 6px;
 }
 
 .formInputCreatePostTitle {
