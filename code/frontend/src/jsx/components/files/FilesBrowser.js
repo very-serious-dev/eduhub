@@ -87,7 +87,7 @@ const FilesBrowser = (props) => {
             tabContentWidthPercentage={isMobile() ? 50: 33}
             showTitles={false}
             forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - (isMobile() ? 0 : 1))}
-            emptyFooter={props.browserMode === "MAIN_SCREEN"} /></>
+            emptyFooter={true} /></>
 }
 
 export default FilesBrowser;

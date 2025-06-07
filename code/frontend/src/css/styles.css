@@ -540,12 +540,6 @@ body {
   margin-left: 10px;
 }
 
-.mainBody {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-}
-
 /**
  * Classes page 
  **/
@@ -1372,6 +1366,11 @@ body {
 /**
  * Admin page
  */
+
+.adminMainBody {
+  display: flex;
+  flex-direction: row;
+}
 
 .adminBodyColumn1 {
   width: 20%;
