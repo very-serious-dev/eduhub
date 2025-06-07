@@ -975,17 +975,25 @@ body {
  */
 
 .assignmentDetailTitleHeader {
-  margin-top: 25px;
+  margin-top: 33px;
   margin-left: 15px;
 }
 
 .assignmentDetailBodyContainer {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
-.assignmentDetailBodyColumn1 {
-  width: 25%;
+@media (min-width: 480px) {
+  .assignmentDetailBodyContainer {
+    flex-direction: row;
+  }
+}
+
+@media (min-width: 480px) {
+  .assignmentDetailBodyColumn1 {
+    width: 25%;
+  }
 }
 
 .assignmentDetailLeftPaneInfoContainer {
@@ -1007,7 +1015,14 @@ body {
 }
 
 .assignmentDetailBodyColumn2 {
-  width: 75%;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+@media (min-width: 480px) {
+  .assignmentDetailBodyColumn2 {
+    width: 75%;
+  }
 }
 
 .assignmentDetailBodyFilesTitle {
