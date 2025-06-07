@@ -69,7 +69,7 @@ const LoginPage = () => {
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Contraseña</label>
                 </div>
                 <div className="formInputContainer">
-                    <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Login" />
+                    <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Iniciar sesión" />
                 </div>
                 {isLoading &&
                     <div className="loadingHUDCentered"><LoadingHUD /></div>
