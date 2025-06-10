@@ -14,7 +14,7 @@ const beautifullyDisplayDateHour = (date) => {
 const footNoteDateAuthor = (originalDate, author, modificationDate) => {
     if (modificationDate) {
         const modificationDateObject = new Date(modificationDate);
-        return `${author ? `${author}, ` : ""}${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]` 
+        return `${author ? `${author}, ` : ""}${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]`
     } else {
         const dateObject = new Date(originalDate);
         return `${author ? `${author}, ` : ""}${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(originalDate)})`
@@ -62,10 +62,85 @@ const formatNullableDueDate = (dueDate) => {
     return beautifullyDisplayDate(dueDate);
 }
 
-const formatPseudoMarkdown = (str) => {
-    // For now, just transform line breaks
-    // TODO: Nice-to-have: Bold (**) and lists (- )
-    return str.split('\n').map(subStr => <>{subStr}<br/></>);
+const formatPseudoMarkdown = (wholeText) => {
+    const FormatType = { BOLD: "b", ITALIC: "i" , HYPERLINK: "h"}
+
+    const formatText = (string, regex, formatType) => {
+        let result = [];
+        let remainingString = string;
+        for (let match of string.matchAll(regex)) {
+            const splitString = remainingString.split(match[0]);
+            result.push(splitString[0]);
+            if (formatType === FormatType.BOLD) {
+                result.push(<b>{match[1]}</b>);
+            }
+            if (formatType === FormatType.ITALIC) {
+                result.push(<i>{match[1]}</i>);
+            }
+            if (formatType === FormatType.HYPERLINK) {
+                const linkWithPrefix = match[0].startsWith('http') ? match[0] : 'https://' + match[0];
+                result.push(<a href={linkWithPrefix} target="_blank" rel="noreferrer">{match[0]}</a>) // Security note: https://mathiasbynens.github.io/rel-noopener
+            }
+            remainingString = splitString[1];
+        }
+        result.push(remainingString);
+        return result;
+    }
+
+    const formatTextArray = (input, regex, formatType) => {
+        let result = []
+        for (let text of input) {
+            if (typeof text === 'string') {
+                const formattedText = formatText(text, regex, formatType);
+                result.push(...formattedText);
+            } else {
+                // Already JSX, don't reprocess it
+                // e.g.: We have <b>Great</b>, so let's preserve it
+                result.push(text);
+            }
+        }
+        return result;
+    }
+
+    const lines = wholeText.split('\n')
+        .filter(line => line.length > 0)
+        .map(line => [line])
+        .map(lineArray => {
+            // Format hyperlinks; https://regex101.com/r/3fYy3x/1
+            return formatTextArray(lineArray, /(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/g, FormatType.HYPERLINK);
+        }).map(lineArray => {
+            // Bold: ["You _are_ *great*"] -> ["You _are_ ", <b>great</b>]
+            return formatTextArray(lineArray, /\*(.*?)\*/g, FormatType.BOLD);
+        }).map(lineArray => {
+            // Italic: ["You _are_ ", <b>great</b>] -> ["You ", <i>are</i>, " ", <b>great</b>]
+            return formatTextArray(lineArray, /\_(.*?)\_/g, FormatType.ITALIC);
+        })
+
+    const linesWithBRsAndULs = []
+    let currentUnorderedListItems = []
+    for (let lineArray of lines) {
+        // This works by storing into currentUnorderedListItems all the
+        // lines starting with '- ...' as <li>...</li>, and, after the next line
+        // doesn't comply with that, it saves the whole bunch of <li> inside an <ul>
+        // in a final result.
+        // This also saves regular lines with a <br> at the end.
+        if (typeof lineArray[0] === 'string' && lineArray[0].startsWith('- ')) {
+            lineArray[0] = lineArray[0].slice(2);
+            currentUnorderedListItems.push(<li>{lineArray}</li>);
+        } else {
+            if (currentUnorderedListItems.length > 0) { // A <ul> has ended, let's add it
+                linesWithBRsAndULs.push(<ul>{currentUnorderedListItems}</ul>);
+                currentUnorderedListItems = [];
+            }
+            linesWithBRsAndULs.push(<>{lineArray}<br /></>);
+        }
+    }
+    if (currentUnorderedListItems.length > 0) {
+        // If this happens, then the last line was a '- ...' and it was stored
+        // inside currentUnorderedListItems but never dumped to linesWithBRsAndULs
+        linesWithBRsAndULs.push(<ul>{currentUnorderedListItems}</ul>)
+    }
+    return linesWithBRsAndULs;
 }
 
 const iconImgSrc = (mimeType) => {
@@ -80,12 +155,12 @@ const iconImgSrc = (mimeType) => {
     if (mimeType.includes("image")) {
         return "/small/icon_img.png";
     } else if ((mimeType === "application/msword") ||
-               (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
-               (mimeType === "application/vnd.oasis.opendocument.text")) {
+        (mimeType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") ||
+        (mimeType === "application/vnd.oasis.opendocument.text")) {
         return "/small/icon_doc.png";
     } else if ((mimeType === "application/vnd.ms-excel") ||
-               (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
-               (mimeType === "application/vnd.oasis.opendocument.spreadsheet")) {
+        (mimeType === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") ||
+        (mimeType === "application/vnd.oasis.opendocument.spreadsheet")) {
         return "/small/icon_xls.png";
     } else {
         return "/small/icon_other.png";
