@@ -1,6 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
+echo TODO: Should say something about logo_main.png and generate internal_secret.py when building
 echo 1) Start development servers on local machine
 echo 2) Build web applications for deployment
 echo ---
