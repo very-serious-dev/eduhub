@@ -93,7 +93,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
             return <AssignmentUserStatus submit={submit}
                 author={a}
                 assignmentId={props.assignmentData.id}
-                canEditScore={props.assignmentData.should_show_teacher_options /* TODO: Always true ??*/}
+                canEditScore={true}
                 onScoreChanged={props.onScoreChanged} />
         })}
     </>

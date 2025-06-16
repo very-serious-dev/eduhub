@@ -36,7 +36,7 @@ const ClassDetailBody = (props) => {
             onDismiss={() => { setPopupShown("NONE"); setUnitForPopup({ id: undefined, name: undefined }) }} />
         <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
             classroom={props.classData}
-            shouldShowEditButton={props.classData.should_show_edit_button}
+            shouldShowEditButton={props.classData.should_show_teacher_options}
             onDismiss={() => { setPopupShown("NONE") }} />
         <div className="classDetailBodyContainer">
             <div className="classDetailBodyColumn1">
@@ -52,7 +52,7 @@ const ClassDetailBody = (props) => {
                     <ClassDetailDrawerSectionTitle title="👤 Participantes" />
                     <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={() => { setPopupShown("PARTICIPANTS"); }}>Ver participantes</div>
                 </div>
-                {props.classData.should_show_edit_button && /** TODO: rename property? */
+                {props.classData.should_show_teacher_options &&
                     <div>
                         <ClassDetailDrawerSectionTitle title="🎓 Calificaciones" />
                         <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={onClickDownloadScores}>⬇️ Descargar notas</div>

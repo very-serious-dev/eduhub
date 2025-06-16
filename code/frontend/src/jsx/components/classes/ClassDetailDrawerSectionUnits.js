@@ -14,12 +14,12 @@ const ClassDetailDrawerSectionUnits = (props) => {
                 props.classData.units.map(u => {
                     return <ClassDetailUnitItem unit={u}
                         onFilterByUnit={props.onFilterPostsByUnit}
-                        editable={props.classData.should_show_edit_button}
+                        editable={props.classData.should_show_teacher_options}
                         onEdit={props.onClickEditUnit} />
                 })
                 : <p>No hay temas</p>}
         </div>
-        {props.classData.should_show_edit_button === true &&
+        {props.classData.should_show_teacher_options === true &&
             <div className={`card classDetailBubbleButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={props.onClickNewUnit}>
                 ➕ Añadir tema
             </div>}

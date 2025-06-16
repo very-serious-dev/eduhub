@@ -28,7 +28,7 @@ const PostsBoard = (props) => {
             onFinished={props.onPostsChanged}
             onDismiss={() => { setShowNewPost(false); }} />
         <div className="postsBoardContainer">
-            {props.classData.should_show_edit_button && <div className={`card postsBoardPublishButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
+            {props.classData.should_show_teacher_options && <div className={`card postsBoardPublishButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
                 onClick={() => { setShowNewPost(true); }}>➕ Nueva publicación</div>}
             {squashedPosts(props.classData.posts)
                 .map(p => {
@@ -63,12 +63,12 @@ const PostsBoard = (props) => {
                     if (p.kind === "publication") {
                         return <PostsBoardEntry post={p}
                             classUnits={props.classData.units}
-                            showEdit={props.classData.should_show_edit_button}
+                            showEdit={props.classData.should_show_teacher_options}
                             onPostsChanged={props.onPostsChanged} />
                     } else if (p.kind === "assignment") {
                         return <PostsBoardAssignment post={p}
                             classUnits={props.classData.units}
-                            showEdit={props.classData.should_show_edit_button}
+                            showEdit={props.classData.should_show_teacher_options}
                             onPostsChanged={props.onPostsChanged} />
                     }
                 })}

@@ -153,7 +153,7 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
         "name": classroom.name,
         "group": classroom.group_id,
         "theme": class_theme(classroom),
-        "should_show_edit_button": isClassEditableByUser,
+        "should_show_teacher_options": isClassEditableByUser,
         "posts": posts,
         "units": units
     }

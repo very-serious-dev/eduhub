@@ -44,7 +44,7 @@ const AssignmentSubmitDialog = (props) => {
                                     {props.submit.is_score_published === false && <div className="unpublishedScoreHint">Esta puntuación no está publicada para el estudiante todavía</div>}
                                 </>
                                 : <div className="assignmentSubmitScoreNotReceived">🍂 No hay una calificación todavía</div>}
-                            {props.canEditScore === true && <div className={`card assignmentSetScoreButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={() => { setShowSetScore(true); }}>
+                            {props.canEditScore && <div className={`card assignmentSetScoreButton pointable ${primary(theme)} ${pointableSecondary(theme)}`} onClick={() => { setShowSetScore(true); }}>
                                 ➕ Editar calificación
                             </div>}
                         </>}

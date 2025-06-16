@@ -68,7 +68,7 @@ const ClassDetailBodyWithHeader = (props) => {
                 </form>
             </div>
             <div className="classDetailHeaderTopIcons">
-                {props.classData.should_show_edit_button === true &&
+                {props.classData.should_show_teacher_options === true &&
                     <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
                 <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { navigate(-1); }}>✖️</div>
             </div>
