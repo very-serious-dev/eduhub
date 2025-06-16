@@ -49,7 +49,6 @@ const MainHeader = (props) => {
                 <AnimatedButton onClick={() => { navigate("/files"); }} text="📁 Archivos" />
                 <AnimatedButton onClick={() => { alert("En construcción") }} text="✉️ Mensajes" />
                 {props.showAdminLink && <AnimatedButton onClick={() => { navigate("/admin"); }} text="⚙️ Panel de administración" hiddenInMobile={true} />}
-                { /* TODO: Don't show logout button if user is not logged in*/}
                 <AnimatedButton onClick={onLogout} rightAligned={true} text="🏃 Salir" />
             </div>}
     </div>

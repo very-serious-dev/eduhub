@@ -3,7 +3,6 @@ import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import ClassesBody from "../components/classes/ClassesBody";
-import { useNavigate } from "react-router";
 
 const ClassesPage = () => {
     const [response, setResponse] = useState({});
@@ -11,7 +10,6 @@ const ClassesPage = () => {
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
     const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0);
-    const navigate = useNavigate();
 
     useEffect(() => {
         EduAPIFetch("GET", "/api/v1/classes")
@@ -23,9 +21,6 @@ const ClassesPage = () => {
                 setLoading(false);
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
-                if (error.should_login) {
-                    navigate("/login");
-                }
             })
     }, [newlyCreatedClasses]);
 

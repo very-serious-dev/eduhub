@@ -1,14 +1,22 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import MainHeader from "../components/common/MainHeader";
-import { GetSessionUserRoles } from "../../client/ClientCache";
+import { GetSessionUserRoles, IsLoggedIn } from "../../client/ClientCache";
+import { useEffect } from "react";
 
 const MainContainer = (props) => {
     const roles = GetSessionUserRoles();
+    const navigate = useNavigate();
 
-    return <div className="mainPageFlexContainer">
-        <MainHeader showAdminLink={ roles.includes("sysadmin") || roles.includes("school_leader") } />
+    useEffect(() => {
+        if (!IsLoggedIn()) {
+            navigate("/login");
+        }
+    }, [])
+
+    return IsLoggedIn() ? <div className="mainPageFlexContainer">
+        <MainHeader showAdminLink={roles.includes("sysadmin") || roles.includes("school_leader")} />
         <Outlet />
-    </div>
+    </div>: <></>
 }
 
 export default MainContainer;

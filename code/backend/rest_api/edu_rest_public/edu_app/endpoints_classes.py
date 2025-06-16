@@ -18,7 +18,7 @@ def get_all_groups(request):
 def handle_classes(request):
     if request.method == "GET":
         if request.session is None:
-            return JsonResponse({"error": "Tu sesión no existe o ha caducado", "should_login": True}, status=401)
+            return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
         classes = list(map(lambda uc: uc.classroom, user_classes))
         distinct_groups = {}

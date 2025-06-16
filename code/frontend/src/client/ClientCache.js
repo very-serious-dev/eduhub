@@ -76,6 +76,10 @@ const GetSessionUserMaxStorage = () => {
     return {documents: null, folders: null, bytes: null};
 }
 
+const IsLoggedIn = () => {
+    return GetSessionUsername() !== ""
+}
+
 
 
 export { GetCachedPosts }
@@ -87,3 +91,4 @@ export { SetSessionInfo }
 export { GetSessionUsername }
 export { GetSessionUserRoles }
 export { GetSessionUserMaxStorage }
+export { IsLoggedIn }
