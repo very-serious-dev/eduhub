@@ -6,10 +6,10 @@ from .serializers import groups_array_to_json, classes_array_to_json, users_arra
 
 TEACHER_MAX_FOLDERS = 500
 TEACHER_MAX_DOCUMENTS = 2000
-TEACHER_MAX_DOCUMENTS_SIZE = 20 * 1024 * 1024 * 1024 # 20Gb
+TEACHER_MAX_DOCUMENTS_SIZE = 5 * 1024 * 1024 * 1024 # 5Gb
 STUDENT_MAX_FOLDERS = 50
 STUDENT_MAX_DOCUMENTS = 200
-STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 1024 # 1Gb
+STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 512 # 500Mb
 
 def home(request):
     if request.method == "GET":
