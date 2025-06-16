@@ -57,33 +57,6 @@ if [%OPTION%] == [1] (
     )
     for /f "tokens=1 delims=:" %%a in ("!API_INTERNAL_NAME!") do (set API_INTERNAL_NAME_WITHOUT_PORT=%%a)
 
-    echo Copying and modifying React App source files...
-
-    robocopy code\frontend frontend /MIR > nul
-
-    rem https://www.delftstack.com/howto/batch/batch-replace-text-from-file/
-    (for /f "tokens=*" %%a in ('type frontend\src\client\Servers.js ^| findstr /n "^"') do (
-      set "line=%%a"
-      set "line=!line:*:=!"
-      if defined line (
-        if "!line!" == "const EDU_SERVER = 'http://localhost:8000'" ( echo const EDU_SERVER = 'https://!API_NAME!' ) else ( if "!line!" == "const DOCU_SERVER = 'http://localhost:8001'" ( echo const DOCU_SERVER = 'https://!DOCU_NAME!' ) else ( echo !line! ))
-      ) else echo. 
-    )) > Servers.js.temp
-    move /y Servers.js.temp frontend\src\client\Servers.js > nul
-
-    echo [OK] React app source files modified
-    echo Building React app...
-
-    npm run build --prefix frontend
-
-    robocopy frontend\build build /MIR > nul
-    tar -cf frontend.tar build
-    del /s /q build > nul
-    rmdir /s /q build
-    del /s /q frontend > nul
-    rmdir /s /q frontend
-
-    echo [OK] frontend.tar generated
     echo Modifying REST API source files...
     
     robocopy code\backend\rest_api rest_api /MIR > nul
@@ -171,6 +144,35 @@ if [%OPTION%] == [1] (
 
     echo [OK] backend_storage.tar generated
 
+    echo Copying and modifying React App source files...
+
+    robocopy code\frontend frontend /MIR > nul
+
+    rem https://www.delftstack.com/howto/batch/batch-replace-text-from-file/
+    (for /f "tokens=*" %%a in ('type frontend\src\client\Servers.js ^| findstr /n "^"') do (
+      set "line=%%a"
+      set "line=!line:*:=!"
+      if defined line (
+        if "!line!" == "const EDU_SERVER = 'http://localhost:8000'" ( echo const EDU_SERVER = 'https://!API_NAME!' ) else ( if "!line!" == "const DOCU_SERVER = 'http://localhost:8001'" ( echo const DOCU_SERVER = 'https://!DOCU_NAME!' ) else ( echo !line! ))
+      ) else echo. 
+    )) > Servers.js.temp
+    move /y Servers.js.temp frontend\src\client\Servers.js > nul
+
+    echo [OK] React app source files modified
+    echo Building React app...
+
+    REM important - after npm run build somehow the FOR loops that replace text don't work well. So this has to be executed at the end
+    npm run build --prefix frontend
+
+    robocopy frontend\build build /MIR > nul
+    tar -cf frontend.tar build
+    del /s /q build > nul
+    rmdir /s /q build
+    del /s /q frontend > nul
+    rmdir /s /q frontend
+
+    echo [OK] frontend.tar generated
+
     mkdir build
     move /y frontend.tar build/frontend.tar > nul
     move /y backend_rest.tar build/backend_rest.tar > nul
@@ -182,15 +184,8 @@ if [%OPTION%] == [1] (
     echo - [backend_rest.tar] Django REST API (both the public and the internal^). It should be uploaded and deployed to your REST API server
     echo - [backend_storage.tar] Django storage server. It should be uploaded and deployed to another server too
     echo [INFO] For further information on how to do this, see doc\deployment.md
-    if [!MUST_COPY_DBS!] == [0] (
-      echo [INFO] The two database/db.sqlite3 files have NOT been copied to your backend_rest.tar and backend_storage.tar
-      echo You have already run this script and we assume that you have already deployed the web, so you probably don't want
-      echo to overwrite your databases.
-      echo If you're upgrading to a newer EduPlatform version with breaking changes in the models, you need to update your
-      echo database files manually
-    ) else (
-      echo [INFO] The two database/db.sqlite3 files have been copied to your backend_rest.tar and backend_storage.tar because this was your first time running this script and you probably need them
-    ) 
+    echo [INFO] The two database/db.sqlite3 files have only been included into your backend_rest.tar and
+    echo        backend_storage.tar if this was your first time running the script and generating build.config.
     echo ---
     echo Have a nice day!
     endlocal
