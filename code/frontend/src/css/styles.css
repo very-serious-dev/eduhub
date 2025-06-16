@@ -1291,7 +1291,6 @@ body {
   margin-left: 32px;
 }
 
-/* TODO Rename all of this from myFiles to just files (it's also used by shared with me tab)*/
 .myFilesElementSpecialText {
   color: #444;
   font-size: 0.6em;
@@ -1953,23 +1952,16 @@ body {
 }
 
 .formInputCreatePostTitle {
-  /* Override default .formInput selector - TODO: Review this comment, is it still correct?
-   * margin-top, as this is exceptionally contained
-   * in a flexbox.
-   * Without important, it won't work */
-  margin-top: 0 !important;
+  margin-top: 0;
 }
 
 .formInputGreyBackground {
-  /* Override default .formInput selector
-   * Without important, it won't work */
-  background-color: #ddd !important;
+  background-color: #ddd;
 }
 
 .formInputCreatePostTaskDate {
-  margin-top: 0 !important;
-  font-size: 0.9em !important;
-  /* Override 17px from .formInput*/
+  margin-top: 0;
+  font-size: 0.9em;
   appearance: none;
   font-family: inherit;
 }
