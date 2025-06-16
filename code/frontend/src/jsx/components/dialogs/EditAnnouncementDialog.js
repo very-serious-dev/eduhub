@@ -1,5 +1,5 @@
 import { useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 import CreateOrEditAnnouncementForm from "../announcements/CreateOrEditAnnouncementForm";
 

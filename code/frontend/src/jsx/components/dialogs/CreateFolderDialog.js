@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 

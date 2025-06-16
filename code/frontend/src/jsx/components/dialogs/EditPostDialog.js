@@ -1,6 +1,6 @@
 import { useState } from "react";
 import CreateOrEditPostForm from "../posts/CreateOrEditPostForm";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 
 const EditPostDialog = (props) => {

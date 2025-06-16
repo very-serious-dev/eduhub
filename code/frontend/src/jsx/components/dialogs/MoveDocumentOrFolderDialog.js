@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
 import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
-import EduAPIFetch from "../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../client/APIFetch";
 import FilesBody from "../components/files/FilesBody";
 
 const FilesPage = () => {

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ErrorPage from "./ErrorPage";
 import AssignmentBody from "../components/assignments/AssignmentBody";
-import EduAPIFetch from "../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../client/APIFetch";
 import { ThemeContext } from "../main/GlobalContainer";
 
 const ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID = (id) => `assignmentWithId${id}Title`;

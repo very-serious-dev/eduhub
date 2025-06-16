@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import CreateAnnouncementDialog from "./CreateAnnouncementDialog";
 import AnnouncementCell from "../announcements/AnnouncementCell";

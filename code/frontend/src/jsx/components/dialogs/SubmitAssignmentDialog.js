@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import DropFilesArea from "../common/DropFilesArea";
-import EduAPIFetch from "../../../client/EduAPIFetch";
-import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
+import { DocuAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 import { borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";

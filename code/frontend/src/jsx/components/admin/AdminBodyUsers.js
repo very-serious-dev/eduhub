@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import UserCard from "../common/UserCard";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import CreateUserDialog from "../dialogs/CreateUserDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";

@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import GenericCard from "../common/GenericCard";
 import CreateClassDialog from "../dialogs/CreateClassDialog";

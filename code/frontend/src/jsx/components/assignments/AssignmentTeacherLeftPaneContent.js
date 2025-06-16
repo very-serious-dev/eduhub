@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import AssignmentUserStatus from "./AssignmentUserStatus";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";

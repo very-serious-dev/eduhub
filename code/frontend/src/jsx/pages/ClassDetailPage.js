@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import EduAPIFetch from "../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import ClassDetailBodyWithHeader from "../components/classes/ClassDetailBodyWithHeader";

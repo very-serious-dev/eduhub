@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
-import EduAPIFetch from "../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUD from "../components/common/LoadingHUD";
-import DocuAPIFetch from "../../client/DocuAPIFetch";
+import { DocuAPIFetch } from "../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../util/Themes";
 import { ThemeContext } from "../main/GlobalContainer";
 import { SetSessionInfo } from "../../client/ClientCache";

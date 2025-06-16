@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
-import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { DocuAPIFetch } from "../../../client/APIFetch";
 import DropFilesArea from "../common/DropFilesArea";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";

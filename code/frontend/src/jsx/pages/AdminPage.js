@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import EduAPIFetch from "../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUDPage from "./LoadingHUDPage";
 import ErrorPage from "./ErrorPage";
 import AdminBody from "../components/admin/AdminBody";

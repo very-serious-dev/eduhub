@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import GroupClassesSection from "./GroupClassesSection";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import CreateClassDialog from "../dialogs/CreateClassDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import { GetSessionUserRoles } from "../../../client/ClientCache";

@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router";
 import AnimatedButton from "./AnimatedButton";
 import { useContext, useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import { FeedbackContext } from "../../main/GlobalContainer";
-import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { DocuAPIFetch } from "../../../client/APIFetch";
 import { RemoveClientCache } from "../../../client/ClientCache";
 
 const MainHeader = (props) => {

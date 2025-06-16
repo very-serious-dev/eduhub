@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
-import EduAPIFetch from "../../../client/EduAPIFetch";
+import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import DropFilesArea from "../common/DropFilesArea";
-import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { DocuAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { textAreaDefaultPlaceholder } from "../../../util/Formatter";

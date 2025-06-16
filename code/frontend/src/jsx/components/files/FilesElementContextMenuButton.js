@@ -1,6 +1,6 @@
 import { useState } from "react";
 import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
-import DocuAPIFetch from "../../../client/DocuAPIFetch";
+import { DocuAPIFetch } from "../../../client/APIFetch";
 import FilesPermissionsDialog from "../dialogs/FilesPermissionsDialog";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 
