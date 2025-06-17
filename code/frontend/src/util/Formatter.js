@@ -31,6 +31,7 @@ const beautifullyDisplayDate = (date) => {
             case 4: return "Jueves";
             case 5: return "Viernes";
             case 6: return "Sábado";
+            default: return "";
         }
     }
 
@@ -48,6 +49,7 @@ const beautifullyDisplayDate = (date) => {
             case 9: return "Octubre";
             case 10: return "Noviembre";
             case 11: return "Diciembre"
+            default: return "";
         }
     }
 
@@ -107,13 +109,13 @@ const formatPseudoMarkdown = (wholeText) => {
         .map(line => [line])
         .map(lineArray => {
             // Format hyperlinks; https://regex101.com/r/3fYy3x/1
-            return formatTextArray(lineArray, /(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._\+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/\/=]*)/g, FormatType.HYPERLINK);
+            return formatTextArray(lineArray, /(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/g, FormatType.HYPERLINK);
         }).map(lineArray => {
             // Bold: ["You _are_ *great*"] -> ["You _are_ ", <b>great</b>]
             return formatTextArray(lineArray, /\*(.*?)\*/g, FormatType.BOLD);
         }).map(lineArray => {
             // Italic: ["You _are_ ", <b>great</b>] -> ["You ", <i>are</i>, " ", <b>great</b>]
-            return formatTextArray(lineArray, /\_(.*?)\_/g, FormatType.ITALIC);
+            return formatTextArray(lineArray, /_(.*?)_/g, FormatType.ITALIC);
         })
 
     const linesWithBRsAndULs = []

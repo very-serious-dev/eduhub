@@ -32,7 +32,7 @@ const AssignmentPage = (props) => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [numTimesChanged]);
+    }, [numTimesChanged, params.assignmentId]);
 
     useEffect(() => {
         const assignmentTitleBeforeNavigation = sessionStorage.getItem(ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID(params.assignmentId));
@@ -43,7 +43,7 @@ const AssignmentPage = (props) => {
                 content: assignmentContentBeforeNavigation
             })
         }
-    }, [])
+    }, [params.assignmentId])
 
     const onScoreChanged = (result) => {
         if (result.operation === "score_updated") {

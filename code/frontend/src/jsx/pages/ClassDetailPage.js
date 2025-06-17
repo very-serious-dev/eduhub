@@ -36,7 +36,7 @@ const ClassDetailPage = () => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [numTimesClassWasEdited])
+    }, [numTimesClassWasEdited, params.classId])
 
     return isLoading ?
         <LoadingHUDPage />
