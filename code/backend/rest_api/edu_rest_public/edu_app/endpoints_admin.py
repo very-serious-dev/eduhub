@@ -178,7 +178,7 @@ def get_teachers(request):
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 def __admin_auth_json_error_response(request):
-    if request.session.user is None:
+    if request.session is None:
         return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
     if request.session.user.role not in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER]:
         return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
