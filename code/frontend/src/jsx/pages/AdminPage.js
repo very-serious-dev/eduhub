@@ -9,7 +9,7 @@ const AdminPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
-    const [newlyCreatedItems, setNewlyCreatedItems] = useState(0); // Refresh key after group, class or user creation
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         document.title = "Panel";
@@ -26,14 +26,14 @@ const AdminPage = () => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [newlyCreatedItems])
+    }, [refreshKey])
 
     return isLoading ?
         <LoadingHUDPage />
         : isRequestFailed ?
             <ErrorPage errorMessage={requestErrorMessage} />
             : <AdminBody dashboardData={dashboardData}
-                onShouldRefresh={() => { setNewlyCreatedItems(x => x + 1); }} />
+                onShouldRefresh={() => { setRefreshKey(x => x + 1); }} />
 
 }
 

@@ -13,7 +13,7 @@ const AssignmentPage = (props) => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
-    const [numTimesChanged, setNumTimesChanged] = useState(0); // refresh key after student submit
+    const [refreshKey, setRefreshKey] = useState(0);
     const params = useParams();
 
     useEffect(() => {
@@ -32,7 +32,7 @@ const AssignmentPage = (props) => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [numTimesChanged, params.assignmentId]);
+    }, [refreshKey, params.assignmentId]);
 
     useEffect(() => {
         const assignmentTitleBeforeNavigation = sessionStorage.getItem(ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID(params.assignmentId));
@@ -71,7 +71,7 @@ const AssignmentPage = (props) => {
         : <ThemeContext.Provider value={assignmentData.theme}>
             <AssignmentBody assignmentData={assignmentData}
                 isLoading={isLoading}
-                onShouldRefresh={() => { setNumTimesChanged(x => x + 1) }}
+                onShouldRefresh={() => { setRefreshKey(x => x + 1) }}
                 onScoreChanged={onScoreChanged} />
         </ThemeContext.Provider>
 }

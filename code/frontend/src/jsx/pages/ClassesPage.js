@@ -9,7 +9,7 @@ const ClassesPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
-    const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0);
+    const [refreshKey, setRefreshKey] = useState(0);
 
     useEffect(() => {
         document.title = "Mis clases";
@@ -26,10 +26,10 @@ const ClassesPage = () => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, [newlyCreatedClasses]);
+    }, [refreshKey]);
 
     const onClassAdded = () => {
-        setNewlyCreatedClasses(newlyCreatedClasses + 1);
+        setRefreshKey(x => x + 1);
     }
 
     return isLoading ?

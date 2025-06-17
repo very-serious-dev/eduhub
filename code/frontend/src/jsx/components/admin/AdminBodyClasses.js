@@ -10,11 +10,11 @@ import OptionsDialog from "../dialogs/OptionsDialog";
 
 const AdminBodyClasses = (props) => {
     const [classes, setClasses] = useState([]);
-    const [classesChanged, setClassesChanged] = useState(0); // refresh key
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, ADD_CLASS, MENU_PARTICIPANTS_OR_EDIT, EDIT_CLASS, PARTICIPANTS
     const [classForPopup, setClassForPopup] = useState({ id: undefined, name: undefined });
+    const [refreshKey, setRefreshKey] = useState(0);
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -27,17 +27,13 @@ const AdminBodyClasses = (props) => {
                 setLoading(false);
                 setRequestFailed(true);
             })
-    }, [classesChanged]);
+    }, [refreshKey]);
 
     const onClassAdded = (errorMessage) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Nueva clase creada con éxito" });
-            setClassesChanged(value => value + 1); // Refresh the list
-            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
-                manually set a +1. In the end, this just aims to keep the left panel
-                number updated
-                */}
-            props.onShouldRefresh();
+            setRefreshKey(x => x + 1);
+            props.onShouldRefresh();  // Trigger /admin/home refresh; keep left pane number updated
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }
@@ -46,7 +42,7 @@ const AdminBodyClasses = (props) => {
     const onClassEdited = (errorMessage) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Clase modificada con éxito" });
-            setClassesChanged(value => value + 1); // Refresh the list
+            setRefreshKey(x => x + 1);
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }
@@ -55,12 +51,8 @@ const AdminBodyClasses = (props) => {
     const onClassDeleted = (errorMessage) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Clase eliminada con éxito" });
-            setClassesChanged(value => value + 1); // Refresh the list
-            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
-                manually set a +1. In the end, this just aims to keep the left panel
-                number updated
-                */}
-            props.onShouldRefresh();
+            setRefreshKey(x => x + 1);
+            props.onShouldRefresh();  // Trigger /admin/home refresh; keep left pane number updated
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }

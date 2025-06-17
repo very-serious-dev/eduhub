@@ -9,11 +9,11 @@ import EditUserDialog from "../dialogs/EditUserDialog";
 
 const AdminBodyUsers = (props) => {
     const [users, setUsers] = useState([]);
-    const [refreshKey, setRefreshKey] = useState(0);
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_USER, OPTIONS, EDIT_USER
     const [userForPopup, setUserForPopup] = useState();
+    const [refreshKey, setRefreshKey] = useState(0);
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -32,12 +32,7 @@ const AdminBodyUsers = (props) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Nuevo usuario creado con éxito" });
             setRefreshKey(x => x + 1);
-            {/*
-              TODO: Possible optimization: Instead of triggering a /admin/home refresh,
-              manually set a +1. In the end, this just aims to keep the left panel
-              number updated
-             */}
-            props.onShouldRefresh();
+            props.onShouldRefresh(); // Trigger /admin/home refresh; keep left pane number updated
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }
@@ -57,11 +52,7 @@ const AdminBodyUsers = (props) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Usuario eliminado con éxito" });
             setRefreshKey(x => x + 1);
-            {/* TODO: Possible optimization: Instead of triggering a /admin/home refresh,
-                manually set a +1. In the end, this just aims to keep the left panel
-                number updated
-                */}
-            props.onShouldRefresh();
+            props.onShouldRefresh();  // Trigger /admin/home refresh; keep left pane number updated
         } else {
             setFeedback({ type: "error", message: errorMessage });
         }
