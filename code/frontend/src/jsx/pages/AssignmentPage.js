@@ -17,6 +17,10 @@ const AssignmentPage = (props) => {
     const params = useParams();
 
     useEffect(() => {
+        document.title = "Tarea";
+    }, []);
+
+    useEffect(() => {
         setLoading(true);
         EduAPIFetch("GET", `/api/v1/assignments/${params.assignmentId}`)
             .then(json => {

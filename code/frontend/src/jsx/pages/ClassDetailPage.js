@@ -16,6 +16,10 @@ const ClassDetailPage = () => {
     const params = useParams();
 
     useEffect(() => {
+        document.title = "Clase";
+    }, []);
+
+    useEffect(() => {
         setLoading(true);
         const cachedPosts = GetCachedPosts(params.classId);
         EduAPIFetch("GET", `/api/v1/classes/${params.classId}${cachedPosts.length > 0 ? "?newerThanPostWithId=" + cachedPosts[0].id : ""}`)

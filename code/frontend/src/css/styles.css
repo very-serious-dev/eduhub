@@ -450,7 +450,7 @@ body {
 }
 
 /**
- * Loading HUD page 
+ * Other pages 
  **/
 
 .loadingMain {
@@ -458,6 +458,17 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.aboutPageContainer {
+  margin: 20px;
+}
+
+.aboutPageCreativeCommonsMessage {
+  margin-top: 40px;
+  color: #444;
+  font-size: 0.75em;
+
 }
 
 /**
@@ -506,6 +517,14 @@ body {
   margin: 8px;
   border-radius: 4px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.loginFooterMessage {
+  color: #666;
+  font-size: 0.6em;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
 
 /**

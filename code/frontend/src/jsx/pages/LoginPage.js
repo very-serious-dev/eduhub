@@ -1,5 +1,5 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUD from "../components/common/LoadingHUD";
 import { DocuAPIFetch } from "../../client/APIFetch";
@@ -14,6 +14,10 @@ const LoginPage = () => {
     const [formPassword, setFormPassword] = useState("");
     const navigate = useNavigate();
     const theme = useContext(ThemeContext);
+
+    useEffect(() => {
+        document.title = "Iniciar sesión";
+    }, []);
 
     const onSubmitLogin = (e) => {
         e.preventDefault();
@@ -79,6 +83,9 @@ const LoginPage = () => {
         {error !== null &&
             <div className="loginErrorContainer card">{error}</div>
         }
+        <div className="loginFooterMessage">
+            <i><Link to="/about">Acerca de</Link> esta página</i>
+        </div>
     </div>
 }
 

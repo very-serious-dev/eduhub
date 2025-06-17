@@ -12,6 +12,10 @@ const AdminPage = () => {
     const [newlyCreatedItems, setNewlyCreatedItems] = useState(0); // Refresh key after group, class or user creation
 
     useEffect(() => {
+        document.title = "Panel";
+    }, []);
+
+    useEffect(() => {
         EduAPIFetch("GET", "/api/v1/admin/home")
             .then(json => {
                 setLoading(false);

@@ -36,7 +36,7 @@ const SetScoreDialog = (props) => {
             })
     }
 
-    const removeScore = () => { //TODO merge with above function? This is almost the same
+    const removeScore = () => {
         setLoading(true);
         EduAPIFetch("DELETE", `/api/v1/assignments/${props.assignmentId}/submits/${props.username}/score`)
             .then(json => {

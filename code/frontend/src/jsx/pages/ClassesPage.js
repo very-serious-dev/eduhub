@@ -12,6 +12,10 @@ const ClassesPage = () => {
     const [newlyCreatedClasses, setNewlyCreatedClasses] = useState(0);
 
     useEffect(() => {
+        document.title = "Mis clases";
+    }, []);
+
+    useEffect(() => {
         EduAPIFetch("GET", "/api/v1/classes")
             .then(json => {
                 setLoading(false);

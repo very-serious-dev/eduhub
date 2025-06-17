@@ -12,6 +12,10 @@ const FilesPage = () => {
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
+        document.title = "Mis archivos";
+    }, []);
+
+    useEffect(() => {
         EduAPIFetch("GET", "/api/v1/documents")
             .then(json => {
                 setLoading(false);

@@ -145,8 +145,6 @@ const formatPseudoMarkdown = (wholeText) => {
 
 const iconImgSrc = (mimeType) => {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
-    /* Creative commons icons license */
-    /* TODO: Show this in the web somewhere: <a href="https://www.flaticon.com/free-icons/doc" title="doc icons">Doc icons created by Dimitry Miroliubov - Flaticon</a>*/
     if (mimeType === "application/pdf") {
         return "/small/icon_pdf.png";
     } else if (mimeType.includes("video")) {
