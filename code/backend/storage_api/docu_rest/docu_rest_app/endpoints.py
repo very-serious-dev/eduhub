@@ -56,7 +56,7 @@ def login_logout(request):
         return JsonResponse({"error": "Unsupported"}, status=405)
 
 
-def create_or_delete_documents(request): # TODO: Fix django.core.exceptions.RequestDataTooBig: Request body exceeded settings.DATA_UPLOAD_MAX_MEMORY_SIZE. for big files
+def create_or_delete_documents(request):
     if request.method == "POST":
         if request.session is None:
             return JsonResponse({"error": "No autenticado"}, status=401)
