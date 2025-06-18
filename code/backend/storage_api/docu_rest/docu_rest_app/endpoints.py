@@ -103,7 +103,7 @@ def create_or_delete_documents(request):
                                "documents": edu_json_request_files }
         edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code == 409:
-            # Forward 409 errors to React client (they're about exceeding allowed storage)
+            # Forward 409 errors to React client (disk quota exceeded)
             return JsonResponse({"error": json.loads(edu_rest_response.body)["error"]}, status=409)
         elif edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error subiendo ficheros"}, status=502)
@@ -118,6 +118,7 @@ def create_or_delete_documents(request):
                 "size": ud.size,
                 "is_protected": False,
                 "mime_type": ud.mime_type,
+                "created_at": ud.created_at,
                 "folder_id": json_parent_folder_id # might be None
             }
             response_documents_created.append(created_document)
