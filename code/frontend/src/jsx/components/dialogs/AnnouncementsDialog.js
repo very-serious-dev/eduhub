@@ -31,7 +31,7 @@ const AnnouncementsDialog = (props) => {
                 setLoading(false);
                 setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
             })
-    }, [refreshKey]);
+    }, [refreshKey, props.groupTag, setFeedback]);
 
     const onEditAnnouncement = (announcement) => {
         setShowCreateOrEdit(true);
@@ -47,7 +47,7 @@ const AnnouncementsDialog = (props) => {
                 onDismiss={() => { setShowCreateOrEdit(false); setAnnouncementBeingEdited(undefined); }}
                 onFinished={() => { setRefreshKey(x => x + 1) }} />
             : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-            <div className="popup" onClick={e => { e.stopPropagation(); }}>
+            <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground overflowScrollableDialog">
                     <div className="dialogTitle">Tablón de anuncios de {props.groupTag}</div>
                     <div className="announcementsHeaderIcon">📢</div>

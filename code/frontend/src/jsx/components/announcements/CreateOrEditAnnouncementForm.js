@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
-import DropFilesArea from "../common/DropFilesArea";
+import FilePicker from "../common/FilePicker";
 import { DocuAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
@@ -113,7 +113,7 @@ const CreateOrEditAnnouncementForm = (props) => {
                 onChange={e => { setFormContent(e.target.value) }}
                 onFocus={e => { e.target.placeholder = "Las fotos serán el próximo jueves. Acordaos de:\n\n- Tener dinero para pagar al fotógrafo\n- ¡Venir con una sonrisa! (a pesar de las notas)"; }}
                 onBlur={e => { e.target.placeholder = textAreaDefaultPlaceholder; }} required />
-            <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
+            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />
             </div>

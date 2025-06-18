@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import DropFilesArea from "../common/DropFilesArea";
+import FilePicker from "../common/FilePicker";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import { DocuAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
@@ -80,15 +80,15 @@ const SubmitAssignmentDialog = (props) => {
             dialogMode="SUBMIT"
             warningMessage="⚠️ Tu entrega es definitiva y no se puede corregir. Asegúrate de revisar los documentos que entregues" />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-            <div className="popup" onClick={e => { e.stopPropagation(); }}>
+            <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Entregar tarea</div>
                     <form onSubmit={() => { setShowAreYouSurePopup(true); }}>
-                        <DropFilesArea attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} />
                         <textarea value={formComment}
                             className={`formTextArea smallText ${borderPrimary(theme)}`}
                             onChange={e => { setFormComment(e.target.value) }}
                             placeholder="Sobre esta entrega, quiero comentar que..." />
+                        <FilePicker attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} />
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Entregar" disabled={formComment === "" && filesReadyToUpload.length === 0} />
                         </div>

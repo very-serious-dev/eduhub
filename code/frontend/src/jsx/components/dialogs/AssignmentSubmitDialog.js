@@ -16,7 +16,7 @@ const AssignmentSubmitDialog = (props) => {
             onSuccess={props.onScoreChanged}
             onDismiss={() => { setShowSetScore(false); }} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-            <div className="popup" onClick={e => { e.stopPropagation(); }}>
+            <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground overflowScrollableDialog">
                     <div className="dialogTitle">Detalles de la entrega</div>
                     <div className="assignmentSubmitDialogAuthorFullName">{`Entrega de: ${props.author.name} ${props.author.surname}`}</div>

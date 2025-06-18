@@ -979,6 +979,7 @@ body {
 }
 
 .createOrEditPostFormContainer {
+  position: relative; /* Descendant FilePicker will have a 'position: absolute' drop area */
   margin-left: 10px;
   margin-right: 10px;
 }
@@ -1753,7 +1754,7 @@ body {
 }
 
 .formFiles {
-  margin-top: 8px;
+  margin-top: 6px;
   width: 100%;
 }
 
@@ -1762,18 +1763,83 @@ body {
   gap: 3px;
   flex-wrap: wrap;
   width: 100%;
+  margin-top: 6px;
 }
 
-.formFilesDropableArea {
-  margin-top: 4px;
-  padding-top: 15px;
+.filePickerInputContainer {
   text-align: center;
-  height: 60px;
-  width: 100%;
-  border: 2px dashed #ccc;
 }
 
-.dropFilesAreaItem {
+.filePickerInputLabel {
+  display: inline;
+  font-size: 0.875em;
+  border-radius: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.filePickerInputLabel input {
+  overflow: hidden;
+  width: 0;
+}
+
+.filePickerDropArea {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.dropAreaActivable {
+  pointer-events: inherit;
+}
+
+.dropAreaInactive {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.dropAreaBackground {
+  position: absolute;
+  border: 3px dashed #555;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  opacity: 0.4;
+  z-index: 4;
+}
+
+.dropAreaBackgroundActive {
+  opacity: 0.7;
+}
+
+.dropAreaInactive {
+  pointer-events: none;
+  opacity: 0;
+}
+
+.dropAreaTextContainer {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%);
+}
+
+.dropAreaText {
+  font-size: 1.5em;
+}
+
+.dropAreaSubtitle {
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.filePickerItem {
   background-color: white;
   border-radius: 999px;
   padding-left: 4px;
@@ -1781,21 +1847,21 @@ body {
   position: relative;
 }
 
-.dropFilesAreaItemTitle {
+.filePickerItemTitle {
   font-size: 0.875rem;
 }
 
-.dropFilesAreaItemSubtitle {
+.filePickerItemSubtitle {
   font-size: 0.7rem;
 }
 
-.dropFilesAreaItemDeleteButton {
+.filePickerItemDeleteButton {
   position: absolute;
   right: 0;
   top: 0;
 }
 
-.dropFilesAreaItemDeleteButton:hover {
+.filePickerItemDeleteButton:hover {
   background-color: var(--color-destructive);
 }
 

@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import { DocuAPIFetch } from "../../../client/APIFetch";
-import DropFilesArea from "../common/DropFilesArea";
+import FilePicker from "../common/FilePicker";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 
@@ -39,17 +39,16 @@ const UploadDocumentsDialog = (props) => {
             })
     }
 
-
     return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Subir archivos</div>
                 <form onSubmit={onSubmitUploadFiles}>
-                    <DropFilesArea attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
-                    <p>Se subirán a la siguiente carpeta:</p>
+                    <p>Ruta para subir los archivos:</p>
                     <div className="formInputContainer">
                         <input className="formInput formInputGreyBackground" type="text" value={props.parentFolderStringPath} disabled={true} />
                     </div>
+                    <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Subir documentos" disabled={attachedFilesReady.length === 0}/>
                     </div>
