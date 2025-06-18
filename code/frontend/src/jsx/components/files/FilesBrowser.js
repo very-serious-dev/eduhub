@@ -2,9 +2,10 @@ import TabbedActivity from "../common/TabbedActivity";
 import FolderElement from "./FolderElement";
 import DocumentElement from "./DocumentElement";
 import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
-import { isMobile } from "../../../util/Responsive";
+import { useIsMobile } from "../../../util/Responsive";
 
 const FilesBrowser = (props) => {
+    const isMobile = useIsMobile();
 
     const onFolderSelected = (folderId, level) => {
         const newSelectedFolderIdsPath = props.selectedFolderIdsPath.slice(0, level - 1).concat(folderId);
@@ -82,11 +83,11 @@ const FilesBrowser = (props) => {
     }
 
     return <>
-        {isMobile() && <div className="card mobileFileBrowserGoBack" onClick={() => { props.setSelectedFolderIdsPath(x => x.slice(0, -1)); }}>← Subir</div>}
+        {isMobile && <div className="card mobileFileBrowserGoBack" onClick={() => { props.setSelectedFolderIdsPath(x => x.slice(0, -1)); }}>← Subir</div>}
         <TabbedActivity tabs={tabsForSelectedPath()}
-            tabContentWidthPercentage={isMobile() ? 50: 33}
+            tabContentWidthPercentage={isMobile ? 50 : 33}
             showTitles={false}
-            forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - (isMobile() ? 0 : 1))}
+            forcedTabSelectedIndex={Math.max(0, props.selectedFolderIdsPath.length - (isMobile ? 0 : 1))}
             emptyFooter={true} /></>
 }
 

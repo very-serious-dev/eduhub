@@ -2,12 +2,13 @@ import { useContext, useEffect, useState } from "react";
 import FilePickerItem from "./FilePickerItem";
 import { pointableSecondary, primary, secondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
-import { isMobile } from "../../../util/Responsive";
+import { useIsMobile } from "../../../util/Responsive";
 
 const FilePicker = (props) => {
     const MAX_SIZE = { nBytes: 1024 * 1024 * 50, humanReadable: "50 MB" }
     const MAX_ATTACHMENTS = 5;
     const [isReadingFiles, setReadingFiles] = useState(false);
+    const isMobile = useIsMobile();
 
     // The drop area is actually 'position: absolute' to fill the parent,
     // but we don't want it to block clicks to other important elements.
@@ -130,7 +131,7 @@ const FilePicker = (props) => {
                     <label className={`filePickerInputLabel pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
                         <input type="file" key={refreshKeyClearInputFiles} multiple={true} onChange={onFilesPickerChanged} />
                         Seleccionar archivos
-                    </label>{!isMobile() && " ó ⬇️📄 arrastra tus ficheros"}
+                    </label>{!isMobile && " ó ⬇️📄 arrastra tus ficheros"}
                 </div>
                 <div className="formFilesAttached">
                     {props.attachedFilesReady.map(f => <FilePickerItem file={f} onDelete={onRemoveReadyFile} />)}

@@ -4,17 +4,18 @@ import ClassDetailBody from "./ClassDetailBody";
 import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { accent, bannerImageSrc, pointableSecondary } from "../../../util/Themes";
-import { isMobile } from "../../../util/Responsive";
+import { useIsMobile } from "../../../util/Responsive";
 
 const ClassDetailBodyWithHeader = (props) => {
-    const EXPANDED_HEADER_HEIGHT = 200;
-    const COLLAPSED_HEADER_HEIGHT = isMobile() ? 120 : 60;
     const [showEditClassPopup, setShowEditClassPopup] = useState(false);
     const [amountScrolled, setAmountScrolled] = useState(0);
     const [searchedText, setSearchedText] = useState("");
+    const isMobile = useIsMobile();
     const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
     const theme = useContext(ThemeContext);
+    const EXPANDED_HEADER_HEIGHT = 200;
+    const COLLAPSED_HEADER_HEIGHT = isMobile ? 120 : 60;
 
     useEffect(() => {
         const handleScroll = (e) => {
