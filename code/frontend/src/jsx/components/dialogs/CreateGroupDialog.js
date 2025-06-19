@@ -71,6 +71,7 @@ const CreateGroupDialog = (props) => {
                             onChange={e => { setFormName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Bachillerato 1º"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
+                            maxLength={50}
                             required />
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
@@ -81,6 +82,7 @@ const CreateGroupDialog = (props) => {
                             onChange={e => { setFormTag(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "BACH1"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
+                            maxLength={10}
                             required />
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Etiqueta</label>
@@ -91,6 +93,7 @@ const CreateGroupDialog = (props) => {
                             onChange={e => { setFormYear(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "24-25"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
+                            maxLength={10}
                             required />
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Año</label>

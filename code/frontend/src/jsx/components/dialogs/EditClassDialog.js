@@ -70,6 +70,7 @@ const EditClassDialog = (props) => {
                                 onChange={e => { setFormName(e.target.value) }}
                                 onFocus={e => { e.target.placeholder = "Literatura universal"; }}
                                 onBlur={e => { e.target.placeholder = ""; }}
+                                maxLength={50}
                                 required />
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>

@@ -7,12 +7,16 @@ const TextAreaWithLimit = (props) => {
 
     const defaultPlaceholder = "Escribe aquí...";
 
-    return <textarea value={props.value}
-        className={`formTextArea ${props.small ? "smallText" : "bigText"} ${borderPrimary(theme)}`}
-        placeholder={defaultPlaceholder}
-        onChange={e => { props.setValue(e.target.value) }}
-        onFocus={e => { e.target.placeholder = "Puedes poner texto en *negrita* si lo rodeas con *asteriscos*, o en _cursiva_, si usas _barras bajas_\n\nTambién puedes mostrar listas comenzando tus párrafos con un guión:\n- Así\n- Por\n- Ejemplo"; }}
-        onBlur={e => { e.target.placeholder = defaultPlaceholder; }} required />
+    return <div className="textAreaContainer">
+        <textarea value={props.value}
+            className={`formTextArea ${props.small ? "smallText" : "bigText"} ${borderPrimary(theme)}`}
+            placeholder={defaultPlaceholder}
+            maxLength={props.maxLength}
+            onChange={e => { props.setValue(e.target.value) }}
+            onFocus={e => { e.target.placeholder = "Puedes poner texto en *negrita* si lo rodeas con *asteriscos*, o en _cursiva_, si usas _barras bajas_. ¡Pruébalo!\n\nTambién puedes mostrar listas comenzando tus párrafos con un guión:\n- Así\n- Por\n- Ejemplo"; }}
+            onBlur={e => { e.target.placeholder = defaultPlaceholder; }} required />
+            <p className="textAreaCharacterLimit">{props.value.length}/{props.maxLength}</p>
+    </div>
 }
 
 export default TextAreaWithLimit;

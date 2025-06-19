@@ -112,6 +112,9 @@ const FilePicker = (props) => {
         if (props.attachedFilesReady.length + newFiles.length > MAX_ATTACHMENTS) {
             return `No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`;
         }
+        if (newFiles.some(f => f.name.length > 150)) {
+            return "Los nombres de fichero no pueden superar 150 caracteres";
+        }
         const alreadyAttachedFilesSize = props.attachedFilesReady.reduce((acc, f) => acc + f.size, 0)
         const newFilesSize = newFiles.reduce((acc, f) => acc + f.size, 0)
         if (alreadyAttachedFilesSize + newFilesSize >= MAX_SIZE.nBytes) {

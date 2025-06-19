@@ -131,13 +131,13 @@ const CreateOrEditPostForm = (props) => {
                 <div className="formInputContainer">
                     <input className={`formInput formInputCreatePostTitle ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
-                        onFocus={e => { e.target.placeholder = props.titlePlaceholder; }}
-                        onBlur={e => { e.target.placeholder = ""; }} required />
+                        maxLength={100}
+                        required />
                     <div className={`underline ${accent(theme)}`} />
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <TextAreaWithLimit value={formContent} setValue={setFormContent} small={false} />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
             <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formInputContainer">
                 <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={props.submitText} />

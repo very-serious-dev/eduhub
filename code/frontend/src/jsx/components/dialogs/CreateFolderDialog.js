@@ -13,7 +13,6 @@ const CreateFolderDialog = (props) => {
         event.preventDefault();
         setLoading(true);
         let body = {
-            // TODO: Max length for all forms according to models.py?
             name: formFolderName
         }
         if (props.parentFolderIdsPath.length > 0) {
@@ -47,7 +46,9 @@ const CreateFolderDialog = (props) => {
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormFolderName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Mi carpeta"; }}
-                            onBlur={e => { e.target.placeholder = ""; }} required />
+                            onBlur={e => { e.target.placeholder = ""; }} 
+                            maxLength={50}
+                            required />
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de carpeta</label>
                     </div>

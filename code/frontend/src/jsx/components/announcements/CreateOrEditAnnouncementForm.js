@@ -102,12 +102,14 @@ const CreateOrEditAnnouncementForm = (props) => {
                     <input className={`formInput formInputCreatePostTitle ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
                         onFocus={e => { e.target.placeholder = "Fotos de la graduación"; }}
-                        onBlur={e => { e.target.placeholder = ""; }} required />
+                        onBlur={e => { e.target.placeholder = ""; }}
+                        maxLength={100}
+                        required />
                     <div className={`underline ${accent(theme)}`}></div>
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <TextAreaWithLimit value={formContent} setValue={setFormContent} small={false} />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
             <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />

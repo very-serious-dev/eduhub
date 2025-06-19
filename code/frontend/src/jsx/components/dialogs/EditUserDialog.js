@@ -91,6 +91,7 @@ const EditUserDialog = (props) => {
                             <input type="text" value={formName}
                                 className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormName(e.target.value) }}
+                                maxLength={50}
                                 required />
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
@@ -99,6 +100,7 @@ const EditUserDialog = (props) => {
                             <input type="text" value={formSurname}
                                 className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormSurname(e.target.value) }}
+                                maxLength={50}
                                 required />
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Apellidos</label>
@@ -107,6 +109,7 @@ const EditUserDialog = (props) => {
                             <input type="text" value={formUsername}
                                 className={`formInput ${primary(theme)}`}
                                 onChange={e => { setFormUsername(e.target.value) }}
+                                maxLength={50}
                                 required />
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de usuario</label>

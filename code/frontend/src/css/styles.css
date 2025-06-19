@@ -1735,6 +1735,18 @@ body {
   margin-top: 0px;
 }
 
+.textAreaContainer {
+  position: relative
+}
+
+.textAreaCharacterLimit {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  color: #444;
+  font-size: 0.675em;
+}
+
 .formTextArea {
   margin-top: 8px;
   padding: 3px;
