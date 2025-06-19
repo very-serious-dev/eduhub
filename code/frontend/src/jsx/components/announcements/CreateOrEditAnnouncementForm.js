@@ -3,9 +3,9 @@ import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilePicker from "../common/FilePicker";
 import { DocuAPIFetch } from "../../../client/APIFetch";
-import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
-import { textAreaDefaultPlaceholder } from "../../../util/Formatter";
+import TextAreaWithLimit from "../common/TextAreaWithLimit";
 
 const CreateOrEditAnnouncementForm = (props) => {
     const [formTitle, setFormTitle] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.title : "");
@@ -107,12 +107,7 @@ const CreateOrEditAnnouncementForm = (props) => {
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <textarea value={formContent}
-                className={`formTextArea bigText ${borderPrimary(theme)}`}
-                placeholder={textAreaDefaultPlaceholder}
-                onChange={e => { setFormContent(e.target.value) }}
-                onFocus={e => { e.target.placeholder = "Las fotos serán el próximo jueves. Acordaos de:\n\n- Tener dinero para pagar al fotógrafo\n- ¡Venir con una sonrisa! (a pesar de las notas)"; }}
-                onBlur={e => { e.target.placeholder = textAreaDefaultPlaceholder; }} required />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} small={false} />
             <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />

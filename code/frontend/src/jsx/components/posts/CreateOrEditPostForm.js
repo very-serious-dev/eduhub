@@ -3,9 +3,9 @@ import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilePicker from "../common/FilePicker";
 import { DocuAPIFetch } from "../../../client/APIFetch";
-import { accent, accentFormLabel, borderPrimary, pointableSecondary, primary } from "../../../util/Themes";
+import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
-import { textAreaDefaultPlaceholder } from "../../../util/Formatter";
+import TextAreaWithLimit from "../common/TextAreaWithLimit";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY = new Date().toISOString().split("T")[0];
@@ -137,12 +137,7 @@ const CreateOrEditPostForm = (props) => {
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <textarea value={formContent}
-                className={`formTextArea bigText ${borderPrimary(theme)}`}
-                onChange={e => { setFormContent(e.target.value) }}
-                placeholder={textAreaDefaultPlaceholder}
-                onFocus={e => { e.target.placeholder = props.contentPlaceholder; }}
-                onBlur={e => { e.target.placeholder = textAreaDefaultPlaceholder; }} required />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} small={false} />
             <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
             <div className="formInputContainer">
                 <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={props.submitText} />
