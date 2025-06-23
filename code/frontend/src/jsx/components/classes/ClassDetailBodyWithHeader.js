@@ -5,9 +5,10 @@ import EditClassDialog from "../dialogs/EditClassDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { accent, bannerImageSrc, pointableSecondary } from "../../../util/Themes";
 import { useIsMobile } from "../../../util/Responsive";
+import ClassInfoDialog from "../dialogs/ClassInfoDialog";
 
 const ClassDetailBodyWithHeader = (props) => {
-    const [showEditClassPopup, setShowEditClassPopup] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, EDIT_CLASS, CLASS_INFO
     const [amountScrolled, setAmountScrolled] = useState(0);
     const [searchedText, setSearchedText] = useState("");
     const isMobile = useIsMobile();
@@ -50,11 +51,19 @@ const ClassDetailBodyWithHeader = (props) => {
     }
 
     return <>
-        <EditClassDialog show={showEditClassPopup}
-            onDismiss={() => { setShowEditClassPopup(false); }}
-            onClassEdited={onClassEdited}
-            onClassDeleted={onClassDeleted}
-            classId={props.classData.id} />
+        {popupShown === "EDIT_CLASS" &&
+            <EditClassDialog name={props.classData.name}
+                onDismiss={() => { setPopupShown("NONE"); }}
+                onClassEdited={onClassEdited}
+                onClassDeleted={onClassDeleted}
+                shouldShowEvaluationCriteria={true}
+                evaluationCriteria={props.classData.evaluation_criteria}
+                classId={props.classData.id} />}
+        {popupShown === "CLASS_INFO" &&
+            <ClassInfoDialog name={props.classData.name}
+                group={props.classData.group}
+                evaluationCriteria={props.classData.evaluation_criteria}
+                onDismiss={() => { setPopupShown("NONE") }} />}
         <div className="classDetailHeader" style={{ height: headerHeight() }}>
             <img className="classDetailHeaderImage" src={bannerImageSrc(theme)} />
             <div className="classDetailHeaderTitleSearchContainer">
@@ -65,12 +74,13 @@ const ClassDetailBodyWithHeader = (props) => {
                         value={searchedText}
                         onChange={e => { setSearchedText(e.target.value); }}
                         required />
-                    <div className={`underline ${accent(theme)}`}/>
+                    <div className={`underline ${accent(theme)}`} />
                 </form>
             </div>
             <div className="classDetailHeaderTopIcons">
                 {props.classData.should_show_teacher_options === true &&
-                    <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setShowEditClassPopup(true); }}>⚙️</div>}
+                    <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setPopupShown("EDIT_CLASS"); }}>⚙️</div>}
+                <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setPopupShown("CLASS_INFO") }}>📋</div>
                 <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { navigate(-1); }}>✖️</div>
             </div>
         </div>

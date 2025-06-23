@@ -3,10 +3,12 @@ import LoadingHUD from "../common/LoadingHUD";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
 import { ThemeContext } from "../../main/GlobalContainer";
-import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import { accent, accentForeground, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
+import TextAreaWithLimit from "../common/TextAreaWithLimit";
 
 const EditClassDialog = (props) => {
-    const [formName, setFormName] = useState();
+    const [formName, setFormName] = useState(props.name);
+    const [formEvaluationCriteria, setFormEvaluationCriteria] = useState(props.evaluationCriteria ?? "");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const theme = useContext(ThemeContext);
@@ -14,7 +16,11 @@ const EditClassDialog = (props) => {
     const onSubmitEditClass = (event) => {
         event.preventDefault();
         setLoading(true);
-        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}`, { name: formName })
+        const requestBody = { name: formName }
+        if (props.shouldShowEvaluationCriteria) {
+            requestBody.evaluation_criteria = formEvaluationCriteria;
+        }
+        EduAPIFetch("PUT", `/api/v1/classes/${props.classId}`, requestBody)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -53,14 +59,14 @@ const EditClassDialog = (props) => {
             })
     }
 
-    return props.show === true ? showAreYouSurePopup ?
+    return showAreYouSurePopup ?
         <AreYouSureDialog onActionConfirmed={onDeleteClass}
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoading}
             dialogMode="DELETE"
             warningMessage={`¿Deseas eliminar esta clase? Será archivada y dejará de ser accesible. Para restablecerla deberás contactar con un administrador`} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
-            <div className="popup" onClick={e => { e.stopPropagation(); }}>
+            <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Editar clase</div>
                     <form onSubmit={onSubmitEditClass}>
@@ -75,6 +81,10 @@ const EditClassDialog = (props) => {
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
                         </div>
+                        {props.shouldShowEvaluationCriteria && <>
+                            <div className={`evaluationCriteriaLabel ${accentForeground(theme)}`}>Criterios de evaluación</div>
+                            <TextAreaWithLimit value={formEvaluationCriteria} setValue={setFormEvaluationCriteria} maxLength={3000} small={false} />
+                        </>}
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Guardar cambios" />
                         </div>
@@ -85,7 +95,7 @@ const EditClassDialog = (props) => {
                     </div>
                 </div>
             </div>
-        </div> : <></>
+        </div>
 }
 
 export default EditClassDialog;

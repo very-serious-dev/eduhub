@@ -88,6 +88,7 @@ class Class(models.Model):
         YELLOW = 7
 
     name = models.CharField(max_length=50)
+    evaluation_criteria = models.CharField(max_length=3000, null=True)
     theme = models.IntegerField(choices=ClassTheme)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)

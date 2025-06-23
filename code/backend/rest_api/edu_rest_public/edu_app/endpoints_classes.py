@@ -70,6 +70,7 @@ def handle_classes(request):
         group = Group.objects.get(tag=json_group)
         new_class = Class()
         new_class.name = json_name
+        new_class.evaluation_criteria = None
         new_class.group = group
         new_class.theme = __class_theme_for_new_class(group)
         new_class.save()
@@ -116,9 +117,15 @@ def handle_class_detail(request, classId):
         except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_name = body_json.get("name")
+        json_evaluation_criteria = body_json.get("evaluation_criteria")
         if json_name is None:
             return JsonResponse({"error": "Falta name en el cuerpo de la petición"}, status=400)
         classroom.name = json_name
+        if json_evaluation_criteria is not None:
+            # Only update evaluation_criteria if it comes in the JSON body.
+            # In admin panel you can edit the class from a form without
+            # evaluation criteria (admins can't change that)
+            classroom.evaluation_criteria = json_evaluation_criteria
         classroom.save()
         return JsonResponse({"success": True}, status=200)
     elif request.method == "DELETE":

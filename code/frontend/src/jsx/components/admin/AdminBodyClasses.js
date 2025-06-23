@@ -87,12 +87,14 @@ const AdminBodyClasses = (props) => {
                         label: "🎓 Participantes",
                         onClick: () => { setPopupShown("PARTICIPANTS") },
                     },
-                ]}/>
-            <EditClassDialog show={popupShown === "EDIT_CLASS"}
-                onDismiss={() => { setPopupShown("NONE") }}
-                onClassEdited={onClassEdited}
-                onClassDeleted={onClassDeleted}
-                classId={classForPopup.id} />
+                ]} />
+            {popupShown === "EDIT_CLASS" &&
+                <EditClassDialog name={classForPopup.name}
+                    onDismiss={() => { setPopupShown("NONE") }}
+                    onClassEdited={onClassEdited}
+                    onClassDeleted={onClassDeleted}
+                    shouldShowEvaluationCriteria={false}
+                    classId={classForPopup.id} />}
             <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
                 onDismiss={() => { setPopupShown("NONE") }}
                 classroom={classForPopup}

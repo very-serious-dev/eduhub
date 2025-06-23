@@ -151,6 +151,7 @@ def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_
     return {
         "id": classroom.id,
         "name": classroom.name,
+        "evaluation_criteria": classroom.evaluation_criteria,
         "group": classroom.group_id,
         "theme": class_theme(classroom),
         "should_show_teacher_options": isClassEditableByUser,
