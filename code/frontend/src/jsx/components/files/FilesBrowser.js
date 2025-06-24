@@ -3,6 +3,7 @@ import FolderElement from "./FolderElement";
 import DocumentElement from "./DocumentElement";
 import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 import { useIsMobile } from "../../../util/Responsive";
+import FilesBrowserTabWithUpload from "./FilesBrowserTabWithUpload";
 
 const FilesBrowser = (props) => {
     const isMobile = useIsMobile();
@@ -36,16 +37,17 @@ const FilesBrowser = (props) => {
         const tabs = [];
         let level = 1;
         let levelBeingWalked = props.filesTree;
+        let levelBeingWalkedParentFolderId = null;
         let levelBeingWalkedSelectedFolderId;
         do {
-            const newTab = { view: [] }
+            const newTabElements = []
             levelBeingWalkedSelectedFolderId = props.selectedFolderIdsPath.length > level - 1 ? props.selectedFolderIdsPath[level - 1] : undefined;
             if (levelBeingWalked.length === 0) {
-                newTab.view = <FilesEmptyFolderTabContent isEmptyRoot={level === 1} />
+                newTabElements.push(<FilesEmptyFolderTabContent isEmptyRoot={level === 1} />)
             } else {
                 [...levelBeingWalked].sort(orderingCriteria).forEach(element => {
                     if (element.type === "folder") {
-                        newTab.view.push(
+                        newTabElements.push(
                             <FolderElement folder={element}
                                 level={level}
                                 onFolderClicked={onFolderSelected}
@@ -53,10 +55,10 @@ const FilesBrowser = (props) => {
                                 showContextMenu={props.showContextMenu}
                                 showAuthor={props.showAuthor}
                                 filesTree={props.filesTree}
-                                onMoveDeleteSuccess={props.onMoveDeleteSuccess}
-                                onMoveDeleteFail={props.onMoveDeleteFail} />);
+                                onMoveDeleteSuccess={props.onCreateMoveDeleteSuccess}
+                                onMoveDeleteFail={props.onCreateMoveDeleteFail} />);
                     } else if (element.type === "document") {
-                        newTab.view.push(
+                        newTabElements.push(
                             <DocumentElement document={element}
                                 mimeType={element.mime_type}
                                 size={element.size}
@@ -64,16 +66,27 @@ const FilesBrowser = (props) => {
                                 showAuthor={props.showAuthor}
                                 isClickable={props.canClickDocuments}
                                 filesTree={props.filesTree}
-                                onMoveDeleteSuccess={props.onMoveDeleteSuccess}
-                                onMoveDeleteFail={props.onMoveDeleteFail} />);
+                                onMoveDeleteSuccess={props.onCreateMoveDeleteSuccess}
+                                onMoveDeleteFail={props.onCreateMoveDeleteFail} />);
                     }
                 });
+            }
+            if (props.showUploadOrCreateFolder) {
+                tabs.push({
+                    view: <FilesBrowserTabWithUpload
+                        elements={newTabElements}
+                        parentFolderId={levelBeingWalkedParentFolderId}
+                        onCreateSuccess={props.onCreateMoveDeleteSuccess}
+                        onCreateFail={props.onCreateMoveDeleteFail} />
+                });
+            } else {
+                tabs.push({ view: newTabElements });
             }
             if (levelBeingWalkedSelectedFolderId !== undefined) {
                 level += 1;
                 levelBeingWalked = levelBeingWalked.find(e => e.id === levelBeingWalkedSelectedFolderId).children
+                levelBeingWalkedParentFolderId = levelBeingWalkedSelectedFolderId
             }
-            tabs.push(newTab);
         } while (levelBeingWalkedSelectedFolderId !== undefined);
         return tabs;
     }

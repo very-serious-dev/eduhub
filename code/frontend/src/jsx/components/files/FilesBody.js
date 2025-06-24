@@ -1,15 +1,10 @@
 import { useContext, useState } from "react";
-import CreateFolderDialog from "../dialogs/CreateFolderDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
-import UploadDocumentsDialog from "../dialogs/UploadDocumentsDialog";
 import FilesBrowser from "./FilesBrowser";
-import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "./MyFilesFirstTabContent";
 import SharedFilesFirstTabContent from "./SharedFilesFirstTabContent";
-import OptionsDialog from "../dialogs/OptionsDialog";
 
 const FilesBody = (props) => {
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_OR_UPLOAD, CREATE_FOLDER, UPLOAD_DOCUMENTS
     const [currentFolderIdsPath, setCurrentFolderIdsPath] = useState([]);
     const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
     const setFeedback = useContext(FeedbackContext);
@@ -19,14 +14,10 @@ const FilesBody = (props) => {
         setCurrentFolderIdsPath([]);
     }
 
-    const onFolderOrDocumentsChanged = (result) => {
+    const onCreateMoveDeleteSuccess = (result) => {
+        fallbackToPreviousFolderIfCurrentWasMovedOrDeleted(result, currentFolderIdsPath, setCurrentFolderIdsPath);
         setFeedback({ type: "success", message: "Completado con éxito" });
         props.onMyFilesChanged(result);
-    }
-
-    const onMoveDeleteSuccess = (result) => {
-        fallbackToPreviousFolderIfCurrentWasMovedOrDeleted(result, currentFolderIdsPath, setCurrentFolderIdsPath);
-        onFolderOrDocumentsChanged(result);
     }
 
     const fallbackToPreviousFolderIfCurrentWasMovedOrDeleted = (moveOrDeleteResult) => {
@@ -65,42 +56,17 @@ const FilesBody = (props) => {
         </div>
     }
 
-    return <div>
-        <OptionsDialog show={popupShown === "CREATE_OR_UPLOAD"}
-            onDismiss={() => { setPopupShown("NONE") }}
-            options={[
-                {
-                    label: "📁 Crear carpeta",
-                    onClick: () => { setPopupShown("CREATE_FOLDER") },
-                },
-                {
-                    label: "📄 Subir documentos",
-                    onClick: () => { setPopupShown("UPLOAD_DOCUMENTS") },
-                },
-            ]}/>
-        <CreateFolderDialog show={popupShown === "CREATE_FOLDER"}
-            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, getTree())}
-            parentFolderIdsPath={currentFolderIdsPath}
-            onDismiss={() => { setPopupShown("NONE") }}
-            onSuccess={onFolderOrDocumentsChanged}
-            onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
-        <UploadDocumentsDialog show={popupShown === "UPLOAD_DOCUMENTS"}
-            parentFolderStringPath={getStringPathForFolderIdsPath(currentFolderIdsPath, getTree())}
-            parentFolderIdsPath={currentFolderIdsPath}
-            onDismiss={() => { setPopupShown("NONE") }}
-            onSuccess={onFolderOrDocumentsChanged}
-            onFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
-        <FilesBrowser filesTree={getTree()}
-            selectedFolderIdsPath={currentFolderIdsPath}
-            setSelectedFolderIdsPath={setCurrentFolderIdsPath}
-            firstTabView={firstTabView()}
-            showContextMenu={selectedRoot === "MY_FILES"}
-            showAuthor={selectedRoot === "SHARED_WITH_ME"}
-            canClickDocuments={true}
-            onMoveDeleteSuccess={onMoveDeleteSuccess}
-            onMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
-        <div className="card floatingCardAddNew pointable" onClick={() => { setPopupShown("CREATE_OR_UPLOAD") }}>➕ Nuevo</div>
-    </div>
+    return <FilesBrowser filesTree={getTree()}
+        selectedFolderIdsPath={currentFolderIdsPath}
+        setSelectedFolderIdsPath={setCurrentFolderIdsPath}
+        firstTabView={firstTabView()}
+        showContextMenu={selectedRoot === "MY_FILES"}
+        showUploadOrCreateFolder={selectedRoot === "MY_FILES"}
+        showAuthor={selectedRoot === "SHARED_WITH_ME"}
+        canClickDocuments={true}
+        onCreateMoveDeleteSuccess={onCreateMoveDeleteSuccess}
+        onCreateMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
+
 }
 
 export default FilesBody;

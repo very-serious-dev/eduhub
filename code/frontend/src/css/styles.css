@@ -1366,6 +1366,58 @@ body {
   background-color: var(--color-subtle-grey);
 }
 
+.filesBrowserTabWithUploadButton {
+  position: relative;
+  min-height: 70vh; /* Not very beautiful way of ensuring that dropable area isn't small */
+}
+
+.filesBrowserCreateFolderButtonContainer {
+  text-align: center;
+  margin: 5px;
+  padding-bottom: 8px;
+}
+
+.filesBrowserCreateFolderButton {
+  display: inline;
+  font-size: 0.875em;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  background-color: var(--theme-blue-primary);
+}
+
+.filesBrowserCreateFolderButton:hover {
+  cursor: pointer;
+  background-color: var(--theme-blue-secondary);
+}
+
+.filesBrowserUploadSeparatorUnderline {
+  width: calc(100% - 100px);
+  height: 1px;
+  background-color: #ddd;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-bottom: 10px;
+}
+
+.filesBrowserUploadFilesButton {
+  text-align: center;
+  background-color: var(--theme-blue-primary);
+  margin-top: 15px;
+  margin-bottom: 25px;
+  margin-left: 40px;
+  margin-right: 40px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
+.filesBrowserUploadFilesButton:hover {
+  cursor: pointer;
+  background-color: var(--theme-blue-secondary);
+}
+
 .filesElementUnselected {
   background-color: var(--color-subtle-grey);
 }

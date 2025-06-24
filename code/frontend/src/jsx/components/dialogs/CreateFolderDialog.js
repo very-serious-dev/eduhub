@@ -13,10 +13,8 @@ const CreateFolderDialog = (props) => {
         event.preventDefault();
         setLoading(true);
         let body = {
-            name: formFolderName
-        }
-        if (props.parentFolderIdsPath.length > 0) {
-            body["parent_folder_id"] = props.parentFolderIdsPath.slice(-1)[0];
+            name: formFolderName,
+            parent_folder_id: props.parentFolderId
         }
         EduAPIFetch("POST", "/api/v1/folders", body)
             .then(json => {
@@ -36,8 +34,8 @@ const CreateFolderDialog = (props) => {
             })
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
-        <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
+        <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Crear carpeta</div>
                 <form onSubmit={onSubmitCreateFolder}>
@@ -46,14 +44,11 @@ const CreateFolderDialog = (props) => {
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormFolderName(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "Mi carpeta"; }}
-                            onBlur={e => { e.target.placeholder = ""; }} 
+                            onBlur={e => { e.target.placeholder = ""; }}
                             maxLength={50}
                             required />
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre de carpeta</label>
-                    </div>
-                    <div className="formInputContainer">
-                        <input className="formInput formInputGreyBackground" type="text" value={`${props.parentFolderStringPath}${formFolderName}${formFolderName.length > 0 ? "/" : ""}`} disabled={true} />
                     </div>
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear carpeta" />
@@ -62,7 +57,7 @@ const CreateFolderDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default CreateFolderDialog;

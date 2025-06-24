@@ -133,7 +133,7 @@ const FilePicker = (props) => {
                 <div className="filePickerInputContainer">
                     <label className={`filePickerInputLabel pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
                         <input type="file" key={refreshKeyClearInputFiles} multiple={true} onChange={onFilesPickerChanged} />
-                        Seleccionar archivos
+                        Subir archivos
                     </label>{!isMobile && " ó ⬇️📄 arrastra tus ficheros"}
                 </div>
                 <div className="formFilesAttached">

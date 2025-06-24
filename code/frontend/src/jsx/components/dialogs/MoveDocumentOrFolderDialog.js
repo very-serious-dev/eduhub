@@ -64,6 +64,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             selectedFolderIdsPath={selectedFolderIdsPath}
                             setSelectedFolderIdsPath={setSelectedFolderIdsPath}
                             firstTabView={firstTabView()}
+                            showUploadOrCreateFolder={false}
                             showContextMenu={false}
                             showAuthor={false}
                             canClickDocuments={false} />
