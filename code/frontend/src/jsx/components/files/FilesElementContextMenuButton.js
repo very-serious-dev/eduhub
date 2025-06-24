@@ -48,9 +48,9 @@ const FilesElementContextMenuButton = (props) => {
                 if (json.success === true) {
                     props.onMoveDeleteSuccess(json.result);
                 } else {
-                    setLoadingDelete(false);
                     props.onMoveDeleteFail("Se ha producido un error");
                 }
+                setLoadingDelete(false);
                 setPopupShown("NONE");
             })
             .catch(error => {
