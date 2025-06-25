@@ -1,13 +1,18 @@
 from .models import UserSession
+import datetime
+
 
 AUTH_COOKIE_KEY = "EduSessionToken"
+SESSION_LIFETIME_DAYS = 7
 
 class AuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        request.session = self.__get_request_session(request)
+        session = self.__get_request_session(request)
+        if session is not None and self.__is_valid_session(session):
+            request.session = session
         response = self.get_response(request)
         return response
 
@@ -30,3 +35,9 @@ class AuthMiddleware:
             return UserSession.objects.get(token=session_token)
         except UserSession.DoesNotExist:
             return None
+    
+    def __is_valid_session(self, user_session):
+        # TODO: 1 hour sessions, for development purposes
+        return datetime.datetime.now().timestamp() < (user_session.created_at + datetime.timedelta(hours=1)).timestamp()
+        #return datetime.datetime.now().timestamp() < (user_session.created_at + datetime.timedelta(days=SESSION_LIFETIME_DAYS)).timestamp()
+        

@@ -45,6 +45,8 @@ def create_user(request):
             return JsonResponse({"error": "Falta username, name, surname o password en el cuerpo de la petición"}, status=400)
         if not(re.match("^[a-z0-9.]+$", json_username)):
             return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=409)
+        if len(json_password) < 8:
+            return JsonResponse({"error": "La contraseña debe tener por lo menos 8 caracteres"}, status=409)
         if User.objects.filter(username=json_username).exists():
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
         new_user = User()

@@ -10,6 +10,7 @@ import ErrorPage from "../pages/ErrorPage";
 import ClassDetailPage from "../pages/ClassDetailPage";
 import { AssignmentPage } from "../pages/AssignmentPage";
 import AboutPage from "../pages/AboutPage";
+import PasswordResetPage from "../pages/PasswordResetPage";
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="login" element={<LoginPage />}></Route>
             <Route path="classes/:classId" element={<ClassDetailPage />}></Route>
             <Route path="assignments/:assignmentId" element={<AssignmentPage />}></Route>
+            <Route path="reset-password" element={<PasswordResetPage />}></Route>
             <Route path="about" element={<AboutPage />}></Route>
             <Route path="*" element={<ErrorPage errorMessage={"404 - La página que buscas no existe"}/>}></Route>
         </Routes>

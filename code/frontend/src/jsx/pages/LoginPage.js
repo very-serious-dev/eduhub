@@ -4,7 +4,7 @@ import { EduAPIFetch } from "../../client/APIFetch";
 import LoadingHUD from "../components/common/LoadingHUD";
 import { DocuAPIFetch } from "../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../util/Themes";
-import { ThemeContext } from "../main/GlobalContainer";
+import { FeedbackContext, ThemeContext } from "../main/GlobalContainer";
 import { SetSessionInfo } from "../../client/ClientCache";
 
 const LoginPage = () => {
@@ -14,6 +14,7 @@ const LoginPage = () => {
     const [formPassword, setFormPassword] = useState("");
     const navigate = useNavigate();
     const theme = useContext(ThemeContext);
+    const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
         document.title = "Iniciar sesión";
@@ -42,7 +43,12 @@ const LoginPage = () => {
                         })
                 } else {
                     setLoading(false);
-                    setError("Se ha producido un error");
+                    if (eduJson.password_reset_token) {
+                        setFeedback({type: "info", message: eduJson.reason})
+                        navigate(`/reset-password?prt=${eduJson.password_reset_token}`)
+                    } else {
+                        setError("Se ha producido un error");
+                    }
                 }
             })
             .catch(error => {
@@ -52,7 +58,7 @@ const LoginPage = () => {
     }
 
     return <div className="loginMain">
-        <img src="/logo_main.png" className="loginLogo" alt="Logo"/>
+        <img src="/logo_main.png" className="loginLogo" alt="Logo" />
         <div className="loginContainer card">
             <form onSubmit={onSubmitLogin}>
                 <div className="formInputContainer">

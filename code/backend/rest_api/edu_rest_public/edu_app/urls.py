@@ -10,6 +10,7 @@ urlpatterns = [
     path("admin/classes",                            endpoints_admin.get_all_classes),
     path("users",                                    endpoints_users.get_users),
     path("sessions",                                 endpoints_users.login_logout),
+    path("passwords",                                endpoints_users.reset_password),
     path("groups",                                   endpoints_groups.get_all_groups),
     path("groups/<groupTag>/announcements",          endpoints_groups.handle_group_announcements),
     path("announcements/<int:announcementId>",       endpoints_groups.handle_announcement),

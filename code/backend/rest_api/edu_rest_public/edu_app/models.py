@@ -1,5 +1,6 @@
 from django.db import models
 
+# TODO: Gather all config parameters in a single file
 TOKEN_SIZE=30
 
 ##
@@ -25,6 +26,8 @@ class User(models.Model):
     max_folders = models.IntegerField()
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
+    last_password_change = models.DateTimeField(null=True)
+    password_reset_token = models.CharField(max_length=TOKEN_SIZE, unique=True, null=True)
     archived = models.BooleanField(default=False)
 
 class UserSession(models.Model):
@@ -35,6 +38,7 @@ class UserSession(models.Model):
     # See docs/auth_flow.txt for further information
     one_time_token = models.CharField(unique=True, max_length=TOKEN_SIZE)
     one_time_token_already_used = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 ##
 # FILES
