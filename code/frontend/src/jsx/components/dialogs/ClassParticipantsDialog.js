@@ -19,7 +19,6 @@ const ClassParticipantsDialog = (props) => {
     const theme = useContext(ThemeContext);
 
     useEffect(() => {
-        if (!props.show) { return; }
         setLoading(true);
         EduAPIFetch("GET", `/api/v1/classes/${props.classroom.id}/users`)
             .then(json => {
@@ -32,7 +31,7 @@ const ClassParticipantsDialog = (props) => {
                 setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
                 props.onDismiss();
             })
-    }, [props.show, refreshKey]);
+    }, [refreshKey]);
 
     const onRemoveUserClicked = (username) => {
         setAreYouSureDeleteUsername(username);
@@ -76,8 +75,7 @@ const ClassParticipantsDialog = (props) => {
         }
     }
 
-    return props.show === true ?
-        areYouSureDeleteUsername !== undefined ?
+    return areYouSureDeleteUsername !== undefined ?
             <AreYouSureDialog onActionConfirmed={onRemoveUserActionConfirmed}
                 onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
                 isLoading={isLoadingDelete}
@@ -111,7 +109,7 @@ const ClassParticipantsDialog = (props) => {
                                 </div>}
                         </div>
                     </div>
-                </div> : <></>
+                </div>
 
 }
 

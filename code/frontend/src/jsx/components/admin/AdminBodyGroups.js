@@ -28,17 +28,15 @@ const AdminBodyGroups = (props) => {
         <div>
             <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("CREATE_GROUP") }}>➕ Añadir nuevo grupo</div>
         </div>
-        <CreateGroupDialog show={popupShown === "CREATE_GROUP"}
-            onDismiss={() => { setPopupShown("NONE") }}
-            onGroupAdded={onGroupAdded} />
-        <OptionsDialog show={popupShown === "OPTIONS"}
-            onDismiss={() => { setPopupShown("NONE") }}
+        {popupShown === "CREATE_GROUP" && <CreateGroupDialog onDismiss={() => { setPopupShown("NONE") }}
+            onGroupAdded={onGroupAdded} />}
+        {popupShown === "OPTIONS" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
             options={[
                 {
                     label: "📢 Ver tablón de anuncios",
                     onClick: () => { setPopupShown("ANNOUNCEMENTS"); }
                 }
-            ]} />
+            ]} />}
         {popupShown === "ANNOUNCEMENTS" &&
             <AnnouncementsDialog groupTag={groupTagForPopup}
                 onDismiss={() => { setPopupShown("NONE"); }} />}

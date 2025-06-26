@@ -8,13 +8,12 @@ const AssignmentUserStatus = (props) => {
     const theme = useContext(ThemeContext);
 
     return <>
-        <AssignmentSubmitDialog show={showSubmitDialog}
-            author={props.author}
+        {showSubmitDialog && <AssignmentSubmitDialog author={props.author}
             submit={props.submit}
             assignmentId={props.assignmentId}
             canEditScore={props.canEditScore}
             onScoreChanged={props.onScoreChanged}
-            onDismiss={() => { setShowSubmitDialog(false); }} />
+            onDismiss={() => { setShowSubmitDialog(false); }} />}
         <div className={`assignmentCell pointable ${pointableSecondary(theme)}`} onClick={() => { setShowSubmitDialog(true); }}>
             <div className="assignmentCellHeader">
                 <div className="assignmentCellHeaderSurnameAndName">{`${props.author.surname}, ${props.author.name}`}</div>

@@ -3,7 +3,7 @@ import CreateOrEditPostForm from "../posts/CreateOrEditPostForm";
 
 const CreatePostDialog = (props) => {
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <TabbedActivity tabs={[
@@ -34,7 +34,8 @@ const CreatePostDialog = (props) => {
                     tabContentWidthPercentage={100}
                     showTitles={true} />
             </div>
-        </div></div> : <></>
+        </div>
+    </div>
 }
 
 export default CreatePostDialog;

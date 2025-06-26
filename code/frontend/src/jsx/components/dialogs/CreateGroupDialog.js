@@ -60,7 +60,7 @@ const CreateGroupDialog = (props) => {
             })
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nuevo grupo</div>
@@ -119,7 +119,7 @@ const CreateGroupDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default CreateGroupDialog;

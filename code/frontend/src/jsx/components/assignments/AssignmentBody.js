@@ -30,11 +30,10 @@ const AssignmentBody = (props) => {
     }
 
     return <>
-        <EditPostDialog show={showEditAssignmentPopup}
-            post={props.assignmentData}
+        {showEditAssignmentPopup && <EditPostDialog post={props.assignmentData}
             units={props.assignmentData.class_units}
             onFinished={props.onShouldRefresh}
-            onDismiss={() => { setShowEditAssignmentPopup(false); }} />
+            onDismiss={() => { setShowEditAssignmentPopup(false); }} />}
         <div>
             <div className="classDetailHeaderTopIcons">
                 {props.assignmentData.should_show_teacher_options === true &&

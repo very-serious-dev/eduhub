@@ -73,7 +73,7 @@ const CreateUserDialog = (props) => {
         setFormUsername(suggestedUsername);
     }
 
-    return props.show === true ? <div className="popupOverlayBackground"
+    return <div className="popupOverlayBackground"
         onClick={() => { setUsernameDidGainFocusOnce(false); props.onDismiss(); }}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
@@ -147,7 +147,7 @@ const CreateUserDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default CreateUserDialog;

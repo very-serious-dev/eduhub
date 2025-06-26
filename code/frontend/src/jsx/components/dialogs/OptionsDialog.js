@@ -5,7 +5,7 @@ import { ThemeContext } from "../../main/GlobalContainer";
 const OptionsDialog = (props) => {
     const theme = useContext(ThemeContext);
     
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 {props.options.map(option => {
@@ -13,7 +13,7 @@ const OptionsDialog = (props) => {
                 })}
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default OptionsDialog;

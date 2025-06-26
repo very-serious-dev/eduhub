@@ -9,10 +9,7 @@ const EditPostDialog = (props) => {
 
     const onDeletePost = () => {
         setLoadingDelete(true);
-        let body = {
-            post_type: "amend_delete"
-        }
-        EduAPIFetch("POST", `/api/v1/posts/${props.post.id}/amendments`, body)
+        EduAPIFetch("POST", `/api/v1/posts/${props.post.id}/amendments`, { post_type: "amend_delete" })
             .then(json => {
                 setLoadingDelete(false);
                 if (json.success === true) {
@@ -29,7 +26,7 @@ const EditPostDialog = (props) => {
             })
     }
 
-    return props.show === true ? showAreYouSurePopup ?
+    return showAreYouSurePopup ?
         <AreYouSureDialog onActionConfirmed={onDeletePost}
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoadingDelete}
@@ -51,7 +48,8 @@ const EditPostDialog = (props) => {
                         onFinished={props.onFinished}
                         onDismiss={props.onDismiss} />
                 </div>
-            </div></div> : <></>
+            </div>
+        </div>
 }
 
 export default EditPostDialog;

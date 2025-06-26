@@ -13,11 +13,10 @@ const PostsBoardEntryTopRightContent = (props) => {
     }
 
     return <>
-        <EditPostDialog show={showEditPopup}
-            post={props.post}
+        {showEditPopup && <EditPostDialog post={props.post}
             units={props.classUnits}
             onFinished={props.onPostsChanged}
-            onDismiss={() => { setShowEditPopup(false); }} />
+            onDismiss={() => { setShowEditPopup(false); }} />}
         <div className="classDetailEntryTopRightContainer">
             {props.post.unitName && <div className={`classDetailEntryTopRightUnit ${secondary(theme)}`}>{props.post.unitName}</div>}
             {props.showEdit && <div className={`classDetailEntryTopRightEdit pointable ${pointablePrimary(theme)}`} onClick={onEdit}>⚙️</div>}

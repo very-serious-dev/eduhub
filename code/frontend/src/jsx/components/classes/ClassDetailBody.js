@@ -29,15 +29,13 @@ const ClassDetailBody = (props) => {
     }
 
     return <>
-        <CreateEditDeleteUnitDialog show={popupShown === "CREATE_EDIT_UNIT"}
-            classId={props.classData.id}
+        {popupShown === "CREATE_EDIT_UNIT" && <CreateEditDeleteUnitDialog classId={props.classData.id}
             unit={unitForPopup}
             onOperationDone={onOperationFinished}
-            onDismiss={() => { setPopupShown("NONE"); setUnitForPopup({ id: undefined, name: undefined }) }} />
-        <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
-            classroom={props.classData}
+            onDismiss={() => { setPopupShown("NONE"); setUnitForPopup({ id: undefined, name: undefined }) }} />}
+        {popupShown === "PARTICIPANTS" && <ClassParticipantsDialog classroom={props.classData}
             shouldShowEditButton={props.classData.should_show_teacher_options}
-            onDismiss={() => { setPopupShown("NONE") }} />
+            onDismiss={() => { setPopupShown("NONE") }} />}
         <div className="classDetailBodyContainer">
             <div className="classDetailBodyColumn1">
                 <PostsBoard classData={props.classData} searchedText={props.searchedText} onPostsChanged={onOperationFinished} />

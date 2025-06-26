@@ -6,14 +6,10 @@ import { accent, accentFormLabel, pointableSecondary, primary } from "../../../u
 import { ThemeContext } from "../../main/GlobalContainer";
 
 const CreateEditDeleteUnitDialog = (props) => {
-    const [formName, setFormName] = useState("");
+    const [formName, setFormName] = useState(props.unit.name ?? "");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const theme = useContext(ThemeContext);
-
-    useEffect(() => {
-        setFormName(props.unit.name ?? "")
-    }, [props.show]);
 
     const isEditingUnit = () => { return props.unit.id !== undefined }
 
@@ -66,8 +62,7 @@ const CreateEditDeleteUnitDialog = (props) => {
             })
     }
 
-    return props.show === true ? showAreYouSurePopup ?
-        <AreYouSureDialog onActionConfirmed={onDeleteUnit}
+    return showAreYouSurePopup ? <AreYouSureDialog onActionConfirmed={onDeleteUnit}
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoading}
             dialogMode="DELETE"
@@ -98,7 +93,7 @@ const CreateEditDeleteUnitDialog = (props) => {
                     </div>}
                 </div>
             </div>
-        </div> : <></>
+        </div>
 }
 
 export default CreateEditDeleteUnitDialog;

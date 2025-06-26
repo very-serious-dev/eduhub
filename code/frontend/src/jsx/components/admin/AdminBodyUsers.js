@@ -70,18 +70,16 @@ const AdminBodyUsers = (props) => {
             <div>
                 <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("CREATE_USER") }}>➕ Añadir nuevo usuario</div>
             </div>
-            <CreateUserDialog show={popupShown === "CREATE_USER"}
-                onDismiss={() => { setPopupShown("NONE") }}
+            {popupShown === "CREATE_USER" && <CreateUserDialog onDismiss={() => { setPopupShown("NONE") }}
                 onUserAdded={onUserAdded}
-                groups={props.groups} />
-            <OptionsDialog show={popupShown === "OPTIONS"}
-                onDismiss={() => { setPopupShown("NONE") }}
+                groups={props.groups} />}
+            {popupShown === "OPTIONS" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
                 options={[
                     {
                         label: "⚙️ Editar",
                         onClick: () => { setPopupShown("EDIT_USER"); }
                     }
-                ]} />
+                ]} />}
             {popupShown === "EDIT_USER" &&
                 <EditUserDialog user={userForPopup}
                     onUserEdited={onUserEdited}

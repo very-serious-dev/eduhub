@@ -70,14 +70,10 @@ const AdminBodyClasses = (props) => {
             <div>
                 <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("ADD_CLASS") }}>➕ Añadir nueva clase</div>
             </div>
-            {/* TODO: Remove all usages of show prop, and let the boolean flag with &&
-              *       decide to not render the stuff beforehand; many usages across the app!*/}
-            <CreateClassDialog show={popupShown === "ADD_CLASS"}
-                onDismiss={() => { setPopupShown("NONE") }}
+            {popupShown === "ADD_CLASS" && <CreateClassDialog onDismiss={() => { setPopupShown("NONE") }}
                 onClassAdded={onClassAdded}
-                groups={props.groups} />
-            <OptionsDialog show={popupShown === "MENU_PARTICIPANTS_OR_EDIT"}
-                onDismiss={() => { setPopupShown("NONE") }}
+                groups={props.groups} />}
+            {popupShown === "MENU_PARTICIPANTS_OR_EDIT" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
                 options={[
                     {
                         label: "⚙️ Editar",
@@ -87,7 +83,7 @@ const AdminBodyClasses = (props) => {
                         label: "🎓 Participantes",
                         onClick: () => { setPopupShown("PARTICIPANTS") },
                     },
-                ]} />
+                ]} />}
             {popupShown === "EDIT_CLASS" &&
                 <EditClassDialog name={classForPopup.name}
                     onDismiss={() => { setPopupShown("NONE") }}
@@ -95,10 +91,9 @@ const AdminBodyClasses = (props) => {
                     onClassDeleted={onClassDeleted}
                     shouldShowEvaluationCriteria={false}
                     classId={classForPopup.id} />}
-            <ClassParticipantsDialog show={popupShown === "PARTICIPANTS"}
-                onDismiss={() => { setPopupShown("NONE") }}
+            {popupShown === "PARTICIPANTS" && <ClassParticipantsDialog onDismiss={() => { setPopupShown("NONE") }}
                 classroom={classForPopup}
-                shouldShowEditButton={true} />
+                shouldShowEditButton={true} />}
             {isRequestFailed ? <div>¡Vaya! Algo ha fallado 😔</div>
                 : <div className="adminSubpanelList">
                     {classes.map(c => {

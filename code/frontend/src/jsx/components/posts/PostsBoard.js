@@ -7,7 +7,7 @@ import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 
 const PostsBoard = (props) => {
-    const [showNewPost, setShowNewPost] = useState(false);
+    const [showCreatePost, setShowCreatePost] = useState(false);
     const theme = useContext(ThemeContext);
 
     const shouldFilterPosts = () => {
@@ -22,14 +22,13 @@ const PostsBoard = (props) => {
     }
 
     return <>
-        <CreatePostDialog show={showNewPost}
-            classId={props.classData.id}
+        {showCreatePost && <CreatePostDialog classId={props.classData.id}
             units={props.classData.units}
             onFinished={props.onPostsChanged}
-            onDismiss={() => { setShowNewPost(false); }} />
+            onDismiss={() => { setShowCreatePost(false); }} />}
         <div className="postsBoardContainer">
             {props.classData.should_show_teacher_options && <div className={`card postsBoardPublishButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-                onClick={() => { setShowNewPost(true); }}>➕ Nueva publicación</div>}
+                onClick={() => { setShowCreatePost(true); }}>➕ Nueva publicación</div>}
             {squashedPosts(props.classData.posts)
                 .map(p => {
                     if (p.unit_id) {

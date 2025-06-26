@@ -56,7 +56,7 @@ const MoveDocumentOrFolderDialog = (props) => {
 
     const targetFolderPath = getFolderNamesForFolderIdsPath(selectedFolderIdsPath, props.filesTree);
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
+    return <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Carpeta de destino</div>
@@ -83,7 +83,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default MoveDocumentOrFolderDialog;

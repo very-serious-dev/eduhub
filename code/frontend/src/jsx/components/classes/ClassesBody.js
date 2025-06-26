@@ -33,11 +33,10 @@ const ClassesBody = (props) => {
     }
 
     return <div>
-        <CreateClassDialog show={showAddClassPopup}
-            onDismiss={() => { setShowAddClassPopup(false) }}
+        {showAddClassPopup && <CreateClassDialog onDismiss={() => { setShowAddClassPopup(false) }}
             onClassAdded={props.onClassAdded}
             groups={allGroups}
-            automaticallyAddTeacher={true} />
+            automaticallyAddTeacher={true} />}
         {props.groups.map(g => {
             const classes = props.classes.filter(c => c.group === g.tag)
             return <GroupClassesSection groupTag={g.tag} latestUpdate={g.latest_update} classes={classes} />

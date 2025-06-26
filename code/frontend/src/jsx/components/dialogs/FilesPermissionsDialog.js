@@ -17,7 +17,6 @@ const FilesPermissionsDialog = (props) => {
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
-        if (props.show !== true) { return; }
         setLoading(true);
         let url;
         if (props.folderId) {
@@ -37,7 +36,7 @@ const FilesPermissionsDialog = (props) => {
                 setLoading(false);
                 setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
             })
-    }, [props.show, refreshKey]);
+    }, [refreshKey]);
 
     const onRemoveUserClicked = (username) => {
         setAreYouSureDeleteUsername(username);
@@ -94,31 +93,30 @@ const FilesPermissionsDialog = (props) => {
         return `/api/v1/files/permissions${getSelfAndChildrenIdsForQueryParam()}`;
     }
 
-    return props.show === true ?
-        areYouSureDeleteUsername !== undefined ?
-            <AreYouSureDialog onActionConfirmed={onRemoveUserActionConfirmed}
-                onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
-                isLoading={isLoadingDelete}
-                dialogMode="DELETE"
-                warningMessage={`¿Deseas retirar el acceso para ${areYouSureDeleteUsername}?${props.folderId !== undefined ? " Ya no podrá acceder a la carpeta ni a ningún elemento contenido en ella" : ""}`} />
-            : showAddUsers ?
-                <SearchUsersSubDialog addUsersUrl={filePermissionsSubTreeUrl()}
-                    dialogTitle={`Dar acceso a`}
-                    onUserAdded={onUserAdded}
-                    onDismiss={() => { setShowAddUsers(false) }}
-                    usersToIgnore={[GetSessionUsername()]} />
-                : <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
-                    <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
-                        <div className="card dialogBackground">
-                            <div className="dialogTitle">{props.title}</div>
-                            {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
-                            <div className="participantsContainer">
-                                {users && users.length > 0 ? users.map(u => <UserCard user={u} onDeleteWithUsername={onRemoveUserClicked} />) : <div className="emptyParticipants">No has dado permisos de lectura a nadie para este fichero.<br /></div>}
-                            </div>
-                            <div className="card addParticipant pointable primaryBlue pointableSecondaryBlue" onClick={() => { setShowAddUsers(true); }}>➕ Añadir usuarios</div>
+    return areYouSureDeleteUsername !== undefined ?
+        <AreYouSureDialog onActionConfirmed={onRemoveUserActionConfirmed}
+            onDismiss={() => { setAreYouSureDeleteUsername(undefined); }}
+            isLoading={isLoadingDelete}
+            dialogMode="DELETE"
+            warningMessage={`¿Deseas retirar el acceso para ${areYouSureDeleteUsername}?${props.folderId !== undefined ? " Ya no podrá acceder a la carpeta ni a ningún elemento contenido en ella" : ""}`} />
+        : showAddUsers ?
+            <SearchUsersSubDialog addUsersUrl={filePermissionsSubTreeUrl()}
+                dialogTitle={`Dar acceso a`}
+                onUserAdded={onUserAdded}
+                onDismiss={() => { setShowAddUsers(false) }}
+                usersToIgnore={[GetSessionUsername()]} />
+            : <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
+                <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
+                    <div className="card dialogBackground">
+                        <div className="dialogTitle">{props.title}</div>
+                        {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
+                        <div className="participantsContainer">
+                            {users && users.length > 0 ? users.map(u => <UserCard user={u} onDeleteWithUsername={onRemoveUserClicked} />) : <div className="emptyParticipants">No has dado permisos de lectura a nadie para este fichero.<br /></div>}
                         </div>
+                        <div className="card addParticipant pointable primaryBlue pointableSecondaryBlue" onClick={() => { setShowAddUsers(true); }}>➕ Añadir usuarios</div>
                     </div>
-                </div> : <></>
+                </div>
+            </div>
 }
 
 export default FilesPermissionsDialog;

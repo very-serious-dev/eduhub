@@ -15,13 +15,6 @@ const CreateClassDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
-    useEffect(() => { // FIX: This ensures that formGroup isn't NOT_VALID when displayed
-        // Otherwise, the submit button would appear disabled initially
-        if (formGroup === NOT_VALID) {
-            setFormGroup(initialGroupValue());
-        }
-    }, [props.show]);
-
     const onSubmitAddClass = (event) => {
         event.preventDefault();
         setLoading(true);
@@ -48,7 +41,7 @@ const CreateClassDialog = (props) => {
             })
     }
 
-    return props.show === true ? <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <div className="dialogTitle">Nueva clase</div>
@@ -84,7 +77,7 @@ const CreateClassDialog = (props) => {
                 </form>
             </div>
         </div>
-    </div> : <></>
+    </div>
 }
 
 export default CreateClassDialog;

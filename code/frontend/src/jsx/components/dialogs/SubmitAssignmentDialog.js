@@ -74,7 +74,7 @@ const SubmitAssignmentDialog = (props) => {
         uploadFilesThenSendEduRequest();
     }
 
-    return props.show === true ? showAreYouSurePopup ?
+    return showAreYouSurePopup ?
         <AreYouSureDialog onActionConfirmed={onSubmit}
             onDismiss={() => { setShowAreYouSurePopup(false); }}
             isLoading={isLoading}
@@ -93,7 +93,7 @@ const SubmitAssignmentDialog = (props) => {
                     </form>
                 </div>
             </div>
-        </div> : <></>
+        </div>
 }
 
 export default SubmitAssignmentDialog;

@@ -71,19 +71,17 @@ const FilesElementContextMenuButton = (props) => {
                 <div className="contextMenuItem pointable" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>
             </div></>
         }
-        <FilesPermissionsDialog show={popupShown === "SHARE"}
-            onDismiss={() => { setPopupShown("NONE"); }}
+        {popupShown === "SHARE" && <FilesPermissionsDialog onDismiss={() => { setPopupShown("NONE"); }}
             documentId={props.document ? props.document.identifier : undefined}
             folderId={props.folder ? props.folder.id : undefined}
             title={`"${elementName()}" está compartido  con...`}
-            subTreeIds={getSelfAndChildrenIds()} />
-        <MoveDocumentOrFolderDialog show={popupShown === "MOVE"}
-            onDismiss={() => { setPopupShown("NONE"); }}
+            subTreeIds={getSelfAndChildrenIds()} />}
+        {popupShown === "MOVE" && <MoveDocumentOrFolderDialog onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}
             onFail={props.onMoveDeleteFail}
             folderId={props.folder ? props.folder.id : undefined}
             documentId={props.document ? props.document.identifier : undefined}
-            filesTree={props.filesTree} />
+            filesTree={props.filesTree} />}
         {popupShown === "DELETE" &&
             <AreYouSureDialog onActionConfirmed={onDelete}
                 onDismiss={() => { setPopupShown("NONE"); }}

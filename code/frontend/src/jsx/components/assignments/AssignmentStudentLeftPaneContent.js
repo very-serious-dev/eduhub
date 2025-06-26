@@ -26,17 +26,16 @@ const AssignmentStudentLeftPaneContent = (props) => {
     }
 
     return <>
-        <SubmitAssignmentDialog show={showSubmit}
-            assignmentId={props.assignmentData.id}
+        {showSubmit && <SubmitAssignmentDialog assignmentId={props.assignmentData.id}
             onDismiss={() => { setShowSubmit(false); }}
-            onSubmitCreated={onSubmitCreated} />
+            onSubmitCreated={onSubmitCreated} />}
         <div className="assignmentDetailLeftPaneTitle">
             💼 Tu trabajo
         </div>
         <div className={`classDetailSectionUnderline ${accent(theme)}`} />
         {props.assignmentData.your_submit !== undefined
             ? <>
-                {/* assignmentId | onScoreChanged are only needed from
+                {/* assignmentId | onScoreChanged are only needed in
                     AssignmentTeacherLeftPaneContent so as to PUT scores */ }
                 <AssignmentUserStatus submit={props.assignmentData.your_submit}
                     author={props.assignmentData.your_submit.author}
