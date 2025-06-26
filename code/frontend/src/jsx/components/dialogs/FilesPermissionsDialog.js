@@ -115,7 +115,7 @@ const FilesPermissionsDialog = (props) => {
                             <div className="participantsContainer">
                                 {users && users.length > 0 ? users.map(u => <UserCard user={u} onDeleteWithUsername={onRemoveUserClicked} />) : <div className="emptyParticipants">No has dado permisos de lectura a nadie para este fichero.<br /></div>}
                             </div>
-                            <div className="card addParticipant pointable" onClick={() => { setShowAddUsers(true); }}>➕ Añadir usuarios</div>
+                            <div className="card addParticipant pointable primaryBlue pointableSecondaryBlue" onClick={() => { setShowAddUsers(true); }}>➕ Añadir usuarios</div>
                         </div>
                     </div>
                 </div> : <></>

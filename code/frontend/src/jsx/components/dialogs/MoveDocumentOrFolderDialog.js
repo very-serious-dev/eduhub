@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
-import { getStringPathForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
+import { getFolderNamesForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
@@ -54,6 +54,8 @@ const MoveDocumentOrFolderDialog = (props) => {
         </div>
     }
 
+    const targetFolderPath = getFolderNamesForFolderIdsPath(selectedFolderIdsPath, props.filesTree);
+
     return props.show === true ? <div className="popupOverlayBackground" onClick={(e) => { e.stopPropagation(); props.onDismiss() }}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
@@ -72,10 +74,10 @@ const MoveDocumentOrFolderDialog = (props) => {
                     <div className="formInputContainer">
                         <input className="formInput formInputGreyBackground"
                             type="text"
-                            value={getStringPathForFolderIdsPath(selectedFolderIdsPath, props.filesTree)} disabled={true} />
+                            value={`/${targetFolderPath.join('/')}${targetFolderPath.length > 0 ? '/' : ''}`} disabled={true} />
                     </div>
                     <div className="formInputContainer">
-                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Mover" />
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={`Mover a ${targetFolderPath.length > 0 ? `"${targetFolderPath.slice(-1)[0]}/"` : 'la raíz de Tu unidad'}`} />
                     </div>
                     {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
