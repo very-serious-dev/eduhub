@@ -1900,23 +1900,6 @@ body {
   opacity: 0;
 }
 
-.dropAreaTextContainer {
-  position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%);
-}
-
-.dropAreaText {
-  font-size: 1.5em;
-}
-
-.dropAreaSubtitle {
-  text-align: center;
-  font-size: 1em;
-  font-weight: bold;
-}
-
 .filePickerItem {
   background-color: white;
   border-radius: 999px;

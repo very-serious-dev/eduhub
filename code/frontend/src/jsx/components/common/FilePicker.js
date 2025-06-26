@@ -146,11 +146,6 @@ const FilePicker = (props) => {
                     onDragLeave={e => { setDropAreaActive(false) }}
                     onDrop={onFilesDroped} >
                     <div className={`dropAreaBackground ${dropAreaActive ? `${secondary(theme)} dropAreaBackgroundActive` : primary(theme)}`} />
-                    <div className="dropAreaTextContainer">
-                        {/* TODO: Some issues with this text in the files browser? */}
-                        <p className="dropAreaText">⬇️📄 Arrástralo aquí</p>
-                        {dropAreaActive && <p className="dropAreaSubtitle">👍 ¡Perfecto! Suéltalo</p>}
-                    </div>
                 </div>
             </div>
         </>
