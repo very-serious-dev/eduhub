@@ -3,6 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from .models import User, Group, Class, UserClass, UserSession
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
+from .preconditions import require_role
 
 TEACHER_MAX_FOLDERS = 500
 TEACHER_MAX_DOCUMENTS = 2000
@@ -11,20 +12,17 @@ STUDENT_MAX_FOLDERS = 50
 STUDENT_MAX_DOCUMENTS = 200
 STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 512 # 500Mb
 
-def home(request):
-    if request.method == "GET":
-        admin_auth_error = __admin_auth_json_error_response(request)
-        if admin_auth_error is not None:
-            return admin_auth_error
-        users_count = User.objects.filter(archived=False).count()
-        classes_count = Class.objects.filter(archived=False).count()
-        serialized_groups = []
-        groups = Group.objects.all()
-        return JsonResponse({"usersCount": users_count,
-                             "classesCount": classes_count,
-                             "groups": groups_array_to_json(groups) })
-    else:
-        return JsonResponse({"error": "Unsupported"}, status=405)
+@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
+def get_admin_home(request):
+    users_count = User.objects.filter(archived=False).count()
+    classes_count = Class.objects.filter(archived=False).count()
+    serialized_groups = []
+    groups = Group.objects.all()
+    return JsonResponse({
+                         "usersCount": users_count,
+                         "classesCount": classes_count,
+                         "groups": groups_array_to_json(groups)
+                        })
     
 def create_user(request):
     if request.method == "POST":

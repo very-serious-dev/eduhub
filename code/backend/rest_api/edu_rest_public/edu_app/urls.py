@@ -1,8 +1,9 @@
 from django.urls import path
+from . import facade
 from . import endpoints_users, endpoints_groups, endpoints_classes, endpoints_admin, endpoints_posts, endpoints_documents
 
 urlpatterns = [
-    path("admin/home",                               endpoints_admin.home),
+    path("admin/home",                               facade.admin_home),
     path("admin/users",                              endpoints_admin.create_user),
     path("admin/users/<username>",                   endpoints_admin.handle_user),
     path("admin/teachers",                           endpoints_admin.get_teachers),
