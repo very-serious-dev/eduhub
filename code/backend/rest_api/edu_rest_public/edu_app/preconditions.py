@@ -1,5 +1,6 @@
 import json, re
 from django.http import JsonResponse
+from .models import User
 
 """
 Decorators
@@ -34,18 +35,14 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Error interno del servidor. Por favor, contacta con un administrador"}, status=500)
     return wrapped
 
-def require_role(roles_list):
-    def decorate(endpoint_function):
-        def wrapper(*args, **kwargs):
-            request = args[0]
-            if request.session is None:
-                raise Unauthorized
-            if request.session.user.role not in roles_list:
-                raise Forbidden
-            else:
-                return endpoint_function(*args, **kwargs)
-        return wrapper
-    return decorate
+def require_role(roles_list, request):
+    if request.session is None:
+        raise Unauthorized
+    if request.session.user.role not in roles_list:
+        raise Forbidden
+
+def required_valid_session(request):
+    require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 
 """
 Helpers

@@ -3,7 +3,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from .models import User, Group, Class, UserClass, UserSession
 from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
-from .preconditions import require_role, get_from_db, BadRequest, ConflictUserAlreadyExists, ConflictGroupAlreadyExists
+from .preconditions import get_from_db, BadRequest, ConflictUserAlreadyExists, ConflictGroupAlreadyExists
 
 TEACHER_MAX_FOLDERS = 500
 TEACHER_MAX_DOCUMENTS = 2000
@@ -12,19 +12,15 @@ STUDENT_MAX_FOLDERS = 50
 STUDENT_MAX_DOCUMENTS = 200
 STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 512 # 500Mb
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def get_admin_home(request):
     users_count = User.objects.filter(archived=False).count()
     classes_count = Class.objects.filter(archived=False).count()
     serialized_groups = []
     groups = Group.objects.all()
-    return JsonResponse({
-                         "usersCount": users_count,
+    return JsonResponse({"usersCount": users_count,
                          "classesCount": classes_count,
-                         "groups": groups_array_to_json(groups)
-                        })
+                         "groups": groups_array_to_json(groups)})
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def create_user(request, username, name, surname, password, student_group, is_teacher):
     if User.objects.filter(username=username).exists():
         raise ConflictUserAlreadyExists
@@ -44,7 +40,6 @@ def create_user(request, username, name, surname, password, student_group, is_te
     new_user.save()
     return JsonResponse({"success": True}, status=201)
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def edit_user(request, path_username, json_username, name, surname, password):
     if path_username != json_username:
         if User.objects.filter(username=json_username).exists():
@@ -58,7 +53,6 @@ def edit_user(request, path_username, json_username, name, surname, password):
     user.save()
     return JsonResponse({"success": True}, status=201)
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def delete_user(request, username):
     user = get_from_db(User, username=username, archived=False)
     user.archived = True
@@ -66,12 +60,10 @@ def delete_user(request, username):
     UserSession.objects.filter(user=user).delete()
     return JsonResponse({"success": True}, status=200)
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def get_teachers(request):
     users = User.objects.filter(Q(role=User.UserRole.TEACHER) | Q(role=User.UserRole.TEACHER_SYSADMIN) | Q(role=User.UserRole.TEACHER_LEADER)).filter(archived=False)
     return JsonResponse({"teachers": users_array_to_json(users) })
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def create_group(request, tag, name, year, tutor_username):
     if Group.objects.filter(tag=tag, year=year).exists():
         raise ConflictGroupAlreadyExists
@@ -83,7 +75,6 @@ def create_group(request, tag, name, year, tutor_username):
     new_group.save()
     return JsonResponse({"success": True}, status=201)
 
-@require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 def get_all_classes(request):
     classes = Class.objects.filter(archived=False)
     return JsonResponse({"classes": classes_array_to_json(classes) })

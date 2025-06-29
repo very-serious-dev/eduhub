@@ -26,6 +26,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# https://docs.djangoproject.com/en/5.2/ref/settings/#data-upload-max-memory-size
+# Defaults to 2.5Mb (2.5 * 1024 * 1024)
+# Here we reduce it to 20Kb (20 * 1024) because the larger expected POST data
+# is 3000 characters + a few more small fields, so even using UTF8 4 byte chars,
+# that would be ~3500 * 4 ~= 14000 bytes. 20Kb is safe enough and (I believe)
+# makes the server more robust against maliciously large request bodies.
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20 * 1024 # 20 Kb
 
 INSTALLED_APPS = [
     'edu_app.apps.EduAppConfig'

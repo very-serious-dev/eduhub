@@ -1,9 +1,20 @@
 from . import endpoints_admin
-from .preconditions import maybe_unhappy, expect_body_with, validate_username, validate_password, validate_tag, validate_year, Unsupported
+from .preconditions import maybe_unhappy, expect_body_with, require_role, validate_username, validate_password, validate_tag, validate_year, Unsupported
+from .models import User
+
+"""
+facade.py
+--
+The methods in here:
+* Ensure that the requester has the right user privileges.
+* Deserialize and statically validates any parameters
+* Invoke the appropriate handler according to the HTTP method and semantics
+"""
 
 @maybe_unhappy
 def admin_home(request):
     if request.method == "GET":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         return endpoints_admin.get_admin_home(request)
     else:
         raise Unsupported
@@ -11,6 +22,7 @@ def admin_home(request):
 @maybe_unhappy
 def admin_create_user(request):
     if request.method == "POST":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         username, name, surname, password, student_group, is_teacher = expect_body_with('username', 'name', 'surname', 'password', optional=['student_group', 'is_teacher'], request=request)
         validate_username(username)
         validate_password(password)
@@ -21,6 +33,7 @@ def admin_create_user(request):
 @maybe_unhappy
 def admin_edit_delete_user(request, username):
     if request.method == "PUT":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         json_username, name, surname, password = expect_body_with('username', 'name', 'surname', optional=['password'], request=request)
         validate_username(username)
         if password is not None:
@@ -34,6 +47,7 @@ def admin_edit_delete_user(request, username):
 @maybe_unhappy
 def admin_get_teachers(request):
     if request.method == "GET":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         return endpoints_admin.get_teachers(request)
     else:
         raise Unsupported
@@ -41,6 +55,7 @@ def admin_get_teachers(request):
 @maybe_unhappy
 def admin_create_group(request):
     if request.method == "POST":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         tag, name, year, tutor_username = expect_body_with('tag', 'name', 'year', 'tutor_username', request=request)
         validate_tag(tag)
         validate_year(year)
@@ -51,6 +66,7 @@ def admin_create_group(request):
 @maybe_unhappy
 def admin_get_classes(request):
     if request.method == "GET":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         return endpoints_admin.get_all_classes(request)
     else:
         raise Unsupported

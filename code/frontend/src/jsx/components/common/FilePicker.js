@@ -5,7 +5,7 @@ import { ThemeContext } from "../../main/GlobalContainer";
 import { useIsMobile } from "../../../util/Responsive";
 
 const FilePicker = (props) => {
-    const MAX_SIZE = { nBytes: 1024 * 1024 * 50, humanReadable: "50 MB" }
+    const MAX_SIZE = { nBytes: 1024 * 1024 * 50, humanReadable: "50 MB" } // @see docu_rest/settings.py DATA_UPLOAD_MAX_MEMORY_SIZE
     const MAX_ATTACHMENTS = 5;
     const [isReadingFiles, setReadingFiles] = useState(false);
     const isMobile = useIsMobile();
