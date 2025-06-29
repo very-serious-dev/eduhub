@@ -1,6 +1,6 @@
 from django.urls import path
 from .preconditions import facade
-from .endpoints import users, groups, classes, posts, documents
+from .endpoints import groups, classes, posts, documents
 
 urlpatterns = [
     path("admin/home",                               facade.admin_home),
@@ -9,12 +9,12 @@ urlpatterns = [
     path("admin/teachers",                           facade.admin_get_teachers),
     path("admin/groups",                             facade.admin_create_group),
     path("admin/classes",                            facade.admin_get_classes),
-    path("users",                                    users.get_users),
-    path("sessions",                                 users.login_logout),
-    path("passwords",                                users.reset_password),
-    path("groups",                                   groups.get_all_groups),
-    path("groups/<groupTag>/announcements",          groups.handle_group_announcements),
-    path("announcements/<int:announcementId>",       groups.handle_announcement),
+    path("users",                                    facade.users_search),
+    path("sessions",                                 facade.users_login_logout),
+    path("passwords",                                facade.users_reset_password),
+    path("groups",                                   facade.groups_get_all),
+    path("groups/<group_tag>/announcements",         facade.groups_create_get_announcements),
+    path("announcements/<int:a_id>",                 facade.groups_edit_delete_announcement),
     path("classes",                                  classes.handle_classes),
     path("classes/<int:classId>",                    classes.handle_class_detail),
     path("classes/<int:classId>/users",              classes.handle_class_participants),

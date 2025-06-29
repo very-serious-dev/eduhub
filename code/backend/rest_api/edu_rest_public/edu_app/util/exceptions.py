@@ -16,7 +16,13 @@ class BadRequestInvalidYear(Exception):
 class Unauthorized(Exception):
     pass
 
+class UnauthorizedIncorrectPassword(Exception):
+    pass
+
 class Forbidden(Exception):
+    pass
+
+class ForbiddenExceededLoginAttempts(Exception):
     pass
 
 class NotFound(Exception):

@@ -1,6 +1,6 @@
-from ..endpoints import admin
+from ..endpoints import admin, users, groups
 from ..models import User
-from ..util.helpers import maybe_unhappy, expect_body_with, require_role, validate_username, validate_password, validate_tag, validate_year
+from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year
 from ..util.exceptions import Unsupported
 
 """
@@ -71,3 +71,65 @@ def admin_get_classes(request):
         return admin.get_all_classes(request)
     else:
         raise Unsupported
+
+@maybe_unhappy
+def users_search(request):
+    if request.method == "GET":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        q = request.GET.get("search")
+        return users.search(request, q)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def users_login_logout(request):
+    if request.method == "POST":
+        username, password = expect_body_with('username', 'password', request=request)
+        return users.login(request, username, password)
+    elif request.method == "DELETE":
+        require_valid_session(request=request)
+        return users.logout(request)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def users_reset_password(request):
+    if request.method == "POST":
+        password, new_password, password_reset_token = expect_body_with('password', 'new_password', 'password_reset_token', request=request)
+        validate_password(new_password)
+        return users.reset_password(password, new_password, password_reset_token)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def groups_get_all(request):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return groups.all(request)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def groups_create_get_announcements(request, group_tag):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return groups.get_announcements(request, group_tag)
+    elif request.method == "POST":
+        require_valid_session(request=request)
+        title, content, files = expect_body_with('title', 'content', 'files', request=request)
+        return groups.create_announcement(request, group_tag, title, content, files)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def groups_edit_delete_announcement(request, a_id):
+    if request.method == "PUT":
+        require_valid_session(request=request)
+        title, content, files = expect_body_with('title', 'content', 'files', request=request)
+        return groups.edit_announcement(request, a_id, title, content, files)
+    elif request.method == "DELETE":
+        require_valid_session(request=request)
+        return groups.delete_announcement(request, a_id)
+    else:
+        raise Unsupported
+

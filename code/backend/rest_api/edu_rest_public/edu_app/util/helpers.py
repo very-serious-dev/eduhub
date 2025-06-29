@@ -1,35 +1,39 @@
 import json, re
 from django.http import JsonResponse
-from .exceptions import BadRequest, BadRequestInvalidPassword, BadRequestInvalidUsername, BadRequestInvalidTag, BadRequestInvalidYear, Unauthorized, Forbidden, NotFound, Unsupported, ConflictUserAlreadyExists, ConflictGroupAlreadyExists, InternalError
+from . import exceptions as e
 from ..models import User
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
         try:
             return endpoint_function(*args, **kwargs)
-        except BadRequest:
+        except e.BadRequest:
             return JsonResponse({"error": "La petición no es válida o faltan parámetros"}, status=400)
-        except BadRequestInvalidPassword:
+        except e.BadRequestInvalidPassword:
             return JsonResponse({"error": "La contraseña debe tener por lo menos 8 caracteres"}, status=400)
-        except BadRequestInvalidUsername:
+        except e.BadRequestInvalidUsername:
             return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=400)
-        except BadRequestInvalidTag:
+        except e.BadRequestInvalidTag:
             return JsonResponse({"error": "El tag no es válido. Sólo puede contener letras y dígitos"}, status=409)
-        except BadRequestInvalidYear:
+        except e.BadRequestInvalidYear:
             return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=409)
-        except Unauthorized:
+        except e.Unauthorized:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
-        except Forbidden:
+        except e.UnauthorizedIncorrectPassword:
+            return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
+        except e.Forbidden:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
-        except NotFound:
+        except e.ForbiddenExceededLoginAttempts:
+            return JsonResponse({"error": "La cuenta está bloqueada debido a actividad sospechosa"}, status=403)
+        except e.NotFound:
             return JsonResponse({"error": "¡Lo que buscas no está por aquí!"}, status=404)
-        except Unsupported:
+        except e.Unsupported:
             return JsonResponse({"error": "Método HTTP no soportado"}, status=405)
-        except ConflictUserAlreadyExists:
+        except e.ConflictUserAlreadyExists:
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
-        except ConflictGroupAlreadyExists:
+        except e.ConflictGroupAlreadyExists:
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
-        except InternalError:
+        except e.InternalError:
             return JsonResponse({"error": "Error interno del servidor. Por favor, contacta con un administrador"}, status=500)
     return wrapped
 
@@ -39,25 +43,25 @@ def require_role(roles_list, request):
     if request.session.user.role not in roles_list:
         raise Forbidden
 
-def required_valid_session(request):
-    require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
+def require_valid_session(request):
+    require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
 
 def expect_body_with(*args, **kwargs):
     request = kwargs.get('request')
     if request is None:
-        raise InternalError
+        raise e.InternalError
     if len(request.body) == 0:
-        raise BadRequest
+        raise e.BadRequest
     try:
         json_body = json.loads(request.body)
     except (json.JSONDecodeError, UnicodeDecodeError):
-        raise BadRequest
+        raise e.BadRequest
     result = ()
     for arg in args:
         try:
             result += json_body[arg],
         except ValueError:
-            raise BadRequest
+            raise e.BadRequest
     optional = kwargs.get('optional')
     if optional is not None:
         for opt_arg in optional:
@@ -66,22 +70,22 @@ def expect_body_with(*args, **kwargs):
 
 def validate_password(password):
     if len(password) < 8:
-        raise BadRequestInvalidPassword
+        raise e.BadRequestInvalidPassword
 
 def validate_username(username):
     if not(re.match("^[a-z0-9.]+$", username)) or len(username) < 1:
-        raise BadRequestInvalidUsername
+        raise e.BadRequestInvalidUsername
 
 def validate_tag(tag):
     if not(re.match("^[A-Za-z0-9]+$", tag)) or len(tag) < 1:
-        raise BadRequestInvalidTag
+        raise e.BadRequestInvalidTag
 
 def validate_year(year):
     if not(re.match("^[0-9-]+$", year)) or len(year) < 1:
-        raise BadRequestInvalidYear
+        raise e.BadRequestInvalidYear
     
-def get_from_db(model, *args, **kwargs):
+def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
     try:
         return model.objects.get(*args, **kwargs)
     except model.DoesNotExist:
-        raise NotFound
+        raise e.NotFound
