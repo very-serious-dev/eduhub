@@ -4,11 +4,11 @@ from . import endpoints_users, endpoints_groups, endpoints_classes, endpoints_ad
 
 urlpatterns = [
     path("admin/home",                               facade.admin_home),
-    path("admin/users",                              endpoints_admin.create_user),
-    path("admin/users/<username>",                   endpoints_admin.handle_user),
-    path("admin/teachers",                           endpoints_admin.get_teachers),
-    path("admin/groups",                             endpoints_admin.create_group),
-    path("admin/classes",                            endpoints_admin.get_all_classes),
+    path("admin/users",                              facade.admin_create_user),
+    path("admin/users/<username>",                   facade.admin_edit_delete_user),
+    path("admin/teachers",                           facade.admin_get_teachers),
+    path("admin/groups",                             facade.admin_create_group),
+    path("admin/classes",                            facade.admin_get_classes),
     path("users",                                    endpoints_users.get_users),
     path("sessions",                                 endpoints_users.login_logout),
     path("passwords",                                endpoints_users.reset_password),

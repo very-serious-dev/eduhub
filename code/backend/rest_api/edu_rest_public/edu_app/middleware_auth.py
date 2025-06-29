@@ -13,6 +13,8 @@ class AuthMiddleware:
         session = self.__get_request_session(request)
         if session is not None and self.__is_valid_session(session):
             request.session = session
+        else:
+            request.session = None
         response = self.get_response(request)
         return response
 
