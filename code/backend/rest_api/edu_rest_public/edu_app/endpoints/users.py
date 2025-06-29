@@ -1,10 +1,9 @@
 import bcrypt, json, secrets, datetime
 from django.http import JsonResponse
 from django.db.models import Q
-from .middleware_auth import AUTH_COOKIE_KEY
-from .models import User, UserSession, FailedLoginAttempt
-from .models import TOKEN_SIZE
-from .serializers import roles_array, users_array_to_json
+from ..preconditions.middleware_auth import AUTH_COOKIE_KEY
+from ..models import User, UserSession, FailedLoginAttempt, TOKEN_SIZE
+from ..util.serializers import roles_array, users_array_to_json
 
 MAX_FAILED_LOGINS_IN_24_HOURS = 10
 PASSWORD_DAYS_TO_EXPIRE = 3 # TODO: For development purposes; change it to 4 months

@@ -1,9 +1,10 @@
 import bcrypt
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import User, Group, Class, UserClass, UserSession
-from .serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
-from .preconditions import get_from_db, BadRequest, ConflictUserAlreadyExists, ConflictGroupAlreadyExists
+from ..models import User, Group, Class, UserClass, UserSession
+from ..util.serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
+from ..util.exceptions import BadRequest, ConflictUserAlreadyExists, ConflictGroupAlreadyExists
+from ..util.helpers import get_from_db
 
 TEACHER_MAX_FOLDERS = 500
 TEACHER_MAX_DOCUMENTS = 2000

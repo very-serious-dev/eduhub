@@ -40,8 +40,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'edu_app.middleware_cors.CORSMiddleware',
-    'edu_app.middleware_auth.AuthMiddleware',
+    'edu_app.preconditions.middleware_cors.CORSMiddleware',
+    'edu_app.preconditions.middleware_auth.AuthMiddleware',
 ]
 
 ROOT_URLCONF = 'edu_rest_public.urls'

@@ -1,4 +1,4 @@
-from .models import Class, User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
+from ..models import Class, User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"

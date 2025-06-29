@@ -1,8 +1,8 @@
 import json, random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
-from .models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement
-from .serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme
+from ..models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement
+from ..util.serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme
 
 # TO-DO: Improve some CTRL+C, CTRL+V in privileges check throughout this file
 

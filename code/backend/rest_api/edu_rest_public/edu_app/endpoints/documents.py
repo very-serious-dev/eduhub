@@ -1,7 +1,7 @@
 import json
 from django.http import JsonResponse, QueryDict
-from .models import Document, Folder, User, UserDocumentPermission, UserFolderPermission
-from .serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json
+from ..models import Document, Folder, User, UserDocumentPermission, UserFolderPermission
+from ..util.serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json
 
 def get_documents_and_folders(request):
     if request.method == "GET":

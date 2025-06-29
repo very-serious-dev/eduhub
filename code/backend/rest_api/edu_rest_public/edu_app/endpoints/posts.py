@@ -1,8 +1,8 @@
 import json
 from django.http import JsonResponse
 from django.db.models import Q
-from .models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder
-from .serializers import assignment_detail_to_json
+from ..models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder
+from ..util.serializers import assignment_detail_to_json
 
 POSTS_DOCUMENTS_ROOT_FOLDER_NAME = "Publicaciones"
 ASSIGNMENT_SUBMITS_ROOT_FOLDER_NAME = "Entregas"

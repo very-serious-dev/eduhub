@@ -1,10 +1,8 @@
 import json, re
 from django.http import JsonResponse
-from .models import User
+from .exceptions import BadRequest, BadRequestInvalidPassword, BadRequestInvalidUsername, BadRequestInvalidTag, BadRequestInvalidYear, Unauthorized, Forbidden, NotFound, Unsupported, ConflictUserAlreadyExists, ConflictGroupAlreadyExists, InternalError
+from ..models import User
 
-"""
-Decorators
-"""
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
         try:
@@ -44,9 +42,6 @@ def require_role(roles_list, request):
 def required_valid_session(request):
     require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER])
 
-"""
-Helpers
-"""
 def expect_body_with(*args, **kwargs):
     request = kwargs.get('request')
     if request is None:
@@ -90,42 +85,3 @@ def get_from_db(model, *args, **kwargs):
         return model.objects.get(*args, **kwargs)
     except model.DoesNotExist:
         raise NotFound
-    
-"""
-Errors
-"""
-class BadRequest(Exception):
-    pass
-
-class BadRequestInvalidPassword(Exception):
-    pass
-
-class BadRequestInvalidUsername(Exception):
-    pass
-
-class BadRequestInvalidTag(Exception):
-    pass
-
-class BadRequestInvalidYear(Exception):
-    pass
-    
-class Unauthorized(Exception):
-    pass
-
-class Forbidden(Exception):
-    pass
-
-class NotFound(Exception):
-    pass
-
-class Unsupported(Exception):
-    pass
-
-class ConflictUserAlreadyExists(Exception):
-    pass
-
-class ConflictGroupAlreadyExists(Exception):
-    pass
-
-class InternalError(Exception):
-    pass
