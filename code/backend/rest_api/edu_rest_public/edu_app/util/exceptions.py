@@ -37,5 +37,8 @@ class ConflictUserAlreadyExists(Exception):
 class ConflictGroupAlreadyExists(Exception):
     pass
 
+class ConflictUnitAlreadyExists(Exception):
+    pass
+
 class InternalError(Exception):
     pass

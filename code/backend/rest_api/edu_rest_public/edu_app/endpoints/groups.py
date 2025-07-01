@@ -21,8 +21,8 @@ def get_announcements(request, group_tag):
         raise Forbidden
     announcements = Announcement.objects.filter(group=group).order_by("-publication_date")
     return JsonResponse({"success": True,
-                            "announcements": announcements_array_to_json(announcements),
-                            "can_create_announcements": can_create})
+                         "announcements": announcements_array_to_json(announcements),
+                         "can_create_announcements": can_create})
 
 def create_announcement(request, group_tag, title, content, files):
     group = get_from_db(Group, tag=group_tag)

@@ -33,6 +33,8 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Ese usuario ya está registrado"}, status=409)
         except e.ConflictGroupAlreadyExists:
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
+        except e.ConflictUnitAlreadyExists:
+            return JsonResponse({"error": "Ya existe un tema con ese nombre"}, status=409)
         except e.InternalError:
             return JsonResponse({"error": "Error interno del servidor. Por favor, contacta con un administrador"}, status=500)
     return wrapped
@@ -89,3 +91,13 @@ def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
         return model.objects.get(*args, **kwargs)
     except model.DoesNotExist:
         raise e.NotFound
+
+def can_see_class(user, classroom):
+    return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
+            or (user.role in [User.UserRole.STUDENT, User.UserRole.TEACHER] \
+                and UserClass.objects.filter(user=user, classroom=classroom).exists())
+
+def can_edit_class(user, classroom):
+    return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
+            or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
+    

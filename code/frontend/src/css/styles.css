@@ -644,6 +644,11 @@ body {
   background-color: var(--theme-blue-secondary);
 }
 
+.createClassParticipantsHint {
+  font-size: 0.875em;
+  color: #333;
+}
+
 /**
  * Class detail page
  */

@@ -119,47 +119,19 @@ def announcements_array_to_json(announcements):
         result.append(announcement_to_json(a))
     return result
 
-def class_detail_to_json(classroom, isClassEditableByUser, only_newer_than_post_with_id):
-    units = []
-    for u in Unit.objects.filter(classroom=classroom).order_by("name"):
-        units.append({"id": u.id, "name": u.name})
-    posts = []
-    # REFACTOR: serializers.py shouldn't contain ORM code
-    posts_query = Post.objects.filter(classroom=classroom)
-    if only_newer_than_post_with_id is not None:
-        posts_query = posts_query.filter(id__gt=only_newer_than_post_with_id)
-    for p in posts_query:
-        response_post_documents = []
-        for pd in PostDocument.objects.filter(post=p):
-            response_post_documents.append(document_to_json(pd.document))
-        response_post = {
-            "id": p.id,
-            "title": p.title,
-            "content": p.content,
-            "author": p.author.username,
-            "publication_date": p.publication_date,
-            "files": response_post_documents,
-            "kind": post_kind(p)
-        }
-        if p.unit is not None:
-            response_post["unit_id"] = p.unit.id
-        if p.kind == Post.PostKind.ASSIGNMENT or p.kind == Post.PostKind.AMENDMENT_EDIT:
-            response_post["assignment_due_date"] = p.assignment_due_date
-        if p.amendment_original_post is not None:
-            response_post["amended_post_id"] = p.amendment_original_post.id
-        posts.append(response_post)
+def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
     return {
         "id": classroom.id,
         "name": classroom.name,
         "evaluation_criteria": classroom.evaluation_criteria,
         "group": classroom.group_id,
         "theme": class_theme(classroom),
-        "should_show_teacher_options": isClassEditableByUser,
+        "should_show_teacher_options": is_class_editable_by_user,
         "posts": posts,
         "units": units
     }
 
-def assignment_detail_to_json(original_assignment, newest_edit, user):
+def assignment_detail_to_json(original_assignment, newest_edit, files, is_teacher, class_students, class_units, submits, your_submit):
     response = {
         "id": original_assignment.id,
         "title": original_assignment.title if newest_edit is None else newest_edit.title,
@@ -168,60 +140,18 @@ def assignment_detail_to_json(original_assignment, newest_edit, user):
         "publication_date": original_assignment.publication_date,
         "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
         "kind": post_kind(original_assignment),
-        "theme": class_theme(original_assignment.classroom)
+        "theme": class_theme(original_assignment.classroom),
+        "files": list(map(lambda f: document_to_json(f))),
+        "should_show_teacher_options": is_teacher
     }
-    response_documents = []
-    # REFACTOR: serializers.py shouldn't contain ORM code
-    for pd in PostDocument.objects.filter(post=newest_edit or original_assignment):
-        response_documents.append(document_to_json(pd.document))
-    response["files"] = response_documents
-    isTeacher = user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]
-    response["should_show_teacher_options"] = isTeacher
-    if isTeacher:
-        submits = []
-        for s in AssignmentSubmit.objects.filter(assignment=original_assignment):
-            submit = {
-              "author": user_to_json(s.author),
-              "submit_date": s.submit_date,
-              "is_score_published": s.is_score_published
-            }
-            if s.comment is not None:
-                submit["comment"] = s.comment
-            if s.score is not None:
-                submit["score"] = s.score
-            submit_documents = []
-            for sd in AssignmentSubmitDocument.objects.filter(submit=s):
-                submit_documents.append(document_to_json(sd.document))
-            submit["files"] = submit_documents
-            submits.append(submit)
+    if class_students:
+        response["assignees"] = list(map(lambda u: user_to_json(u), class_students))
+    if class_units:
+        response["class_units"] = list(map(lambda u: {"id": u.id, "name": u.name}, class_units))
+    if submits:
         response["submits"] = submits
-        assignees = []
-        for uc in UserClass.objects.filter(classroom=original_assignment.classroom, user__role=User.UserRole.STUDENT).order_by("user__surname"):
-            assignees.append(user_to_json(uc.user))
-        response["assignees"] = assignees
-        units = [] # Needed so that teacher can select a different unit when editing the assignment
-        for u in Unit.objects.filter(classroom=original_assignment.classroom).order_by("name"):
-            units.append({"id": u.id, "name": u.name})
-        response["class_units"] = units
-    else:
-        try:
-            s = AssignmentSubmit.objects.get(assignment=original_assignment, author=user)
-            submit = {
-              "author": user_to_json(s.author),
-              "submit_date": s.submit_date
-            }
-            if s.is_score_published: # Only send score to students if boolean flag says 'published'
-                submit["is_score_published"] = True
-                submit["score"] = s.score
-            if s.comment is not None:
-                submit["comment"] = s.comment
-            submit_documents = []
-            for sd in AssignmentSubmitDocument.objects.filter(submit=s):
-                submit_documents.append(document_to_json(sd.document))
-            submit["files"] = submit_documents
-            response["your_submit"] = submit
-        except AssignmentSubmit.DoesNotExist:
-            pass
+    if your_submit:
+        response["your_submit"] = your_submit
     return response
 
 def roles_array(user):

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import AreYouSureDialog from "./AreYouSureDialog";
@@ -19,7 +19,7 @@ const CreateEditDeleteUnitDialog = (props) => {
         setLoading(true);
         const httpMethod = isEditingUnit() ? "PUT" : "POST"
         const url = isEditingUnit() ?
-            `/api/v1/classes/${props.classId}/units/${props.unit.id}`
+            `/api/v1/units/${props.unit.id}`
             : `/api/v1/classes/${props.classId}/units`
         EduAPIFetch(httpMethod, url, { name: formName })
             .then(json => {
@@ -44,7 +44,7 @@ const CreateEditDeleteUnitDialog = (props) => {
         event.preventDefault();
         setLoading(true);
         setShowAreYouSurePopup(false);
-        EduAPIFetch("DELETE", `/api/v1/classes/${props.classId}/units/${props.unit.id}`)
+        EduAPIFetch("DELETE", `/api/v1/units/${props.unit.id}`)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {

@@ -20,7 +20,10 @@ const CreateOrEditPostForm = (props) => {
 
     const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
-
+        if (formTitle.includes(',') || formTitle.includes('"')){
+            alert("Las publicaciones no pueden contener comas (,) o comillas (\") en el título");
+            return;
+        }
         if (attachedFilesReady.length === 0) {
             sendEduPostRequest();
         } else {
