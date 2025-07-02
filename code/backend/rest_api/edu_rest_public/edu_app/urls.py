@@ -26,7 +26,7 @@ urlpatterns = [
     path("posts/<int:p_id>/amendments",         facade.posts_amend),
     path("assignments/<int:a_id>",              facade.posts_get_assignment),
     path("assignments/<int:a_id>/submits",      facade.posts_create_assignment_submit),
-    path("assignments/<int:assignmentId>/submits/<username>/score", posts.score_assignment_submit),
+    path("assignments/<int:a_id>/submits/<username>/score", facade.posts_create_delete_score),
     path("assignments/<int:assignmentId>/scores",    posts.publish_all_scores),
     path("documents",                                documents.get_documents_and_folders),
     path("folders",                                  documents.create_folder),

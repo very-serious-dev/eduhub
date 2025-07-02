@@ -260,7 +260,30 @@ def posts_get_assignment(request, a_id):
 @maybe_unhappy
 def posts_create_assignment_submit(request, a_id):
     if request.method == "POST":
-        pass
-        ####
+        require_role([User.UserRole.STUDENT], request=request)
+        files, comment = expect_body_with('files', optional=['comment'], request=request)
+        if (comment is None or len(comment) == 0) and len(files) == 0:
+            raise BadRequest
+        return posts.submit_assignment(request, a_id, files, comment)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def posts_create_delete_score(request, a_id, username):
+    if request.method == "PUT":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        score, should_publish = expect_body_with('score', optional=['is_published'], request=request)
+        return posts.score_submit(request, a_id, username, score, should_publish)
+    elif request.method == "DELETE":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        return posts.delete_score(request, a_id, username)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def posts_publish_all_scores(request, a_id):
+    if request.method == "POST":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        return posts.publish_all_scores(request, a_id)
     else:
         raise Unsupported
