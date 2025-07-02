@@ -1,4 +1,3 @@
-import json
 from django.http import JsonResponse
 from django.utils import timezone
 from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document

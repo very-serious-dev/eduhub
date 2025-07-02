@@ -27,12 +27,12 @@ urlpatterns = [
     path("assignments/<int:a_id>",              facade.posts_get_assignment),
     path("assignments/<int:a_id>/submits",      facade.posts_create_assignment_submit),
     path("assignments/<int:a_id>/submits/<username>/score", facade.posts_create_delete_score),
-    path("assignments/<int:assignmentId>/scores",    posts.publish_all_scores),
-    path("documents",                                documents.get_documents_and_folders),
-    path("folders",                                  documents.create_folder),
-    path("documents/<document_identifier>",          documents.move_document),
-    path("documents/<document_identifier>/users",    documents.get_document_users),
-    path("folders/<int:folder_id>",                  documents.move_folder),
-    path("folders/<int:folder_id>/users",            documents.get_folder_users),
-    path("files/permissions",                        documents.update_files_users)
+    path("assignments/<int:a_id>/scores",       facade.posts_publish_all_scores),
+    path("documents",                           facade.documents_get_my_files),
+    path("folders",                             facade.documents_create_folder),
+    path("documents/<d_id>",                    facade.documents_move_document),
+    path("documents/<d_id>/users",              facade.documents_get_document_users),
+    path("folders/<int:f_id>",                  facade.documents_move_folder),
+    path("folders/<int:f_id>/users",            facade.documents_get_folder_users),
+    path("files/permissions",                   facade.documents_update_files_permissions)
 ]

@@ -43,5 +43,11 @@ class ConflictGroupAlreadyExists(Exception):
 class ConflictUnitAlreadyExists(Exception):
     pass
 
+class ConflictFolderAlreadyExists(Exception):
+    pass
+
+class ConflictQuotaExceeded(Exception):
+    pass
+
 class InternalError(Exception):
     pass

@@ -18,7 +18,7 @@ const SearchUsersSubDialog = (props) => {
     const onSubmitAddUser = (event) => {
         event.preventDefault();
         setLoadingSubmit(true);
-        EduAPIFetch("PUT", props.addUsersUrl, { username: formUsername })
+        EduAPIFetch("PUT", props.addUsersUrl, { usernames: formUsername })
             .then(json => {
                 setLoadingSubmit(false);
                 setFormUsername("");

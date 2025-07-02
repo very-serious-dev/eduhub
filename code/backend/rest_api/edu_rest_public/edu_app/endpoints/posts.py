@@ -1,4 +1,3 @@
-import json
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone

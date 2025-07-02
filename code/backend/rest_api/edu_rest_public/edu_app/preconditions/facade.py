@@ -1,6 +1,7 @@
-from ..endpoints import admin, users, groups, classes
+from django.http import QueryDict
+from ..endpoints import admin, users, groups, classes, posts, documents
 from ..models import User
-from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year
+from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, parse_usernames_list
 from ..util.exceptions import Unsupported, BadRequest
 
 """
@@ -175,14 +176,9 @@ def classes_get_add_participants(request, c_id):
         return classes.get_participants(request, c_id, only_newer_than_post_with_id)
     elif request.method == "PUT":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        username = expect_body_with('username', request=request)
-        non_trimmed_usernames = username.split(",")
-        trimmed_usernames = list(map(lambda x: x.strip(), non_trimmed_usernames))
-        usernames = []
-        for u in trimmed_usernames:
-            if len(u) > 0:
-                usernames.append(u)
-        return classes.add_participants(request, c_id, usernames)
+        username = expect_body_with('usernames', request=request)
+        usernames_list = parse_usernames_list(username)
+        return classes.add_participants(request, c_id, usernames_list)
     else:
         raise Unsupported
 
@@ -287,3 +283,83 @@ def posts_publish_all_scores(request, a_id):
         return posts.publish_all_scores(request, a_id)
     else:
         raise Unsupported
+
+@maybe_unhappy
+def documents_get_my_files(request):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return documents.get_documents_and_folders(request)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_create_folder(request):
+    if request.method == "POST":
+        require_valid_session(request=request)
+        name, parent_folder_id = expect_body_with('name', optional=['parent_folder_id'], request=request)
+        return documents.create_folder(request, name, parent_folder_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_move_document(request, d_id):
+    if request.method == "PUT":
+        require_valid_session(request=request)
+        folder_id = expect_body_with(optional=['folder_id'], request=request)
+        return documents.move_document(request, d_id, folder_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_get_document_users(request, d_id):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return documents.get_document_users(request, d_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_move_folder(request, f_id):
+    if request.method == "PUT":
+        require_valid_session(request=request)
+        parent_folder_id = expect_body_with(optional=['parent_folder_id'], request=request)
+        return documents.move_folder(request, f_id, parent_folder_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_get_folder_users(request, f_id):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return documents.get_folder_users(request, f_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_update_files_permissions(request):
+    if request.method == "PUT":
+        require_valid_session(request=request)
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_docs = url_query.get("documentIds", None)
+        url_folders = url_query.get("folderIds", None)
+        document_ids = url_docs.split(",") if url_docs is not None else []
+        folder_ids = url_folders.split(",") if url_folders is not None else []
+        if len(document_ids) == 0 and len(folder_ids) == 0:
+            raise BadRequest
+        username = expect_body_with('usernames', request=request)
+        usernames_list = parse_usernames_list(username)
+        return documents.grant_permission(request, document_ids, folder_ids, usernames_list)
+    elif request.method == "DELETE":
+        require_valid_session(request=request)
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_docs = url_query.get("documentIds", None)
+        url_folders = url_query.get("folderIds", None)
+        document_ids = url_docs.split(",") if url_docs is not None else []
+        folder_ids = url_folders.split(",") if url_folders is not None else []
+        if len(document_ids) == 0 and len(folder_ids) == 0:
+            raise BadRequest
+        username = expect_body_with('username', request=request)
+        return documents.remove_permission(request, document_ids, folder_ids, username)
+    else:
+        raise Unsupported
+

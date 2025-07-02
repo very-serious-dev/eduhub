@@ -1,4 +1,4 @@
-import json, random
+import random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
 from ..models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement

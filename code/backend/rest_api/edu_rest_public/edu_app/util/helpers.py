@@ -37,6 +37,10 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Ese grupo ya está registrado"}, status=409)
         except e.ConflictUnitAlreadyExists:
             return JsonResponse({"error": "Ya existe un tema con ese nombre"}, status=409)
+        except e.ConflictFolderAlreadyExists:
+            return JsonResponse({"error": "Ya existe una carpeta con ese nombre en esa ubicación"}, status=409)
+        except e.ConflictQuotaExceeded:
+            return JsonResponse({"error": "Has excedido tu cuota"}, status=409)
         except e.InternalError:
             return JsonResponse({"error": "Error interno del servidor. Por favor, contacta con un administrador"}, status=500)
     return wrapped
@@ -87,12 +91,15 @@ def validate_tag(tag):
 def validate_year(year):
     if not(re.match("^[0-9-]+$", year)) or len(year) < 1:
         raise e.BadRequestInvalidYear
-    
-def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
-    try:
-        return model.objects.get(*args, **kwargs)
-    except model.DoesNotExist:
-        raise e.NotFound
+
+def parse_usernames_list(usernames):
+    non_trimmed_usernames = usernames.split(",")
+    trimmed_usernames = list(map(lambda x: x.strip(), non_trimmed_usernames))
+    result = []
+    for u in trimmed_usernames:
+        if len(u) > 0:
+            result.append(u)
+    return result
 
 def can_see_class(user, classroom):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
@@ -102,6 +109,12 @@ def can_see_class(user, classroom):
 def can_edit_class(user, classroom):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
             or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
+
+def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
+    try:
+        return model.objects.get(*args, **kwargs)
+    except model.DoesNotExist:
+        raise e.NotFound
 
 def get_or_create_folder(name, author, parent_folder=None):
     try:
