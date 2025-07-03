@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilePicker from "../common/FilePicker";
@@ -8,19 +8,23 @@ import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
 
 const CreateOrEditPostForm = (props) => {
-    const TODAY = new Date().toISOString().split("T")[0];
+    const TODAY_23_59 = `${new Date().toISOString().split("T")[0]}T23:59`;
     const UNIT_UNASSIGNED = -1;
     const [formTitle, setFormTitle] = useState(props.postBeingEdited ? props.postBeingEdited.title : "");
     const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
     const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
-    const [formAssignmentDueDate, setFormAssignmentDueDate] = useState(props.postBeingEdited ? props.postBeingEdited.assignment_due_date : TODAY);
+    const [formAssignmentLocalDueDate, setFormAssignmentLocalDueDate] = useState(TODAY_23_59);
     const [attachedFilesReady, setAttachedFilesReady] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
+    useEffect(() => {
+        setFormAssignmentLocalDueDate(postBeingEditedDueDateLocalTime() ?? TODAY_23_59);
+    }, [])
+
     const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
-        if (formTitle.includes(',') || formTitle.includes('"')){
+        if (formTitle.includes(',') || formTitle.includes('"')) {
             alert("Las publicaciones no pueden contener comas (,) o comillas (\") en el título");
             return;
         }
@@ -80,8 +84,9 @@ const CreateOrEditPostForm = (props) => {
         if (formUnitId !== UNIT_UNASSIGNED) {
             body["unit_id"] = formUnitId;
         }
-        if (props.showDatePicker && formAssignmentDueDate !== "") {
-            body["assignment_due_date"] = formAssignmentDueDate;
+        if (props.showDatePicker) {
+            const awareDatetime = new Date(formAssignmentLocalDueDate)
+            body["assignment_due_date"] = awareDatetime.toISOString();
         }
         let url;
         if (props.postBeingEdited) {
@@ -108,6 +113,15 @@ const CreateOrEditPostForm = (props) => {
             })
     }
 
+    const postBeingEditedDueDateLocalTime = () => {
+        if (props.postBeingEdited) {
+            // https://stackoverflow.com/a/51643788
+            const t = new Date(props.postBeingEdited.assignment_due_date);
+            const z = t.getTimezoneOffset() * 60 * 1000;
+            const tLocal = new Date(t-z);
+            return tLocal.toISOString().split('.')[0].slice(0, -3);
+        }
+    }
 
     return <div className="createOrEditPostFormContainer">
         <form onSubmit={onSubmitCreateOrEditPost}>
@@ -126,10 +140,10 @@ const CreateOrEditPostForm = (props) => {
                 {props.showDatePicker &&
                     <div className="formInputContainer formInputDivCreatePostTaskDate">
                         <input className={`formInput formInputCreatePostTaskDate ${primary(theme)}`}
-                            type="date"
-                            min={TODAY}
-                            value={formAssignmentDueDate}
-                            onChange={e => { setFormAssignmentDueDate(e.target.value) }} />
+                            type="datetime-local"
+                            value={formAssignmentLocalDueDate}
+                            onChange={e => { setFormAssignmentLocalDueDate(e.target.value ?? "") }}
+                            required />
                     </div>}
                 <div className="formInputContainer">
                     <input className={`formInput formInputCreatePostTitle ${primary(theme)}`} type="text" value={formTitle}

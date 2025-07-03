@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router"
-import { formatNullableDueDate } from "../../../util/Formatter";
 import { ASSIGNMENT_CONTENT_NAVIGATED_FROM_WITH_ID, ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID } from "../../pages/AssignmentPage";
 import { pointableSecondary, tertiary } from "../../../util/Themes";
 import { useContext } from "react";
 import { ThemeContext } from "../../main/GlobalContainer";
+import { beautifullyDisplayDateTime } from "../../../util/Formatter";
 
 const ClassDetailAssignmentItem = (props) => {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ const ClassDetailAssignmentItem = (props) => {
                 className={`classDetailSectionSubitem sectionSubitemPaddingTopBottomSmall pointable ${pointableSecondary(theme)}`}
                 onClick={onClick}>
                     <div className={`classDetailSectionAssignmentDueDateCapsule ${tertiary(theme)}`}>
-                        { formatNullableDueDate(props.assignment.assignment_due_date) }
+                        { beautifullyDisplayDateTime(props.assignment.assignment_due_date) }
                     </div>
                     <div>💼 {props.assignment.title}</div>
             </div>

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { formatNullableDueDate, formatPseudoMarkdown } from "../../../util/Formatter";
+import { beautifullyDisplayDateTime, formatPseudoMarkdown } from "../../../util/Formatter";
 import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent";
 import SmallFilesListFile from "../common/SmallFilesListFile";
 import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent";
@@ -43,7 +43,7 @@ const AssignmentBody = (props) => {
             <div className="assignmentDetailTitleHeader">
                 <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
                 {props.assignmentData.unit_id && <div className={`classDetailEntryTopRightUnit assignmentTitleUnitCapsule ${secondary(theme)}`}>{props.assignmentData.class_units.find(u => u.id == props.assignmentData.unit_id)?.name}</div>}
-                <div className="assignmentDetailDueDate">Se entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
+                <div className="assignmentDetailDueDate">Se entrega: {beautifullyDisplayDateTime(props.assignmentData.assignment_due_date)}</div>
                 <div className={`classDetailSectionUnderline ${accent(theme)}`} />
             </div>
             <div className="assignmentDetailBodyContainer">

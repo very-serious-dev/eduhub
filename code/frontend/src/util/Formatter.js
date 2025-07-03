@@ -6,7 +6,7 @@ const sizeToHumanReadable = (size) => { // https://stackoverflow.com/a/63032680
     return `${(Math.round(+fileSize / 1024) / 1000).toFixed(2)}MB`
 }
 
-const beautifullyDisplayDateHour = (date) => {
+const beautifullyDisplayHourFromDate = (date) => {
     const dateObject = new Date(date);
     return `${('0' + dateObject.getHours()).slice(-2)}:${('0' + dateObject.getMinutes()).slice(-2)}`;
 }
@@ -14,10 +14,10 @@ const beautifullyDisplayDateHour = (date) => {
 const footNoteDateAuthor = (originalDate, author, modificationDate) => {
     if (modificationDate) {
         const modificationDateObject = new Date(modificationDate);
-        return `${author ? `${author}, ` : ""}${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(modificationDateObject)}) [modificado]`
+        return `${author ? `${author}, ` : ""}${modificationDateObject.toLocaleDateString()} (${beautifullyDisplayHourFromDate(modificationDateObject)}) [modificado]`
     } else {
         const dateObject = new Date(originalDate);
-        return `${author ? `${author}, ` : ""}${dateObject.toLocaleDateString()} (${beautifullyDisplayDateHour(originalDate)})`
+        return `${author ? `${author}, ` : ""}${dateObject.toLocaleDateString()} (${beautifullyDisplayHourFromDate(originalDate)})`
     }
 }
 
@@ -57,11 +57,8 @@ const beautifullyDisplayDate = (date) => {
     return `${getWeekDayLiteral(dateObject.getDay())}, ${dateObject.getDate()} de ${getMonthLiteral(dateObject.getMonth())}`;
 }
 
-const formatNullableDueDate = (dueDate) => {
-    if (dueDate === undefined || dueDate === null) {
-        return "Fecha sin definir"
-    }
-    return beautifullyDisplayDate(dueDate);
+const beautifullyDisplayDateTime = (date) => {
+    return `${beautifullyDisplayDate(date)} (${beautifullyDisplayHourFromDate(date)})`
 }
 
 const formatPseudoMarkdown = (wholeText) => {
@@ -170,7 +167,6 @@ const iconImgSrc = (mimeType) => {
 export { sizeToHumanReadable };
 export { footNoteDateAuthor };
 export { beautifullyDisplayDate };
-export { beautifullyDisplayDateHour };
-export { formatNullableDueDate };
+export { beautifullyDisplayDateTime };
 export { formatPseudoMarkdown };
 export { iconImgSrc };

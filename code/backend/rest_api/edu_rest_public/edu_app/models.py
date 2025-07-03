@@ -140,7 +140,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     publication_date = models.DateTimeField(auto_now_add=True)
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
-    assignment_due_date = models.DateField(null=True)
+    assignment_due_date = models.DateTimeField(null=True)
     amendment_original_post = models.ForeignKey("Post", on_delete=models.CASCADE, null=True)
 
 class PostDocument(models.Model):

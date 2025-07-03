@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { footNoteDateAuthor, formatNullableDueDate } from "../../../util/Formatter";
+import { beautifullyDisplayDateTime, footNoteDateAuthor } from "../../../util/Formatter";
 import { ASSIGNMENT_CONTENT_NAVIGATED_FROM_WITH_ID, ASSIGNMENT_TITLE_NAVIGATED_FROM_WITH_ID } from "../../pages/AssignmentPage";
 import PostsBoardEntryTopRightContent from "./PostsBoardEntryTopRightContent";
 import { pointableSecondary, tertiary } from "../../../util/Themes";
@@ -22,7 +22,7 @@ const PostsBoardAssignment = (props) => {
             showEdit={props.showEdit}
             onPostsChanged={props.onPostsChanged} />
         <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>
-        <div className="classDetailAssignmentDueDate">Se entrega: {formatNullableDueDate(props.post.assignment_due_date)}</div>
+        <div className="classDetailAssignmentDueDate">Se entrega: {beautifullyDisplayDateTime(props.post.assignment_due_date)}</div>
         <div className="dateAuthorFootNote">
             {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}
         </div>

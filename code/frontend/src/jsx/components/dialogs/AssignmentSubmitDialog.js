@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { beautifullyDisplayDate, beautifullyDisplayDateHour } from "../../../util/Formatter";
+import { beautifullyDisplayDate, beautifullyDisplayDateTime } from "../../../util/Formatter";
 import SetScoreDialog from "./SetScoreDialog";
 import SmallFilesListFile from "../common/SmallFilesListFile";
 import { accentForeground, pointableSecondary, primary } from "../../../util/Themes";
@@ -26,7 +26,7 @@ const AssignmentSubmitDialog = (props) => {
                         </div>
                         :
                         <>
-                            <div className="assignmentSubmitDialogDate">{`Fecha de entrega: ✔️ ${beautifullyDisplayDate(props.submit.submit_date)} (${beautifullyDisplayDateHour(props.submit.submit_date)})`}</div>
+                            <div className="assignmentSubmitDialogDate">{`Fecha de entrega: ✔️ ${beautifullyDisplayDateTime(props.submit.submit_date)}`}</div>
                             <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
                             <div>{props.submit.files.length > 0 ?
                                 <div className="assignmentSubmitDialogFiles">

@@ -1,4 +1,3 @@
-from datetime import datetime, time
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
@@ -144,7 +143,7 @@ def create_assignment_submit(request, a_id, files, comment):
         raise Forbidden
     if AssignmentSubmit.objects.filter(author=request.session.user, assignment=assignment).exists():
         raise ForbiddenAssignmentSubmit
-    if assignment.assignment_due_date and datetime.now() > datetime.combine(assignment.assignment_due_date, time(hour=23, minute=59, second=59)):
+    if timezone.now() > assignment.assignment_due_date:
         raise ForbiddenAssignmentSubmit
     new_submit = AssignmentSubmit()
     new_submit.author = request.session.user

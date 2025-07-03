@@ -19,10 +19,9 @@ const AssignmentStudentLeftPaneContent = (props) => {
     }
 
     const isAssignmentPast = () => {
-        if (props.assignmentData.assignment_due_date === undefined || props.assignmentData.assignment_due_date === null) { return false; }
-        const dueTime = (new Date(props.assignmentData.assignment_due_date)).getTime() + 86400000; // +1 day, because assignment_due_date has no hours:minutes, so it would be the same as due time 00:00h instead of 23:59h
-        const nowTime = (new Date()).getTime();
-        return nowTime > dueTime;
+        const due = new Date(props.assignmentData.assignment_due_date)
+        const now = new Date()
+        return now > due;
     }
 
     return <>
