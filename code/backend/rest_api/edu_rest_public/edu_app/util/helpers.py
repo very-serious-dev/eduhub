@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder
+from ..models import User, Folder, UserClass
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
@@ -47,9 +47,9 @@ def maybe_unhappy(endpoint_function):
 
 def require_role(roles_list, request):
     if request.session is None:
-        raise Unauthorized
+        raise e.Unauthorized
     if request.session.user.role not in roles_list:
-        raise Forbidden
+        raise e.Forbidden
 
 def require_valid_session(request):
     require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
@@ -74,6 +74,8 @@ def expect_body_with(*args, **kwargs):
     if optional is not None:
         for opt_arg in optional:
             result += json_body.get(opt_arg),
+    if len(result) == 1:
+        return result[0]
     return result
 
 def validate_password(password):

@@ -33,7 +33,7 @@ const AssignmentStudentLeftPaneContent = (props) => {
             💼 Tu trabajo
         </div>
         <div className={`classDetailSectionUnderline ${accent(theme)}`} />
-        {props.assignmentData.your_submit !== undefined
+        {props.assignmentData.your_submit !== null
             ? <>
                 {/* assignmentId | onScoreChanged are only needed in
                     AssignmentTeacherLeftPaneContent so as to PUT scores */ }

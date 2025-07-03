@@ -74,7 +74,7 @@ def logout(request):
     return JsonResponse({"success": True}, status=200)
 
 def reset_password(request, password, new_password, password_reset_token):
-    user = get_from_db(User, password_reset_token=json_password_reset_token, archived=False)
+    user = get_from_db(User, password_reset_token=password_reset_token, archived=False)
     if bcrypt.checkpw(password.encode('utf8'), user.encrypted_password.encode('utf8')):
         user.password_reset_token = None
         user.encrypted_password = bcrypt.hashpw(new_password.encode('utf8'), bcrypt.gensalt()).decode('utf8')

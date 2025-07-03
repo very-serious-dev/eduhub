@@ -105,7 +105,7 @@ def users_reset_password(request):
     if request.method == "POST":
         password, new_password, password_reset_token = expect_body_with('password', 'new_password', 'password_reset_token', request=request)
         validate_password(new_password)
-        return users.reset_password(password, new_password, password_reset_token)
+        return users.reset_password(request, password, new_password, password_reset_token)
     else:
         raise Unsupported
 
@@ -173,7 +173,7 @@ def classes_get_edit_delete_class(request, c_id):
 def classes_get_add_participants(request, c_id):
     if request.method == "GET":
         require_valid_session(request=request)
-        return classes.get_participants(request, c_id, only_newer_than_post_with_id)
+        return classes.get_participants(request, c_id)
     elif request.method == "PUT":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         username = expect_body_with('usernames', request=request)
@@ -215,7 +215,7 @@ def classes_edit_delete_unit(request, u_id):
 def classes_download_scores(request, c_id):
     if request.method == "GET":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        return classes.download_scores(request)
+        return classes.download_scores(request, c_id)
     else:
         raise Unsupported
 
@@ -236,7 +236,7 @@ def posts_create(request, c_id):
 def posts_amend(request, p_id):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        post_type, title, content, files, unit_id, assignment_due_date = expect_body_with(post_type, optional=['title', 'content', 'files', 'unit_id', 'assignment_due_date'], request=request)
+        post_type, title, content, files, unit_id, assignment_due_date = expect_body_with('post_type', optional=['title', 'content', 'files', 'unit_id', 'assignment_due_date'], request=request)
         if title and ('"' in title or ',' in title):
             raise BadRequest
         if post_type not in ["amend_delete", "amend_edit"]:
@@ -260,7 +260,7 @@ def posts_create_assignment_submit(request, a_id):
         files, comment = expect_body_with('files', optional=['comment'], request=request)
         if (comment is None or len(comment) == 0) and len(files) == 0:
             raise BadRequest
-        return posts.submit_assignment(request, a_id, files, comment)
+        return posts.create_assignment_submit(request, a_id, files, comment)
     else:
         raise Unsupported
 

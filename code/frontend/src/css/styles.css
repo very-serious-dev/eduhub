@@ -856,6 +856,7 @@ body {
 }
 
 .classDetailEntryTopRightUnit {
+  /* Also used in assignment page*/
   font-size: 0.7em;
   font-weight: bold;
   padding-top: 2px;
@@ -1076,6 +1077,10 @@ body {
   font-size: 2.25em;
   font-weight: light;
   margin-right: 30px;
+}
+
+.assignmentTitleUnitCapsule {
+  display: inline;
 }
 
 .assignmentDetailDueDate {
@@ -1833,7 +1838,7 @@ body {
 }
 
 .smallText {
-  height: 70px;
+  height: 120px;
 }
 
 .formFiles {

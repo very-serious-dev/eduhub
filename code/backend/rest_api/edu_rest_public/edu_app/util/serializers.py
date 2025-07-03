@@ -1,4 +1,4 @@
-from ..models import Class, User, Unit, Post, PostDocument, Document, AssignmentSubmit, AssignmentSubmitDocument, UserClass, AnnouncementDocument
+from ..models import Post, User, Class
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -132,25 +132,25 @@ def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
     }
 
 def assignment_detail_to_json(original_assignment, newest_edit, files, is_teacher, class_students, class_units, submits, your_submit):
+    unit = original_assignment.unit if newest_edit is None else newest_edit.unit
     response = {
         "id": original_assignment.id,
         "title": original_assignment.title if newest_edit is None else newest_edit.title,
         "content": original_assignment.content if newest_edit is None else newest_edit.content,
+        "unit_id": unit.id if unit else None,
+        "class_units": list(map(lambda u: {"id": u.id, "name": u.name}, class_units)),
         "author": original_assignment.author.username,
         "publication_date": original_assignment.publication_date,
         "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
         "kind": post_kind(original_assignment),
         "theme": class_theme(original_assignment.classroom),
-        "files": list(map(lambda f: document_to_json(f))),
+        "files": list(map(lambda f: document_to_json(f), files)),
         "should_show_teacher_options": is_teacher
     }
-    if class_students:
+    if is_teacher:
         response["assignees"] = list(map(lambda u: user_to_json(u), class_students))
-    if class_units:
-        response["class_units"] = list(map(lambda u: {"id": u.id, "name": u.name}, class_units))
-    if submits:
         response["submits"] = submits
-    if your_submit:
+    else:
         response["your_submit"] = your_submit
     return response
 

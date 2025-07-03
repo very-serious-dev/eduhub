@@ -1,3 +1,4 @@
+from datetime import datetime, time
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
@@ -57,7 +58,7 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
     post = get_from_db(Post, id=p_id)
     if not can_edit_class(request.session.user, post.classroom):
         raise Forbidden
-    unit = get_from_db(Unit, id=unit_id) if unit_id else None
+    unit = Unit.objects.filter(id=unit_id).first()
     new_amendment = Post()
     new_amendment.author = request.session.user
     new_amendment.classroom = post.classroom
@@ -72,12 +73,12 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
         new_amendment.unit = unit
         new_amendment.assignment_due_date = assignment_due_date
         new_amendment.save()
-        for f in json_files:
+        for f in files:
             try:
                 document = Document.objects.get(identifier=f["identifier"])
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                folder = get_or_create_folder(__folder_name_for_classroom(classroom), request.session.user, root_folder)
+                folder = get_or_create_folder(__folder_name_for_classroom(post.classroom), request.session.user, root_folder)
                 document = Document()
                 document.identifier = f["identifier"]
                 document.name = f["name"]
@@ -94,23 +95,22 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
     return JsonResponse({"success": True}, status=201) 
     
 def get_assignment(request, a_id):
-    assignment = get_from_db(id=a_id, kind=Post.PostKind.ASSIGNMENT)
+    assignment = get_from_db(Post, id=a_id, kind=Post.PostKind.ASSIGNMENT)
     newest_amendment = Post.objects.filter(amendment_original_post=assignment).order_by("-id").first()
     if newest_amendment and newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
         raise NotFound
     post_documents = PostDocument.objects.filter(post=newest_amendment or assignment)
     files = list(map(lambda pd: pd.document, post_documents))
-    is_teacher = user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]
-    class_students = None
-    class_units = None # Needed so that teachers can select a different unit when editing the assignment
-    submits = None
+    class_units = Unit.objects.filter(classroom=assignment.classroom).order_by("name")
+    is_teacher = request.session.user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]
+    class_students = []
+    submits = []
     your_submit = None
     if is_teacher:
         user_class_students = UserClass.objects.filter(classroom=assignment.classroom, user__role=User.UserRole.STUDENT).order_by("user__surname")
-        class_students = list(map(lambda uc: uc.user, class_students))
-        class_units = Unit.objects.filter(classroom=assignment.classroom).order_by("name")
+        class_students = list(map(lambda uc: uc.user, user_class_students))
         submits = []
-        for s in AssignmentSubmit.objects.filter(assignment=original_assignment):
+        for s in AssignmentSubmit.objects.filter(assignment=assignment):
             submit = {
               "author": user_to_json(s.author),
               "submit_date": s.submit_date,
@@ -144,7 +144,7 @@ def create_assignment_submit(request, a_id, files, comment):
         raise Forbidden
     if AssignmentSubmit.objects.filter(author=request.session.user, assignment=assignment).exists():
         raise ForbiddenAssignmentSubmit
-    if assignment.assignment_due_date and timezone.now() > assignment.assignment_due_date:
+    if assignment.assignment_due_date and datetime.now() > datetime.combine(assignment.assignment_due_date, time(hour=23, minute=59, second=59)):
         raise ForbiddenAssignmentSubmit
     new_submit = AssignmentSubmit()
     new_submit.author = request.session.user

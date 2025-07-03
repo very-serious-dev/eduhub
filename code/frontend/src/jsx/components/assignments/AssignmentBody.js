@@ -6,7 +6,7 @@ import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent
 import LoadingHUD from "../common/LoadingHUD";
 import { useContext, useState } from "react";
 import EditPostDialog from "../dialogs/EditPostDialog";
-import { accent, pointableSecondary } from "../../../util/Themes";
+import { accent, pointableSecondary, secondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 
 const AssignmentBody = (props) => {
@@ -42,6 +42,7 @@ const AssignmentBody = (props) => {
             </div>
             <div className="assignmentDetailTitleHeader">
                 <div className="assignmentDetailTitle">{props.assignmentData.title}</div>
+                {props.assignmentData.unit_id && <div className={`classDetailEntryTopRightUnit assignmentTitleUnitCapsule ${secondary(theme)}`}>{props.assignmentData.class_units.find(u => u.id == props.assignmentData.unit_id)?.name}</div>}
                 <div className="assignmentDetailDueDate">Se entrega: {formatNullableDueDate(props.assignmentData.assignment_due_date)}</div>
                 <div className={`classDetailSectionUnderline ${accent(theme)}`} />
             </div>

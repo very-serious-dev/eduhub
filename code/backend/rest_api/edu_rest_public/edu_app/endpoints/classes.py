@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
-from ..models import User, Class, UserClass, Group, Unit, Post, AssignmentSubmit, Announcement
+from ..models import User, Class, UserClass, Group, Unit, Post, PostDocument, AssignmentSubmit, Announcement
 from ..util.exceptions import Forbidden, ConflictUnitAlreadyExists
 from ..util.helpers import get_from_db, can_see_class, can_edit_class
 from ..util.serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme, document_to_json, post_kind
@@ -59,6 +59,7 @@ def get_class(request, c_id, only_newer_than_post_with_id):
     posts_query = Post.objects.filter(classroom=classroom)
     if only_newer_than_post_with_id is not None:
         posts_query = posts_query.filter(id__gt=only_newer_than_post_with_id)
+    posts = []
     for p in posts_query:
         post_documents = PostDocument.objects.filter(post=p)
         files = list(map(lambda pd: document_to_json(pd.document), post_documents))
@@ -68,7 +69,7 @@ def get_class(request, c_id, only_newer_than_post_with_id):
             "content": p.content,
             "author": p.author.username,
             "publication_date": p.publication_date,
-            "files": post_documents,
+            "files": files,
             "kind": post_kind(p),
             "assignment_due_date": p.assignment_due_date,
             "unit_id": p.unit.id if p.unit else None,
@@ -78,14 +79,14 @@ def get_class(request, c_id, only_newer_than_post_with_id):
 
 def edit_class(request, c_id, name, evaluation_criteria):
     classroom = get_from_db(Class, id=c_id)
-    if not __can_edit_class(request.session.user, classroom):
+    if not can_edit_class(request.session.user, classroom):
         raise Forbidden
     classroom.name = name
     if evaluation_criteria is not None:
         # Only update evaluation_criteria if it comes in the JSON body.
         # In admin panel you can edit the class with a form without
         # evaluation criteria (admins can't change that from the UI)
-        classroom.evaluation_criteria = json_evaluation_criteria
+        classroom.evaluation_criteria = evaluation_criteria
     classroom.save()
     return JsonResponse({"success": True}, status=200)
 
@@ -133,7 +134,7 @@ def add_participants(request, c_id, usernames):
             error_msg += "Usuario(s) ya pertenece(n) a la clase: " + ", ".join(failed_already_added_users)
         return JsonResponse({"partial_success": True, "error": error_msg}, status=201)
 
-def delete_participan(request, c_id, username):
+def delete_participant(request, c_id, username):
     classroom = get_from_db(Class, id=c_id)
     if not can_edit_class(request.session.user, classroom):
         raise Forbidden
@@ -148,7 +149,7 @@ def create_unit(request, c_id, name):
     if Unit.objects.filter(classroom=classroom, name=name).exists():
         raise ConflictUnitAlreadyExists
     new_unit = Unit()
-    new_unit.name = json_name
+    new_unit.name = name
     new_unit.classroom = classroom
     new_unit.save()
     return JsonResponse({"success": True}, status=201)
@@ -157,6 +158,8 @@ def edit_unit(request, u_id, name):
     unit = get_from_db(Unit, id=u_id)
     if not can_edit_class(request.session.user, unit.classroom):
         raise Forbidden
+    if Unit.objects.filter(name=name, classroom=unit.classroom).exists():
+        raise ConflictUnitAlreadyExists
     unit.name = name
     unit.save()
     return JsonResponse({"success": True}, status=200)

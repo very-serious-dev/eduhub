@@ -70,7 +70,7 @@ def edit_announcement(request, a_id, title, content, files):
             document = Document.objects.get(identifier=f["identifier"])
         except Document.DoesNotExist:
             root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-            folder = get_or_create_folder(__folder_name_for_group(group), request.session.user, root_folder)
+            folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
             document = Document()
             document.identifier = f["identifier"]
             document.name = f["name"]

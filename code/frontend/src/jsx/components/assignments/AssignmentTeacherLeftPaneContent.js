@@ -71,7 +71,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
                 warningMessage="¿Deseas entregar todas las calificaciones guardadas que aún no has publicado? Cada estudiante podrá ver su puntuación" />}
         <div className="assignmentDetailLeftPaneInfoContainer">
             {nAssigneesWhoDidntSubmit > 0 && <div className="assignmentDetailLeftPaneInfo">
-                ℹ️ No entregada por {nAssigneesWhoDidntSubmit} {nAssigneesWhoDidntSubmit > 1 ? "estudiantes" : "estudiante"}
+                ℹ️ No entregado por {nAssigneesWhoDidntSubmit} {nAssigneesWhoDidntSubmit > 1 ? "estudiantes" : "estudiante"}
             </div>}
             {nUnscoredSubmits > 0 && <div className="assignmentDetailLeftPaneInfo">
                 ℹ️ No has calificado {nUnscoredSubmits} {nUnscoredSubmits > 1 ? "entregas" : "entrega"}
