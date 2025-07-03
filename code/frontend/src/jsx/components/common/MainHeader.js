@@ -47,7 +47,6 @@ const MainHeader = (props) => {
             : <div className="mainPageHeaderButtons">
                 <AnimatedButton onClick={() => { navigate("/"); }} text="📚 Clases" />
                 <AnimatedButton onClick={() => { navigate("/files"); }} text="📁 Archivos" />
-                <AnimatedButton onClick={() => { alert("En construcción") }} text="✉️ Mensajes" />
                 {props.showAdminLink && <AnimatedButton onClick={() => { navigate("/admin"); }} text="⚙️ Panel de administración" hiddenInMobile={true} />}
                 <AnimatedButton onClick={onLogout} rightAligned={true} text="🏃 Salir" />
             </div>}
