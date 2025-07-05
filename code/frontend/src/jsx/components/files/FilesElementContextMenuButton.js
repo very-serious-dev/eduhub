@@ -3,6 +3,7 @@ import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
 import { DocuAPIFetch } from "../../../client/APIFetch";
 import FilesPermissionsDialog from "../dialogs/FilesPermissionsDialog";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
+import { getSelfAndSubTreeIds } from "../../../util/FilesBrowserContainerUtil";
 
 const FilesElementContextMenuButton = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, SHARE, MOVE, DELETE
@@ -11,29 +12,6 @@ const FilesElementContextMenuButton = (props) => {
     const onClickContextMenu = (event) => {
         event.stopPropagation();
         setPopupShown("CONTEXT_MENU");
-    }
-
-    const traverseTreeAndAccumulateDocuments = (folder, mutableDocumentIds, mutableFolderIds) => {
-        if (folder.children.length > 0) {
-            for (const child of folder.children) {
-                if (child.type === "document") {
-                    mutableDocumentIds.push(child.identifier);
-                } else if (child.type === "folder") {
-                    traverseTreeAndAccumulateDocuments(child, mutableDocumentIds, mutableFolderIds);
-                }
-            }
-        }
-        mutableFolderIds.push(folder.id)
-    }
-
-    const getSelfAndChildrenIds = () => {
-        if (props.document) { return { document_ids: [props.document.identifier], folder_ids: [] } }
-        if (props.folder) {
-            const documentIds = []
-            const folderIds = []
-            traverseTreeAndAccumulateDocuments(props.folder, documentIds, folderIds);
-            return { document_ids: documentIds, folder_ids: folderIds };
-        }
     }
 
     const elementName = () => {
@@ -46,7 +24,7 @@ const FilesElementContextMenuButton = (props) => {
 
     const onDelete = () => {
         setLoadingDelete(true);
-        const body = getSelfAndChildrenIds();
+        const body = getSelfAndSubTreeIds(props.document, props.folder);
         DocuAPIFetch("DELETE", `/api/v1/documents`, body)
             .then(json => {
                 if (json.success === true) {
@@ -76,15 +54,14 @@ const FilesElementContextMenuButton = (props) => {
             </div></>
         }
         {popupShown === "SHARE" && <FilesPermissionsDialog onDismiss={() => { setPopupShown("NONE"); }}
-            documentId={props.document ? props.document.identifier : undefined}
-            folderId={props.folder ? props.folder.id : undefined}
-            title={`"${elementName()}" está compartido  con...`}
-            subTreeIds={getSelfAndChildrenIds()} />}
+            document={props.document}
+            folder={props.folder}
+            title={`"${elementName()}" está compartido  con...`} />}
         {popupShown === "MOVE" && <MoveDocumentOrFolderDialog onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}
             onFail={props.onMoveDeleteFail}
-            folderId={props.folder ? props.folder.id : undefined}
-            documentId={props.document ? props.document.identifier : undefined}
+            folder={props.folder}
+            document={props.document}
             filesTree={props.filesTree} />}
         {popupShown === "DELETE" &&
             <AreYouSureDialog onActionConfirmed={onDelete}

@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
-import { getFolderNamesForFolderIdsPath } from "../../../util/FilesBrowserContainerUtil";
+import { getFolderNamesForFolderIdsPath, getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
@@ -17,15 +17,16 @@ const MoveDocumentOrFolderDialog = (props) => {
     }
 
     const onSubmitMoveElement = (event) => {
+
         event.preventDefault();
         setLoading(true);
         let url;
         let body = {}
-        if (props.folderId) {
-            url = `/api/v1/folders/${props.folderId}`;
+        if (props.folder) {
+            url = `/api/v1/folders/${props.folder.id}${getSelfAndSubTreeIdsForQueryParam(null, props.folder)}`;
             body["parent_folder_id"] = appropriateContainerFolderId();
-        } else if (props.documentId) {
-            url = `/api/v1/documents/${props.documentId}`;
+        } else if (props.document) {
+            url = `/api/v1/documents/${props.document.identifier}`;
             body["folder_id"] = appropriateContainerFolderId();
         }
         EduAPIFetch("PUT", url, body)
@@ -76,6 +77,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             type="text"
                             value={`/${targetFolderPath.join('/')}${targetFolderPath.length > 0 ? '/' : ''}`} disabled={true} />
                     </div>
+                    <div className="hint">Al mover un{props.folder ? "a carpeta" : " documento"}, todos los usuarios con acceso a la carpeta de destino obtendrán permisos también. Si más tarde quieres eliminar sus permisos de acceso, deberás hacerlo explícitamente.</div>
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={`Mover a ${targetFolderPath.length > 0 ? `"${targetFolderPath.slice(-1)[0]}/"` : 'la raíz de Tu unidad'}`} />
                     </div>

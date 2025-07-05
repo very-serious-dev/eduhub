@@ -12,6 +12,9 @@ class BadRequestInvalidTag(Exception):
 
 class BadRequestInvalidYear(Exception):
     pass
+
+class BadRequestIllegalMove(Exception):
+    pass
     
 class Unauthorized(Exception):
     pass

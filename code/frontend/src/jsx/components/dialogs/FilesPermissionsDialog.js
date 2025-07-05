@@ -6,6 +6,7 @@ import UserCard from "../common/UserCard";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
 import { GetSessionUsername } from "../../../client/ClientCache";
+import { getSelfAndSubTreeIds, getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
 
 const FilesPermissionsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
@@ -19,10 +20,10 @@ const FilesPermissionsDialog = (props) => {
     useEffect(() => {
         setLoading(true);
         let url;
-        if (props.folderId) {
-            url = `/api/v1/folders/${props.folderId}/users`;
-        } else if (props.documentId) {
-            url = `/api/v1/documents/${props.documentId}/users`;
+        if (props.folder) {
+            url = `/api/v1/folders/${props.folder.id}/users`;
+        } else if (props.document) {
+            url = `/api/v1/documents/${props.document.identifier}/users`;
         }
         EduAPIFetch("GET", url).then(json => {
             setLoading(false);
@@ -73,24 +74,12 @@ const FilesPermissionsDialog = (props) => {
         if (errorMessage === undefined || errorMessage === "") {
             setFeedback({ type: "success", message: "Usuario(s) añadido(s) con éxito" });
         } else {
-            setFeedback({ type: "error", message: errorMessage });
+            setFeedback({ type: "info", message: errorMessage });
         }
-    }
-
-    const getSelfAndChildrenIdsForQueryParam = () => {
-        let queryParam = "";
-        if (props.subTreeIds.document_ids.length > 0) {
-            queryParam += "?documentIds=" + props.subTreeIds.document_ids.join(",");
-        }
-        if (props.subTreeIds.folder_ids.length > 0) {
-            queryParam += (queryParam.length > 0) ? "&" : "?";
-            queryParam += "folderIds=" + props.subTreeIds.folder_ids.join(",");
-        }
-        return queryParam;
     }
 
     const filePermissionsSubTreeUrl = () => {
-        return `/api/v1/files/permissions${getSelfAndChildrenIdsForQueryParam()}`;
+        return `/api/v1/files/permissions${getSelfAndSubTreeIdsForQueryParam(props.document, props.folder)}`;
     }
 
     return areYouSureDeleteUsername !== undefined ?

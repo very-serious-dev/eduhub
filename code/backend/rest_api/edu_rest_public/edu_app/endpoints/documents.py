@@ -43,17 +43,47 @@ def move_document(request, d_id, folder_id):
     document = get_from_db(Document, identifier=d_id, author=request.session.user)
     document.folder = folder
     document.save()
+    # Also grant access to users who were allowed in the destination folder
+    folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
+    for u in folder_granted_users:
+        udp = UserDocumentPermission()
+        udp.user = u
+        udp.document = document
+        udp.save()
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "document_changed",
                                 "document": document_to_json(document)
                             }}, status=200)
 
-def move_folder(request, f_id, parent_folder_id):
+def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_document_ids):
     folder = get_from_db(Folder, id=f_id, author=request.session.user)
     parent_folder = get_from_db(Folder, id=parent_folder_id, author=request.session.user) if parent_folder_id else None
     folder.parent_folder = parent_folder
     folder.save()
+    # Also grant access (to all subtree) to users who were allowed in the destination folder
+    parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
+    for u in parent_folder_granted_users:
+        for folder_id in subtree_folder_ids:
+            try:
+                folder = Folder.objects.get(id=folder_id, author=request.session.user)
+                if not UserFolderPermission.objects.filter(user=u, folder=folder).exists():
+                    new_ufp = UserFolderPermission()
+                    new_ufp.user = u
+                    new_ufp.folder = folder
+                    new_ufp.save()
+            except Document.DoesNotExist:
+                pass
+        for document_id in subtree_document_ids:
+            try:
+                document = Document.objects.get(identifier=document_id, author=request.session.user)
+                if not UserDocumentPermission.objects.filter(user=u, document=document).exists():
+                    new_udp = UserDocumentPermission()
+                    new_udp.user = u
+                    new_udp.document = document
+                    new_udp.save()
+            except Document.DoesNotExist:
+                pass
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "folder_changed",

@@ -14,9 +14,11 @@ def maybe_unhappy(endpoint_function):
         except e.BadRequestInvalidUsername:
             return JsonResponse({"error": "El nombre de usuario no es válido. Sólo puede contener letras en minúscula, dígitos y puntos (.)"}, status=400)
         except e.BadRequestInvalidTag:
-            return JsonResponse({"error": "El tag no es válido. Sólo puede contener letras y dígitos"}, status=409)
+            return JsonResponse({"error": "El tag no es válido. Sólo puede contener letras y dígitos"}, status=400)
         except e.BadRequestInvalidYear:
-            return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=409)
+            return JsonResponse({"error": "Año inválido. Sólo puede contener dígitos y guiones"}, status=400)
+        except e.BadRequestIllegalMove:
+            return JsonResponse({"error": "No puedes mover una carpeta dentro de sí misma"}, status=400)
         except e.Unauthorized:
             return JsonResponse({"error": "Tu sesión no existe o ha caducado"}, status=401)
         except e.UnauthorizedIncorrectPassword:

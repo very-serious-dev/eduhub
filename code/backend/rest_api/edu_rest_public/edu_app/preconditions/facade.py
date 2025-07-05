@@ -2,7 +2,7 @@ from django.http import QueryDict
 from ..endpoints import admin, users, groups, classes, posts, documents
 from ..models import User
 from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, parse_usernames_list
-from ..util.exceptions import Unsupported, BadRequest
+from ..util.exceptions import Unsupported, BadRequest, BadRequestIllegalMove
 
 """
 facade.py
@@ -323,7 +323,16 @@ def documents_move_folder(request, f_id):
     if request.method == "PUT":
         require_valid_session(request=request)
         parent_folder_id = expect_body_with(optional=['parent_folder_id'], request=request)
-        return documents.move_folder(request, f_id, parent_folder_id)
+        if parent_folder_id and parent_folder_id == f_id:
+            raise BadRequestIllegalMove
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_docs = url_query.get("documentIds", None)
+        url_folders = url_query.get("folderIds", None)
+        document_ids = url_docs.split(",") if url_docs is not None else []
+        folder_ids = url_folders.split(",") if url_folders is not None else []
+        if len(document_ids) == 0 and len(folder_ids) == 0:
+            raise BadRequest
+        return documents.move_folder(request, f_id, parent_folder_id, folder_ids, document_ids)
     else:
         raise Unsupported
 
