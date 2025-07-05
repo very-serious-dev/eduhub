@@ -40,6 +40,10 @@ const FilesElementContextMenuButton = (props) => {
         return props.document ? props.document.name : props.folder.name;
     }
 
+    const isProtected = () => {
+        return props.document ? props.document.is_protected : props.folder.isProtected
+    }
+
     const onDelete = () => {
         setLoadingDelete(true);
         const body = getSelfAndChildrenIds();
@@ -68,7 +72,7 @@ const FilesElementContextMenuButton = (props) => {
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
                 <div className="contextMenuItem pointable" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
                 <div className="contextMenuItem pointable" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
-                <div className="contextMenuItem pointable" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>
+                {!isProtected() && <div className="contextMenuItem pointable" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>}
             </div></>
         }
         {popupShown === "SHARE" && <FilesPermissionsDialog onDismiss={() => { setPopupShown("NONE"); }}

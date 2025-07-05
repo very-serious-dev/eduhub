@@ -1336,16 +1336,16 @@ body {
 }
 
 .myFilesElementSpecialText {
-  color: #444;
+  color: #666;
   font-size: 0.6em;
   margin-left: 32px;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
   letter-spacing: 0.1em;
 }
 
 .myFilesElementAuthorDate {
   color: #333;
-  font-size: 0.55em;
+  font-size: 0.6em;
   text-align: right;
   margin-top: 2px;
 }

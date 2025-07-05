@@ -57,6 +57,29 @@ const FilesPage = () => {
         }
     }
 
+    const expandAndExploreMaybeProtectedFolder = (folder, ancestorFolders) => {
+        console.log("NENO")
+        console.log(folder)
+        const containsProtectedDocument = folder.children.some(e => e.type === 'document' && e.is_protected === true);
+        if (containsProtectedDocument) {
+            folder.isProtected = true;
+            ancestorFolders.forEach(f => f.isProtected = true);
+        }
+        for (let child of folder.children.filter(e => e.type === 'folder')) {
+            expandAndExploreMaybeProtectedFolder(child, [...ancestorFolders, folder]);
+        }
+    }
+
+    /**
+     * Given a built tree, traverses it and sets 'isProtected = true'
+     * to folders that are ancestors of documents with is_protected == true
+     */
+    const generateProtectedFolderAttribute = (tree) => {
+        for (let rootFolder of tree.filter(e => e.type === 'folder')) {
+            expandAndExploreMaybeProtectedFolder(rootFolder, [])
+        }
+    }
+
     const findAllChildrenAndRecursivelyInsertInto = (folder, remainingFoldersMutable) => {
         for (let i = remainingFoldersMutable.length - 1; i >= 0; i--) {
             if (remainingFoldersMutable[i].parent_folder_id === folder.id) {
@@ -71,14 +94,14 @@ const FilesPage = () => {
 
     /**
      * Returns an array containing all the folders with a new synthetic attribute 'children'
-     * where documents that belong to a folder are.
+     * where [only] documents that belong to a folder are.
      * - Orphan documents (e.g.: documents at root level) aren't taken into account
      * - Folders are still not put inside the 'children' attribute (the tree isn't fully built)
      */
     const flatFoldersWithDocumentsInside = (documentsAndFolders) => {
         const allFoldersById = {}
         documentsAndFolders.folders.forEach(f => {
-            allFoldersById[f.id] = { ...f, children: [] };
+            allFoldersById[f.id] = { ...f, children: [], type: "folder", isProtected: false };
         });
         documentsAndFolders.documents.forEach(d => {
             // d.folder_id is null if the document doesn't belong to a folder (e.g.: is at root level)
@@ -89,12 +112,7 @@ const FilesPage = () => {
                 allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
             }
         });
-        const allFolders = []
-        for (let folderId of Object.keys(allFoldersById)) {
-            const f = allFoldersById[folderId]
-            allFolders.push({ ...f, type: "folder" });
-        }
-        return allFolders;
+        return Object.values(allFoldersById);
     }
 
     const buildTree = (documentsAndFolders) => {
@@ -118,6 +136,7 @@ const FilesPage = () => {
                 tree.push({ ...d, type: "document" })
             }
         });
+        generateProtectedFolderAttribute(tree);
         return tree;
     }
 

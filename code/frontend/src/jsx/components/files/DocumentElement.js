@@ -11,7 +11,7 @@ const DocumentElement = (props) => {
     }
 
     const shouldShowContextMenu = () => {
-        return props.showContextMenu && props.document.is_protected !== true;
+        return props.showContextMenu;
     }
 
     return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable pointable" : ""}`} onClick={onClickFile}>
@@ -23,7 +23,7 @@ const DocumentElement = (props) => {
             <img className="myFilesElementIcon" src={iconImgSrc(props.mimeType)}></img>
             <div className="myFilesElementName">{props.document.name}</div>
         </div>
-        {props.document.is_protected && <div className="myFilesElementSpecialText">PROTEGIDO ☑️</div>}
+        {props.document.is_protected && <div className="myFilesElementSpecialText">🚫 Protegido</div>}
         <div className="myFilesElementSize">{sizeToHumanReadable(props.size)}</div>
         <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.document.created_at, props.showAuthor ? props.document.author : null)}`}</div>
     </div>
