@@ -1004,6 +1004,31 @@ body {
   margin-right: 10px;
 }
 
+.createOrEditPostFormRoundInnerButton {
+  display: inline;
+  font-size: 0.875em;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
+.chooseMyFilesSeparatorContainer {
+  height: 12px;
+}
+
+.chooseMyFilesSeparator {
+  height: 1px;
+  margin-top: 6px;
+  margin-left: 25%;
+  width: 50%
+}
+
+.chooseMyFilesContainer {
+  text-align: center;
+}
+
 /**
  * Assignment detail page
  */

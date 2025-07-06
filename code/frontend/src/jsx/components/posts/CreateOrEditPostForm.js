@@ -6,6 +6,7 @@ import { DocuAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
+import ChooseMyFiles from "../common/ChooseMyFiles";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY_23_59 = `${new Date().toISOString().split("T")[0]}T23:59`;
@@ -118,7 +119,7 @@ const CreateOrEditPostForm = (props) => {
             // https://stackoverflow.com/a/51643788
             const t = new Date(props.postBeingEdited.assignment_due_date);
             const z = t.getTimezoneOffset() * 60 * 1000;
-            const tLocal = new Date(t-z);
+            const tLocal = new Date(t - z);
             return tLocal.toISOString().split('.')[0].slice(0, -3);
         }
     }
@@ -156,6 +157,8 @@ const CreateOrEditPostForm = (props) => {
             </div>
             <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
             <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
+            <div className="chooseMyFilesSeparatorContainer"><div className={`chooseMyFilesSeparator ${primary(theme)}`}></div></div>
+            <ChooseMyFiles />
             <div className="formInputContainer">
                 <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={props.submitText} />
             </div>

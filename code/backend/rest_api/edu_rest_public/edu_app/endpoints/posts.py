@@ -85,7 +85,7 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
                 document.mime_type = f["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True
+                document.is_protected = True # TODO: Even if you delete or edit a post, files will still be protected. Change that!
                 document.save()
             post_document = PostDocument()
             post_document.document = document
