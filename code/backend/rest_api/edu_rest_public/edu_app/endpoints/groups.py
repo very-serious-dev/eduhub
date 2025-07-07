@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document
 from ..util.exceptions import Forbidden, InternalError
-from ..util.helpers import get_from_db, get_or_create_folder
+from ..util.helpers import get_from_db, get_or_create_folder, is_document_used_in_post_or_announcement
 from ..util.serializers import groups_array_to_json, announcements_array_to_json
 from .posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
@@ -62,12 +62,12 @@ def edit_announcement(request, a_id, title, content, files):
     announcement.content = content
     announcement.modification_date = timezone.now()
     announcement.save()
-    # Remove previous files
-    announcement_documents = AnnouncementDocument.objects.filter(announcement=announcement)
-    announcement_documents.delete()
+    __delete_announcement_documents_and_unprotect_unused_documents(announcement)
     for f in files:
         try:
             document = Document.objects.get(identifier=f["identifier"])
+            document.is_protected = True
+            document.save()
         except Document.DoesNotExist:
             root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
             folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
@@ -91,6 +91,7 @@ def delete_announcement(request, a_id):
     can_delete = __has_permission_to_manage_announcements(request.session.user, announcement.group)
     if not can_delete:
         raise Forbidden
+    __delete_announcement_documents_and_unprotect_unused_documents(announcement)
     announcement.delete()
     return JsonResponse({"success": True}, status=201)
         
@@ -101,3 +102,11 @@ def __has_permission_to_manage_announcements(user, group):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
            or (user.role == User.UserRole.TEACHER and group.tutor == user)
     
+def __delete_announcement_documents_and_unprotect_unused_documents(announcement):
+    announcement_documents = AnnouncementDocument.objects.filter(announcement=announcement)
+    old_documents = list(map(lambda ad: ad.document, announcement_documents))
+    announcement_documents.delete()
+    for d in old_documents:
+        if not is_document_used_in_post_or_announcement(d):
+            d.is_protected = False
+            d.save()

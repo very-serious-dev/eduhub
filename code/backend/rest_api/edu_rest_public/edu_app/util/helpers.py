@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder, UserClass
+from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
@@ -130,3 +130,10 @@ def get_or_create_folder(name, author, parent_folder=None):
         folder.parent_folder = parent_folder
         folder.save()
     return folder
+
+def is_document_used_in_post_or_announcement(document):
+    return AnnouncementDocument.objects.filter(document=document).exists() or \
+             PostDocument.objects.filter(document=document).exists()
+             # PostDocument check only works because everytime you amend a post,
+             # old PostDocument entries get deleted. They also get deleted after
+             # deleting (amendment_delete) a post.

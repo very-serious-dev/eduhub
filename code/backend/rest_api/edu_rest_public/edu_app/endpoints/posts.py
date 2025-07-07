@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils import timezone
 from ..models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder
 from ..util.exceptions import Forbidden, ForbiddenAssignmentSubmit, NotFound
-from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class
+from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class, is_document_used_in_post_or_announcement
 from ..util.serializers import assignment_detail_to_json, document_to_json, user_to_json
 
 POSTS_DOCUMENTS_ROOT_FOLDER_NAME = "Publicaciones"
@@ -65,6 +65,7 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
     if post_type == "amend_delete":
         new_amendment.kind = Post.PostKind.AMENDMENT_DELETE
         new_amendment.save()
+        __delete_previous_post_documents_and_unprotect_unused_documents(post)
     if post_type == "amend_edit":
         new_amendment.kind = Post.PostKind.AMENDMENT_EDIT
         new_amendment.title = title
@@ -72,9 +73,12 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
         new_amendment.unit = unit
         new_amendment.assignment_due_date = assignment_due_date
         new_amendment.save()
+        __delete_previous_post_documents_and_unprotect_unused_documents(post)
         for f in files:
             try:
                 document = Document.objects.get(identifier=f["identifier"])
+                document.is_protected = True
+                document.save()
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
                 folder = get_or_create_folder(__folder_name_for_classroom(post.classroom), request.session.user, root_folder)
@@ -85,7 +89,7 @@ def amend_post(request, p_id, title, content, post_type, files, unit_id, assignm
                 document.mime_type = f["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True # TODO: Even if you delete or edit a post, files will still be protected. Change that!
+                document.is_protected = True
                 document.save()
             post_document = PostDocument()
             post_document.document = document
@@ -210,3 +214,11 @@ def publish_all_scores(request, a_id):
 def __folder_name_for_classroom(classroom):
     return classroom.group.tag + " - " + classroom.name
 
+def __delete_previous_post_documents_and_unprotect_unused_documents(post):
+    old_post_documents = PostDocument.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))
+    old_documents = list(map(lambda pd: pd.document, old_post_documents))
+    old_post_documents.delete()
+    for d in old_documents:
+        if not is_document_used_in_post_or_announcement(d):
+            d.is_protected = False
+            d.save()

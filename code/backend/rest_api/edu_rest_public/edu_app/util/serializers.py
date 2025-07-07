@@ -1,4 +1,4 @@
-from ..models import Post, User, Class
+from ..models import Post, User, Class, AnnouncementDocument
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
