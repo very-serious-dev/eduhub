@@ -86,7 +86,7 @@ const SubmitAssignmentDialog = (props) => {
                     <div className="dialogTitle">Entregar tarea</div>
                     <form onSubmit={() => { setShowAreYouSurePopup(true); }}>
                         <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} />
-                        <FilePicker attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} />
+                        <FilePicker attachedFilesReady={filesReadyToUpload} setAttachedFilesReady={setFilesReadyToUpload} showChooseFromMyUnit={true}/>
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Entregar" disabled={formComment === "" && filesReadyToUpload.length === 0} />
                         </div>

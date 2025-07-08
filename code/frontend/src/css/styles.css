@@ -999,12 +999,13 @@ body {
 }
 
 .createOrEditPostFormContainer {
-  position: relative; /* Descendant FilePicker will have a 'position: absolute' drop area */
+  position: relative;
+  /* Descendant FilePicker will have a 'position: absolute' drop area */
   margin-left: 10px;
   margin-right: 10px;
 }
 
-.createOrEditPostFormRoundInnerButton {
+.filePickerRoundButton {
   display: inline;
   font-size: 0.875em;
   padding-left: 10px;
@@ -1014,19 +1015,32 @@ body {
   border-radius: 5px;
 }
 
-.chooseMyFilesSeparatorContainer {
+.createOrEditPostSeparatorContainer {
   height: 12px;
 }
 
-.chooseMyFilesSeparator {
+.createOrEditPostSeparator {
   height: 1px;
   margin-top: 6px;
   margin-left: 25%;
   width: 50%
 }
 
-.chooseMyFilesContainer {
+.createOrEditPostNewQuestionnareButton {
   text-align: center;
+  font-size: 0.875em;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+}
+
+@media (min-width: 480px) {
+  .createOrEditPostNewQuestionnareButton {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
 }
 
 /**
@@ -1404,7 +1418,8 @@ body {
 
 .filesBrowserTabWithUploadButton {
   position: relative;
-  min-height: 70vh; /* Not very beautiful way of ensuring that dropable area isn't small */
+  min-height: 70vh;
+  /* Not very beautiful way of ensuring that dropable area isn't small */
 }
 
 .filesBrowserCreateFolderButtonContainer {
@@ -1858,12 +1873,16 @@ body {
   overflow: auto;
 }
 
+.smallText {
+  height: 120px;
+}
+
 .bigText {
   height: 280px;
 }
 
-.smallText {
-  height: 120px;
+.veryBigText {
+  height: 327px;
 }
 
 .formFiles {
@@ -1881,6 +1900,7 @@ body {
 
 .filePickerInputContainer {
   text-align: center;
+  line-height: 1.5;
 }
 
 .filePickerInputLabel {

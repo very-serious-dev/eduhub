@@ -6,7 +6,6 @@ import { DocuAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
-import ChooseMyFiles from "../common/ChooseMyFiles";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY_23_59 = `${new Date().toISOString().split("T")[0]}T23:59`;
@@ -155,10 +154,13 @@ const CreateOrEditPostForm = (props) => {
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
-            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
-            <div className="chooseMyFilesSeparatorContainer"><div className={`chooseMyFilesSeparator ${primary(theme)}`}></div></div>
-            <ChooseMyFiles />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} extraBig={!props.showCreateQuestionnaire}/>
+            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} showChooseFromMyUnit={true} />
+            {props.showCreateQuestionnaire && <><div className="createOrEditPostSeparatorContainer"><div className={`createOrEditPostSeparator ${primary(theme)}`}></div></div>
+                <div className={`createOrEditPostNewQuestionnareButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
+                    onClick={() => { alert("TODO") }}>
+                    Crear formulario 📝
+                </div></>}
             <div className="formInputContainer">
                 <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={props.submitText} />
             </div>

@@ -3,10 +3,11 @@ import FilePicker from "../common/FilePicker";
 import LoadingHUD from "../common/LoadingHUD";
 import { DocuAPIFetch } from "../../../client/APIFetch";
 import CreateFolderDialog from "../dialogs/CreateFolderDialog";
+import OptionsDialog from "../dialogs/OptionsDialog";
 
 const FilesBrowserTabWithUpload = (props) => {
     const [filesToUpload, setFilesToUpload] = useState([]);
-    const [showCreateFolder, setShowCreateFolder] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_FOLDER_OR_QUESTIONNAIRE, CREATE_FOLDER
     const [isUploading, setUploading] = useState(false);
 
     const onUpload = () => {
@@ -37,20 +38,31 @@ const FilesBrowserTabWithUpload = (props) => {
     }
 
     return <>
-        {showCreateFolder && <CreateFolderDialog
+        {popupShown === "CREATE_FOLDER" && <CreateFolderDialog
             parentFolderId={props.parentFolderId}
-            onDismiss={() => { setShowCreateFolder(false); }}
+            onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onCreateSuccess}
             onFail={props.onCreateFail} />}
+        {popupShown === "CREATE_FOLDER_OR_QUESTIONNAIRE" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
+            options={[
+                {
+                    label: "📁 Crear carpeta",
+                    onClick: () => { setPopupShown("CREATE_FOLDER") },
+                },
+                {
+                    label: "📝 Nuevo formulario",
+                    onClick: () => { alert("TO-DO") },
+                },
+            ]} />}
         <div className="filesBrowserTabWithUploadButton">
             <div className="filesBrowserCreateFolderButtonContainer">
                 <div className="filesBrowserCreateFolderButton"
-                    onClick={() => { setShowCreateFolder(true); }}>
-                    Crear carpeta
+                    onClick={() => { setPopupShown("CREATE_FOLDER_OR_QUESTIONNAIRE"); }}>
+                    Crear... 📁📝
                 </div>
             </div>
             <div className="filesBrowserUploadSeparatorUnderline" />
-            <FilePicker attachedFilesReady={filesToUpload} setAttachedFilesReady={setFilesToUpload} />
+            <FilePicker attachedFilesReady={filesToUpload} setAttachedFilesReady={setFilesToUpload} showChooseFromMyUnit={false} />
             {isUploading ? <div className="loadingHUDCentered"><LoadingHUD /></div>
                 : filesToUpload.length > 0 && <div className="filesBrowserUploadFilesButton" onClick={onUpload}>⬆️ Subir</div>}
             {props.elements}

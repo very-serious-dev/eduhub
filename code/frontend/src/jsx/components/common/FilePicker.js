@@ -134,7 +134,12 @@ const FilePicker = (props) => {
                     <label className={`filePickerInputLabel pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
                         <input type="file" key={refreshKeyClearInputFiles} multiple={true} onChange={onFilesPickerChanged} />
                         Subir archivos
-                    </label>{!isMobile && " ó ⬇️📄 arrastra tus ficheros"}
+                    </label>
+                    {!isMobile && " ó ⬇️📄 arrástralos desde tu ordenador. "}
+                    {props.showChooseFromMyUnit && <>También puedes <div className={`filePickerRoundButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
+                        onClick={() => { alert("TODO") }}>
+                        Seleccionar&nbsp;archivos&nbsp;de&nbsp;tu&nbsp;unidad
+                    </div></>}
                 </div>
                 <div className="formFilesAttached">
                     {props.attachedFilesReady.map(f => <FilePickerItem file={f} onDelete={onRemoveReadyFile} />)}

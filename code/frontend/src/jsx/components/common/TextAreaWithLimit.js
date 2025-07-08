@@ -9,7 +9,7 @@ const TextAreaWithLimit = (props) => {
 
     return <div className="textAreaContainer">
         <textarea value={props.value}
-            className={`formTextArea ${props.small ? "smallText" : "bigText"} ${borderPrimary(theme)}`}
+            className={`formTextArea ${props.small ? "smallText" : props.extraBig ? "veryBigText" : "bigText" /* This could've been done more elegantly with better CSS. Aims to keep 'New publication' and 'New assignment' tabs the same height */} ${borderPrimary(theme)}`}
             placeholder={defaultPlaceholder}
             maxLength={props.maxLength}
             onChange={e => { props.setValue(e.target.value) }}

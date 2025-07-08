@@ -154,23 +154,27 @@ def create_assignment_submit(request, a_id, files, comment):
     new_submit.assignment = assignment
     new_submit.comment = comment
     new_submit.save()
-    if len(files) > 0:
-        root_folder = get_or_create_folder(ASSIGNMENT_SUBMITS_ROOT_FOLDER_NAME, request.session.user)
-        folder = get_or_create_folder(__folder_name_for_classroom(assignment.classroom), request.session.user, root_folder)
-        for f in json_files:
+    for f in files:
+        try:
+            document = Document.objects.get(identifier=f["identifier"])
+            document.is_protected = True
+            document.save()
+        except Document.DoesNotExist:
+            root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+            folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
             document = Document()
             document.identifier = f["identifier"]
             document.name = f["name"]
             document.size = f["size"]
             document.mime_type = f["mime_type"]
             document.author = request.session.user
-            document.is_protected = True
             document.folder = folder
+            document.is_protected = True
             document.save()
-            submit_document = AssignmentSubmitDocument()
-            submit_document.document = document
-            submit_document.submit = new_submit
-            submit_document.save()
+        submit_document = AssignmentSubmitDocument()
+        submit_document.document = document
+        submit_document.submit = new_submit
+        submit_document.save()
     return JsonResponse({"success": True}, status=201)
 
 def score_submit(request, a_id, username, score, should_publish):

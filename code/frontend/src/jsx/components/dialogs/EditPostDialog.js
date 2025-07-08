@@ -44,6 +44,7 @@ const EditPostDialog = (props) => {
                         submitText="Publicar modificación"
                         showDatePicker={props.post.kind === "assignment"}
                         showDeleteButton={true}
+                        showCreateQuestionnaire={props.post.kind === "assignment"}
                         onDeleteClicked={() => { setShowAreYouSurePopup(true); }}
                         onFinished={props.onFinished}
                         onDismiss={props.onDismiss} />

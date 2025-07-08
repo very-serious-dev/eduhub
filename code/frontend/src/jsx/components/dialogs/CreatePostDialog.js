@@ -16,6 +16,7 @@ const CreatePostDialog = (props) => {
                             submitText="Publicar"
                             showDatePicker={false}
                             showDeleteButton={false}
+                            showCreateQuestionnaire={false}
                             onFinished={props.onFinished}
                             onDismiss={props.onDismiss} />
                     },
@@ -28,6 +29,7 @@ const CreatePostDialog = (props) => {
                             submitText="Crear tarea"
                             showDatePicker={true}
                             showDeleteButton={false}
+                            showCreateQuestionnaire={true}
                             onFinished={props.onFinished}
                             onDismiss={props.onDismiss} />
                     }]}

@@ -110,7 +110,7 @@ const CreateOrEditAnnouncementForm = (props) => {
                 </div>
             </div>
             <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
-            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} />
+            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} showChooseFromMyUnit={true}/>
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />
             </div>
