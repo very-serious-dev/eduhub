@@ -4,20 +4,21 @@ from ..util.exceptions import ConflictQuotaExceeded, ConflictFolderAlreadyExists
 from ..util.helpers import get_from_db
 from ..util.serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json
 
-def get_documents_and_folders(request):
+def get_documents_and_folders(request, only_my_files):
     my_documents = Document.objects.filter(author=request.session.user)
     my_folders = Folder.objects.filter(author=request.session.user)
-    user_document_permissions = UserDocumentPermission.objects.filter(user=request.session.user)
-    user_folder_permissions = UserFolderPermission.objects.filter(user=request.session.user)
-    shared_with_me_documents = list(map(lambda udp: udp.document, user_document_permissions))
-    shared_with_me_folders = list(map(lambda ufp: ufp.folder, user_folder_permissions))
-    return JsonResponse({"my_files": {
-                         "documents": documents_array_to_json(my_documents),
-                         "folders": folders_array_to_json(my_folders) },
-                         "shared_with_me": {
+    response = { "my_files": {
+                     "documents": documents_array_to_json(my_documents),
+                     "folders": folders_array_to_json(my_folders) }}
+    if not only_my_files:
+        user_document_permissions = UserDocumentPermission.objects.filter(user=request.session.user)
+        user_folder_permissions = UserFolderPermission.objects.filter(user=request.session.user)
+        shared_with_me_documents = list(map(lambda udp: udp.document, user_document_permissions))
+        shared_with_me_folders = list(map(lambda ufp: ufp.folder, user_folder_permissions))
+        response["shared_with_me"] = {
                              "documents": documents_array_to_json(shared_with_me_documents),
-                             "folders": folders_array_to_json(shared_with_me_folders)
-                         }}, status=200)
+                             "folders": folders_array_to_json(shared_with_me_folders) }
+    return JsonResponse(response, status=200)
 
 def create_folder(request, name, parent_folder_id):
     parent_folder = get_from_db(Folder, id=parent_folder_id, author=request.session.user) if parent_folder_id else None

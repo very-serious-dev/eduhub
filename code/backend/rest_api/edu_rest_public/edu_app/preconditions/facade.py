@@ -288,7 +288,8 @@ def posts_publish_all_scores(request, a_id):
 def documents_get_my_files(request):
     if request.method == "GET":
         require_valid_session(request=request)
-        return documents.get_documents_and_folders(request)
+        only_my_files = request.GET.get("onlyMyFiles", False)
+        return documents.get_documents_and_folders(request, only_my_files)
     else:
         raise Unsupported
 

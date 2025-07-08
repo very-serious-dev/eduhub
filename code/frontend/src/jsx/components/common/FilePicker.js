@@ -3,11 +3,13 @@ import FilePickerItem from "./FilePickerItem";
 import { pointableSecondary, primary, secondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { useIsMobile } from "../../../util/Responsive";
+import SelectFileDialog from "../dialogs/SelectFileDialog";
 
 const FilePicker = (props) => {
     const MAX_SIZE = { nBytes: 1024 * 1024 * 50, humanReadable: "50 MB" } // @see docu_rest/settings.py DATA_UPLOAD_MAX_MEMORY_SIZE
     const MAX_ATTACHMENTS = 5;
     const [isReadingFiles, setReadingFiles] = useState(false);
+    const [showSelectFiles, setShowSelectFiles] = useState(false);
     const isMobile = useIsMobile();
 
     // The drop area is actually 'position: absolute' to fill the parent,
@@ -129,6 +131,7 @@ const FilePicker = (props) => {
 
     return isReadingFiles ? <div>Cargando...</div> :
         <>
+            {showSelectFiles && <SelectFileDialog onDismiss={() => { setShowSelectFiles(false) }} />}
             <div className="formFiles">
                 <div className="filePickerInputContainer">
                     <label className={`filePickerInputLabel pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
@@ -137,7 +140,7 @@ const FilePicker = (props) => {
                     </label>
                     {!isMobile && " ó ⬇️📄 arrástralos desde tu ordenador. "}
                     {props.showChooseFromMyUnit && <>También puedes <div className={`filePickerRoundButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-                        onClick={() => { alert("TODO") }}>
+                        onClick={() => { setShowSelectFiles(true) }}>
                         Seleccionar&nbsp;archivos&nbsp;de&nbsp;tu&nbsp;unidad
                     </div></>}
                 </div>
