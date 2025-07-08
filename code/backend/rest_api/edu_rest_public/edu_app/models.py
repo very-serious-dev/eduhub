@@ -120,6 +120,10 @@ class AnnouncementDocument(models.Model):
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
+class AnnouncementQuestionnaire(models.Model):
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.CASCADE)
+
 ##
 # POSTS
 #
@@ -146,6 +150,10 @@ class PostDocument(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
 
+class PostQuestionnaire(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.CASCADE)
+
 class AssignmentSubmit(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     assignment = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -157,6 +165,45 @@ class AssignmentSubmit(models.Model):
 class AssignmentSubmitDocument(models.Model):
     submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
+
+##
+# QUESTIONNAIRES
+#
+
+class Questionnaire(models.Model):
+    title = models.CharField(max_length=100)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    archived = models.BooleanField(default=False)
+    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
+    is_protected = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class TextQuestion(models.Model):
+    title = models.CharField(max_length=500)
+    questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    number = models.IntegerField()
+
+class ChoicesQuestion(models.Model):
+    title = models.CharField(max_length=500)
+    questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    number = models.IntegerField()
+    correct_answer_score = models.FloatField(null=True)
+    incorrect_answer_score = models.FloatField(null=True)
+
+class ChoicesQuestionChoice(models.Model):
+    content = models.CharField(max_length=500)
+    question = models.ForeignKey(ChoicesQuestion, on_delete=models.CASCADE)
+
+class TextQuestionAnswer(models.Model):
+    answer = models.CharField(max_length=500)
+    question = models.ForeignKey(TextQuestion, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+class ChoicesQuestionAnswer(models.Model):
+    answer = models.ForeignKey(ChoicesQuestionChoice, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 ##
 # SECURITY, STATISTICS,...
