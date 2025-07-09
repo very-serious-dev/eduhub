@@ -29,8 +29,7 @@ const SelectFileDialog = (props) => {
     }, []);
 
     const handleDocumentSelected = (document) => {
-        props.onDocumentSelected(document)
-        props.onDismiss();
+        props.onDocumentSelected(document);
     }
 
     const firstTabView = () => {

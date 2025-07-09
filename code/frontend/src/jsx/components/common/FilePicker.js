@@ -117,6 +117,7 @@ const FilePicker = (props) => {
             return;
         }
         props.setFiles(f => [...f, document]);
+        setShowSelectFileFromMyDrive(false);
     }
 
     return <>

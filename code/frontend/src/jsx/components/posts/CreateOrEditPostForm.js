@@ -14,13 +14,23 @@ const CreateOrEditPostForm = (props) => {
     const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
     const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
     const [formAssignmentLocalDueDate, setFormAssignmentLocalDueDate] = useState(TODAY_23_59);
-    const [files, setFiles] = useState(props.postBeingEdited ? props.postBeingEdited.files : [])
+    const [files, setFiles] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
     useEffect(() => {
         setFormAssignmentLocalDueDate(postBeingEditedDueDateLocalTime() ?? TODAY_23_59);
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
+
+        newQuestionnaireChannel.onmessage = (event) => {
+            console.log(event.data);
+        }
+
+        return () => { newQuestionnaireChannel.close() }
+    }, []);
 
     const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
@@ -125,6 +135,10 @@ const CreateOrEditPostForm = (props) => {
         }
     }
 
+    const onCreateNewQuestionnaire = () => {
+        window.open("/create-form", "_blank");
+    }
+
     return <div className="createOrEditPostFormContainer">
         <form onSubmit={onSubmitCreateOrEditPost}>
             <div className="postFormFirstRowInputsContainer">
@@ -160,7 +174,7 @@ const CreateOrEditPostForm = (props) => {
             <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
             {props.showCreateQuestionnaire && <><div className="createOrEditPostSeparatorContainer"><div className={`createOrEditPostSeparator ${primary(theme)}`}></div></div>
                 <div className={`createOrEditPostNewQuestionnareButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-                    onClick={() => { alert("TODO") }}>
+                    onClick={onCreateNewQuestionnaire}>
                     Crear formulario 📝
                 </div></>}
             <div className="formInputContainer">

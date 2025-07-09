@@ -9,11 +9,12 @@ const AssignmentSubmitDialog = (props) => {
     const [showSetScore, setShowSetScore] = useState(false);
     const theme = useContext(ThemeContext);
 
-    return showSetScore ? <SetScoreDialog assignmentId={props.assignmentId}
-        username={props.author.username}
-        currentScore={props.submit.score}
-        onSuccess={props.onScoreChanged}
-        onDismiss={() => { setShowSetScore(false); }} />
+    return showSetScore ?
+        <SetScoreDialog assignmentId={props.assignmentId}
+            username={props.author.username}
+            currentScore={props.submit.score}
+            onSuccess={props.onScoreChanged}
+            onDismiss={() => { setShowSetScore(false); }} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground overflowScrollableDialog">

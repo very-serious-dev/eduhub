@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FilePicker from "../common/FilePicker";
 import LoadingHUD from "../common/LoadingHUD";
 import { DocuAPIFetch } from "../../../client/APIFetch";
@@ -10,8 +10,17 @@ const FilesBrowserTabWithUpload = (props) => {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_FOLDER_OR_QUESTIONNAIRE, CREATE_FOLDER
     const [isUploading, setUploading] = useState(false);
-
     const roles = GetSessionUserRoles();
+
+    useEffect(() => {
+        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
+
+        newQuestionnaireChannel.onmessage = (event) => {
+            console.log(event.data);
+        }
+
+        return () => { newQuestionnaireChannel.close() }
+    }, []);
 
     const onUpload = () => {
         if (isUploading) { return; }
@@ -42,6 +51,10 @@ const FilesBrowserTabWithUpload = (props) => {
 
     const canCreateQuestionnaires = roles.includes("teacher");
 
+    const onCreateNewQuestionnaire = () => {
+        window.open("/create-form", "_blank");
+    }
+
     return <>
         {popupShown === "CREATE_FOLDER" &&
             <CreateFolderDialog
@@ -58,7 +71,7 @@ const FilesBrowserTabWithUpload = (props) => {
                     },
                     {
                         label: "📝 Nuevo formulario",
-                        onClick: () => { alert("TO-DO") },
+                        onClick: onCreateNewQuestionnaire,
                     },
                 ]} />}
         <div className="filesBrowserTabWithUploadButton">
