@@ -5,7 +5,7 @@ import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 
 const SetScoreDialog = (props) => {
-    const [formScore, setFormScore] = useState(props.currentScore);
+    const [formScore, setFormScore] = useState(props.currentScore ?? "");
     const [isLoading, setLoading] = useState(false);
     const setFeedback = useContext(FeedbackContext);
     const theme = useContext(ThemeContext);
@@ -69,15 +69,20 @@ const SetScoreDialog = (props) => {
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormScore(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "7.5"; }}
-                            onBlur={e => { e.target.placeholder = ""; }} required />
+                            onBlur={e => { e.target.placeholder = ""; }} 
+                            required 
+                            autoFocus/>
                         <div className={`underline ${accent(theme)}`} />
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Puntuación</label>
                     </div>
                     <div className="formInputContainer">
-                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Guardar calificación" disabled={isLoading} />
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}
+                            value="Guardar calificación como borrador" disabled={isLoading || formScore.length === 0} />
                     </div>
                     <div className="formSecondSubmit formSecondSubmitConstructive">
-                        <button disabled={isLoading} onClick={(e) => { e.preventDefault(); putScore(true); }}>Guardar y enviar al estudiante</button>
+                        <button onClick={(e) => { e.preventDefault(); putScore(true); }} disabled={isLoading || formScore.length === 0} >
+                            Guardar y enviar al estudiante
+                        </button>
                     </div>
                     {props.currentScore !== null &&
                         <div className="formSecondSubmit formSecondSubmitDestructive">

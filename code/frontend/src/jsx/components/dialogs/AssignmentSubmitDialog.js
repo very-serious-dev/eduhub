@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { beautifullyDisplayDate, beautifullyDisplayDateTime } from "../../../util/Formatter";
+import { beautifullyDisplayDateTime } from "../../../util/Formatter";
 import SetScoreDialog from "./SetScoreDialog";
 import SmallFilesListFile from "../common/SmallFilesListFile";
 import { accentForeground, pointableSecondary, primary } from "../../../util/Themes";
@@ -37,7 +37,7 @@ const AssignmentSubmitDialog = (props) => {
                             <div className="assignmentSubmitDialogCommentTitle">Comentario:</div>
                             <div className="assignmentSubmitDialogSectionContent">{props.submit.comment ?? "No se ha añadido ningún comentario"}</div>
                             <div className="assignmentSubmitScoreTitle">Calificación</div>
-                            {props.submit.score !== null ?
+                            {props.submit.score !== null && props.submit.score !== undefined ?
                                 <>
                                     <div className={`assignmentSubmitScore ${props.submit.is_score_published ? accentForeground(theme) : "scoreUnpublished"}`}>{props.submit.score}</div>
                                     {props.submit.is_score_published === false && <div className="unpublishedScoreHint">Esta puntuación no está publicada para el estudiante todavía</div>}
