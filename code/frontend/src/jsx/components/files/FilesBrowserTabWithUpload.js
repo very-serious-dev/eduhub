@@ -4,11 +4,14 @@ import LoadingHUD from "../common/LoadingHUD";
 import { DocuAPIFetch } from "../../../client/APIFetch";
 import CreateFolderDialog from "../dialogs/CreateFolderDialog";
 import OptionsDialog from "../dialogs/OptionsDialog";
+import { GetSessionUserRoles } from "../../../client/ClientCache";
 
 const FilesBrowserTabWithUpload = (props) => {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_FOLDER_OR_QUESTIONNAIRE, CREATE_FOLDER
     const [isUploading, setUploading] = useState(false);
+
+    const roles = GetSessionUserRoles();
 
     const onUpload = () => {
         if (isUploading) { return; }
@@ -37,28 +40,32 @@ const FilesBrowserTabWithUpload = (props) => {
             })
     }
 
+    const canCreateQuestionnaires = roles.includes("teacher");
+
     return <>
-        {popupShown === "CREATE_FOLDER" && <CreateFolderDialog
-            parentFolderId={props.parentFolderId}
-            onDismiss={() => { setPopupShown("NONE"); }}
-            onSuccess={props.onCreateSuccess}
-            onFail={props.onCreateFail} />}
-        {popupShown === "CREATE_FOLDER_OR_QUESTIONNAIRE" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
-            options={[
-                {
-                    label: "📁 Crear carpeta",
-                    onClick: () => { setPopupShown("CREATE_FOLDER") },
-                },
-                {
-                    label: "📝 Nuevo formulario",
-                    onClick: () => { alert("TO-DO") },
-                },
-            ]} />}
+        {popupShown === "CREATE_FOLDER" &&
+            <CreateFolderDialog
+                parentFolderId={props.parentFolderId}
+                onDismiss={() => { setPopupShown("NONE"); }}
+                onSuccess={props.onCreateSuccess}
+                onFail={props.onCreateFail} />}
+        {popupShown === "CREATE_FOLDER_OR_QUESTIONNAIRE" &&
+            <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
+                options={[
+                    {
+                        label: "📁 Crear carpeta",
+                        onClick: () => { setPopupShown("CREATE_FOLDER") },
+                    },
+                    {
+                        label: "📝 Nuevo formulario",
+                        onClick: () => { alert("TO-DO") },
+                    },
+                ]} />}
         <div className="filesBrowserTabWithUploadButton">
             <div className="filesBrowserCreateFolderButtonContainer">
                 <div className="filesBrowserCreateFolderButton"
-                    onClick={() => { setPopupShown("CREATE_FOLDER_OR_QUESTIONNAIRE"); }}>
-                    Crear... 📁📝
+                    onClick={() => { setPopupShown(canCreateQuestionnaires ? "CREATE_FOLDER_OR_QUESTIONNAIRE" : "CREATE_FOLDER"); }}>
+                    {canCreateQuestionnaires ? "Crear... 📁📝" : "Crear carpeta"}
                 </div>
             </div>
             <div className="filesBrowserUploadSeparatorUnderline" />
