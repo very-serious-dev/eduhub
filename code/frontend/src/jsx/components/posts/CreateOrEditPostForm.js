@@ -48,13 +48,13 @@ const CreateOrEditPostForm = (props) => {
         //    - For [2] or [3], it's basically the same scenario: They already have an identifier and exist inside EduREST
         const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
-        const body = {
-            filetree_info: {
-                must_save_to_filetree: false
-            },
-            files: newFilesThatMustBeUploaded
-        }
         if (newFilesThatMustBeUploaded.length > 0) {
+            const body = {
+                filetree_info: {
+                    must_save_to_filetree: false
+                },
+                files: newFilesThatMustBeUploaded
+            }
             DocuAPIFetch("POST", "/api/v1/documents", body)
                 .then(json => {
                     if ((json.success === true) && (json.result.operation === "documents_added")) {

@@ -26,16 +26,16 @@ const CreateOrEditAnnouncementForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // see CreateOrEditPostForm (same logic)
+        // see CreateOrEditPostForm or SubmitAssignmentDialog (same logic)
         const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
-        const body = {
-            filetree_info: {
-                must_save_to_filetree: false
-            },
-            files: newFilesThatMustBeUploaded
-        }
         if (newFilesThatMustBeUploaded.length > 0) {
+            const body = {
+                filetree_info: {
+                    must_save_to_filetree: false
+                },
+                files: newFilesThatMustBeUploaded
+            }
             DocuAPIFetch("POST", "/api/v1/documents", body)
                 .then(json => {
                     if ((json.success === true) && (json.result.operation === "documents_added")) {

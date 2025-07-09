@@ -14,37 +14,44 @@ const SubmitAssignmentDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
-    const uploadFilesThenSendEduRequest = () => {
+    const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        const body = {
-            filetree_info: {
-                must_save_to_filetree: false
-            },
-            files: files
-        }
-        DocuAPIFetch("POST", "/api/v1/documents", body)
-            .then(json => {
-                if ((json.success === true) && (json.result.operation === "documents_added")) {
-                    sendEduRequest([...json.result.documents]);
-                } else {
+        // see CreateOrEditPostForm or CreateOrEditAnnouncementForm (same logic)
+        const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
+        const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
+        if (newFilesThatMustBeUploaded.length > 0) {
+            const body = {
+                filetree_info: {
+                    must_save_to_filetree: false
+                },
+                files: newFilesThatMustBeUploaded
+            }
+            DocuAPIFetch("POST", "/api/v1/documents", body)
+                .then(json => {
+                    if ((json.success === true) && (json.result.operation === "documents_added")) {
+                        sendEduPostRequest([...json.result.documents, ...filesThatAlreadyExistInDocuREST]);
+                    } else {
+                        setLoading(false);
+                        setPopupShown("NONE");
+                        props.onSubmitCreated("Se ha producido un error");
+                        props.onDismiss();
+                    }
+                })
+                .catch(error => {
                     setLoading(false);
                     setPopupShown("NONE");
-                    props.onSubmitCreated("Se ha producido un error");
+                    props.onSubmitCreated(error.error ?? "Se ha producido un error");
                     props.onDismiss();
-                }
-            })
-            .catch(error => {
-                setLoading(false);
-                setPopupShown("NONE");
-                props.onSubmitCreated(error.error ?? "Se ha producido un error");
-                props.onDismiss();
-            })
+                })
+        } else {
+            sendEduPostRequest([...filesThatAlreadyExistInDocuREST]);
+        }
     }
 
-    const sendEduRequest = (uploadedFiles = []) => {
+    const sendEduPostRequest = (attachedFiles = []) => {
         setLoading(true);
         let body = {
-            files: uploadedFiles
+            files: attachedFiles
         }
         if (formComment !== undefined && formComment !== "") {
             body["comment"] = formComment;
@@ -71,7 +78,12 @@ const SubmitAssignmentDialog = (props) => {
     }
 
     const onSubmit = () => {
-        uploadFilesThenSendEduRequest();
+        console.log("bruh?")
+        if (files.length === 0) {
+            sendEduPostRequest();
+        } else {
+            uploadFilesThenSendEduPostRequest();
+        }
     }
 
     return <>
@@ -82,11 +94,11 @@ const SubmitAssignmentDialog = (props) => {
                 dialogMode="SUBMIT"
                 warningMessage="⚠️ Tu entrega es definitiva y no se puede corregir. Asegúrate de revisar los documentos que entregues" />}
         {popupShown === "NONE" && <div className="popupOverlayBackground" onClick={props.onDismiss}>
-            <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
+            <div className="popup widePopup popupAllowOverflowY" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Entregar tarea</div>
-                    <form onSubmit={() => { setPopupShown("ARE_YOU_SURE_UPLOAD"); }}>
-                        <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} />
+                    <form onSubmit={(event) => { event.preventDefault(); setPopupShown("ARE_YOU_SURE_UPLOAD"); }}>
+                        <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} allowEmptyContent={true} />
                         <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Entregar" disabled={formComment === "" && files.length === 0} />

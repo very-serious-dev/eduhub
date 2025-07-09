@@ -44,7 +44,7 @@ def create_or_delete_documents(request):
         json_user_id = body_json.get("user_id")
         json_current_quota_usage = body_json.get("current_quota_usage")
         json_parent_folder_id = body_json.get("parent_folder_id")
-        json_skip_saving_files=body_json.get("skip_saving_files")
+        json_skip_saving_files = body_json.get("skip_saving_files")
         if json_internal_secret is None or json_documents is None or json_user_id is None or json_current_quota_usage is None or json_skip_saving_files is None:
             return JsonResponse({"error": "Error"}, status=400)
         if json_internal_secret != INTERNAL_SECRET:
@@ -71,10 +71,6 @@ def create_or_delete_documents(request):
                 except EduAppFolder.DoesNotExist:
                     return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
             for d in json_documents:
-                # TODO: Add UNIQUE constraint to document name + parent folder id?
-                # (In that case, what about documents attached to posts?)
-                # REMINDER: Right now you can't have sibling folders with the same name...
-                # But you can have same-name sibling documents!
                 document = EduAppDocument()
                 document.identifier = d["identifier"]
                 document.name = d["name"]

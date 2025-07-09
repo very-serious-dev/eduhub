@@ -2026,6 +2026,13 @@ body {
   }
 }
 
+.popupAllowOverflowY {
+  /* Overrides .popup overflow-y scroll, so that 
+     in SubmitAssignmentDialog the inner file picker
+     dialog isn't clipped */
+  overflow-y: visible !important;
+}
+
 .dialogBackground {
   background-color: var(--color-background);
 }

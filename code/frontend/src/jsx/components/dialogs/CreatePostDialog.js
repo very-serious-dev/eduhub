@@ -1,15 +1,9 @@
-import { useState } from "react";
 import TabbedActivity from "../common/TabbedActivity";
 import CreateOrEditPostForm from "../posts/CreateOrEditPostForm";
-import SelectFileDialog from "./SelectFileDialog";
 
 const CreatePostDialog = (props) => {
-    const [showSelectFileDialog, setShowSelectFileDialog] = useState(false);
-    const [files, setFiles] = useState([]);
 
-    return showSelectFileDialog ?
-        <SelectFileDialog files={files} setFiles={setFiles} onDismiss={() => { setShowSelectFileDialog(false) }} />
-        : <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <TabbedActivity tabs={[
@@ -23,9 +17,6 @@ const CreatePostDialog = (props) => {
                                 showDatePicker={false}
                                 showDeleteButton={false}
                                 showCreateQuestionnaire={false}
-                                files={files}
-                                setFiles={setFiles}
-                                onSelectFileClicked={() => { setShowSelectFileDialog(true) }}
                                 onFinished={props.onFinished}
                                 onDismiss={props.onDismiss} />
                         },
@@ -39,9 +30,6 @@ const CreatePostDialog = (props) => {
                                 showDatePicker={true}
                                 showDeleteButton={false}
                                 showCreateQuestionnaire={true}
-                                files={files}
-                                setFiles={setFiles}
-                                onSelectFileClicked={() => { setShowSelectFileDialog(true) }}
                                 onFinished={props.onFinished}
                                 onDismiss={props.onDismiss} />
                         }]}

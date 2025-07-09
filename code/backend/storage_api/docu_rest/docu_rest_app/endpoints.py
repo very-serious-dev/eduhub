@@ -55,7 +55,6 @@ def login_logout(request):
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
-
 def create_or_delete_documents(request):
     if request.method == "POST":
         if request.session is None:
