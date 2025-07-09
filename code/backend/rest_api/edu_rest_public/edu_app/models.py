@@ -193,6 +193,7 @@ class ChoicesQuestion(models.Model):
 class ChoicesQuestionChoice(models.Model):
     content = models.CharField(max_length=500)
     question = models.ForeignKey(ChoicesQuestion, on_delete=models.CASCADE)
+    is_correct = models.BooleanField()
 
 class TextQuestionAnswer(models.Model):
     answer = models.CharField(max_length=500)
