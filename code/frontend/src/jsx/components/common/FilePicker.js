@@ -3,13 +3,12 @@ import FilePickerItem from "./FilePickerItem";
 import { pointableSecondary, primary, secondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { useIsMobile } from "../../../util/Responsive";
+import { assertValidFilesErrorMessage } from "../../../util/NewFilesValidator";
 import SelectFileDialog from "../dialogs/SelectFileDialog";
 
 const FilePicker = (props) => {
-    const MAX_SIZE = { nBytes: 1024 * 1024 * 50, humanReadable: "50 MB" } // @see docu_rest/settings.py DATA_UPLOAD_MAX_MEMORY_SIZE
-    const MAX_ATTACHMENTS = 5;
     const [isReadingFiles, setReadingFiles] = useState(false);
-    const [showSelectFiles, setShowSelectFiles] = useState(false);
+    const [showSelectFileFromMyDrive, setShowSelectFileFromMyDrive] = useState(false);
     const isMobile = useIsMobile();
 
     // The drop area is actually 'position: absolute' to fill the parent,
@@ -28,7 +27,7 @@ const FilePicker = (props) => {
     // However, we can't handle that 'state' from React, so in here we just use
     // the <input> as a dummy picker clear the .files property after every
     // selection. The real selected files information is kept up-to-date with
-    // props.setAttachedFilesReady
+    // props.setFiles
     const [refreshKeyClearInputFiles, setRefreshKeyClearInputFiles] = useState(0);
     const theme = useContext(ThemeContext);
 
@@ -78,7 +77,7 @@ const FilePicker = (props) => {
                     mime_type: data[0].replace("data:", "").replace(";base64", ""),
                     data: data[1]
                 }
-                props.setAttachedFilesReady(old => [...old, newFile]);
+                props.setFiles(old => [...old, newFile]);
             } else {
                 alert("Sólo se pueden subir archivos")
             }
@@ -94,7 +93,7 @@ const FilePicker = (props) => {
         }
 
         setReadingFiles(true);
-        let errorMessage = assertValidFilesErrorMessage(newFiles);
+        let errorMessage = assertValidFilesErrorMessage(newFiles, props.files);
         if (errorMessage !== null) {
             alert(errorMessage);
             setReadingFiles(false);
@@ -107,32 +106,23 @@ const FilePicker = (props) => {
         reader.readAsDataURL(newFiles[0]);
     }
 
-    const assertValidFilesErrorMessage = (newFiles) => {
-        if (newFiles.some(f => props.attachedFilesReady.some(afr => f.name === afr.name))) {
-            return "Ya has adjuntado un fichero con ese nombre";
-        }
-        if (props.attachedFilesReady.length + newFiles.length > MAX_ATTACHMENTS) {
-            return `No se pueden añadir más de ${MAX_ATTACHMENTS} ficheros`;
-        }
-        if (newFiles.some(f => f.name.length > 150)) {
-            return "Los nombres de fichero no pueden superar 150 caracteres";
-        }
-        const alreadyAttachedFilesSize = props.attachedFilesReady.reduce((acc, f) => acc + f.size, 0)
-        const newFilesSize = newFiles.reduce((acc, f) => acc + f.size, 0)
-        if (alreadyAttachedFilesSize + newFilesSize >= MAX_SIZE.nBytes) {
-            return `No se puede exceder ${MAX_SIZE.humanReadable} entre todos los ficheros`;
-        }
-        return null; // Everything OK
-    }
-
     const onRemoveReadyFile = (fileName) => {
-        props.setAttachedFilesReady(props.attachedFilesReady.filter(f => f.name !== fileName));
+        props.setFiles(props.files.filter(f => f.name !== fileName));
     }
 
-    return isReadingFiles ? <div>Cargando...</div> :
-        <>
-            {showSelectFiles && <SelectFileDialog onDismiss={() => { setShowSelectFiles(false) }} />}
-            <div className="formFiles">
+    const onDocumentSelectedFromMyDrive = (document) => {
+        let errorMessage = assertValidFilesErrorMessage([document], props.files);
+        if (errorMessage !== null) {
+            alert(errorMessage);
+            return;
+        }
+        props.setFiles(f => [...f, document]);
+    }
+
+    return <>
+        {showSelectFileFromMyDrive && <SelectFileDialog onDocumentSelected={onDocumentSelectedFromMyDrive} onDismiss={() => { setShowSelectFileFromMyDrive(false) }} />}
+        {isReadingFiles ? <div>Cargando...</div>
+            : <div className="formFiles">
                 <div className="filePickerInputContainer">
                     <label className={`filePickerInputLabel pointable ${primary(theme)} ${pointableSecondary(theme)}`}>
                         <input type="file" key={refreshKeyClearInputFiles} multiple={true} onChange={onFilesPickerChanged} />
@@ -140,12 +130,12 @@ const FilePicker = (props) => {
                     </label>
                     {!isMobile && " ó ⬇️📄 arrástralos desde tu ordenador. "}
                     {props.showChooseFromMyUnit && <>También puedes <div className={`filePickerRoundButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-                        onClick={() => { setShowSelectFiles(true) }}>
+                        onClick={() => { setShowSelectFileFromMyDrive(true) }}>
                         Seleccionar&nbsp;archivos&nbsp;de&nbsp;tu&nbsp;unidad
                     </div></>}
                 </div>
                 <div className="formFilesAttached">
-                    {props.attachedFilesReady.map(f => <FilePickerItem file={f} onDelete={onRemoveReadyFile} />)}
+                    {props.files.map(f => <FilePickerItem file={f} onDelete={onRemoveReadyFile} />)}
                 </div>
                 { /* This drop area has 'position: absolute' and will fill the topmost ancestor with 'position: relative' */}
                 <div className={`filePickerDropArea ${dropAreaActivable ? "dropAreaActivable" : "dropAreaInactive"}`}
@@ -155,8 +145,8 @@ const FilePicker = (props) => {
                     onDrop={onFilesDroped} >
                     <div className={`dropAreaBackground ${dropAreaActive ? `${secondary(theme)} dropAreaBackgroundActive` : primary(theme)}`} />
                 </div>
-            </div>
-        </>
+            </div>}
+    </>
 }
 
 export default FilePicker;

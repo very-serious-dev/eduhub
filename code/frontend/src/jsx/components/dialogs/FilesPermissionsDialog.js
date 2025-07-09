@@ -6,8 +6,9 @@ import UserCard from "../common/UserCard";
 import SearchUsersSubDialog from "./SearchUsersSubDialog";
 import AreYouSureDialog from "./AreYouSureDialog";
 import { GetSessionUsername } from "../../../client/ClientCache";
-import { getSelfAndSubTreeIds, getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
+import { getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
 
+// TODO: FilePermissionsDialog is very similar to ClassParticipantsDialog... refactor?
 const FilesPermissionsDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [isLoadingDelete, setLoadingDelete] = useState(false);
@@ -43,7 +44,6 @@ const FilesPermissionsDialog = (props) => {
         setAreYouSureDeleteUsername(username);
     }
 
-    // TODO: FilePermissionsDialog is very similar to ClassParticipantsDialog... refactor?
     const onRemoveUserActionConfirmed = () => {
         if (isLoadingDelete) { return; }
         setLoadingDelete(true);

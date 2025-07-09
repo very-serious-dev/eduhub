@@ -26,10 +26,14 @@ def create_post(request, c_id, title, content, post_type, files, unit_id, assign
         new_post.kind = Post.PostKind.ASSIGNMENT
         new_post.assignment_due_date = assignment_due_date
     new_post.save()
-    if len(files) > 0:
-        root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-        folder = get_or_create_folder(__folder_name_for_classroom(classroom), request.session.user, root_folder)
-        for f in files:
+    for f in files:
+        try:
+            document = Document.objects.get(identifier=f["identifier"])
+            document.is_protected = True
+            document.save()
+        except Document.DoesNotExist:
+            root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+            folder = get_or_create_folder(__folder_name_for_classroom(classroom), request.session.user, root_folder)
             document = Document()
             document.identifier = f["identifier"]
             document.name = f["name"]
@@ -39,10 +43,10 @@ def create_post(request, c_id, title, content, post_type, files, unit_id, assign
             document.folder = folder
             document.is_protected = True
             document.save()
-            post_document = PostDocument()
-            post_document.document = document
-            post_document.post = new_post
-            post_document.save()
+        post_document = PostDocument()
+        post_document.document = document
+        post_document.post = new_post
+        post_document.save()
     return JsonResponse({"success": True}, status=201) 
 
 def amend_post(request, p_id, title, content, post_type, files, unit_id, assignment_due_date):
@@ -160,8 +164,8 @@ def create_assignment_submit(request, a_id, files, comment):
             document.is_protected = True
             document.save()
         except Document.DoesNotExist:
-            root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-            folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
+            root_folder = get_or_create_folder(ASSIGNMENT_SUBMITS_ROOT_FOLDER_NAME, request.session.user)
+            folder = get_or_create_folder(__folder_name_for_group(assignment.classroom.group), request.session.user, root_folder)
             document = Document()
             document.identifier = f["identifier"]
             document.name = f["name"]

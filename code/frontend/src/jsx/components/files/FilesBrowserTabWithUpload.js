@@ -62,7 +62,7 @@ const FilesBrowserTabWithUpload = (props) => {
                 </div>
             </div>
             <div className="filesBrowserUploadSeparatorUnderline" />
-            <FilePicker attachedFilesReady={filesToUpload} setAttachedFilesReady={setFilesToUpload} showChooseFromMyUnit={false} />
+            <FilePicker files={filesToUpload} setFiles={setFilesToUpload} showChooseFromMyUnit={false} />
             {isUploading ? <div className="loadingHUDCentered"><LoadingHUD /></div>
                 : filesToUpload.length > 0 && <div className="filesBrowserUploadFilesButton" onClick={onUpload}>⬆️ Subir</div>}
             {props.elements}

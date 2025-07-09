@@ -1,13 +1,17 @@
+import { useContext } from "react";
 import { footNoteDateAuthor } from "../../../util/Formatter";
 import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
+import { ThemeContext } from "../../main/GlobalContainer";
+import { pointableSecondary, primary } from "../../../util/Themes";
 
 const FolderElement = (props) => {
+    const theme = useContext(ThemeContext);
     
     const shouldShowContextMenu = () => {
         return props.showContextMenu;
     }
 
-    return <div className={`myFilesElementContainer myFilesElementContainerHoverable pointable ${props.selected ? "filesElementSelected" : "filesElementUnselected"}`}
+    return <div className={`myFilesElementContainer pointable ${pointableSecondary(theme)} ${props.selected ? primary(theme) : "filesElementUnselected"}`}
         onClick={() => { props.onFolderClicked(props.folder.id, props.level) }}>
         {shouldShowContextMenu() && <FilesElementContextMenuButton folder={props.folder}
             filesTree={props.filesTree}

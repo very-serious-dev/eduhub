@@ -4,7 +4,7 @@ import AreYouSureDialog from "./AreYouSureDialog";
 import CreateOrEditAnnouncementForm from "../announcements/CreateOrEditAnnouncementForm";
 
 const EditAnnouncementDialog = (props) => {
-    const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ARE_YOU_SURE_DELETE
     const [isLoadingDelete, setLoadingDelete] = useState(false);
 
     const onDeleteAnnouncement = () => {
@@ -26,13 +26,14 @@ const EditAnnouncementDialog = (props) => {
             })
     }
 
-    return showAreYouSurePopup ?
-        <AreYouSureDialog onActionConfirmed={onDeleteAnnouncement}
-            onDismiss={() => { setShowAreYouSurePopup(false); }}
-            isLoading={isLoadingDelete}
-            dialogMode="DELETE"
-            warningMessage={`¿Deseas eliminar este anuncio?`} />
-        : <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>
+    return <>
+        {popupShown === "ARE_YOU_SURE_DELETE" &&
+            <AreYouSureDialog onActionConfirmed={onDeleteAnnouncement}
+                onDismiss={() => { setPopupShown("NONE"); }}
+                isLoading={isLoadingDelete}
+                dialogMode="DELETE"
+                warningMessage={`¿Deseas eliminar este anuncio?`} />}
+        {popupShown === "NONE" && <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <CreateOrEditAnnouncementForm
@@ -40,12 +41,13 @@ const EditAnnouncementDialog = (props) => {
                         announcementBeingEdited={props.announcement}
                         submitText="Publicar modificación"
                         showDeleteButton={true}
-                        onDeleteClicked={() => { setShowAreYouSurePopup(true); }}
+                        onDeleteClicked={() => { setPopupShown("ARE_YOU_SURE_DELETE"); }}
                         onFinished={props.onFinished}
                         onDismiss={props.onDismiss} />
                 </div>
             </div>
-        </div>
+        </div>}
+    </>
 }
 
 export default EditAnnouncementDialog;

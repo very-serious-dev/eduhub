@@ -1346,11 +1346,6 @@ body {
   padding-bottom: 4px;
   margin: 6px;
   border-radius: 6px;
-  background-color: var(--color-subtle-grey);
-}
-
-.myFilesElementContainerHoverable:hover {
-  background-color: var(--theme-blue-primary);
 }
 
 .myFilesElementTitleContainer {
@@ -1394,7 +1389,6 @@ body {
   padding: 32px;
   margin: 6px;
   border-radius: 6px;
-  background-color: var(--color-subtle-grey);
 }
 
 .filesFirstTabTitle {

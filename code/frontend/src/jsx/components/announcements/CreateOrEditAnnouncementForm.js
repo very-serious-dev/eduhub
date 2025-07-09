@@ -10,14 +10,14 @@ import TextAreaWithLimit from "../common/TextAreaWithLimit";
 const CreateOrEditAnnouncementForm = (props) => {
     const [formTitle, setFormTitle] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.title : "");
     const [formContent, setFormContent] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.content : "");
-    const [attachedFilesReady, setAttachedFilesReady] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.files : []);
+    const [files, setFiles] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.files : [])
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
     const onSubmitCreateOrEditAnnouncement = (event) => {
         event.preventDefault();
 
-        if (attachedFilesReady.length === 0) {
+        if (files.length === 0) {
             sendEduPostRequest();
         } else {
             uploadFilesThenSendEduPostRequest();
@@ -26,14 +26,9 @@ const CreateOrEditAnnouncementForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // `attachedFilesReady` are those in the drop area. Bear in mind that:
-        // - If we are creating a new announcement, all of them must be uploaded to DocuREST who will baptise them with identifiers
-        // - If we are editing an announcement maybe none, some or all have already been uploaded (this is, they
-        //   come from props.announcementBeingEdited.files) in which case they already have an identifier
-        //   We don't need to reupload them to DocuREST!
-        //   @see CreateOrEditPostForm (same logic)
-        const newFilesThatMustBeUploaded = attachedFilesReady.filter(f => f.identifier === undefined);
-        const filesThatAlreadyExistInDocuREST = attachedFilesReady.filter(f => f.identifier !== undefined);
+        // see CreateOrEditPostForm (same logic)
+        const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
+        const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
         const body = {
             filetree_info: {
                 must_save_to_filetree: false
@@ -110,7 +105,7 @@ const CreateOrEditAnnouncementForm = (props) => {
                 </div>
             </div>
             <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
-            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} showChooseFromMyUnit={true}/>
+            <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />
             </div>

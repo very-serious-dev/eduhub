@@ -14,7 +14,7 @@ const CreateOrEditPostForm = (props) => {
     const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
     const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
     const [formAssignmentLocalDueDate, setFormAssignmentLocalDueDate] = useState(TODAY_23_59);
-    const [attachedFilesReady, setAttachedFilesReady] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
+    const [files, setFiles] = useState(props.postBeingEdited ? props.postBeingEdited.files : [])
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
@@ -28,7 +28,7 @@ const CreateOrEditPostForm = (props) => {
             alert("Las publicaciones no pueden contener comas (,) o comillas (\") en el título");
             return;
         }
-        if (attachedFilesReady.length === 0) {
+        if (files.length === 0) {
             sendEduPostRequest();
         } else {
             uploadFilesThenSendEduPostRequest();
@@ -37,15 +37,17 @@ const CreateOrEditPostForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // `attachedFilesReady` are those in the drop area. Bear in mind that:
-        // - If we are creating a new post, all of them must be uploaded to DocuREST who will baptise them with identifiers
-        // - If we are editing a post maybe none, some or all have already been uploaded (this is, they
-        //   come from props.postBeingEdited.files) in which case they already have an identifier
-        //   We don't need to reupload them to DocuREST! We just need to put them in the amendment json body 
-        //   with their identifiers; so that EduREST knows that they aren't being modified.
-        //   The files that are new need to be uploaded previously to DocuREST, of course
-        const newFilesThatMustBeUploaded = attachedFilesReady.filter(f => f.identifier === undefined);
-        const filesThatAlreadyExistInDocuREST = attachedFilesReady.filter(f => f.identifier !== undefined);
+        // `files` are those in the drop area. Bear in mind that:
+        // 1) If we are creating a new post:
+        //    - They might be fresh uploads or selected from 'My Drive'. 
+        //    - For those that are fresh, they must be uploaded to DocuREST who will baptise them with identifiers
+        //    - For those selected from 'My Drive', they already have an identifier
+        // 2) If we are editing a post:
+        //    - Files might be [1] fresh uploads, or [2] previously uploaded or [3] selected from 'My Drive'
+        //    - For those that are fresh, they are uploaded to DocuREST first and baptised there
+        //    - For [2] or [3], it's basically the same scenario: They already have an identifier and exist inside EduREST
+        const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
+        const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
         const body = {
             filetree_info: {
                 must_save_to_filetree: false
@@ -154,8 +156,8 @@ const CreateOrEditPostForm = (props) => {
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título</label>
                 </div>
             </div>
-            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} extraBig={!props.showCreateQuestionnaire}/>
-            <FilePicker attachedFilesReady={attachedFilesReady} setAttachedFilesReady={setAttachedFilesReady} showChooseFromMyUnit={true} />
+            <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} extraBig={!props.showCreateQuestionnaire} />
+            <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
             {props.showCreateQuestionnaire && <><div className="createOrEditPostSeparatorContainer"><div className={`createOrEditPostSeparator ${primary(theme)}`}></div></div>
                 <div className={`createOrEditPostNewQuestionnareButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
                     onClick={() => { alert("TODO") }}>

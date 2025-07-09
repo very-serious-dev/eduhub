@@ -1,12 +1,15 @@
-import { DOCU_SERVER } from "../../../client/Servers";
+import { useContext } from "react";
 import { footNoteDateAuthor, iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
 import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
+import { ThemeContext } from "../../main/GlobalContainer";
+import { pointableSecondary } from "../../../util/Themes";
 
 const DocumentElement = (props) => {
+    const theme = useContext(ThemeContext);
 
-    const onClickFile = () => {
-        if (props.isClickable) {
-            window.open(`${DOCU_SERVER}/api/v1/documents/${props.document.identifier}`, "_blank");
+    const onClickDocument = (document) => {
+        if (props.onClickDocument) {
+            props.onClickDocument(document)
         }
     }
 
@@ -14,7 +17,7 @@ const DocumentElement = (props) => {
         return props.showContextMenu;
     }
 
-    return <div className={`myFilesElementContainer ${props.isClickable ? " myFilesElementContainerHoverable pointable" : ""}`} onClick={onClickFile}>
+    return <div className={`myFilesElementContainer filesElementUnselected ${props.onClickFile !== null ? ` pointable ${pointableSecondary(theme)}` : ""}`} onClick={() => { onClickDocument(props.document) }}>
         {shouldShowContextMenu() && <FilesElementContextMenuButton document={props.document}
             filesTree={props.filesTree}
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}
@@ -25,7 +28,7 @@ const DocumentElement = (props) => {
         </div>
         {props.document.is_protected && <div className="myFilesElementSpecialText">🚫 Protegido</div>}
         <div className="myFilesElementSize">{sizeToHumanReadable(props.size)}</div>
-        <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.document.created_at, props.showAuthor ? props.document.author : null)}`}</div>
+        <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.document.created_at, props.showAuthor ? `👤 ${props.document.author}` : null)}`}</div>
     </div>
 }
 

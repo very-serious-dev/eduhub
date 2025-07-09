@@ -3,6 +3,7 @@ import { FeedbackContext } from "../../main/GlobalContainer";
 import FilesBrowser from "./FilesBrowser";
 import MyFilesFirstTabContent from "./MyFilesFirstTabContent";
 import SharedFilesFirstTabContent from "./SharedFilesFirstTabContent";
+import { DOCU_SERVER } from "../../../client/Servers";
 
 const FilesBody = (props) => {
     const [currentFolderIdsPath, setCurrentFolderIdsPath] = useState([]);
@@ -56,6 +57,10 @@ const FilesBody = (props) => {
         </div>
     }
 
+    const openDocument = (identifier) => {
+        window.open(`${DOCU_SERVER}/api/v1/documents/${identifier}`, "_blank");
+    }
+
     return <FilesBrowser filesTree={getTree()}
         selectedFolderIdsPath={currentFolderIdsPath}
         setSelectedFolderIdsPath={setCurrentFolderIdsPath}
@@ -63,7 +68,7 @@ const FilesBody = (props) => {
         showContextMenu={selectedRoot === "MY_FILES"}
         showUploadOrCreateFolder={selectedRoot === "MY_FILES"}
         showAuthor={selectedRoot === "SHARED_WITH_ME"}
-        canClickDocuments={true}
+        onDocumentSelected={(document) => { openDocument(document.identifier) }}
         onCreateMoveDeleteSuccess={onCreateMoveDeleteSuccess}
         onCreateMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
 

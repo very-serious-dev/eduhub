@@ -70,7 +70,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             showUploadOrCreateFolder={false}
                             showContextMenu={false}
                             showAuthor={false}
-                            canClickDocuments={false} />
+                            onDocumentSelected={null} />
                     </div>
                     <div className="formInputContainer">
                         <input className="formInput formInputGreyBackground"

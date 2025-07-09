@@ -64,8 +64,8 @@ const FilesBrowser = (props) => {
                                 size={element.size}
                                 showContextMenu={props.showContextMenu}
                                 showAuthor={props.showAuthor}
-                                isClickable={props.canClickDocuments}
                                 filesTree={props.filesTree}
+                                onClickDocument={props.onDocumentSelected}
                                 onMoveDeleteSuccess={props.onCreateMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onCreateMoveDeleteFail} />);
                     }
