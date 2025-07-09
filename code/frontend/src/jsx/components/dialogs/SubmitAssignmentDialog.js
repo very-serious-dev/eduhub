@@ -10,7 +10,7 @@ import TextAreaWithLimit from "../common/TextAreaWithLimit";
 const SubmitAssignmentDialog = (props) => {
     const [formComment, setFormComment] = useState("");
     const [files, setFiles] = useState([]);
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ARE_YOU_SURE_UPLOAD
+    const [showAreYouSure, setShowAreYouSure] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
@@ -32,14 +32,14 @@ const SubmitAssignmentDialog = (props) => {
                         sendEduPostRequest([...json.result.documents, ...filesThatAlreadyExistInDocuREST]);
                     } else {
                         setLoading(false);
-                        setPopupShown("NONE");
+                        setShowAreYouSure(false);
                         props.onSubmitCreated("Se ha producido un error");
                         props.onDismiss();
                     }
                 })
                 .catch(error => {
                     setLoading(false);
-                    setPopupShown("NONE");
+                    setShowAreYouSure(false);
                     props.onSubmitCreated(error.error ?? "Se ha producido un error");
                     props.onDismiss();
                 })
@@ -66,19 +66,18 @@ const SubmitAssignmentDialog = (props) => {
                 } else {
                     props.onSubmitCreated("Se ha producido un error");
                 }
-                setPopupShown("NONE");
+                setShowAreYouSure(false);
                 props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
-                setPopupShown("NONE");
+                setShowAreYouSure(false);
                 props.onSubmitCreated(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }
 
     const onSubmit = () => {
-        console.log("bruh?")
         if (files.length === 0) {
             sendEduPostRequest();
         } else {
@@ -86,18 +85,17 @@ const SubmitAssignmentDialog = (props) => {
         }
     }
 
-    return <>
-        {popupShown === "ARE_YOU_SURE_UPLOAD" &&
-            <AreYouSureDialog onActionConfirmed={onSubmit}
-                onDismiss={() => { setPopupShown("NONE"); }}
-                isLoading={isLoading}
-                dialogMode="SUBMIT"
-                warningMessage="⚠️ Tu entrega es definitiva y no se puede corregir. Asegúrate de revisar los documentos que entregues" />}
-        {popupShown === "NONE" && <div className="popupOverlayBackground" onClick={props.onDismiss}>
+    return showAreYouSure ?
+        <AreYouSureDialog onActionConfirmed={onSubmit}
+            onDismiss={() => { setShowAreYouSure(false); }}
+            isLoading={isLoading}
+            dialogMode="SUBMIT"
+            warningMessage="⚠️ Tu entrega es definitiva y no se puede corregir. Asegúrate de revisar los documentos que entregues" />
+        : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup widePopup popupAllowOverflowY" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Entregar tarea</div>
-                    <form onSubmit={(event) => { event.preventDefault(); setPopupShown("ARE_YOU_SURE_UPLOAD"); }}>
+                    <form onSubmit={(event) => { event.preventDefault(); setShowAreYouSure(false) }}>
                         <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} allowEmptyContent={true} />
                         <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
                         <div className="formInputContainer">
@@ -106,8 +104,7 @@ const SubmitAssignmentDialog = (props) => {
                     </form>
                 </div>
             </div>
-        </div>}
-    </>
+        </div>
 }
 
 export default SubmitAssignmentDialog;
