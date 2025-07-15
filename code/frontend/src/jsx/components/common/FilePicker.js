@@ -3,7 +3,7 @@ import FilePickerItem from "./FilePickerItem";
 import { pointableSecondary, primary, secondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { useIsMobile } from "../../../util/Responsive";
-import { assertValidFilesErrorMessage } from "../../../util/NewFilesValidator";
+import { assertValidAttachmentsErrorMessage, assertValidFilesErrorMessage } from "../../../util/NewFilesValidator";
 import SelectFileDialog from "../dialogs/SelectFileDialog";
 
 const FilePicker = (props) => {
@@ -27,7 +27,7 @@ const FilePicker = (props) => {
     // However, we can't handle that 'state' from React, so in here we just use
     // the <input> as a dummy picker clear the .files property after every
     // selection. The real selected files information is kept up-to-date with
-    // props.setFiles
+    // props.setAttachments
     const [refreshKeyClearInputFiles, setRefreshKeyClearInputFiles] = useState(0);
     const theme = useContext(ThemeContext);
 
@@ -75,9 +75,10 @@ const FilePicker = (props) => {
                     name: file.name,
                     size: file.size,
                     mime_type: data[0].replace("data:", "").replace(";base64", ""),
-                    data: data[1]
+                    data: data[1],
+                    type: "document"
                 }
-                props.setFiles(old => [...old, newFile]);
+                props.setAttachments(old => [...old, newFile]);
             } else {
                 alert("Sólo se pueden subir archivos")
             }
@@ -93,7 +94,7 @@ const FilePicker = (props) => {
         }
 
         setReadingFiles(true);
-        let errorMessage = assertValidFilesErrorMessage(newFiles, props.files);
+        let errorMessage = assertValidAttachmentsErrorMessage(newFiles, props.attachments);
         if (errorMessage !== null) {
             alert(errorMessage);
             setReadingFiles(false);
@@ -106,17 +107,31 @@ const FilePicker = (props) => {
         reader.readAsDataURL(newFiles[0]);
     }
 
-    const onRemoveReadyFile = (fileName) => {
-        props.setFiles(props.files.filter(f => f.name !== fileName));
+    const onRemoveReadyItem = (attachment) => {
+        if (attachment.type === "document") {
+            props.setAttachments(old => {
+                const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
+                const oldFiles = old.filter(a => a.type === "file");
+                return [...oldQuestionnaires, oldFiles.filter(f => f.name !== attachment.name)]
+            })
+        }
+        if (attachment.type === "questionnaire") {
+            props.setAttachments(old => {
+                const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
+                const oldFiles = old.filter(a => a.type === "file");
+                return [...oldFiles, oldQuestionnaires.filter(q => q.title !== attachment.title)]
+            })
+        }
     }
 
     const onDocumentSelectedFromMyDrive = (document) => {
-        let errorMessage = assertValidFilesErrorMessage([document], props.files);
+        let errorMessage = assertValidAttachmentsErrorMessage([document], props.attachments);
         if (errorMessage !== null) {
             alert(errorMessage);
             return;
         }
-        props.setFiles(f => [...f, document]);
+        // TODO Select questionnaire?
+        props.setAttachments(f => [...f, { ...document, type: "document" }]);
         setShowSelectFileFromMyDrive(false);
     }
 
@@ -136,7 +151,7 @@ const FilePicker = (props) => {
                     </div></>}
                 </div>
                 <div className="formFilesAttached">
-                    {props.files.map(f => <FilePickerItem file={f} onDelete={onRemoveReadyFile} />)}
+                    {props.attachments.map(a => <FilePickerItem attachment={a} onDelete={onRemoveReadyItem} />)}
                 </div>
                 { /* This drop area has 'position: absolute' and will fill the topmost ancestor with 'position: relative' */}
                 <div className={`filePickerDropArea ${dropAreaActivable ? "dropAreaActivable" : "dropAreaInactive"}`}

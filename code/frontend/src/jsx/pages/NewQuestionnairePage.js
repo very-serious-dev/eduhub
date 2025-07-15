@@ -7,6 +7,9 @@ import { EduAPIFetch } from "../../client/APIFetch";
 const NewQuestionnairePage = () => {
     const [isLoading, setLoading] = useState(false);
     let channel;
+    /* TODO: Take care of this 
+    src\jsx\pages\NewQuestionnairePage.js
+  Line 17:19:  Assignments to the 'channel' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect  react-hooks/exhaustive-deps */
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {

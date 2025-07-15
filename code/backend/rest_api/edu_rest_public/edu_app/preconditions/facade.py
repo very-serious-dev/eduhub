@@ -124,8 +124,8 @@ def groups_create_get_announcements(request, group_tag):
         return groups.get_announcements(request, group_tag)
     elif request.method == "POST":
         require_valid_session(request=request)
-        title, content, files = expect_body_with('title', 'content', 'files', request=request)
-        return groups.create_announcement(request, group_tag, title, content, files)
+        title, content, attachments = expect_body_with('title', 'content', 'attachments', request=request)
+        return groups.create_announcement(request, group_tag, title, content, attachments)
     else:
         raise Unsupported
 
@@ -133,8 +133,8 @@ def groups_create_get_announcements(request, group_tag):
 def groups_edit_delete_announcement(request, a_id):
     if request.method == "PUT":
         require_valid_session(request=request)
-        title, content, files = expect_body_with('title', 'content', 'files', request=request)
-        return groups.edit_announcement(request, a_id, title, content, files)
+        title, content, attachments = expect_body_with('title', 'content', 'attachments', request=request)
+        return groups.edit_announcement(request, a_id, title, content, attachments)
     elif request.method == "DELETE":
         require_valid_session(request=request)
         return groups.delete_announcement(request, a_id)
@@ -223,12 +223,12 @@ def classes_download_scores(request, c_id):
 def posts_create(request, c_id):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        title, content, post_type, files, unit_id, assignment_due_date = expect_body_with('title', 'content', 'post_type', 'files', optional=['unit_id', 'assignment_due_date'], request=request)
+        title, content, post_type, attachments, unit_id, assignment_due_date = expect_body_with('title', 'content', 'post_type', 'attachments', optional=['unit_id', 'assignment_due_date'], request=request)
         if '"' in title or ',' in title:
             raise BadRequest
         if post_type not in ["publication", "assignment"]:
             raise BadRequest
-        return posts.create_post(request, c_id, title, content, post_type, files, unit_id, assignment_due_date)
+        return posts.create_post(request, c_id, title, content, post_type, attachments, unit_id, assignment_due_date)
     else:
         raise Unsupported
 
@@ -236,12 +236,12 @@ def posts_create(request, c_id):
 def posts_amend(request, p_id):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        post_type, title, content, files, unit_id, assignment_due_date = expect_body_with('post_type', optional=['title', 'content', 'files', 'unit_id', 'assignment_due_date'], request=request)
+        post_type, title, content, attachments, unit_id, assignment_due_date = expect_body_with('post_type', optional=['title', 'content', 'attachments', 'unit_id', 'assignment_due_date'], request=request)
         if title and ('"' in title or ',' in title):
             raise BadRequest
         if post_type not in ["amend_delete", "amend_edit"]:
             raise BadRequest
-        return posts.amend_post(request, p_id, title, content, post_type, files, unit_id, assignment_due_date)
+        return posts.amend_post(request, p_id, title, content, post_type, attachments, unit_id, assignment_due_date)
     else:
         raise Unsupported
 
@@ -257,10 +257,10 @@ def posts_get_assignment(request, a_id):
 def posts_create_assignment_submit(request, a_id):
     if request.method == "POST":
         require_role([User.UserRole.STUDENT], request=request)
-        files, comment = expect_body_with('files', optional=['comment'], request=request)
-        if (comment is None or len(comment) == 0) and len(files) == 0:
+        attachments, comment = expect_body_with('attachments', optional=['comment'], request=request)
+        if (comment is None or len(comment) == 0) and len(attachments) == 0:
             raise BadRequest
-        return posts.create_assignment_submit(request, a_id, files, comment)
+        return posts.create_assignment_submit(request, a_id, attachments, comment)
     else:
         raise Unsupported
 

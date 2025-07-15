@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.utils import timezone
-from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document
+from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document, Questionnaire, AnnouncementQuestionnaire
 from ..util.exceptions import Forbidden, InternalError
-from ..util.helpers import get_from_db, get_or_create_folder, is_document_used_in_post_or_announcement
+from ..util.helpers import get_from_db, get_or_create_folder, is_document_used_in_post_or_announcement, is_questionnaire_used_in_post_or_announcement
 from ..util.serializers import groups_array_to_json, announcements_array_to_json
 from .posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
@@ -23,7 +23,7 @@ def get_announcements(request, group_tag):
                          "announcements": announcements_array_to_json(announcements),
                          "can_create_announcements": can_create})
 
-def create_announcement(request, group_tag, title, content, files):
+def create_announcement(request, group_tag, title, content, attachments):
     group = get_from_db(Group, tag=group_tag)
     can_create = __has_permission_to_manage_announcements(request.session.user, group)
     if not can_create:
@@ -34,30 +34,39 @@ def create_announcement(request, group_tag, title, content, files):
     new_announcement.author = request.session.user
     new_announcement.group = group
     new_announcement.save()
-    for f in files:
-        try:
-            document = Document.objects.get(identifier=f["identifier"])
-            document.is_protected = True
-            document.save()
-        except Document.DoesNotExist:
-            root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-            folder = get_or_create_folder(__folder_name_for_group(group), request.session.user, root_folder)
-            document = Document()
-            document.identifier = f["identifier"]
-            document.name = f["name"]
-            document.size = f["size"]
-            document.mime_type = f["mime_type"]
-            document.author = request.session.user
-            document.folder = folder
-            document.is_protected = True
-            document.save()
-        announcement_document = AnnouncementDocument()
-        announcement_document.document = document
-        announcement_document.announcement = new_announcement
-        announcement_document.save()
+    for a in attachments:
+        if a["type"] == "document":
+            try:
+                document = Document.objects.get(identifier=a["identifier"])
+                document.is_protected = True
+                document.save()
+            except Document.DoesNotExist:
+                root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+                folder = get_or_create_folder(__folder_name_for_group(group), request.session.user, root_folder)
+                document = Document()
+                document.identifier = a["identifier"]
+                document.name = a["name"]
+                document.size = a["size"]
+                document.mime_type = a["mime_type"]
+                document.author = request.session.user
+                document.folder = folder
+                document.is_protected = True
+                document.save()
+            new_announcement_document = AnnouncementDocument()
+            new_announcement_document.document = document
+            new_announcement_document.announcement = new_announcement
+            new_announcement_document.save()
+        if a["type"] == "questionnaire":
+            questionnaire = Questionnaire.objects.get(id=a["id"])
+            questionnaire.is_protected = True
+            questionnaire.save()
+            new_announcement_questionnaire = AnnouncementQuestionnaire()
+            new_announcement_questionnaire = questionnaire
+            new_announcement_questionnaire.announcement = new_announcement
+            new_announcement_questionnaire.save()
     return JsonResponse({"success": True}, status=201)
 
-def edit_announcement(request, a_id, title, content, files):
+def edit_announcement(request, a_id, title, content, attachments):
     announcement = get_from_db(Announcement, id=a_id)
     can_create = __has_permission_to_manage_announcements(request.session.user, announcement.group)
     if not can_create:
@@ -67,27 +76,37 @@ def edit_announcement(request, a_id, title, content, files):
     announcement.modification_date = timezone.now()
     announcement.save()
     __delete_announcement_documents_and_unprotect_unused_documents(announcement)
-    for f in files:
-        try:
-            document = Document.objects.get(identifier=f["identifier"])
-            document.is_protected = True
-            document.save()
-        except Document.DoesNotExist:
-            root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-            folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
-            document = Document()
-            document.identifier = f["identifier"]
-            document.name = f["name"]
-            document.size = f["size"]
-            document.mime_type = f["mime_type"]
-            document.author = request.session.user
-            document.folder = folder
-            document.is_protected = True
-            document.save()
-        announcement_document = AnnouncementDocument()
-        announcement_document.document = document
-        announcement_document.announcement = announcement
-        announcement_document.save()
+    __delete_announcement_questionnaires_and_unprotect_unused_questionnaires(announcement)
+    for a in attachments:
+        if a["type"] == "document":
+            try:
+                document = Document.objects.get(identifier=a["identifier"])
+                document.is_protected = True
+                document.save()
+            except Document.DoesNotExist:
+                root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+                folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
+                document = Document()
+                document.identifier = a["identifier"]
+                document.name = a["name"]
+                document.size = a["size"]
+                document.mime_type = a["mime_type"]
+                document.author = request.session.user
+                document.folder = folder
+                document.is_protected = True
+                document.save()
+            new_announcement_document = AnnouncementDocument()
+            new_announcement_document.document = document
+            new_announcement_document.announcement = announcement
+            new_announcement_document.save()
+        if a["type"] == "questionnaire":
+            questionnaire = Questionnaire.objects.get(id=a["id"])
+            questionnaire.is_protected = True
+            questionnaire.save()
+            new_announcement_questionnaire = AnnouncementQuestionnaire()
+            new_announcement_questionnaire = questionnaire
+            new_announcement_questionnaire.announcement = new_announcement
+            new_announcement_questionnaire.save()
     return JsonResponse({"success": True}, status=200)
 
 def delete_announcement(request, a_id):
@@ -114,3 +133,12 @@ def __delete_announcement_documents_and_unprotect_unused_documents(announcement)
         if not is_document_used_in_post_or_announcement(d):
             d.is_protected = False
             d.save()
+
+def __delete_announcement_questionnaires_and_unprotect_unused_questionnaires(announcement):
+    announcement_questionnaires = AnnouncementQuestionnaire.objects.filter(announcement=announcement)
+    old_questionnaires = list(map(lambda aq: aq.questionnaire, announcement_questionnaires))
+    announcement_questionnaires.delete()
+    for q in old_questionnaires:
+        if not is_questionnaire_used_in_post_or_announcement(q):
+            q.is_protected = False
+            q.save()

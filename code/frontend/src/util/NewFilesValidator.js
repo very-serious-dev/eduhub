@@ -19,4 +19,15 @@ const assertValidFilesErrorMessage = (newFiles, alreadyAddedFiles) => {
     return null; // Everything OK
 }
 
-export { assertValidFilesErrorMessage }
+const assertValidAttachmentsErrorMessage = (newAttachments, alreadyAddedAttachments) => {
+    if (newAttachments.some(na => na.type === "questionnaire")) {
+        if (alreadyAddedAttachments.some(aaa => aaa.type === "questionnaire")) {
+            return "Sólo se puede adjuntar 1 formulario";
+        }
+    }
+    const newFiles = newAttachments.filter(na => na.type === "document");
+    const alreadyAddedFiles = alreadyAddedAttachments.filter(na => na.type === "document");
+    return assertValidFilesErrorMessage(newFiles, alreadyAddedFiles);
+}
+
+export { assertValidAttachmentsErrorMessage }

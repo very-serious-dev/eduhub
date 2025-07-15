@@ -61,7 +61,7 @@ const CreateOrEditAnnouncementForm = (props) => {
         let body = {
             title: formTitle,
             content: formContent,
-            files: attachedFiles
+            attachments: attachedFiles.map(a => { return { ...a, type: "document" } }),
         }
         let url, method;
         if (props.announcementBeingEdited) {

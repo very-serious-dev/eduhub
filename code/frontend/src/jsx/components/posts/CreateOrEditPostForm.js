@@ -6,6 +6,7 @@ import { DocuAPIFetch } from "../../../client/APIFetch";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
+import { assertValidAttachmentsErrorMessage } from "../../../util/NewFilesValidator";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY_23_59 = `${new Date().toISOString().split("T")[0]}T23:59`;
@@ -14,7 +15,7 @@ const CreateOrEditPostForm = (props) => {
     const [formContent, setFormContent] = useState(props.postBeingEdited ? props.postBeingEdited.content : "");
     const [formUnitId, setFormUnitId] = useState(props.postBeingEdited ? props.postBeingEdited.unit_id : UNIT_UNASSIGNED);
     const [formAssignmentLocalDueDate, setFormAssignmentLocalDueDate] = useState(TODAY_23_59);
-    const [files, setFiles] = useState(props.postBeingEdited ? props.postBeingEdited.files : []);
+    const [attachments, setAttachments] = useState(props.postBeingEdited ? props.postBeingEdited.attachments : []);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
@@ -26,8 +27,17 @@ const CreateOrEditPostForm = (props) => {
         const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
 
         newQuestionnaireChannel.onmessage = (event) => {
-            if (event.data.type === "questionnaire_added") {
-                console.log(event.data.questionnaire);
+            console.log("algo")
+            console.log(event.data)
+            if (event.data.operation === "questionnaire_added") {
+                console.log("bueno")
+                const newQuestionnaire = { ...event.data.questionnaire, type: "questionnaire" };
+                const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
+                if (errorMessage !== null) {
+                    alert(errorMessage);
+                    return;
+                }
+                setAttachments(old => [...old, newQuestionnaire])
             }
         }
 
@@ -40,7 +50,7 @@ const CreateOrEditPostForm = (props) => {
             alert("Las publicaciones no pueden contener comas (,) o comillas (\") en el título");
             return;
         }
-        if (files.length === 0) {
+        if (attachments.length === 0) {
             sendEduPostRequest();
         } else {
             uploadFilesThenSendEduPostRequest();
@@ -49,7 +59,7 @@ const CreateOrEditPostForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // `files` are those in the drop area. Bear in mind that:
+        // `attachments` are those in the drop area. Bear in mind that:
         // 1) If we are creating a new post:
         //    - They might be fresh uploads or selected from 'My Drive'. 
         //    - For those that are fresh, they must be uploaded to DocuREST who will baptise them with identifiers
@@ -58,6 +68,8 @@ const CreateOrEditPostForm = (props) => {
         //    - Files might be [1] fresh uploads, or [2] previously uploaded or [3] selected from 'My Drive'
         //    - For those that are fresh, they are uploaded to DocuREST first and baptised there
         //    - For [2] or [3], it's basically the same scenario: They already have an identifier and exist inside EduREST
+        const files = attachments.filter(a => a.type === "document");
+        const questionnaires = attachments.filter(a => a.type === "questionnaire");
         const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
         if (newFilesThatMustBeUploaded.length > 0) {
@@ -70,7 +82,8 @@ const CreateOrEditPostForm = (props) => {
             DocuAPIFetch("POST", "/api/v1/documents", body)
                 .then(json => {
                     if ((json.success === true) && (json.result.operation === "documents_added")) {
-                        sendEduPostRequest([...json.result.documents, ...filesThatAlreadyExistInDocuREST]);
+                        const newlyUploadedFiles = json.result.documents.map(d => { return { ...d, type: "document" } })
+                        sendEduPostRequest([...newlyUploadedFiles, ...filesThatAlreadyExistInDocuREST, ...questionnaires]);
                     } else {
                         setLoading(false);
                         props.onFinished("Se ha producido un error");
@@ -87,12 +100,12 @@ const CreateOrEditPostForm = (props) => {
         }
     }
 
-    const sendEduPostRequest = (attachedFiles = []) => {
+    const sendEduPostRequest = (attachedFilesOrQuestionnaires = []) => {
         setLoading(true);
         let body = {
             title: formTitle,
             content: formContent,
-            files: attachedFiles,
+            attachments: attachedFilesOrQuestionnaires,
             post_type: props.postType
         }
         if (formUnitId !== UNIT_UNASSIGNED) {
@@ -173,7 +186,7 @@ const CreateOrEditPostForm = (props) => {
                 </div>
             </div>
             <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} extraBig={!props.showCreateQuestionnaire} />
-            <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
+            <FilePicker attachments={attachments} setAttachments={setAttachments} showChooseFromMyUnit={true} />
             {props.showCreateQuestionnaire && <><div className="createOrEditPostSeparatorContainer"><div className={`createOrEditPostSeparator ${primary(theme)}`}></div></div>
                 <div className={`createOrEditPostNewQuestionnareButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
                     onClick={onCreateNewQuestionnaire}>

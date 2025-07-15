@@ -1,4 +1,4 @@
-from ..models import Post, User, Class, AnnouncementDocument
+from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -67,14 +67,20 @@ def folder_to_json(folder):
     }
 
 def announcement_to_json(announcement):
-    announcement_documents = []
+    attachments = []
     for ad in AnnouncementDocument.objects.filter(announcement=announcement):
-        announcement_documents.append(document_to_json(ad.document))
+        document = document_to_json(ad.document)
+        document["type"] = "document"
+        attachments.append(document)
+    for aq in AnnouncementQuestionnaire.objects.filter(announcement=announcement):
+        questionnaire = questionnaire_to_json(aq.questionnaire)
+        questionnaire["type"] = "questionnaire"
+        attachments.append(questionnaire)
     json = {
         "id": announcement.id,
         "title": announcement.title,
         "content": announcement.content,
-        "files": announcement_documents,
+        "attachments": attachments,
         "author": announcement.author.username,
         "publication_date": announcement.publication_date
     }
@@ -130,7 +136,7 @@ def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
         "units": units
     }
 
-def assignment_detail_to_json(original_assignment, newest_edit, files, is_teacher, class_students, class_units, submits, your_submit):
+def assignment_detail_to_json(original_assignment, newest_edit, attachments, is_teacher, class_students, class_units, submits, your_submit):
     unit = original_assignment.unit if newest_edit is None else newest_edit.unit
     response = {
         "id": original_assignment.id,
@@ -143,7 +149,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, files, is_teache
         "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
         "kind": post_kind(original_assignment),
         "theme": class_theme(original_assignment.classroom),
-        "files": list(map(lambda f: document_to_json(f), files)),
+        "attachments": attachments,
         "should_show_teacher_options": is_teacher
     }
     if is_teacher:

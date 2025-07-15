@@ -51,7 +51,7 @@ const SubmitAssignmentDialog = (props) => {
     const sendEduPostRequest = (attachedFiles = []) => {
         setLoading(true);
         let body = {
-            files: attachedFiles
+            attachments: attachedFiles.map(a => { return { ...a, type: "document" } }),
         }
         if (formComment !== undefined && formComment !== "") {
             body["comment"] = formComment;

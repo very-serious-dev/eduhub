@@ -1,10 +1,10 @@
 import random
 from datetime import datetime
 from django.http import JsonResponse, HttpResponse
-from ..models import User, Class, UserClass, Group, Unit, Post, PostDocument, AssignmentSubmit, Announcement
+from ..models import User, Class, UserClass, Group, Unit, Post, PostDocument, AssignmentSubmit, Announcement, PostQuestionnaire
 from ..util.exceptions import Forbidden, ConflictUnitAlreadyExists
 from ..util.helpers import get_from_db, can_see_class, can_edit_class
-from ..util.serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme, document_to_json, post_kind
+from ..util.serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme, document_to_json, post_kind, questionnaire_to_json
 
 def get_my_classes(request):
     user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
@@ -63,13 +63,19 @@ def get_class(request, c_id, only_newer_than_post_with_id):
     for p in posts_query:
         post_documents = PostDocument.objects.filter(post=p)
         files = list(map(lambda pd: document_to_json(pd.document), post_documents))
+        post_questionnaires = PostQuestionnaire.objects.filter(post=p)
+        questionnaires = list(map(lambda pq: questionnaire_to_json(pq.questionnaire), post_questionnaires))
+        for f in files:
+            f["type"] = "document"
+        for q in questionnaires:
+            q["type"] = "questionnaire"
         posts.append({
             "id": p.id,
             "title": p.title,
             "content": p.content,
             "author": p.author.username,
             "publication_date": p.publication_date,
-            "files": files,
+            "attachments": files + questionnaires,
             "kind": post_kind(p),
             "assignment_due_date": p.assignment_due_date,
             "unit_id": p.unit.id if p.unit else None,
