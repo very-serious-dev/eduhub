@@ -8,7 +8,9 @@ const FilePickerItem = (props) => {
 
     const title = props.attachment.type === "document" ? props.attachment.name : props.attachment.title;
     const subtitle = props.attachment.type === "document" ? sizeToHumanReadable(props.attachment.size) : "📝 Formulario"
-    return <div className="filePickerItem">
+    const key = `${props.attachment.type}${title}`
+
+    return <div className="filePickerItem" key={key}>
         <div className={`filePickerItemTitle ${accentForeground(theme)}`}>{title}</div>
         <div className={`filePickerItemSubtitle ${accentForeground(theme)}`}>{subtitle}</div>
         <div className="filePickerItemDeleteButton pointable" onClick={() => { props.onDelete(props.attachment) }}>❌</div>

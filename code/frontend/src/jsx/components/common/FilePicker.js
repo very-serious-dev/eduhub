@@ -112,14 +112,14 @@ const FilePicker = (props) => {
             props.setAttachments(old => {
                 const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
                 const oldFiles = old.filter(a => a.type === "file");
-                return [...oldQuestionnaires, oldFiles.filter(f => f.name !== attachment.name)]
+                return [...oldQuestionnaires, ...oldFiles.filter(f => f.name !== attachment.name)]
             })
         }
         if (attachment.type === "questionnaire") {
             props.setAttachments(old => {
                 const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
                 const oldFiles = old.filter(a => a.type === "file");
-                return [...oldFiles, oldQuestionnaires.filter(q => q.title !== attachment.title)]
+                return [...oldFiles, ...oldQuestionnaires.filter(q => q.title !== attachment.title)]
             })
         }
     }

@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument
+from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):

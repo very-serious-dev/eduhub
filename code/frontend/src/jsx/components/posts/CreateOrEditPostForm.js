@@ -24,13 +24,11 @@ const CreateOrEditPostForm = (props) => {
     }, []);
 
     useEffect(() => {
-        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
+        if (!props.showCreateQuestionnaire) { return; }
 
+        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
         newQuestionnaireChannel.onmessage = (event) => {
-            console.log("algo")
-            console.log(event.data)
             if (event.data.operation === "questionnaire_added") {
-                console.log("bueno")
                 const newQuestionnaire = { ...event.data.questionnaire, type: "questionnaire" };
                 const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
                 if (errorMessage !== null) {
@@ -40,7 +38,6 @@ const CreateOrEditPostForm = (props) => {
                 setAttachments(old => [...old, newQuestionnaire])
             }
         }
-
         return () => { newQuestionnaireChannel.close() }
     }, []);
 
@@ -96,7 +93,7 @@ const CreateOrEditPostForm = (props) => {
                     props.onDismiss();
                 })
         } else {
-            sendEduPostRequest([...filesThatAlreadyExistInDocuREST]);
+            sendEduPostRequest([...filesThatAlreadyExistInDocuREST, ...questionnaires]);
         }
     }
 

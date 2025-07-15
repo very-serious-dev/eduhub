@@ -16,7 +16,7 @@ const SubmitAssignmentDialog = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // see CreateOrEditPostForm or CreateOrEditAnnouncementForm (same logic)
+        // see CreateOrEditPostForm or CreateOrEditAnnouncementForm (both same logic, but also handling questionnaires)
         const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
         if (newFilesThatMustBeUploaded.length > 0) {
@@ -97,7 +97,7 @@ const SubmitAssignmentDialog = (props) => {
                     <div className="dialogTitle">Entregar tarea</div>
                     <form onSubmit={(event) => { event.preventDefault(); setShowAreYouSure(false) }}>
                         <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} allowEmptyContent={true} />
-                        <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
+                        <FilePicker attachments={files} setAttachments={setFiles} showChooseFromMyUnit={true} />
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Entregar" disabled={formComment === "" && files.length === 0} />
                         </div>

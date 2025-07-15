@@ -10,14 +10,14 @@ import TextAreaWithLimit from "../common/TextAreaWithLimit";
 const CreateOrEditAnnouncementForm = (props) => {
     const [formTitle, setFormTitle] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.title : "");
     const [formContent, setFormContent] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.content : "");
-    const [files, setFiles] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.files : [])
+    const [attachments, setAttachments] = useState(props.announcementBeingEdited ? props.announcementBeingEdited.attachments : [])
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
     const onSubmitCreateOrEditAnnouncement = (event) => {
         event.preventDefault();
 
-        if (files.length === 0) {
+        if (attachments.length === 0) {
             sendEduPostRequest();
         } else {
             uploadFilesThenSendEduPostRequest();
@@ -26,7 +26,9 @@ const CreateOrEditAnnouncementForm = (props) => {
 
     const uploadFilesThenSendEduPostRequest = () => {
         setLoading(true);
-        // see CreateOrEditPostForm or SubmitAssignmentDialog (same logic)
+        // see CreateOrEditPostForm (same logic) or SubmitAssignmentDialog (same logic, without questionnaires)
+        const files = attachments.filter(a => a.type === "document");
+        const questionnaires = attachments.filter(a => a.type === "questionnaire");
         const newFilesThatMustBeUploaded = files.filter(f => f.identifier === undefined);
         const filesThatAlreadyExistInDocuREST = files.filter(f => f.identifier !== undefined);
         if (newFilesThatMustBeUploaded.length > 0) {
@@ -39,7 +41,8 @@ const CreateOrEditAnnouncementForm = (props) => {
             DocuAPIFetch("POST", "/api/v1/documents", body)
                 .then(json => {
                     if ((json.success === true) && (json.result.operation === "documents_added")) {
-                        sendEduPostRequest([...json.result.documents, ...filesThatAlreadyExistInDocuREST]);
+                        const newlyUploadedFiles = json.result.documents.map(d => { return { ...d, type: "document" } })
+                        sendEduPostRequest([...newlyUploadedFiles, ...filesThatAlreadyExistInDocuREST, ...questionnaires]);
                     } else {
                         setLoading(false);
                         props.onFinished("Se ha producido un error");
@@ -52,16 +55,16 @@ const CreateOrEditAnnouncementForm = (props) => {
                     props.onDismiss();
                 })
         } else {
-            sendEduPostRequest([...filesThatAlreadyExistInDocuREST]);
+            sendEduPostRequest([...filesThatAlreadyExistInDocuREST, ...questionnaires]);
         }
     }
 
-    const sendEduPostRequest = (attachedFiles = []) => {
+    const sendEduPostRequest = (attachedFilesOrQuestionnaires = []) => {
         setLoading(true);
         let body = {
             title: formTitle,
             content: formContent,
-            attachments: attachedFiles.map(a => { return { ...a, type: "document" } }),
+            attachments: attachedFilesOrQuestionnaires,
         }
         let url, method;
         if (props.announcementBeingEdited) {
@@ -105,7 +108,7 @@ const CreateOrEditAnnouncementForm = (props) => {
                 </div>
             </div>
             <TextAreaWithLimit value={formContent} setValue={setFormContent} maxLength={3000} small={false} />
-            <FilePicker files={files} setFiles={setFiles} showChooseFromMyUnit={true} />
+            <FilePicker attachments={attachments} setAttachments={setAttachments} showChooseFromMyUnit={true} />
             <div className="formInputContainer">
                 <input className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} type="submit" value={props.submitText} />
             </div>

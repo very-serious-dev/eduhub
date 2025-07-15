@@ -53,7 +53,7 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
             questionnaire.is_protected = True
             questionnaire.save()
             new_post_questionnaire = PostQuestionnaire()
-            new_post_questionnaire = questionnaire
+            new_post_questionnaire.questionnaire = questionnaire
             new_post_questionnaire.post = new_post
             new_post_questionnaire.save()
     return JsonResponse({"success": True}, status=201) 
@@ -116,7 +116,7 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
             questionnaire.is_protected = True
             questionnaire.save()
             new_post_questionnaire = PostQuestionnaire()
-            new_post_questionnaire = questionnaire
+            new_post_questionnaire.questionnaire = questionnaire
             new_post_questionnaire.post = new_amendment
             new_post_questionnaire.save()
     return JsonResponse({"success": True}, status=201) 
@@ -170,7 +170,7 @@ def get_assignment(request, a_id):
                 your_submit["score"] = s.score
         except AssignmentSubmit.DoesNotExist:
             pass
-    return JsonResponse(assignment_detail_to_json(assignment, newest_amendment, files, is_teacher, class_students, class_units, submits, your_submit)) 
+    return JsonResponse(assignment_detail_to_json(assignment, newest_amendment, attachments, is_teacher, class_students, class_units, submits, your_submit)) 
 
 def create_assignment_submit(request, a_id, attachments, comment):
     assignment = get_from_db(Post, id=a_id, kind=Post.PostKind.ASSIGNMENT)

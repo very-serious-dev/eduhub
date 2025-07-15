@@ -61,7 +61,7 @@ def create_announcement(request, group_tag, title, content, attachments):
             questionnaire.is_protected = True
             questionnaire.save()
             new_announcement_questionnaire = AnnouncementQuestionnaire()
-            new_announcement_questionnaire = questionnaire
+            new_announcement_questionnaire.questionnaire = questionnaire
             new_announcement_questionnaire.announcement = new_announcement
             new_announcement_questionnaire.save()
     return JsonResponse({"success": True}, status=201)
@@ -104,7 +104,7 @@ def edit_announcement(request, a_id, title, content, attachments):
             questionnaire.is_protected = True
             questionnaire.save()
             new_announcement_questionnaire = AnnouncementQuestionnaire()
-            new_announcement_questionnaire = questionnaire
+            new_announcement_questionnaire.questionnaire = questionnaire
             new_announcement_questionnaire.announcement = new_announcement
             new_announcement_questionnaire.save()
     return JsonResponse({"success": True}, status=200)

@@ -25,7 +25,6 @@ const NewQuestionnairePage = () => {
     const onSubmitNewQuestionnaire = (title, questions) => {
         if (isLoading) { return; }
         setLoading(true);
-
         EduAPIFetch("POST", "/api/v1/questionnaires", { title: title, questions: questions })
             .then(json => {
                 setLoading(false);

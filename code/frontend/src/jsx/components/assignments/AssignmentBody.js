@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router";
 import { beautifullyDisplayDateTime, formatPseudoMarkdown } from "../../../util/Formatter";
 import AssignmentStudentLeftPaneContent from "./AssignmentStudentLeftPaneContent";
-import SmallFilesListFile from "../common/SmallFilesListFile";
+import SmallAttachmentsListItem from "../common/SmallAttachmentsListItem";
 import AssignmentTeacherLeftPaneContent from "./AssignmentTeacherLeftPaneContent";
 import LoadingHUD from "../common/LoadingHUD";
 import { useContext, useState } from "react";
@@ -58,11 +58,9 @@ const AssignmentBody = (props) => {
                         <>
                             <div className="assignmentDetailBodyFilesTitle">📎 Documentos adjuntos</div>
                             <div className="assignmentDetailBodyFiles">
-                                {props.assignmentData.files !== undefined && (
-                                    props.assignmentData.files.length > 0 ?
-                                        props.assignmentData.files.map(f => <SmallFilesListFile file={f} />)
-                                        : <p>No hay ficheros adjuntos</p>
-                                )}
+                                {props.assignmentData.attachments.length > 0 ?
+                                    props.assignmentData.attachments.map(a => <SmallAttachmentsListItem attachment={a} />)
+                                    : <p>No hay ficheros adjuntos</p>}
                             </div>
                         </>}
                 </div>

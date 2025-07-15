@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { beautifullyDisplayDateTime } from "../../../util/Formatter";
 import SetScoreDialog from "./SetScoreDialog";
-import SmallFilesListFile from "../common/SmallFilesListFile";
+import SmallAttachmentsListItem from "../common/SmallAttachmentsListItem";
 import { accentForeground, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 
@@ -31,7 +31,7 @@ const AssignmentSubmitDialog = (props) => {
                             <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
                             <div>{props.submit.files.length > 0 ?
                                 <div className="assignmentSubmitDialogFiles">
-                                    {props.submit.files.map(f => <SmallFilesListFile file={f} />)}
+                                    {props.submit.files.map(f => <SmallAttachmentsListItem attachment={f} />)}
                                 </div>
                                 : <div className="assignmentSubmitDialogSectionContent">No se ha entregado ningún fichero</div>}
                             </div>

@@ -1,5 +1,5 @@
 import { footNoteDateAuthor, formatPseudoMarkdown } from "../../../util/Formatter";
-import SmallFilesListFile from "../common/SmallFilesListFile";
+import SmallAttachmentsListItem from "../common/SmallAttachmentsListItem";
 
 const AnnouncementCell = (props) => {
 
@@ -13,7 +13,7 @@ const AnnouncementCell = (props) => {
         {props.showEdit && <div className="announcementTopRightGear pointable" onClick={onEdit}>⚙️</div>}
         <div>{formatPseudoMarkdown(props.announcement.content)}</div>
         <div className="smallFilesList">
-            {props.announcement.files.map(f => <SmallFilesListFile file={f} />)}
+            {props.announcement.attachments.map(a => <SmallAttachmentsListItem attachment={a} />)}
         </div>
         <div className="dateAuthorFootNote">
             {footNoteDateAuthor(props.announcement.publication_date, props.announcement.author, props.announcement.modification_date)}

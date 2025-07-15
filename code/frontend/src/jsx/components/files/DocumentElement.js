@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { footNoteDateAuthor, iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
+import { documentIconImgSrc, footNoteDateAuthor, sizeToHumanReadable } from "../../../util/Formatter";
 import FilesElementContextMenuButton from "./FilesElementContextMenuButton";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { pointableSecondary } from "../../../util/Themes";
@@ -23,7 +23,7 @@ const DocumentElement = (props) => {
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}
             onMoveDeleteFail={props.onMoveDeleteFail} />}
         <div className="myFilesElementTitleContainer">
-            <img className="myFilesElementIcon" src={iconImgSrc(props.mimeType)}></img>
+            <img className="myFilesElementIcon" src={documentIconImgSrc(props.mimeType)}></img>
             <div className="myFilesElementName">{props.document.name}</div>
         </div>
         {props.document.is_protected && <div className="myFilesElementSpecialText">🚫 Protegido</div>}

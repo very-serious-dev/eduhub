@@ -142,7 +142,7 @@ const formatPseudoMarkdown = (wholeText) => {
     return linesWithBRsAndULs;
 }
 
-const iconImgSrc = (mimeType) => {
+const documentIconImgSrc = (mimeType) => {
     // https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
     if (mimeType === "application/pdf") {
         return "/small/icon_pdf.png";
@@ -164,9 +164,19 @@ const iconImgSrc = (mimeType) => {
     }
 }
 
+const iconImgSrc = (attachment) => {
+    if (attachment.type === "document") {
+        return documentIconImgSrc(attachment.mime_type);
+    }
+    if (attachment.type === "questionnaire") {
+        return "/small/icon_checklist.png";
+    }
+}
+
 export { sizeToHumanReadable };
 export { footNoteDateAuthor };
 export { beautifullyDisplayDate };
 export { beautifullyDisplayDateTime };
 export { formatPseudoMarkdown };
+export { documentIconImgSrc };
 export { iconImgSrc };
