@@ -195,16 +195,19 @@ class ChoicesQuestionChoice(models.Model):
     question = models.ForeignKey(ChoicesQuestion, on_delete=models.CASCADE)
     is_correct = models.BooleanField()
 
+class QuestionnaireSubmit(models.Model):
+    questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
 class TextQuestionAnswer(models.Model):
     answer = models.CharField(max_length=500)
     question = models.ForeignKey(TextQuestion, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    submit = models.ForeignKey(QuestionnaireSubmit, on_delete=models.CASCADE)
 
 class ChoicesQuestionAnswer(models.Model):
     answer = models.ForeignKey(ChoicesQuestionChoice, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    submit = models.ForeignKey(QuestionnaireSubmit, on_delete=models.CASCADE)
 
 ##
 # SECURITY, STATISTICS,...
@@ -215,4 +218,3 @@ class FailedLoginAttempt(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     client_ip = models.CharField(max_length=128, null=True)
     client_user_agent = models.CharField(max_length=200, null=True)
-    
