@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import NewQuestionnaire from "../components/questionnaires/NewQuestionnaire";
 
 const NewQuestionnairePage = () => {
@@ -15,11 +15,11 @@ const NewQuestionnairePage = () => {
     }, []);
 
     const onFinish = () => {
-        channel.postMessage("FINISH");
+        channel?.postMessage("FINISH");
         window.close();
     }
 
-    return <div>
+    return <div className="newQuestionnairePageContainer">
         <NewQuestionnaire />
         <button onClick={onFinish}>Volver</button>
     </div>

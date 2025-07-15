@@ -1699,6 +1699,151 @@ body {
 }
 
 /**
+ * Questionnaires
+ */
+
+.newQuestionnairePageContainer {
+  margin-top: 40px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+@media (min-width: 480px) {
+  .newQuestionnairePageContainer {
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+}
+
+.questionnaireNewQuestionButtonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+
+.questionnaireNewQuestionButton {
+  border: none;
+  padding: 15px;
+  margin: 10px;
+  font-size: 0.875em;
+  text-align: center;
+  text-decoration: none;
+  flex-grow: 1;
+}
+
+.questionnaireNewQuestionSubtext {
+  font-size: 0.75em;
+}
+
+.questionnaireNewQuestionContainer {
+  margin-top: 25px;
+  padding-top: 20px;
+  position: relative;
+}
+
+.questionnaireNewQuestionTopRightContainer {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.questionnaireNewQuestionTopRightQuestionNumber {
+  font-size: 0.7em;
+  font-weight: bold;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 6px;
+  padding-right: 6px;
+  border-radius: 999px;
+}
+
+.questionnaireNewQuestionDelete:hover {
+  background-color: var(--color-destructive);
+}
+
+.questionnaireNewQuestionMove:hover {
+  background-color: var(--theme-blue-accent);
+}
+
+.questionnaireNewQuestionChoicesAddButton {
+  border: none;
+  padding: 10px;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  font-size: 0.875em;
+  text-align: center;
+  text-decoration: none;
+  width: calc(100% - 40px);
+}
+
+.questionnaireNewQuestionChoiceContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.questionnaireNewQuestionChoice {
+  border: none;
+  outline: none;
+  margin-top: 8px;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding: 4px;
+  font-size: 0.875em;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.questionnaireNewQuestionMarkCorrectChoice:hover {
+  background-color: var(--color-constructive);
+}
+
+.questionnaireCorrectChoice {
+  font-size: 0.675em;
+}
+
+.questionnaireNewQuestionChoiceScoreContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  margin-top: 8px;
+  align-items: baseline;
+}
+
+.questionnaireNewQuestionChoiceScoreText {
+  font-size: 0.8em;
+}
+
+.questionnaireNewQuestionChoiceScoreInput {
+  width: 60px;
+  border: none;
+  outline: none;
+  font-size: 0.875em;
+  border-radius: 5px;
+}
+
+.questionnaireNewQuestionChoicesConfigureScoresButton {
+  border: none;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  margin-left: 15px;
+  font-size: 0.75em;
+  text-align: center;
+  text-decoration: none;
+}
+
+.configureQuestionnaireScoreDialogText {
+  margin-top: 20px;
+  padding: 3px;
+}
+
+/**
  * Global user feedback bubble
  */
 
