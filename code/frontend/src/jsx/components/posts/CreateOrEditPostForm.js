@@ -26,7 +26,9 @@ const CreateOrEditPostForm = (props) => {
         const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
 
         newQuestionnaireChannel.onmessage = (event) => {
-            console.log(event.data);
+            if (event.data.type === "questionnaire_added") {
+                console.log(event.data.questionnaire);
+            }
         }
 
         return () => { newQuestionnaireChannel.close() }

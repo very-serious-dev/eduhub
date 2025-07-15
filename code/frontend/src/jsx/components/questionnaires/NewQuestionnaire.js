@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { ThemeContext } from "../../main/GlobalContainer";
-import { accent, accentFormLabel, pointablePrimary, primary, secondary } from "../../../util/Themes";
+import { accent, accentFormLabel, pointablePrimary, pointableSecondary, primary, secondary } from "../../../util/Themes";
 import NewQuestionnaireChoicesQuestion from "./NewQuestionnaireChoicesQuestion";
 import NewQuestionnaireTextQuestion from "./NewQuestionnaireTextQuestion";
 import ConfigureQuestionnaireScoreDialog from "../dialogs/ConfigureQuestionnaireScoreDialog";
@@ -134,8 +134,6 @@ const NewQuestionnaire = (props) => {
     }
 
     const onScoreConfigured = (scorePerCorrectAnswer, penaltyPerIncorrectAnswer) => {
-        console.log(scorePerCorrectAnswer)
-        console.log(penaltyPerIncorrectAnswer)
         setFormQuestions(old => old.map(q => {
             if (q.type === "choices") {
                 if (q.choices.some(choice => choice.is_correct)) {
@@ -149,8 +147,6 @@ const NewQuestionnaire = (props) => {
             return q;
         }))
     }
-
-    console.log(formQuestions)
 
     return <>
         {showConfigureScores &&
@@ -197,16 +193,19 @@ const NewQuestionnaire = (props) => {
                             onDelete={onDeleteQuestion} />
                     }
                 })}
+                <div className="questionnaireNewQuestionButtonContainer">
+                    <button onClick={e => { e.preventDefault(); onAddChoicesQuestion(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
+                        ➕☑️ Añadir pregunta tipo <i>test</i><br />
+                        <span className="questionnaireNewQuestionSubtext">Puede ser autoevaluable</span>
+                    </button>
+                    <button onClick={e => { e.preventDefault(); onAddTextQuestion(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
+                        ➕🖊️ Añadir pregunta de texto
+                    </button>
+                </div>
+                <div className="formInputContainer">
+                    <button onClick={e => { e.preventDefault(); props.onSubmitNewQuestionnaire(formTitle, formQuestions); }} className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}>{"Guardar y adjuntar"}</button>
+                </div>
             </form>
-            <div className="questionnaireNewQuestionButtonContainer">
-                <button onClick={onAddChoicesQuestion} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
-                    ➕☑️ Añadir pregunta tipo <i>test</i><br />
-                    <span className="questionnaireNewQuestionSubtext">Puede ser autoevaluable</span>
-                </button>
-                <button onClick={onAddTextQuestion} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
-                    ➕🖊️ Añadir pregunta de texto
-                </button>
-            </div>
         </div>
     </>
 }

@@ -1,5 +1,5 @@
 from django.http import QueryDict
-from ..endpoints import admin, users, groups, classes, posts, documents
+from ..endpoints import admin, users, groups, classes, posts, documents, questionnaires
 from ..models import User
 from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, parse_usernames_list
 from ..util.exceptions import Unsupported, BadRequest, BadRequestIllegalMove
@@ -373,3 +373,11 @@ def documents_update_files_permissions(request):
     else:
         raise Unsupported
 
+@maybe_unhappy
+def questionnaires_create(request):
+    if request.method == "POST":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        title, questions = expect_body_with('title', 'questions', request=request)
+        return questionnaires.create_questionnaire(request, title, questions)
+    else:
+        raise Unsupported

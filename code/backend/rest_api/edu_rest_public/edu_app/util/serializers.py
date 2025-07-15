@@ -153,6 +153,16 @@ def assignment_detail_to_json(original_assignment, newest_edit, files, is_teache
         response["your_submit"] = your_submit
     return response
 
+def questionnaire_to_json(questionnaire):
+    return {
+        "id": questionnaire.id,
+        "title": questionnaire.title,
+        "folder_id": questionnaire.folder_id,
+        "author": questionnaire.author.username,
+        "is_protected": questionnaire.is_protected,
+        "created_at": questionnaire.created_at
+    }
+
 def roles_array(user):
     roles = []
     if user.role == User.UserRole.STUDENT:

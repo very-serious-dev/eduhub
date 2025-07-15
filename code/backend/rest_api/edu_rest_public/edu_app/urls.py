@@ -1,6 +1,5 @@
 from django.urls import path
 from .preconditions import facade
-from .endpoints import groups, classes, posts, documents
 
 urlpatterns = [
     path("admin/home",                          facade.admin_home),
@@ -34,5 +33,6 @@ urlpatterns = [
     path("documents/<d_id>/users",              facade.documents_get_document_users),
     path("folders/<int:f_id>",                  facade.documents_move_folder),
     path("folders/<int:f_id>/users",            facade.documents_get_folder_users),
-    path("files/permissions",                   facade.documents_update_files_permissions)
+    path("files/permissions",                   facade.documents_update_files_permissions),
+    path("questionnaires",                      facade.questionnaires_create)
 ]
