@@ -24,7 +24,6 @@ def document_to_json(document):
         "identifier": document.identifier,
         "name": document.name,
         "size": document.size,
-        "is_protected": document.is_protected,
         "mime_type": document.mime_type,
         "folder_id": document.folder_id,
         "author": document.author.username,
@@ -94,7 +93,6 @@ def questionnaire_to_json(questionnaire):
         "title": questionnaire.title,
         "folder_id": questionnaire.folder_id,
         "author": questionnaire.author.username,
-        "is_protected": questionnaire.is_protected,
         "created_at": questionnaire.created_at
     }
 
@@ -122,10 +120,13 @@ def folders_array_to_json(folders):
         result.append(folder_to_json(f))
     return result
 
-def documents_array_to_json(documents):
+def documents_array_to_json(documents, annotate_as_protected=None):
     result = []
     for d in documents:
-        result.append(document_to_json(d))
+        json = document_to_json(d)
+        if annotate_as_protected and d.id in annotate_as_protected:
+            json["is_protected"] = True
+        result.append(json)
     return result
 
 def announcements_array_to_json(announcements):
@@ -134,10 +135,13 @@ def announcements_array_to_json(announcements):
         result.append(announcement_to_json(a))
     return result
 
-def questionnaires_array_to_json(questionnaires):
+def questionnaires_array_to_json(questionnaires, annotate_as_protected=None):
     result = []
     for q in questionnaires:
-        result.append(questionnaire_to_json(q))
+        json = questionnaire_to_json(q)
+        if annotate_as_protected and q.id in annotate_as_protected:
+            json["is_protected"] = True
+        result.append(json)
     return result
 
 def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):

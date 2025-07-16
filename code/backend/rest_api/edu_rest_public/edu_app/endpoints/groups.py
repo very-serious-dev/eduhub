@@ -2,7 +2,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document, Questionnaire, AnnouncementQuestionnaire
 from ..util.exceptions import Forbidden, InternalError
-from ..util.helpers import get_from_db, get_or_create_folder, is_document_used_in_post_or_announcement, is_questionnaire_used_in_post_or_announcement
+from ..util.helpers import get_from_db, get_or_create_folder
 from ..util.serializers import groups_array_to_json, announcements_array_to_json
 from .posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
@@ -38,8 +38,6 @@ def create_announcement(request, group_tag, title, content, attachments):
         if a["type"] == "document":
             try:
                 document = Document.objects.get(identifier=a["identifier"])
-                document.is_protected = True
-                document.save()
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
                 folder = get_or_create_folder(__folder_name_for_group(group), request.session.user, root_folder)
@@ -50,7 +48,6 @@ def create_announcement(request, group_tag, title, content, attachments):
                 document.mime_type = a["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True
                 document.save()
             new_announcement_document = AnnouncementDocument()
             new_announcement_document.document = document
@@ -58,8 +55,6 @@ def create_announcement(request, group_tag, title, content, attachments):
             new_announcement_document.save()
         if a["type"] == "questionnaire":
             questionnaire = Questionnaire.objects.get(id=a["id"])
-            questionnaire.is_protected = True
-            questionnaire.save()
             new_announcement_questionnaire = AnnouncementQuestionnaire()
             new_announcement_questionnaire.questionnaire = questionnaire
             new_announcement_questionnaire.announcement = new_announcement
@@ -75,14 +70,11 @@ def edit_announcement(request, a_id, title, content, attachments):
     announcement.content = content
     announcement.modification_date = timezone.now()
     announcement.save()
-    __delete_announcement_documents_and_unprotect_unused_documents(announcement)
-    __delete_announcement_questionnaires_and_unprotect_unused_questionnaires(announcement)
+    __delete_any_relation_to_documents_or_questionnaires(announcement)
     for a in attachments:
         if a["type"] == "document":
             try:
                 document = Document.objects.get(identifier=a["identifier"])
-                document.is_protected = True
-                document.save()
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
                 folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
@@ -93,7 +85,6 @@ def edit_announcement(request, a_id, title, content, attachments):
                 document.mime_type = a["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True
                 document.save()
             new_announcement_document = AnnouncementDocument()
             new_announcement_document.document = document
@@ -101,8 +92,6 @@ def edit_announcement(request, a_id, title, content, attachments):
             new_announcement_document.save()
         if a["type"] == "questionnaire":
             questionnaire = Questionnaire.objects.get(id=a["id"])
-            questionnaire.is_protected = True
-            questionnaire.save()
             new_announcement_questionnaire = AnnouncementQuestionnaire()
             new_announcement_questionnaire.questionnaire = questionnaire
             new_announcement_questionnaire.announcement = new_announcement
@@ -124,21 +113,7 @@ def __folder_name_for_group(group):
 def __has_permission_to_manage_announcements(user, group):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
            or (user.role == User.UserRole.TEACHER and group.tutor == user)
-    
-def __delete_announcement_documents_and_unprotect_unused_documents(announcement):
-    announcement_documents = AnnouncementDocument.objects.filter(announcement=announcement)
-    old_documents = list(map(lambda ad: ad.document, announcement_documents))
-    announcement_documents.delete()
-    for d in old_documents:
-        if not is_document_used_in_post_or_announcement(d):
-            d.is_protected = False
-            d.save()
 
-def __delete_announcement_questionnaires_and_unprotect_unused_questionnaires(announcement):
-    announcement_questionnaires = AnnouncementQuestionnaire.objects.filter(announcement=announcement)
-    old_questionnaires = list(map(lambda aq: aq.questionnaire, announcement_questionnaires))
-    announcement_questionnaires.delete()
-    for q in old_questionnaires:
-        if not is_questionnaire_used_in_post_or_announcement(q):
-            q.is_protected = False
-            q.save()
+def __delete_any_relation_to_documents_or_questionnaires(announcement):
+    AnnouncementDocument.objects.filter(announcement=announcement).delete()
+    AnnouncementQuestionnaire.objects.filter(announcement=announcement).delete()

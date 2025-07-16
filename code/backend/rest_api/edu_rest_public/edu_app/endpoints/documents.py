@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from ..models import Document, Folder, User, UserDocumentPermission, UserFolderPermission, Questionnaire, UserQuestionnairePermission
+from ..models import Document, Folder, User, UserDocumentPermission, UserFolderPermission, Questionnaire, UserQuestionnairePermission, PostDocument, AnnouncementDocument, AssignmentSubmitDocument, PostQuestionnaire, AnnouncementQuestionnaire
 from ..util.exceptions import ConflictQuotaExceeded, ConflictFolderAlreadyExists, Forbidden
 from ..util.helpers import get_from_db
 from ..util.serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json, questionnaires_array_to_json, questionnaire_to_json
@@ -8,14 +8,17 @@ def get_my_files(request, only_my_files):
     my_documents = Document.objects.filter(author=request.session.user)
     my_folders = Folder.objects.filter(author=request.session.user)
     my_questionnaires = Questionnaire.objects.filter(author=request.session.user, archived=False)
+    published_documents_ids = __get_published_document_ids(my_documents)
+    published_questionnaires_ids = __get_published_questionnaires_ids(my_questionnaires)
     response = { "my_files": {
-                     "documents": documents_array_to_json(my_documents),
+                     "documents": documents_array_to_json(my_documents, annotate_as_protected=published_documents_ids),
                      "folders": folders_array_to_json(my_folders),
-                     "questionnaires": questionnaires_array_to_json(my_questionnaires) }}
+                     "questionnaires": questionnaires_array_to_json(my_questionnaires, annotate_as_protected=published_questionnaires_ids) }}
     if not only_my_files:
         user_document_permissions = UserDocumentPermission.objects.filter(user=request.session.user)
         user_folder_permissions = UserFolderPermission.objects.filter(user=request.session.user)
         user_questionnaire_permissions = UserQuestionnairePermission.objects.filter(user=request.session.user, questionnaire__archived=False)
+        # TODO: I think these lambda stuff hit database several times. It could be improved using values_list or something similar
         shared_with_me_documents = list(map(lambda udp: udp.document, user_document_permissions))
         shared_with_me_folders = list(map(lambda ufp: ufp.folder, user_folder_permissions))
         shared_with_me_questionnaires = list(map(lambda uqp: uqp.questionnaire, user_questionnaire_permissions))
@@ -59,6 +62,7 @@ def move_document(request, d_id, folder_id):
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "document_changed",
+                                "keep_old_is_protected": True,
                                 "document": document_to_json(document)
                             }}, status=200)
 
@@ -77,6 +81,7 @@ def move_questionnaire(request, q_id, folder_id):
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "questionnaire_changed",
+                                "keep_old_is_protected": True,
                                 "questionnaire": questionnaire_to_json(questionnaire)
                             }}, status=200)
 
@@ -255,3 +260,20 @@ def remove_permission(request, document_ids, folder_ids, questionnaire_ids, user
         except Questionnaire.DoesNotExist:
             pass
     return JsonResponse({"success": True}, status=200)
+
+def __get_published_document_ids(documents):
+    posted_documents = PostDocument.objects.filter(document__in=documents).values_list("document_id", flat=True).distinct()
+    announced_documents = AnnouncementDocument.objects.filter(document__in=documents).values_list("document_id", flat=True).distinct()
+    submitted_documents = AssignmentSubmitDocument.objects.filter(document__in=documents).values_list("document_id", flat=True).distinct()
+    published_documents_ids = set()
+    for document_id in list(posted_documents) + list(announced_documents) + list(submitted_documents):
+        published_documents_ids.add(document_id)
+    return published_documents_ids
+
+def __get_published_questionnaires_ids(questionnaires):
+    posted_questionnaires = PostQuestionnaire.objects.filter(questionnaire__in=questionnaires).values_list("questionnaire_id", flat=True).distinct()
+    announced_questionnaires = AnnouncementQuestionnaire.objects.filter(questionnaire__in=questionnaires).values_list("questionnaire_id", flat=True).distinct()
+    published_questionnaires_ids = set()
+    for questionnaire_id in list(posted_questionnaires) + list(announced_questionnaires):
+        published_questionnaires_ids.add(questionnaire_id)
+    return published_questionnaires_ids

@@ -130,17 +130,3 @@ def get_or_create_folder(name, author, parent_folder=None):
         folder.parent_folder = parent_folder
         folder.save()
     return folder
-
-def is_document_used_in_post_or_announcement(document):
-    return AnnouncementDocument.objects.filter(document=document).exists() or \
-             PostDocument.objects.filter(document=document).exists()
-             # PostDocument check only works because everytime you amend a post,
-             # old PostDocument entries get deleted. They also get deleted after
-             # deleting (amendment_delete) a post.
-
-def is_questionnaire_used_in_post_or_announcement(questionnaire):
-    return AnnouncementQuestionnaire.objects.filter(questionnaire=questionnaire).exists() or \
-             PostQuestionnaire.objects.filter(questionnaire=questionnaire).exists()
-             # PostQuestionnaire check only works because everytime you amend a post,
-             # old PostQuestionnaire entries get deleted. They also get deleted after
-             # deleting (amendment_delete) a post.

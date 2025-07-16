@@ -120,7 +120,6 @@ class EduAppDocument(models.Model):
     name = models.CharField(max_length=150)
     size = models.IntegerField()
     mime_type = models.CharField(max_length=50)
-    is_protected = models.BooleanField()
     folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     created_at = models.DateTimeField()
@@ -200,7 +199,6 @@ class EduAppPostquestionnaire(models.Model):
 class EduAppQuestionnaire(models.Model):
     title = models.CharField(max_length=100)
     archived = models.BooleanField()
-    is_protected = models.BooleanField()
     created_at = models.DateTimeField()
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     folder = models.ForeignKey(EduAppFolder, models.DO_NOTHING, blank=True, null=True)

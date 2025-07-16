@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.utils import timezone
 from ..models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder, Questionnaire, PostQuestionnaire
 from ..util.exceptions import Forbidden, ForbiddenAssignmentSubmit, NotFound
-from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class, is_document_used_in_post_or_announcement, is_questionnaire_used_in_post_or_announcement
+from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class
 from ..util.serializers import assignment_detail_to_json, document_to_json, user_to_json, questionnaire_to_json
 
 POSTS_DOCUMENTS_ROOT_FOLDER_NAME = "Publicaciones"
@@ -30,8 +30,6 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
         if a["type"] == "document":
             try:
                 document = Document.objects.get(identifier=a["identifier"])
-                document.is_protected = True
-                document.save()
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
                 folder = get_or_create_folder(__folder_name_for_classroom(classroom), request.session.user, root_folder)
@@ -42,7 +40,6 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
                 document.mime_type = a["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True
                 document.save()
             new_post_document = PostDocument()
             new_post_document.document = document
@@ -50,8 +47,6 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
             new_post_document.save()
         if a["type"] == "questionnaire":
             questionnaire = Questionnaire.objects.get(id=a["id"])
-            questionnaire.is_protected = True
-            questionnaire.save()
             new_post_questionnaire = PostQuestionnaire()
             new_post_questionnaire.questionnaire = questionnaire
             new_post_questionnaire.post = new_post
@@ -78,8 +73,7 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
     if post_type == "amend_delete":
         new_amendment.kind = Post.PostKind.AMENDMENT_DELETE
         new_amendment.save()
-        __delete_previous_post_documents_and_unprotect_unused_documents(post)
-        __delete_previous_post_questionnaires_and_unprotect_unused_questionnaires(post)
+        __delete_any_relation_to_documents_or_questionnaires(post)
     if post_type == "amend_edit":
         new_amendment.kind = Post.PostKind.AMENDMENT_EDIT
         new_amendment.title = title
@@ -87,14 +81,11 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
         new_amendment.unit = unit
         new_amendment.assignment_due_date = assignment_due_date
         new_amendment.save()
-        __delete_previous_post_documents_and_unprotect_unused_documents(post)
-        __delete_previous_post_questionnaires_and_unprotect_unused_questionnaires(post)
+        __delete_any_relation_to_documents_or_questionnaires(post)
         for a in attachments:
             if a["type"] == "document":
                 try:
                     document = Document.objects.get(identifier=a["identifier"])
-                    document.is_protected = True
-                    document.save()
                 except Document.DoesNotExist:
                     root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
                     folder = get_or_create_folder(__folder_name_for_classroom(post.classroom), request.session.user, root_folder)
@@ -105,7 +96,6 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
                     document.mime_type = a["mime_type"]
                     document.author = request.session.user
                     document.folder = folder
-                    document.is_protected = True
                     document.save()
                 new_post_document = PostDocument()
                 new_post_document.document = document
@@ -113,8 +103,6 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
                 new_post_document.save()
             if a["type"] == "questionnaire":
                 questionnaire = Questionnaire.objects.get(id=a["id"])
-                questionnaire.is_protected = True
-                questionnaire.save()
                 new_post_questionnaire = PostQuestionnaire()
                 new_post_questionnaire.questionnaire = questionnaire
                 new_post_questionnaire.post = new_amendment
@@ -189,8 +177,6 @@ def create_assignment_submit(request, a_id, attachments, comment):
         if a["type"] == "document":
             try:
                 document = Document.objects.get(identifier=a["identifier"])
-                document.is_protected = True
-                document.save()
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(ASSIGNMENT_SUBMITS_ROOT_FOLDER_NAME, request.session.user)
                 folder = get_or_create_folder(__folder_name_for_group(assignment.classroom.group), request.session.user, root_folder)
@@ -201,12 +187,11 @@ def create_assignment_submit(request, a_id, attachments, comment):
                 document.mime_type = a["mime_type"]
                 document.author = request.session.user
                 document.folder = folder
-                document.is_protected = True
                 document.save()
-        submit_document = AssignmentSubmitDocument()
-        submit_document.document = document
-        submit_document.submit = new_submit
-        submit_document.save()
+            submit_document = AssignmentSubmitDocument()
+            submit_document.document = document
+            submit_document.submit = new_submit
+            submit_document.save()
     return JsonResponse({"success": True}, status=201)
 
 def score_submit(request, a_id, username, score, should_publish):
@@ -250,23 +235,8 @@ def publish_all_scores(request, a_id):
 def __folder_name_for_classroom(classroom):
     return classroom.group.tag + " - " + classroom.name
 
-def __delete_previous_post_documents_and_unprotect_unused_documents(post):
-    old_post_documents = PostDocument.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))
-    old_documents = list(map(lambda pd: pd.document, old_post_documents))
-    old_post_documents.delete()
-    for d in old_documents:
-        if not is_document_used_in_post_or_announcement(d):
-            d.is_protected = False
-            d.save()
-
-def __delete_previous_post_questionnaires_and_unprotect_unused_questionnaires(post):
+def __delete_any_relation_to_documents_or_questionnaires(post):
     old_post_questionnaires = PostQuestionnaire.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))
-    old_questionnaires = list(map(lambda pq: pq.questionnaire, old_post_questionnaires))
     old_post_questionnaires.delete()
-    print("la chicha")
-    for q in old_questionnaires:
-        print(q)
-        if not is_questionnaire_used_in_post_or_announcement(q):
-            print("yaho")
-            q.is_protected = False
-            q.save()
+    old_post_documents = PostDocument.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))
+    old_post_documents.delete()

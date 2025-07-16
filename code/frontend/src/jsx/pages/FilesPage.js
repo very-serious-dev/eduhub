@@ -48,13 +48,25 @@ const FilesPage = () => {
         }
         if (result.operation === "document_changed") {
             setMyFiles(old => {
-                const newDocuments = old.documents.map(d => { if (d.identifier === result.document.identifier) return result.document; else return d });
+                const newDocuments = old.documents.map(d => {
+                    if (d.identifier === result.document.identifier) {
+                        const newDocument = result.document;
+                        if (result.keep_old_is_protected) { newDocument["is_protected"] = d.is_protected };
+                        return newDocument;
+                    } else return d;
+                });
                 return { ...old, documents: newDocuments }
             });
         }
         if (result.operation === "questionnaire_changed") {
             setMyFiles(old => {
-                const newQuestionnaires = old.questionnaires.map(q => { if (q.id === result.questionnaire.id) return result.questionnaire; else return q });
+                const newQuestionnaires = old.questionnaires.map(q => {
+                    if (q.id === result.questionnaire.id) {
+                        const newQuestionnaire = result.questionnaire;
+                        if (result.keep_old_is_protected) { newQuestionnaire["is_protected"] = q.is_protected };
+                        return newQuestionnaire;
+                    } else return q;
+                });
                 return { ...old, questionnaires: newQuestionnaires }
             });
         }

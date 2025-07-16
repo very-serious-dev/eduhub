@@ -76,7 +76,6 @@ def create_or_delete_documents(request):
                 document.name = d["name"]
                 document.size = d["size"]
                 document.mime_type = d["mime_type"]
-                document.is_protected = False
                 document.author = user
                 document.folder = parent_folder
                 document.created_at = datetime.today()
@@ -106,9 +105,8 @@ def create_or_delete_documents(request):
         for did in json_document_ids:
             try:
                 document = EduAppDocument.objects.get(identifier=did, author=user)
-                if not document.is_protected:
-                    document.delete()
-                    deleted_document_ids.append(did)
+                document.delete()
+                deleted_document_ids.append(did)
             except EduAppDocument.DoesNotExist:
                 pass
         for fid in json_folder_ids:
@@ -121,10 +119,9 @@ def create_or_delete_documents(request):
         for qid in json_questionnaire_ids:
             try:
                 questionnaire = EduAppQuestionnaire.objects.get(id=qid, author=user)
-                if not questionnaire.is_protected:
-                    questionnaire.archived = True
-                    questionnaire.save()
-                    deleted_questionnaire_ids.append(qid)
+                questionnaire.archived = True
+                questionnaire.save()
+                deleted_questionnaire_ids.append(qid)
             except EduAppQuestionnaire.DoesNotExist:
                 pass
         return JsonResponse({"success": True,

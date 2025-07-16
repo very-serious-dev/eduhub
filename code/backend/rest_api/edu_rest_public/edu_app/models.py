@@ -57,7 +57,6 @@ class Document(models.Model):
     mime_type = models.CharField(max_length=50)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
-    is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class UserDocumentPermission(models.Model):
@@ -122,11 +121,11 @@ class Announcement(models.Model):
     
 class AnnouncementDocument(models.Model):
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.PROTECT)
 
 class AnnouncementQuestionnaire(models.Model):
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
-    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.PROTECT)
 
 ##
 # POSTS
@@ -152,11 +151,11 @@ class Post(models.Model):
 
 class PostDocument(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.PROTECT)
 
 class PostQuestionnaire(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.PROTECT)
 
 class AssignmentSubmit(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -168,7 +167,7 @@ class AssignmentSubmit(models.Model):
 
 class AssignmentSubmitDocument(models.Model):
     submit = models.ForeignKey(AssignmentSubmit, on_delete=models.CASCADE)
-    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    document = models.ForeignKey(Document, on_delete=models.PROTECT)
 
 ##
 # QUESTIONNAIRES
@@ -179,7 +178,6 @@ class Questionnaire(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     archived = models.BooleanField(default=False)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
-    is_protected = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class TextQuestion(models.Model):
@@ -223,4 +221,3 @@ class FailedLoginAttempt(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     client_ip = models.CharField(max_length=128, null=True)
     client_user_agent = models.CharField(max_length=200, null=True)
-
