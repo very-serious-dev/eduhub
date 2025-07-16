@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument
+from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument, EduAppQuestionnaire
 from .internal_secret import INTERNAL_SECRET
 
 def verify_session(request): # See docs/auth_flow.txt for further information
@@ -90,8 +90,9 @@ def create_or_delete_documents(request):
         json_internal_secret = body_json.get("internal_secret")
         json_document_ids = body_json.get("document_ids")
         json_folder_ids = body_json.get("folder_ids")
+        json_questionnaire_ids = body_json.get("questionnaire_ids")
         json_user_id = body_json.get("user_id")
-        if json_internal_secret is None or json_document_ids is None or json_folder_ids is None or json_user_id is None:
+        if json_internal_secret is None or json_document_ids is None or json_folder_ids is None or json_user_id is None or json_questionnaire_ids is None:
             return JsonResponse({"error": "Error"}, status=400)
         if json_internal_secret != INTERNAL_SECRET:
             return JsonResponse({"error": "Error"}, status=400)
@@ -101,6 +102,7 @@ def create_or_delete_documents(request):
             return JsonResponse({"error": "Error"}, status=400)
         deleted_document_ids = []
         deleted_folder_ids = []
+        deleted_questionnaire_ids = []
         for did in json_document_ids:
             try:
                 document = EduAppDocument.objects.get(identifier=did, author=user)
@@ -116,7 +118,19 @@ def create_or_delete_documents(request):
                 deleted_folder_ids.append(fid)
             except EduAppFolder.DoesNotExist:
                 pass
-        return JsonResponse({"success": True, "deleted_folder_ids": deleted_folder_ids, "deleted_document_ids": deleted_document_ids })
+        for qid in json_questionnaire_ids:
+            try:
+                questionnaire = EduAppQuestionnaire.objects.get(id=qid, author=user)
+                if not questionnaire.is_protected:
+                    questionnaire.archived = True
+                    questionnaire.save()
+                    deleted_questionnaire_ids.append(qid)
+            except EduAppQuestionnaire.DoesNotExist:
+                pass
+        return JsonResponse({"success": True,
+                             "deleted_folder_ids": deleted_folder_ids, 
+                             "deleted_document_ids": deleted_document_ids,
+                             "deleted_questionnaire_ids": deleted_questionnaire_ids })
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 
@@ -153,16 +167,17 @@ def document_permissions(request):
                     assignment_class = asd.submit.assignment.classroom
                     if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
                         return JsonResponse({"success": True}, status=200)
-                    # TO-DO: return 403 if the post was amended (deleted/edited)
             for ad in EduAppAnnouncementdocument.objects.filter(document=document):
                 annoucement_group = ad.announcement.group
                 if user.student_group == annoncement.group:
                     return JsonResponse({"success": True}, status=200)
             for pd in EduAppPostdocument.objects.filter(document=document):
+                # Posts can be amended, but when we do that, the old EduAppPostdocument
+                # get deleted so if a post was deleted then this safely never enters 
+                # this loop
                 post_class = pd.post.classroom
                 if EduAppUserclass.objects.filter(classroom=post_class, user=user).exists():
                     return JsonResponse({"success": True}, status=200)
-                # TO-DO: return 403 if the post was amended (deleted/edited)
 
             return JsonResponse({"error": "Forbidden"}, status=403)
 

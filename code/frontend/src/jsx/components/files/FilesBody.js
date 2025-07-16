@@ -57,8 +57,13 @@ const FilesBody = (props) => {
         </div>
     }
 
-    const openDocument = (identifier) => {
-        window.open(`${DOCU_SERVER}/api/v1/documents/${identifier}`, "_blank");
+    const openDocumentOrQuestionnaire = (element) => {
+        if (element.type === "document") {
+            window.open(`${DOCU_SERVER}/api/v1/documents/${element.identifier}`, "_blank");
+        }
+        if (element.type === "questionnaire") {
+            window.open(`/questionnaires/${element.id}`, "_blank")
+        }
     }
 
     return <FilesBrowser filesTree={getTree()}
@@ -68,7 +73,7 @@ const FilesBody = (props) => {
         showContextMenu={selectedRoot === "MY_FILES"}
         showUploadOrCreateFolder={selectedRoot === "MY_FILES"}
         showAuthor={selectedRoot === "SHARED_WITH_ME"}
-        onDocumentSelected={(document) => { openDocument(document.identifier) }}
+        onDocumentOrQuestionnaireSelected={openDocumentOrQuestionnaire}
         onCreateMoveDeleteSuccess={onCreateMoveDeleteSuccess}
         onCreateMoveDeleteFail={(errorMessage) => { setFeedback({ type: "error", message: errorMessage }); }} />
 

@@ -41,8 +41,7 @@ const ClassesBody = (props) => {
             const classes = props.classes.filter(c => c.group === g.tag)
             return <GroupClassesSection groupTag={g.tag} latestUpdate={g.latest_update} classes={classes} />
         })}
-        {roles.includes("teacher") === true &&
-            <div className="card floatingCardAddNew pointable" onClick={onClickAddClass}>{isLoadingAllGroups ? "Cargando..." : "➕ Añadir clase"}</div>}
+        {roles.includes("teacher") && <div className="card floatingCardAddNew pointable" onClick={onClickAddClass}>{isLoadingAllGroups ? "Cargando..." : "➕ Añadir clase"}</div>}
     </div>
 }
 

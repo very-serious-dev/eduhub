@@ -12,7 +12,6 @@ const ConfigureQuestionnaireScoreDialog = (props) => {
         const evaluableQuestions = props.questions.filter(question => {
             return question.type == "choices" && question.choices.some(choice => choice.is_correct)
         });
-        console.log(props.questions)
         const scorePerCorrectAnswer = formTotalScore / evaluableQuestions.length;
         let penaltyPerIncorrectAnswer;
         if (formIncorrectAmount < 0.00001) { /* float? */

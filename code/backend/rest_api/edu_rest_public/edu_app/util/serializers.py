@@ -88,6 +88,16 @@ def announcement_to_json(announcement):
         json["modification_date"] = announcement.modification_date
     return json
 
+def questionnaire_to_json(questionnaire):
+    return {
+        "id": questionnaire.id,
+        "title": questionnaire.title,
+        "folder_id": questionnaire.folder_id,
+        "author": questionnaire.author.username,
+        "is_protected": questionnaire.is_protected,
+        "created_at": questionnaire.created_at
+    }
+
 def groups_array_to_json(groups):
     result = []
     for g in groups:
@@ -124,6 +134,12 @@ def announcements_array_to_json(announcements):
         result.append(announcement_to_json(a))
     return result
 
+def questionnaires_array_to_json(questionnaires):
+    result = []
+    for q in questionnaires:
+        result.append(questionnaire_to_json(q))
+    return result
+
 def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
     return {
         "id": classroom.id,
@@ -158,16 +174,6 @@ def assignment_detail_to_json(original_assignment, newest_edit, attachments, is_
     else:
         response["your_submit"] = your_submit
     return response
-
-def questionnaire_to_json(questionnaire):
-    return {
-        "id": questionnaire.id,
-        "title": questionnaire.title,
-        "folder_id": questionnaire.folder_id,
-        "author": questionnaire.author.username,
-        "is_protected": questionnaire.is_protected,
-        "created_at": questionnaire.created_at
-    }
 
 def roles_array(user):
     roles = []

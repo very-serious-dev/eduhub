@@ -7,7 +7,7 @@ import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 
-const MoveDocumentOrFolderDialog = (props) => {
+const MoveFileDialog = (props) => {
     const [selectedFolderIdsPath, setSelectedFolderIdsPath] = useState([]);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
@@ -17,18 +17,21 @@ const MoveDocumentOrFolderDialog = (props) => {
     }
 
     const onSubmitMoveElement = (event) => {
-
         event.preventDefault();
         setLoading(true);
         let url;
         let body = {}
-        if (props.folder) {
-            url = `/api/v1/folders/${props.folder.id}${getSelfAndSubTreeIdsForQueryParam(null, props.folder)}`;
-            body["parent_folder_id"] = appropriateContainerFolderId();
-        } else if (props.document) {
+        if (props.document) {
             url = `/api/v1/documents/${props.document.identifier}`;
             body["folder_id"] = appropriateContainerFolderId();
-        }
+        } else if (props.questionnaire) {
+            url = `/api/v1/questionnaires/${props.questionnaire.id}`
+            body["folder_id"] = appropriateContainerFolderId();
+        } else if (props.folder) {
+            // Subtree identifiers are used by the backend to easily grant permissions to users already belonging into the destination folder
+            url = `/api/v1/folders/${props.folder.id}${getSelfAndSubTreeIdsForQueryParam(props.folder)}`;
+            body["parent_folder_id"] = appropriateContainerFolderId();
+        } 
         EduAPIFetch("PUT", url, body)
             .then(json => {
                 setLoading(false);
@@ -70,7 +73,7 @@ const MoveDocumentOrFolderDialog = (props) => {
                             showUploadOrCreateFolder={false}
                             showContextMenu={false}
                             showAuthor={false}
-                            onDocumentSelected={null} />
+                            onDocumentOrQuestionnaireSelected={null} />
                     </div>
                     <div className="formInputContainer">
                         <input className="formInput formInputGreyBackground"
@@ -88,4 +91,4 @@ const MoveDocumentOrFolderDialog = (props) => {
     </div>
 }
 
-export default MoveDocumentOrFolderDialog;
+export default MoveFileDialog;

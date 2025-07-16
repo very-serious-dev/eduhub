@@ -7,9 +7,9 @@ import { pointableSecondary } from "../../../util/Themes";
 const DocumentElement = (props) => {
     const theme = useContext(ThemeContext);
 
-    const onClickDocument = (document) => {
-        if (props.onClickDocument) {
-            props.onClickDocument(document)
+    const onClick = (document) => {
+        if (props.onClick) {
+            props.onClick(document)
         }
     }
 
@@ -17,7 +17,7 @@ const DocumentElement = (props) => {
         return props.showContextMenu;
     }
 
-    return <div className={`myFilesElementContainer filesElementUnselected ${props.onClickFile !== null ? ` pointable ${pointableSecondary(theme)}` : ""}`} onClick={() => { onClickDocument(props.document) }}>
+    return <div className={`myFilesElementContainer filesElementUnselected ${props.onClick !== null ? ` pointable ${pointableSecondary(theme)}` : ""}`} onClick={() => { onClick(props.document) }}>
         {shouldShowContextMenu() && <FilesElementContextMenuButton document={props.document}
             filesTree={props.filesTree}
             onMoveDeleteSuccess={props.onMoveDeleteSuccess}

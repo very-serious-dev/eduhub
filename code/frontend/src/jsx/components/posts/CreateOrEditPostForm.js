@@ -7,6 +7,7 @@ import { accent, accentFormLabel, pointableSecondary, primary } from "../../../u
 import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
 import { assertValidAttachmentsErrorMessage } from "../../../util/NewFilesValidator";
+import { questionnaireCreationListener } from "../../../util/QuestionnaireCreationListener";
 
 const CreateOrEditPostForm = (props) => {
     const TODAY_23_59 = `${new Date().toISOString().split("T")[0]}T23:59`;
@@ -23,23 +24,18 @@ const CreateOrEditPostForm = (props) => {
         setFormAssignmentLocalDueDate(postBeingEditedDueDateLocalTime() ?? TODAY_23_59);
     }, []);
 
-    useEffect(() => {
-        if (!props.showCreateQuestionnaire) { return; }
-
-        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
-        newQuestionnaireChannel.onmessage = (event) => {
-            if (event.data.operation === "questionnaire_added") {
-                const newQuestionnaire = { ...event.data.questionnaire, type: "questionnaire" };
-                const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
-                if (errorMessage !== null) {
-                    alert(errorMessage);
-                    return;
-                }
-                setAttachments(old => [...old, newQuestionnaire])
+    useEffect(questionnaireCreationListener(
+        () => { return !props.showCreateQuestionnaire },
+        (newQuestionnaireOperation) => {
+            const newQuestionnaire = { ...newQuestionnaireOperation.questionnaire, type: "questionnaire" };
+            const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
+            if (errorMessage !== null) {
+                alert(errorMessage);
+                return;
             }
+            setAttachments(old => [...old, newQuestionnaire]);
         }
-        return () => { newQuestionnaireChannel.close() }
-    }, []);
+    ), []);
 
     const onSubmitCreateOrEditPost = (event) => {
         event.preventDefault();
@@ -148,7 +144,11 @@ const CreateOrEditPostForm = (props) => {
     }
 
     const onCreateNewQuestionnaire = () => {
-        window.open("/create-form", "_blank");
+        if (attachments.some(a => a.type === "questionnaire")) {
+            alert("Ya has adjuntado 1 formulario");
+        } else {
+            window.open("/create-form", "_blank");
+        }
     }
 
     return <div className="createOrEditPostFormContainer">

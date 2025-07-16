@@ -15,6 +15,8 @@ const getCountRecursively = (accumulated, tree) => {
         if (element.type === "document") {
             accumulated.nDocuments += 1
             accumulated.nBytes += element.size
+        } else if (element.type === "questionnaire") {
+            accumulated.nQuestionnaires += 1
         } else if (element.type === "folder") {
             accumulated.nFolders += 1
             accumulated = getCountRecursively(accumulated, element.children)
@@ -24,44 +26,48 @@ const getCountRecursively = (accumulated, tree) => {
 }
 
 const getElementsCount = (tree) => {
-    const count = { nDocuments: 0, nFolders: 0, nBytes: 0 }
+    const count = { nDocuments: 0, nFolders: 0, nBytes: 0, nQuestionnaires: 0 }
     getCountRecursively(count, tree);
     return count;
 }
 
-const traverseTreeAndAccumulateDocuments = (folder, mutableDocumentIds, mutableFolderIds) => {
+const traverseTreeAndAccumulateDocuments = (folder, mutableDocumentIds, mutableFolderIds, mutableQuestionnaireIds) => {
     if (folder.children.length > 0) {
         for (const child of folder.children) {
             if (child.type === "document") {
                 mutableDocumentIds.push(child.identifier);
+            } else if (child.type === "questionnaire") {
+                mutableQuestionnaireIds.push(child.id);
             } else if (child.type === "folder") {
-                traverseTreeAndAccumulateDocuments(child, mutableDocumentIds, mutableFolderIds);
+                traverseTreeAndAccumulateDocuments(child, mutableDocumentIds, mutableFolderIds, mutableQuestionnaireIds);
             }
         }
     }
     mutableFolderIds.push(folder.id)
 }
 
-const getSelfAndSubTreeIds = (document, folder) => {
-    if (document) { return { document_ids: [document.identifier], folder_ids: [] } }
-    if (folder) {
-        const documentIds = []
-        const folderIds = []
-        traverseTreeAndAccumulateDocuments(folder, documentIds, folderIds);
-        return { document_ids: documentIds, folder_ids: folderIds };
-    }
+const getSelfAndSubTreeIds = (folder) => {
+    const documentIds = []
+    const folderIds = []
+    const questionnaireIds = []
+    traverseTreeAndAccumulateDocuments(folder, documentIds, folderIds, questionnaireIds);
+    return { document_ids: documentIds, folder_ids: folderIds, questionnaire_ids: questionnaireIds };
 }
 
-const getSelfAndSubTreeIdsForQueryParam = (document, folder) => {
-    const selfAndSubTreeIds = getSelfAndSubTreeIds(document, folder);
+const getSelfAndSubTreeIdsForQueryParam = (folder) => {
+    const selfAndSubTreeIds = getSelfAndSubTreeIds(folder);
 
-    let queryParam = "";
+    let queryParam = "?";
     if (selfAndSubTreeIds.document_ids.length > 0) {
-        queryParam += "?documentIds=" + selfAndSubTreeIds.document_ids.join(",");
+        queryParam += "documentIds=" + selfAndSubTreeIds.document_ids.join(",");
+        queryParam += "&";
     }
     if (selfAndSubTreeIds.folder_ids.length > 0) {
-        queryParam += (queryParam.length > 0) ? "&" : "?";
         queryParam += "folderIds=" + selfAndSubTreeIds.folder_ids.join(",");
+        queryParam += "&";
+    }
+    if (selfAndSubTreeIds.questionnaire_ids.length > 0) {
+        queryParam += "questionnaireIds=" + selfAndSubTreeIds.questionnaire_ids.join(",");
     }
     return queryParam;
 }

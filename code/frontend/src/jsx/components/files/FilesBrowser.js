@@ -4,6 +4,7 @@ import DocumentElement from "./DocumentElement";
 import FilesEmptyFolderTabContent from "./FilesEmptyFolderTabContent";
 import { useIsMobile } from "../../../util/Responsive";
 import FilesBrowserTabWithUpload from "./FilesBrowserTabWithUpload";
+import QuestionnaireElement from "./QuestionnaireElement";
 
 const FilesBrowser = (props) => {
     const isMobile = useIsMobile();
@@ -13,22 +14,28 @@ const FilesBrowser = (props) => {
         props.setSelectedFolderIdsPath(newSelectedFolderIdsPath);
     }
 
-    const compareByName = (a, b) => {
-        return a.name.localeCompare(b.name);
-    }
-
     const orderingCriteria = (a, b) => {
         if (a.type === "folder") {
             if (b.type === "folder") {
-                return compareByName(a, b);
-            } else if (b.type === "document") {
+                return a.name.localeCompare(b.name);
+            } else if (b.type === "document" || b.type === "questionnaire") {
                 return -1;
             }
         } else if (a.type === "document") {
             if (b.type === "folder") {
                 return 1;
             } else if (b.type === "document") {
-                return compareByName(a, b);
+                return a.name.localeCompare(b.name);
+            } else if (b.type === "questionnaire") {
+                return a.name.localeCompare(b.title);
+            }
+        } else if (a.type === "questionnaire") {
+            if (b.type === "folder") {
+                return 1;
+            } else if (b.type === "document") {
+                return a.title.localeCompare(b.name);
+            } else if (b.type === "questionnaire") {
+                return a.title.localeCompare(b.title);
             }
         }
     }
@@ -65,7 +72,16 @@ const FilesBrowser = (props) => {
                                 showContextMenu={props.showContextMenu}
                                 showAuthor={props.showAuthor}
                                 filesTree={props.filesTree}
-                                onClickDocument={props.onDocumentSelected}
+                                onClick={props.onDocumentOrQuestionnaireSelected}
+                                onMoveDeleteSuccess={props.onCreateMoveDeleteSuccess}
+                                onMoveDeleteFail={props.onCreateMoveDeleteFail} />);
+                    } else if (element.type === "questionnaire") {
+                        newTabElements.push(
+                            <QuestionnaireElement questionnaire={element}
+                                showContextMenu={props.showContextMenu}
+                                showAuthor={props.showAuthor}
+                                filesTree={props.filesTree}
+                                onClick={props.onDocumentOrQuestionnaireSelected}
                                 onMoveDeleteSuccess={props.onCreateMoveDeleteSuccess}
                                 onMoveDeleteFail={props.onCreateMoveDeleteFail} />);
                     }

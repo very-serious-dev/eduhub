@@ -80,8 +80,6 @@ const IsLoggedIn = () => {
     return GetSessionUsername() !== ""
 }
 
-
-
 export { GetCachedPosts }
 export { SetCachedPosts }
 export { GetLastKnownGroupAnnouncementTimestamp }

@@ -289,7 +289,7 @@ def documents_get_my_files(request):
     if request.method == "GET":
         require_valid_session(request=request)
         only_my_files = request.GET.get("onlyMyFiles", False)
-        return documents.get_documents_and_folders(request, only_my_files)
+        return documents.get_my_files(request, only_my_files)
     else:
         raise Unsupported
 
@@ -299,6 +299,38 @@ def documents_create_folder(request):
         require_valid_session(request=request)
         name, parent_folder_id = expect_body_with('name', optional=['parent_folder_id'], request=request)
         return documents.create_folder(request, name, parent_folder_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_update_files_permissions(request):
+    if request.method == "PUT":
+        require_valid_session(request=request)
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_docs = url_query.get("documentIds", None)
+        url_folders = url_query.get("folderIds", None)
+        url_questionnaires = url_query.get("questionnaireIds", None)
+        document_ids = url_docs.split(",") if url_docs is not None else []
+        folder_ids = url_folders.split(",") if url_folders is not None else []
+        questionnaire_ids = url_questionnaires.split(",") if url_questionnaires is not None else []
+        if len(document_ids) == 0 and len(folder_ids) == 0 and len(questionnaire_ids) == 0:
+            raise BadRequest
+        username = expect_body_with('usernames', request=request)
+        usernames_list = parse_usernames_list(username)
+        return documents.grant_permission(request, document_ids, folder_ids, questionnaire_ids, usernames_list)
+    elif request.method == "DELETE":
+        require_valid_session(request=request)
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_docs = url_query.get("documentIds", None)
+        url_folders = url_query.get("folderIds", None)
+        url_questionnaires = url_query.get("questionnaireIds", None)
+        document_ids = url_docs.split(",") if url_docs is not None else []
+        folder_ids = url_folders.split(",") if url_folders is not None else []
+        questionnaire_ids = url_questionnaires.split(",") if url_questionnaires is not None else []
+        if len(document_ids) == 0 and len(folder_ids) == 0 and len(questionnaire_ids) == 0:
+            raise BadRequest
+        username = expect_body_with('username', request=request)
+        return documents.remove_permission(request, document_ids, folder_ids, questionnaire_ids, username)
     else:
         raise Unsupported
 
@@ -329,11 +361,11 @@ def documents_move_folder(request, f_id):
         url_query = QueryDict(request.META.get("QUERY_STRING", ""))
         url_docs = url_query.get("documentIds", None)
         url_folders = url_query.get("folderIds", None)
+        url_questionnaires = url_query.get("questionnaireIds", None)
         document_ids = url_docs.split(",") if url_docs is not None else []
         folder_ids = url_folders.split(",") if url_folders is not None else []
-        if len(document_ids) == 0 and len(folder_ids) == 0:
-            raise BadRequest
-        return documents.move_folder(request, f_id, parent_folder_id, folder_ids, document_ids)
+        questionnaire_ids = url_questionnaires.split(",") if url_questionnaires is not None else []
+        return documents.move_folder(request, f_id, parent_folder_id, folder_ids, document_ids, questionnaire_ids)
     else:
         raise Unsupported
 
@@ -346,30 +378,22 @@ def documents_get_folder_users(request, f_id):
         raise Unsupported
 
 @maybe_unhappy
-def documents_update_files_permissions(request):
+def documents_move_or_delete_questionnaire(request, q_id):
     if request.method == "PUT":
-        require_valid_session(request=request)
-        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
-        url_docs = url_query.get("documentIds", None)
-        url_folders = url_query.get("folderIds", None)
-        document_ids = url_docs.split(",") if url_docs is not None else []
-        folder_ids = url_folders.split(",") if url_folders is not None else []
-        if len(document_ids) == 0 and len(folder_ids) == 0:
-            raise BadRequest
-        username = expect_body_with('usernames', request=request)
-        usernames_list = parse_usernames_list(username)
-        return documents.grant_permission(request, document_ids, folder_ids, usernames_list)
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        folder_id = expect_body_with(optional=['folder_id'], request=request)
+        return documents.move_questionnaire(request, q_id, folder_id)
     elif request.method == "DELETE":
-        require_valid_session(request=request)
-        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
-        url_docs = url_query.get("documentIds", None)
-        url_folders = url_query.get("folderIds", None)
-        document_ids = url_docs.split(",") if url_docs is not None else []
-        folder_ids = url_folders.split(",") if url_folders is not None else []
-        if len(document_ids) == 0 and len(folder_ids) == 0:
-            raise BadRequest
-        username = expect_body_with('username', request=request)
-        return documents.remove_permission(request, document_ids, folder_ids, username)
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        return questionnaires.delete_questionnaire(request, q_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def documents_get_questionnaire_users(request, q_id):
+    if request.method == "GET":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        return documents.get_questionnaire_users(request, q_id)
     else:
         raise Unsupported
 
@@ -378,6 +402,15 @@ def questionnaires_create(request):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         title, questions = expect_body_with('title', 'questions', request=request)
-        return questionnaires.create_questionnaire(request, title, questions)
+        url_query = QueryDict(request.META.get("QUERY_STRING", ""))
+        url_folder_id = url_query.get("folderId", "none")
+        if url_folder_id == "none":
+            url_folder_id = None
+        else:
+            try:
+                url_folder_id = int(url_folder_id)
+            except ValueError:
+                raise BadRequest
+        return questionnaires.create_questionnaire(request, title, questions, url_folder_id)
     else:
         raise Unsupported

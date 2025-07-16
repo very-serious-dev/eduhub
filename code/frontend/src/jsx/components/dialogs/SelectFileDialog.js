@@ -28,8 +28,8 @@ const SelectFileDialog = (props) => {
             })
     }, []);
 
-    const handleDocumentSelected = (document) => {
-        props.onDocumentSelected(document);
+    const handleDocumentOrQuestionnaireSelected = (element) => {
+        props.onDocumentOrQuestionnaireSelected(element);
     }
 
     const firstTabView = () => {
@@ -55,7 +55,7 @@ const SelectFileDialog = (props) => {
                             showUploadOrCreateFolder={false}
                             showContextMenu={false}
                             showAuthor={false}
-                            onDocumentSelected={handleDocumentSelected} />}
+                            onDocumentOrQuestionnaireSelected={handleDocumentOrQuestionnaireSelected} />}
                 </div>
                 <div className="formInputContainer">
                     <input className="formInput formInputGreyBackground"

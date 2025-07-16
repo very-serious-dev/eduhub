@@ -68,6 +68,10 @@ class UserFolderPermission(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
 
+class UserQuestionnairePermission(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    questionnaire = models.ForeignKey("Questionnaire", on_delete=models.CASCADE)
+
 ##
 # CLASSES
 #
@@ -219,3 +223,4 @@ class FailedLoginAttempt(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     client_ip = models.CharField(max_length=128, null=True)
     client_user_agent = models.CharField(max_length=200, null=True)
+

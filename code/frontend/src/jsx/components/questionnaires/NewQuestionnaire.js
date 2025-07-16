@@ -203,7 +203,7 @@ const NewQuestionnaire = (props) => {
                     </button>
                 </div>
                 <div className="formInputContainer">
-                    <button onClick={e => { e.preventDefault(); props.onSubmitNewQuestionnaire(formTitle, formQuestions); }} className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}>{"Guardar y adjuntar"}</button>
+                    <button onClick={e => { e.preventDefault(); props.onSubmitNewQuestionnaire(formTitle, formQuestions); }} className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}>{props.submitText}</button>
                 </div>
             </form>
         </div>

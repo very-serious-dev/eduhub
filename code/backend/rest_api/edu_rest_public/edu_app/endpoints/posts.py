@@ -111,14 +111,14 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
                 new_post_document.document = document
                 new_post_document.post = new_amendment
                 new_post_document.save()
-        if a["type"] == "questionnaire":
-            questionnaire = Questionnaire.objects.get(id=a["id"])
-            questionnaire.is_protected = True
-            questionnaire.save()
-            new_post_questionnaire = PostQuestionnaire()
-            new_post_questionnaire.questionnaire = questionnaire
-            new_post_questionnaire.post = new_amendment
-            new_post_questionnaire.save()
+            if a["type"] == "questionnaire":
+                questionnaire = Questionnaire.objects.get(id=a["id"])
+                questionnaire.is_protected = True
+                questionnaire.save()
+                new_post_questionnaire = PostQuestionnaire()
+                new_post_questionnaire.questionnaire = questionnaire
+                new_post_questionnaire.post = new_amendment
+                new_post_questionnaire.save()
     return JsonResponse({"success": True}, status=201) 
     
 def get_assignment(request, a_id):
@@ -263,7 +263,10 @@ def __delete_previous_post_questionnaires_and_unprotect_unused_questionnaires(po
     old_post_questionnaires = PostQuestionnaire.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))
     old_questionnaires = list(map(lambda pq: pq.questionnaire, old_post_questionnaires))
     old_post_questionnaires.delete()
+    print("la chicha")
     for q in old_questionnaires:
+        print(q)
         if not is_questionnaire_used_in_post_or_announcement(q):
+            print("yaho")
             q.is_protected = False
             q.save()

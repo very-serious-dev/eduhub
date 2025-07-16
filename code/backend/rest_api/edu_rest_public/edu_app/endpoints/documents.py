@@ -1,23 +1,28 @@
 from django.http import JsonResponse
-from ..models import Document, Folder, User, UserDocumentPermission, UserFolderPermission
+from ..models import Document, Folder, User, UserDocumentPermission, UserFolderPermission, Questionnaire, UserQuestionnairePermission
 from ..util.exceptions import ConflictQuotaExceeded, ConflictFolderAlreadyExists, Forbidden
 from ..util.helpers import get_from_db
-from ..util.serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json
+from ..util.serializers import documents_array_to_json, folders_array_to_json, document_to_json, folder_to_json, users_array_to_json, questionnaires_array_to_json, questionnaire_to_json
 
-def get_documents_and_folders(request, only_my_files):
+def get_my_files(request, only_my_files):
     my_documents = Document.objects.filter(author=request.session.user)
     my_folders = Folder.objects.filter(author=request.session.user)
+    my_questionnaires = Questionnaire.objects.filter(author=request.session.user, archived=False)
     response = { "my_files": {
                      "documents": documents_array_to_json(my_documents),
-                     "folders": folders_array_to_json(my_folders) }}
+                     "folders": folders_array_to_json(my_folders),
+                     "questionnaires": questionnaires_array_to_json(my_questionnaires) }}
     if not only_my_files:
         user_document_permissions = UserDocumentPermission.objects.filter(user=request.session.user)
         user_folder_permissions = UserFolderPermission.objects.filter(user=request.session.user)
+        user_questionnaire_permissions = UserQuestionnairePermission.objects.filter(user=request.session.user, questionnaire__archived=False)
         shared_with_me_documents = list(map(lambda udp: udp.document, user_document_permissions))
         shared_with_me_folders = list(map(lambda ufp: ufp.folder, user_folder_permissions))
+        shared_with_me_questionnaires = list(map(lambda uqp: uqp.questionnaire, user_questionnaire_permissions))
         response["shared_with_me"] = {
                              "documents": documents_array_to_json(shared_with_me_documents),
-                             "folders": folders_array_to_json(shared_with_me_folders) }
+                             "folders": folders_array_to_json(shared_with_me_folders),
+                             "questionnaires": questionnaires_array_to_json(shared_with_me_questionnaires) }
     return JsonResponse(response, status=200)
 
 def create_folder(request, name, parent_folder_id):
@@ -57,7 +62,25 @@ def move_document(request, d_id, folder_id):
                                 "document": document_to_json(document)
                             }}, status=200)
 
-def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_document_ids):
+def move_questionnaire(request, q_id, folder_id):
+    folder = get_from_db(Folder, id=folder_id, author=request.session.user) if folder_id else None
+    questionnaire = get_from_db(Questionnaire, id=q_id, author=request.session.user)
+    questionnaire.folder = folder
+    questionnaire.save()
+    # Also grant access to users who were allowed in the destination folder
+    folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
+    for u in folder_granted_users:
+        uqp = UserQuestionnairePermission()
+        uqp.user = u
+        uqp.questionnaire = questionnaire
+        uqp.save()
+    return JsonResponse({"success": True,
+                            "result": {
+                                "operation": "questionnaire_changed",
+                                "questionnaire": questionnaire_to_json(questionnaire)
+                            }}, status=200)
+
+def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_document_ids, subtree_questionnaire_ids):
     folder = get_from_db(Folder, id=f_id, author=request.session.user)
     parent_folder = get_from_db(Folder, id=parent_folder_id, author=request.session.user) if parent_folder_id else None
     folder.parent_folder = parent_folder
@@ -84,6 +107,16 @@ def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_doc
                     new_udp.document = document
                     new_udp.save()
             except Document.DoesNotExist:
+                pass
+        for questionnaire_id in subtree_questionnaire_ids:
+            try:
+                questionnaire = Questionnaire.objects.get(id=questionnaire_id, author=request.session.user)
+                if not UserQuestionnairePermission.objects.filter(user=u, questionnaire=questionnaire).exists():
+                    new_uqp = UserQuestionnairePermission()
+                    new_uqp.user = u
+                    new_uqp.questionnaire = questionnaire
+                    new_uqp.save()
+            except Questionnaire.DoesNotExist:
                 pass
     return JsonResponse({"success": True,
                             "result": {
@@ -123,7 +156,23 @@ def get_folder_users(request, folder_id):
     users = list(map(lambda ufp: ufp.user, granted_users))
     return JsonResponse({"success": True, "users": users_array_to_json(users)}, status=200)
 
-def grant_permission(request, document_ids, folder_ids, usernames):
+def get_questionnaire_users(request, q_id):
+    questionnaire = get_from_db(Questionnaire, id=q_id)
+    granted_users = UserQuestionnairePermission.objects.filter(questionnaire=questionnaire, user__archived=False)
+    user_belongs_to_questionnaire = False
+    if questionnaire.author == request.session.user:
+        user_belongs_to_questionnaire = True
+    else:
+        for u in granted_users:
+            if u.id == request.session.user.id:
+                user_belongs_to_questionnaire = True
+                break
+    if not user_belongs_to_questionnaire:
+        raise Forbidden
+    users = list(map(lambda uqp: uqp.user, granted_users))
+    return JsonResponse({"success": True, "users": users_array_to_json(users)}, status=200)
+
+def grant_permission(request, document_ids, folder_ids, questionnaire_ids, usernames):
     failed_inexistent_users = []
     users = []
     for username in usernames:
@@ -160,6 +209,19 @@ def grant_permission(request, document_ids, folder_ids, usernames):
                     new_ufp.save()
         except Folder.DoesNotExist:
             failed_forbidden_or_inexistent_files.append(folder_id)
+    for questionnaire_id in questionnaire_ids:
+        try:
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id, author=request.session.user)
+            for u in users:
+                if UserQuestionnairePermission.objects.filter(user=u, questionnaire=questionnaire).exists():
+                    failed_already_added_users.append(u.username)
+                else:
+                    new_uqp = UserQuestionnairePermission()
+                    new_uqp.user = u
+                    new_uqp.questionnaire = questionnaire
+                    new_uqp.save()
+        except Questionnaire.DoesNotExist:
+            failed_forbidden_or_inexistent_files.append("q" + str(questionnaire_id))
     if len(failed_inexistent_users) == 0 and len(failed_already_added_users) == 0 and len(failed_forbidden_or_inexistent_files) == 0:
         return JsonResponse({"success": True}, status=201)
     else:
@@ -172,7 +234,7 @@ def grant_permission(request, document_ids, folder_ids, usernames):
             error_msg += "No existe(n) o no tienes permisos para fichero(s): " + ", ".join(failed_forbidden_or_inexistent_files)
         return JsonResponse({"partial_success": True, "error": error_msg}, status=201)
 
-def remove_permission(request, document_ids, folder_ids, username):
+def remove_permission(request, document_ids, folder_ids, questionnaire_ids, username):
     user = get_from_db(User, username=username)
     for document_id in document_ids:
         try:
@@ -185,5 +247,11 @@ def remove_permission(request, document_ids, folder_ids, username):
             folder = Folder.objects.get(id=folder_id, author=request.session.user)
             UserFolderPermission.objects.filter(user=user, folder=folder).delete()
         except Folder.DoesNotExist:
+            pass
+    for questionnaire_id in questionnaire_ids:
+        try:
+            questionnaire = Questionnaire.objects.get(id=questionnaire_id, author=request.session.user)
+            UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).delete()
+        except Questionnaire.DoesNotExist:
             pass
     return JsonResponse({"success": True}, status=200)

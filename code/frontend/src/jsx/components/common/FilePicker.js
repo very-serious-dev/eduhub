@@ -111,32 +111,31 @@ const FilePicker = (props) => {
         if (attachment.type === "document") {
             props.setAttachments(old => {
                 const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
-                const oldFiles = old.filter(a => a.type === "file");
+                const oldFiles = old.filter(a => a.type === "document");
                 return [...oldQuestionnaires, ...oldFiles.filter(f => f.name !== attachment.name)]
             })
         }
         if (attachment.type === "questionnaire") {
             props.setAttachments(old => {
                 const oldQuestionnaires = old.filter(a => a.type === "questionnaire");
-                const oldFiles = old.filter(a => a.type === "file");
+                const oldFiles = old.filter(a => a.type === "document");
                 return [...oldFiles, ...oldQuestionnaires.filter(q => q.title !== attachment.title)]
             })
         }
     }
 
-    const onDocumentSelectedFromMyDrive = (document) => {
-        let errorMessage = assertValidAttachmentsErrorMessage([document], props.attachments);
+    const onDocumentSelectedFromMyDrive = (element) => {
+        let errorMessage = assertValidAttachmentsErrorMessage([element], props.attachments);
         if (errorMessage !== null) {
             alert(errorMessage);
             return;
         }
-        // TODO Select questionnaire?
-        props.setAttachments(f => [...f, { ...document, type: "document" }]);
+        props.setAttachments(old => [...old, element]);
         setShowSelectFileFromMyDrive(false);
     }
 
     return <>
-        {showSelectFileFromMyDrive && <SelectFileDialog onDocumentSelected={onDocumentSelectedFromMyDrive} onDismiss={() => { setShowSelectFileFromMyDrive(false) }} />}
+        {showSelectFileFromMyDrive && <SelectFileDialog onDocumentOrQuestionnaireSelected={onDocumentSelectedFromMyDrive} onDismiss={() => { setShowSelectFileFromMyDrive(false) }} />}
         {isReadingFiles ? <div>Cargando...</div>
             : <div className="formFiles">
                 <div className="filePickerInputContainer">

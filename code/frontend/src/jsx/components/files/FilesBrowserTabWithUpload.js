@@ -5,6 +5,7 @@ import { DocuAPIFetch } from "../../../client/APIFetch";
 import CreateFolderDialog from "../dialogs/CreateFolderDialog";
 import OptionsDialog from "../dialogs/OptionsDialog";
 import { GetSessionUserRoles } from "../../../client/ClientCache";
+import { questionnaireCreationListener } from "../../../util/QuestionnaireCreationListener";
 
 const FilesBrowserTabWithUpload = (props) => {
     const [filesToUpload, setFilesToUpload] = useState([]);
@@ -12,15 +13,16 @@ const FilesBrowserTabWithUpload = (props) => {
     const [isUploading, setUploading] = useState(false);
     const roles = GetSessionUserRoles();
 
-    useEffect(() => {
-        const newQuestionnaireChannel = new BroadcastChannel("new_questionnaire");
-
-        newQuestionnaireChannel.onmessage = (event) => {
-            console.log(event.data);
+    useEffect(questionnaireCreationListener(
+        () => false,
+        (newQuestionnaireOperation) => {
+            if (newQuestionnaireOperation.questionnaire.folder_id === props.parentFolderId) {
+                setPopupShown("NONE");
+                newQuestionnaireOperation.questionnaire["type"] = "questionnaire";
+                props.onCreateSuccess(newQuestionnaireOperation);
+            }
         }
-
-        return () => { newQuestionnaireChannel.close() }
-    }, []);
+    ), []);
 
     const onUpload = () => {
         if (isUploading) { return; }
@@ -52,7 +54,7 @@ const FilesBrowserTabWithUpload = (props) => {
     const canCreateQuestionnaires = roles.includes("teacher");
 
     const onCreateNewQuestionnaire = () => {
-        window.open("/create-form", "_blank");
+        window.open(`/create-form?fid=${props.parentFolderId ? props.parentFolderId : "none"}`, "_blank");
     }
 
     return <>

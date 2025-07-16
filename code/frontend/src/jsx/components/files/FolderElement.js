@@ -6,7 +6,7 @@ import { pointableSecondary, primary } from "../../../util/Themes";
 
 const FolderElement = (props) => {
     const theme = useContext(ThemeContext);
-    
+
     const shouldShowContextMenu = () => {
         return props.showContextMenu;
     }
@@ -22,7 +22,7 @@ const FolderElement = (props) => {
             <div className="myFilesElementName">{props.folder.name}</div>
         </div>
         {props.folder.isProtected && <div className="myFilesElementSpecialText">🚫 Contiene documentos protegidos</div>}
-        <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.folder.created_at, props.showAuthor ? props.folder.author : null)}`}</div>
+        <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.folder.created_at, props.showAuthor ? `👤 ${props.folder.author}` : null)}`}</div>
     </div>
 }
 

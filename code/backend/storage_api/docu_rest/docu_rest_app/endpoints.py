@@ -136,26 +136,29 @@ def create_or_delete_documents(request):
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_document_ids = body_json.get("document_ids")
         json_folder_ids = body_json.get("folder_ids")
-        if json_document_ids is None or json_folder_ids is None:
+        json_questionnaire_ids = body_json.get("questionnaire_ids")
+        if json_document_ids is None or json_folder_ids is None or json_questionnaire_ids is None:
             return JsonResponse({"error": "Error"}, status=400)
         edu_rest_json_body = { "internal_secret": INTERNAL_SECRET,
                                "user_id": request.session.user_id,
                                "document_ids": json_document_ids,
-                               "folder_ids": json_folder_ids }
+                               "folder_ids": json_folder_ids,
+                               "questionnaire_ids": json_questionnaire_ids }
 
         edu_rest_response = requests.delete(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error eliminando ficheros"}, status=502)
         edu_rest_response_body = edu_rest_response.json()
         query = Q()
-        for identifier in json_document_ids: #TODO Check if this is working?
+        for identifier in json_document_ids:
             query |= Q(identifier=identifier)
         Document.objects.filter(author_uid=request.session.user_id).filter(query).delete()
         return JsonResponse({"success": True,
                              "result": {
                                  "operation": "files_deleted",
                                  "removed_documents_ids": edu_rest_response_body["deleted_document_ids"],
-                                 "removed_folders_ids": edu_rest_response_body["deleted_folder_ids"]
+                                 "removed_folders_ids": edu_rest_response_body["deleted_folder_ids"],
+                                 "removed_questionnaire_ids": edu_rest_response_body["deleted_questionnaire_ids"]
                             }}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)

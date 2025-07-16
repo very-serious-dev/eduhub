@@ -1,15 +1,18 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import NewQuestionnaire from "../components/questionnaires/NewQuestionnaire";
 import LoadingHUD from "../components/common/LoadingHUD";
 import { FeedbackContext } from "../main/GlobalContainer";
 import { EduAPIFetch } from "../../client/APIFetch";
+import { useSearchParams } from "react-router";
 
 const NewQuestionnairePage = () => {
     const [isLoading, setLoading] = useState(false);
-    let channel;
-    /* TODO: Take care of this 
+    /* TODO: Take care of this, apparently isn't giving any trouble
     src\jsx\pages\NewQuestionnairePage.js
-  Line 17:19:  Assignments to the 'channel' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect  react-hooks/exhaustive-deps */
+    Line 17:19:  Assignments to the 'channel' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect  react-hooks/exhaustive-deps */
+    const channel = useRef();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const urlFolderId = searchParams.get("fid");
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -17,19 +20,23 @@ const NewQuestionnairePage = () => {
     }, []);
 
     useEffect(() => {
-        channel = new BroadcastChannel("new_questionnaire");
+        channel.current = new BroadcastChannel("new_questionnaire");
 
-        return () => { channel.close() }
+        return () => { channel.current.close() }
     }, []);
 
     const onSubmitNewQuestionnaire = (title, questions) => {
         if (isLoading) { return; }
         setLoading(true);
-        EduAPIFetch("POST", "/api/v1/questionnaires", { title: title, questions: questions })
+        let url = "/api/v1/questionnaires";
+        if (urlFolderId) {
+            url += `?folderId=${urlFolderId}`;
+        }
+        EduAPIFetch("POST", url, { title: title, questions: questions })
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    channel.postMessage(json.result);
+                    channel.current.postMessage(json.result);
                     window.close();
                 } else {
                     setFeedback({ type: "error", message: "Se ha producido un error" });
@@ -42,7 +49,8 @@ const NewQuestionnairePage = () => {
     }
 
     return <div className="newQuestionnairePageContainer">
-        <NewQuestionnaire onSubmitNewQuestionnaire={onSubmitNewQuestionnaire} />
+        <NewQuestionnaire onSubmitNewQuestionnaire={onSubmitNewQuestionnaire}
+            submitText={urlFolderId ? "Guardar" : "Guardar y adjuntar"} />
         {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
     </div>
 }

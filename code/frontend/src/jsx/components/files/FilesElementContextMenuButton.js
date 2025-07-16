@@ -1,9 +1,9 @@
 import { useState } from "react";
-import MoveDocumentOrFolderDialog from "../dialogs/MoveDocumentOrFolderDialog";
-import { DocuAPIFetch } from "../../../client/APIFetch";
+import { DocuAPIFetch, EduAPIFetch } from "../../../client/APIFetch";
 import FilesPermissionsDialog from "../dialogs/FilesPermissionsDialog";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 import { getSelfAndSubTreeIds } from "../../../util/FilesBrowserContainerUtil";
+import MoveFileDialog from "../dialogs/MoveFileDialog";
 
 const FilesElementContextMenuButton = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONTEXT_MENU, SHARE, MOVE, DELETE
@@ -15,16 +15,51 @@ const FilesElementContextMenuButton = (props) => {
     }
 
     const elementName = () => {
-        return props.document ? props.document.name : props.folder.name;
+        if (props.document) { return props.document.name }
+        if (props.folder) { return props.folder.name }
+        if (props.questionnaire) { return props.questionnaire.title }
     }
 
     const isProtected = () => {
-        return props.document ? props.document.is_protected : props.folder.isProtected
+        if (props.document) { return props.document.is_protected }
+        if (props.folder) { return props.folder.isProtected }
+        if (props.questionnaire) { return props.questionnaire.is_protected }
     }
 
     const onDelete = () => {
         setLoadingDelete(true);
-        const body = getSelfAndSubTreeIds(props.document, props.folder);
+        if (props.questionnaire) {
+            deleteQuestionnaireFromEduRest();
+        } else {
+            deleteDocumentOrMaybeUnemptyFolderFromDocuRest();
+        }
+    }
+
+    const deleteQuestionnaireFromEduRest = () => {
+        EduAPIFetch("DELETE", `/api/v1/questionnaires/${props.questionnaire.id}`)
+            .then(json => {
+                if (json.success === true) {
+                    props.onMoveDeleteSuccess(json.result);
+                } else {
+                    props.onMoveDeleteFail("Se ha producido un error");
+                }
+                setLoadingDelete(false);
+                setPopupShown("NONE");
+            })
+            .catch(error => {
+                setLoadingDelete(false);
+                setPopupShown("NONE");
+                props.onMoveDeleteFail(error.error ?? "Se ha producido un error");
+            })
+    }
+
+    const deleteDocumentOrMaybeUnemptyFolderFromDocuRest = () => {
+        let body;
+        if (props.document) {
+            body = { document_ids: props.document.identifier, folder_ids: [], questionnaire_ids: [] }
+        } else if (props.folder) {
+            body = getSelfAndSubTreeIds(props.folder);
+        }
         DocuAPIFetch("DELETE", `/api/v1/documents`, body)
             .then(json => {
                 if (json.success === true) {
@@ -55,13 +90,15 @@ const FilesElementContextMenuButton = (props) => {
         }
         {popupShown === "SHARE" && <FilesPermissionsDialog onDismiss={() => { setPopupShown("NONE"); }}
             document={props.document}
+            questionnaire={props.questionnaire}
             folder={props.folder}
             title={`"${elementName()}" está compartido  con...`} />}
-        {popupShown === "MOVE" && <MoveDocumentOrFolderDialog onDismiss={() => { setPopupShown("NONE"); }}
+        {popupShown === "MOVE" && <MoveFileDialog onDismiss={() => { setPopupShown("NONE"); }}
             onSuccess={props.onMoveDeleteSuccess}
             onFail={props.onMoveDeleteFail}
-            folder={props.folder}
             document={props.document}
+            questionnaire={props.questionnaire}
+            folder={props.folder}
             filesTree={props.filesTree} />}
         {popupShown === "DELETE" &&
             <AreYouSureDialog onActionConfirmed={onDelete}

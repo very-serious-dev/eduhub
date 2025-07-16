@@ -29,10 +29,12 @@ urlpatterns = [
     path("assignments/<int:a_id>/scores",       facade.posts_publish_all_scores),
     path("documents",                           facade.documents_get_my_files),
     path("folders",                             facade.documents_create_folder),
+    path("files/permissions",                   facade.documents_update_files_permissions),
     path("documents/<d_id>",                    facade.documents_move_document),
     path("documents/<d_id>/users",              facade.documents_get_document_users),
     path("folders/<int:f_id>",                  facade.documents_move_folder),
     path("folders/<int:f_id>/users",            facade.documents_get_folder_users),
-    path("files/permissions",                   facade.documents_update_files_permissions),
+    path("questionnaires/<q_id>",               facade.documents_move_or_delete_questionnaire),
+    path("questionnaires/<q_id>/users",         facade.documents_get_questionnaire_users),
     path("questionnaires",                      facade.questionnaires_create)
 ]

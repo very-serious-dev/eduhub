@@ -25,6 +25,8 @@ const FilesPermissionsDialog = (props) => {
             url = `/api/v1/folders/${props.folder.id}/users`;
         } else if (props.document) {
             url = `/api/v1/documents/${props.document.identifier}/users`;
+        } else if (props.questionnaire) {
+            url = `/api/v1/questionnaires/${props.questionnaire.id}/users`;
         }
         EduAPIFetch("GET", url).then(json => {
             setLoading(false);
@@ -79,7 +81,15 @@ const FilesPermissionsDialog = (props) => {
     }
 
     const filePermissionsSubTreeUrl = () => {
-        return `/api/v1/files/permissions${getSelfAndSubTreeIdsForQueryParam(props.document, props.folder)}`;
+        if (props.document) {
+            return `/api/v1/files/permissions?documentIds=${props.document.identifier}`;
+        }
+        if (props.questionnaire) {
+            return `/api/v1/files/permissions?questionnaireIds=${props.questionnaire.id}`;
+        }
+        if (props.folder) {
+            return `/api/v1/files/permissions${getSelfAndSubTreeIdsForQueryParam(props.folder)}`;
+        }
     }
 
     return areYouSureDeleteUsername !== undefined ?
