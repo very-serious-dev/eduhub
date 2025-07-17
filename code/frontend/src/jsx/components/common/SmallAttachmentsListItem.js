@@ -3,8 +3,10 @@ import { DOCU_SERVER } from "../../../client/Servers";
 import { iconImgSrc, sizeToHumanReadable } from "../../../util/Formatter";
 import { accentForeground, pointableSecondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
+import { useNavigate } from "react-router";
 
 const SmallAttachmentsListItem = (props) => {
+    const navigate = useNavigate();
     const theme = useContext(ThemeContext);
 
     const onClick = () => {
@@ -12,7 +14,7 @@ const SmallAttachmentsListItem = (props) => {
             window.open(`${DOCU_SERVER}/api/v1/documents/${props.attachment.identifier}`, "_blank")
         }
         if (props.attachment.type === "questionnaire") {
-            window.open(`/questionnaires/${props.attachment.id}`, "_blank")
+            navigate(`/forms/${props.attachment.id}`);
         }
     }
 

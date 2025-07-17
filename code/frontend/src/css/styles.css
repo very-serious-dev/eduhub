@@ -729,7 +729,7 @@ body {
   opacity: 0.8;
 }
 
-.classDetailHeaderTopIcons {
+.classDetailHeaderTopIcons { /* reused */
   position: absolute;
   right: 30px;
   top: 8px;
@@ -884,7 +884,7 @@ body {
   }
 }
 
-.classDetailSectionUnderline {
+.classDetailSectionUnderline { /* reused */
   height: 1px;
   width: 90%;
 }
@@ -1702,14 +1702,14 @@ body {
  * Questionnaires
  */
 
-.newQuestionnairePageContainer {
+.questionnairePageContainer {
   margin-top: 40px;
   margin-left: 10px;
   margin-right: 10px;
 }
 
 @media (min-width: 480px) {
-  .newQuestionnairePageContainer {
+  .questionnairePageContainer {
     margin-left: 15%;
     margin-right: 15%;
   }
@@ -1842,6 +1842,20 @@ body {
   margin-top: 20px;
   padding: 3px;
 }
+
+.questionnaireDetailTitleHeader {
+  /* Same as assignmentDetail */
+  margin-top: 33px;
+  margin-left: 15px;
+}
+
+.questionnaireDetailTitle {
+  /* Same as assignmentDetail */
+  font-size: 2.25em;
+  font-weight: light;
+  margin-right: 30px;
+}
+
 
 /**
  * Global user feedback bubble

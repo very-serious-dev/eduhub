@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire
+from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire, UserQuestionnairePermission
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
@@ -113,6 +113,18 @@ def can_see_class(user, classroom):
 def can_edit_class(user, classroom):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
             or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
+
+def can_answer_questionnaire(user, questionnaire):
+    if user.role not in [User.UserRole.STUDENT]:
+        return False
+    if UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).exists():
+        return True
+    if AnnouncementQuestionnaire.objects.filter(announcement__group=user.student_group, questionnaire=questionnaire).exists():
+        return True
+    user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
+    if PostQuestionnaire.objects.filter(post__classroom__in=user_classes, questionnaire=questionnaire).exists():
+        return True
+    return False
 
 def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
     try:

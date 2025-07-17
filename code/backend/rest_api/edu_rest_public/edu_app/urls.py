@@ -34,7 +34,9 @@ urlpatterns = [
     path("documents/<d_id>/users",              facade.documents_get_document_users),
     path("folders/<int:f_id>",                  facade.documents_move_folder),
     path("folders/<int:f_id>/users",            facade.documents_get_folder_users),
-    path("questionnaires/<q_id>",               facade.documents_move_or_delete_questionnaire),
-    path("questionnaires/<q_id>/users",         facade.documents_get_questionnaire_users),
-    path("questionnaires",                      facade.questionnaires_create)
+    path("questionnaires/<int:q_id>",           facade.documents_move_or_delete_questionnaire),
+    path("questionnaires/<int:q_id>/users",     facade.documents_get_questionnaire_users),
+    path("questionnaires",                      facade.questionnaires_create),
+    path("questionnaires/<int:q_id>/questions", facade.questionnaires_get_questions),
+    path("questionnaires/<int:q_id>/results",   facade.questionnaires_get_results),
 ]

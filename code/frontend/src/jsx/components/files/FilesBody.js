@@ -4,10 +4,12 @@ import FilesBrowser from "./FilesBrowser";
 import MyFilesFirstTabContent from "./MyFilesFirstTabContent";
 import SharedFilesFirstTabContent from "./SharedFilesFirstTabContent";
 import { DOCU_SERVER } from "../../../client/Servers";
+import { useNavigate } from "react-router";
 
 const FilesBody = (props) => {
     const [currentFolderIdsPath, setCurrentFolderIdsPath] = useState([]);
     const [selectedRoot, setSelectedRoot] = useState("MY_FILES"); // MY_FILES, SHARED_WITH_ME
+    const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
 
     const onRootClicked = (root) => {
@@ -62,7 +64,7 @@ const FilesBody = (props) => {
             window.open(`${DOCU_SERVER}/api/v1/documents/${element.identifier}`, "_blank");
         }
         if (element.type === "questionnaire") {
-            window.open(`/questionnaires/${element.id}`, "_blank")
+            navigate(`/forms/${element.id}`);
         }
     }
 

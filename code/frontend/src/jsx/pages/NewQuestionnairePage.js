@@ -7,11 +7,8 @@ import { useSearchParams } from "react-router";
 
 const NewQuestionnairePage = () => {
     const [isLoading, setLoading] = useState(false);
-    /* TODO: Take care of this, apparently isn't giving any trouble
-    src\jsx\pages\NewQuestionnairePage.js
-    Line 17:19:  Assignments to the 'channel' variable from inside React Hook useEffect will be lost after each render. To preserve the value over time, store it in a useRef Hook and keep the mutable value in the '.current' property. Otherwise, you can move this variable directly inside useEffect  react-hooks/exhaustive-deps */
-    const channel = useRef();
     const [searchParams, setSearchParams] = useSearchParams();
+    const channel = useRef();
     const urlFolderId = searchParams.get("fid");
     const setFeedback = useContext(FeedbackContext);
 
@@ -48,7 +45,7 @@ const NewQuestionnairePage = () => {
             })
     }
 
-    return <div className="newQuestionnairePageContainer">
+    return <div className="questionnairePageContainer">
         <NewQuestionnaire onSubmitNewQuestionnaire={onSubmitNewQuestionnaire}
             submitText={urlFolderId ? "Guardar" : "Guardar y adjuntar"} />
         {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}

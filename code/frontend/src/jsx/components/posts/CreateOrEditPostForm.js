@@ -51,6 +51,10 @@ const CreateOrEditPostForm = (props) => {
     }
 
     const uploadFilesThenSendEduPostRequest = () => {
+        // TODO: In the case of newly created questionnaires,
+        // it'd be great to have them put into the classroom folder
+        // in the backend. Right now they're create in the Drive root
+        // and they remain there
         setLoading(true);
         // `attachments` are those in the drop area. Bear in mind that:
         // 1) If we are creating a new post:
