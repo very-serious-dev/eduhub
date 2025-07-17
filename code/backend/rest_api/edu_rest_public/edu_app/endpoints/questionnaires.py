@@ -59,7 +59,7 @@ def get_questions(request, q_id):
     choices_questions_json = []
     for cq in choices_questions:
         choices = ChoicesQuestionChoice.objects.filter(question=cq)
-        choices_array = list(map(lambda cqc: cqc.content, choices))
+        choices_array = list(map(lambda c: { "content": c.content, "number": c.number}, choices))
         choices_questions_json.append(choices_question_to_json(cq.title, choices_array, cq.number))
     # Theme will be BLUE (default) unless the questionnaire is attached only to one classroom, in such case it inherits its theme
     theme = Class.ClassTheme.BLUE

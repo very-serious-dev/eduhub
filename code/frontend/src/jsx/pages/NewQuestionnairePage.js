@@ -22,6 +22,17 @@ const NewQuestionnairePage = () => {
         return () => { channel.current.close() }
     }, []);
 
+    useEffect(() => {
+        const onBeforeUnload = (e) => {
+            e.preventDefault();
+            e.returnValue = "";
+        };
+        window.addEventListener('beforeunload', onBeforeUnload);
+        return () => {
+            window.removeEventListener('beforeunload', onBeforeUnload);
+        };
+    }, []);
+
     const onSubmitNewQuestionnaire = (title, questions) => {
         if (isLoading) { return; }
         setLoading(true);

@@ -6,8 +6,8 @@ const NewQuestionnaireQuestionHeader = (props) => {
     const theme = useContext(ThemeContext);
 
     return <>
-        <div className="questionnaireNewQuestionTopRightContainer">
-            <div className={`questionnaireNewQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.questionIndex + 1}</div>
+        <div className="questionnaireQuestionTopRightContainer">
+            <div className={`questionnaireQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.questionIndex + 1}</div>
             {props.showMoveUp && <div className="questionnaireNewQuestionMove pointable" onClick={() => { props.onMoveUp(props.questionIndex) }}>⬆️</div>}
             {props.showMoveDown && <div className="questionnaireNewQuestionMove pointable" onClick={() => { props.onMoveDown(props.questionIndex) }}>⬇️</div>}
             <div className="questionnaireNewQuestionDelete pointable" onClick={() => { props.onDelete(props.questionIndex) }}>❌</div>

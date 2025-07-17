@@ -182,14 +182,16 @@ def assignment_detail_to_json(original_assignment, newest_edit, attachments, is_
 def text_question_to_json(title, number):
     return {
         "title": title,
-        "number": number
+        "number": number,
+        "type": "text"
     }
 
 def choices_question_to_json(title, choices, number):
     return {
         "title": title,
         "choices": choices,
-        "number": number
+        "number": number,
+        "type": "choices"
     }
 
 def questionnaire_detail_to_json(title, questions, theme):

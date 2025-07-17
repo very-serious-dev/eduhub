@@ -8,7 +8,7 @@ const NewQuestionnaireChoicesQuestion = (props) => {
     const theme = useContext(ThemeContext);
 
     return <div key={props.questionIndex}>
-        <div className="card questionnaireNewQuestionContainer">
+        <div className="card questionnaireQuestionContainer">
             <NewQuestionnaireQuestionHeader questionIndex={props.questionIndex}
                 questionTitle={props.question.title}
                 setQuestionTitle={props.setQuestionTitle}

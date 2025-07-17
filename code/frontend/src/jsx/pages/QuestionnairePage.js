@@ -12,7 +12,7 @@ const QuestionnairePage = () => {
     const [questionnaireData, setQuestionnaireData] = useState();
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const params = useParams();
     const roles = GetSessionUserRoles();
 
