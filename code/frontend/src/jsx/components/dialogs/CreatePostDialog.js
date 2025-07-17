@@ -10,7 +10,7 @@ const CreatePostDialog = (props) => {
                         {
                             title: "Nueva publicación",
                             view: <CreateOrEditPostForm postType="publication"
-                                classIdForPostCreation={props.classId}
+                                classroomId={props.classId}
                                 postBeingEdited={null}
                                 units={props.units}
                                 submitText="Publicar"
@@ -23,7 +23,7 @@ const CreatePostDialog = (props) => {
                         {
                             title: "Nueva tarea",
                             view: <CreateOrEditPostForm postType="assignment"
-                                classIdForPostCreation={props.classId}
+                                classroomId={props.classId}
                                 postBeingEdited={null}
                                 units={props.units}
                                 submitText="Crear tarea"

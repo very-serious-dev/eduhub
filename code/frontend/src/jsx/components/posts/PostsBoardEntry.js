@@ -7,6 +7,7 @@ const PostsBoardEntry = (props) => {
     return <div className="card classDetailEntry">
         <PostsBoardEntryTopRightContent post={props.post}
             classUnits={props.classUnits}
+            classroomId={props.classroomId}
             showEdit={props.showEdit}
             onPostsChanged={props.onPostsChanged} />
         <div className="classDetailEntryTitle">{props.post.title}</div>

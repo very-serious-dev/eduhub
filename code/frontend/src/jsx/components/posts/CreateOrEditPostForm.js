@@ -19,7 +19,7 @@ const CreateOrEditPostForm = (props) => {
     const [attachments, setAttachments] = useState(props.postBeingEdited ? props.postBeingEdited.attachments : []);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
-
+console.log(props)
     useEffect(() => {
         setFormAssignmentLocalDueDate(postBeingEditedDueDateLocalTime() ?? TODAY_23_59);
     }, []);
@@ -51,10 +51,6 @@ const CreateOrEditPostForm = (props) => {
     }
 
     const uploadFilesThenSendEduPostRequest = () => {
-        // TODO: In the case of newly created questionnaires,
-        // it'd be great to have them put into the classroom folder
-        // in the backend. Right now they're create in the Drive root
-        // and they remain there
         setLoading(true);
         // `attachments` are those in the drop area. Bear in mind that:
         // 1) If we are creating a new post:
@@ -116,7 +112,7 @@ const CreateOrEditPostForm = (props) => {
         if (props.postBeingEdited) {
             url = `/api/v1/posts/${props.postBeingEdited.id}/amendments`;
         } else {
-            url = `/api/v1/classes/${props.classIdForPostCreation}/posts`;
+            url = `/api/v1/classes/${props.classroomId}/posts`;
         }
         EduAPIFetch("POST", url, body)
             .then(json => {
@@ -151,7 +147,7 @@ const CreateOrEditPostForm = (props) => {
         if (attachments.some(a => a.type === "questionnaire")) {
             alert("Ya has adjuntado 1 formulario");
         } else {
-            window.open("/create-form", "_blank");
+            window.open(`/create-form?cid=${props.classroomId}`, "_blank");
         }
     }
 

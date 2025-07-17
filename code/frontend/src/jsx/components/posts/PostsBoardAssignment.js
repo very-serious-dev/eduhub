@@ -19,6 +19,7 @@ const PostsBoardAssignment = (props) => {
     return <div className={`card classDetailEntry pointable ${tertiary(theme)} ${pointableSecondary(theme)}`} onClick={onClick}>
         <PostsBoardEntryTopRightContent post={props.post}
             classUnits={props.classUnits}
+            classroomId={props.classroomId}
             showEdit={props.showEdit}
             onPostsChanged={props.onPostsChanged} />
         <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>

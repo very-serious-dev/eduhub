@@ -17,8 +17,7 @@ const ChoicesQuestion = (props) => {
             return <div className="formInputRadio" key={`question${props.questionIndex + 1}choice${choice.number}`}>
                 <input type="radio" name={`question${props.questionIndex + 1}`} value={choice.number}
                     onChange={e => { props.setAnswer(props.questionIndex, e.target.value) }}
-                    checked={choice.number.toString() === props.answer}
-                    required />
+                    checked={choice.number.toString() === props.answer} />
                 <label htmlFor="">{choice.content}</label>
             </div>
         })}

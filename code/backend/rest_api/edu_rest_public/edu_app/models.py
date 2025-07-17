@@ -200,7 +200,7 @@ class ChoicesQuestionChoice(models.Model):
 
 class QuestionnaireSubmit(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     
 class TextQuestionAnswer(models.Model):

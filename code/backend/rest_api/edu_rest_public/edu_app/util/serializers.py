@@ -164,6 +164,7 @@ def assignment_detail_to_json(original_assignment, newest_edit, attachments, is_
         "content": original_assignment.content if newest_edit is None else newest_edit.content,
         "unit_id": unit.id if unit else None,
         "class_units": list(map(lambda u: {"id": u.id, "name": u.name}, class_units)),
+        "class_id": original_assignment.classroom_id,
         "author": original_assignment.author.username,
         "publication_date": original_assignment.publication_date,
         "assignment_due_date": original_assignment.assignment_due_date if newest_edit is None else newest_edit.assignment_due_date,
@@ -194,8 +195,9 @@ def choices_question_to_json(title, choices, number):
         "type": "choices"
     }
 
-def questionnaire_detail_to_json(title, questions, theme):
+def questionnaire_detail_to_json(id, title, questions, theme):
     return {
+        "id": id,
         "title": title,
         "questions": questions,
         "theme": theme

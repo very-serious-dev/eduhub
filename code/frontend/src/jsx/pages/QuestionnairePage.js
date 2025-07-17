@@ -11,7 +11,7 @@ import { ThemeContext } from "../main/GlobalContainer";
 const QuestionnairePage = () => {
     const [questionnaireData, setQuestionnaireData] = useState();
     const [isRequestFailed, setRequestFailed] = useState(false);
-    const [requestErrorMessage, setRequestErrorMessage] = useState();
+    const [requestError, setRequestError] = useState();
     const [isLoading, setLoading] = useState(true);
     const params = useParams();
     const roles = GetSessionUserRoles();
@@ -35,14 +35,14 @@ const QuestionnairePage = () => {
             .catch(error => {
                 setLoading(false);
                 setRequestFailed(true);
-                setRequestErrorMessage(error.error ?? "Se ha producido un error");
+                setRequestError(error);
             });
     }, []);
 
     return isLoading ?
         <LoadingHUDPage />
         : isRequestFailed ?
-            <ErrorPage errorMessage={requestErrorMessage} />
+            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} showGoBack={requestError?.client_behaviour === "suggest_go_back"}/>
             : <ThemeContext.Provider value={questionnaireData?.theme}>
                 {roles.includes("teacher") ?
                     <QuestionnaireBodyTeacherOverview />

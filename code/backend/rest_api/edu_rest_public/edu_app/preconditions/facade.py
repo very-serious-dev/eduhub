@@ -403,15 +403,9 @@ def questionnaires_create(request):
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         title, questions = expect_body_with('title', 'questions', request=request)
         url_query = QueryDict(request.META.get("QUERY_STRING", ""))
-        url_folder_id = url_query.get("folderId", "none")
-        if url_folder_id == "none":
-            url_folder_id = None
-        else:
-            try:
-                url_folder_id = int(url_folder_id)
-            except ValueError:
-                raise BadRequest
-        return questionnaires.create_questionnaire(request, title, questions, url_folder_id)
+        url_classroom_id = url_query.get("classroomId")
+        url_folder_id = url_query.get("folderId")
+        return questionnaires.create_questionnaire(request, title, questions, url_classroom_id, url_folder_id)
     else:
         raise Unsupported
 
@@ -428,5 +422,14 @@ def questionnaires_get_results(request, q_id):
     if request.method == "GET":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
         return questionnaires.get_results(request, q_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def questionnaires_create_submit(request, q_id):
+    if request.method == "POST":
+        require_role([User.UserRole.STUDENT], request=request)
+        answers = expect_body_with('answers', request=request)
+        return questionnaires.create_submit(request, q_id, answers)
     else:
         raise Unsupported

@@ -9,7 +9,6 @@ const NewQuestionnairePage = () => {
     const [isLoading, setLoading] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     const channel = useRef();
-    const urlFolderId = searchParams.get("fid");
     const setFeedback = useContext(FeedbackContext);
 
     useEffect(() => {
@@ -22,11 +21,12 @@ const NewQuestionnairePage = () => {
         return () => { channel.current.close() }
     }, []);
 
+    const onBeforeUnload = (e) => {
+        e.preventDefault();
+        e.returnValue = "";
+    };
+
     useEffect(() => {
-        const onBeforeUnload = (e) => {
-            e.preventDefault();
-            e.returnValue = "";
-        };
         window.addEventListener('beforeunload', onBeforeUnload);
         return () => {
             window.removeEventListener('beforeunload', onBeforeUnload);
@@ -34,17 +34,21 @@ const NewQuestionnairePage = () => {
     }, []);
 
     const onSubmitNewQuestionnaire = (title, questions) => {
+        if (questions.length === 0) { alert("Debes añadir al menos 1 pregunta"); return; }
         if (isLoading) { return; }
         setLoading(true);
         let url = "/api/v1/questionnaires";
-        if (urlFolderId) {
-            url += `?folderId=${urlFolderId}`;
+        if (searchParams.get("cid")) {
+            url += `?classroomId=${searchParams.get("cid")}`;
+        } else if (searchParams.get("fid")) {
+            url += `?folderId=${searchParams.get("fid")}`;
         }
         EduAPIFetch("POST", url, { title: title, questions: questions })
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
                     channel.current.postMessage(json.result);
+                    window.removeEventListener('beforeunload', onBeforeUnload);
                     window.close();
                 } else {
                     setFeedback({ type: "error", message: "Se ha producido un error" });
@@ -58,7 +62,7 @@ const NewQuestionnairePage = () => {
 
     return <div className="questionnairePageContainer">
         <NewQuestionnaire onSubmitNewQuestionnaire={onSubmitNewQuestionnaire}
-            submitText={urlFolderId ? "Guardar" : "Guardar y adjuntar"} />
+            submitText={searchParams.get("cid") ? "Guardar y adjuntar" : "Guardar"} />
         {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
     </div>
 }

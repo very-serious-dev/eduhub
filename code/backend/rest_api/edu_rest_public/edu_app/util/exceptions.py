@@ -25,6 +25,9 @@ class UnauthorizedIncorrectPassword(Exception):
 class Forbidden(Exception):
     pass
 
+class ForbiddenAlreadyAnswered(Exception):
+    pass
+
 class ForbiddenAssignmentSubmit(Exception):
     pass
 

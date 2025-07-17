@@ -32,6 +32,7 @@ const AssignmentBody = (props) => {
     return <>
         {showEditAssignmentPopup && <EditPostDialog post={props.assignmentData}
             units={props.assignmentData.class_units}
+            classroomId={props.assignmentData.class_id}
             onFinished={props.onShouldRefresh}
             onDismiss={() => { setShowEditAssignmentPopup(false); }} />}
         <div>

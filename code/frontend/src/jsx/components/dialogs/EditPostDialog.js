@@ -36,7 +36,7 @@ const EditPostDialog = (props) => {
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <CreateOrEditPostForm postType="amend_edit"
-                        classIdForPostCreation={null}
+                        classroomId={props.classroomId}
                         postBeingEdited={props.post}
                         units={props.units}
                         titlePlaceholder="Nuevo título"

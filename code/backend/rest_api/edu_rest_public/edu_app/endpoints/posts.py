@@ -6,6 +6,9 @@ from ..util.exceptions import Forbidden, ForbiddenAssignmentSubmit, NotFound
 from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class
 from ..util.serializers import assignment_detail_to_json, document_to_json, user_to_json, questionnaire_to_json
 
+def folder_name_for_classroom(classroom):
+    return classroom.group.tag + " - " + classroom.name
+
 POSTS_DOCUMENTS_ROOT_FOLDER_NAME = "Publicaciones"
 ASSIGNMENT_SUBMITS_ROOT_FOLDER_NAME = "Entregas"
 
@@ -32,7 +35,7 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
                 document = Document.objects.get(identifier=a["identifier"])
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                folder = get_or_create_folder(__folder_name_for_classroom(classroom), request.session.user, root_folder)
+                folder = get_or_create_folder(folder_name_for_classroom(classroom), request.session.user, root_folder)
                 document = Document()
                 document.identifier = a["identifier"]
                 document.name = a["name"]
@@ -88,7 +91,7 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
                     document = Document.objects.get(identifier=a["identifier"])
                 except Document.DoesNotExist:
                     root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                    folder = get_or_create_folder(__folder_name_for_classroom(post.classroom), request.session.user, root_folder)
+                    folder = get_or_create_folder(folder_name_for_classroom(post.classroom), request.session.user, root_folder)
                     document = Document()
                     document.identifier = a["identifier"]
                     document.name = a["name"]
@@ -231,9 +234,6 @@ def publish_all_scores(request, a_id):
     all_scored_submits = AssignmentSubmit.objects.filter(assignment=assignment, score__isnull=False)
     all_scored_submits.update(is_score_published=True)
     return JsonResponse({"success": True}, status=200)
-
-def __folder_name_for_classroom(classroom):
-    return classroom.group.tag + " - " + classroom.name
 
 def __delete_any_relation_to_documents_or_questionnaires(post):
     old_post_questionnaires = PostQuestionnaire.objects.filter(Q(post=post) | Q(post__kind=Post.PostKind.AMENDMENT_EDIT, post__amendment_original_post=post))

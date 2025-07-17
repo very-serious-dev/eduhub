@@ -62,11 +62,13 @@ const PostsBoard = (props) => {
                     if (p.kind === "publication") {
                         return <PostsBoardEntry post={p}
                             classUnits={props.classData.units}
+                            classroomId={props.classData.id}
                             showEdit={props.classData.should_show_teacher_options}
                             onPostsChanged={props.onPostsChanged} />
                     } else if (p.kind === "assignment") {
                         return <PostsBoardAssignment post={p}
                             classUnits={props.classData.units}
+                            classroomId={props.classData.id}
                             showEdit={props.classData.should_show_teacher_options}
                             onPostsChanged={props.onPostsChanged} />
                     }

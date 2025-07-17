@@ -15,6 +15,7 @@ const PostsBoardEntryTopRightContent = (props) => {
     return <>
         {showEditPopup && <EditPostDialog post={props.post}
             units={props.classUnits}
+            classroomId={props.classroomId}
             onFinished={props.onPostsChanged}
             onDismiss={() => { setShowEditPopup(false); }} />}
         <div className="classDetailEntryTopRightContainer">

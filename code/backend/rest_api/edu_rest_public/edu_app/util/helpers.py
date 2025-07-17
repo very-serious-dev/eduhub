@@ -25,6 +25,8 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Contraseña incorrecta"}, status=401)
         except e.Forbidden:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
+        except e.ForbiddenAlreadyAnswered:
+            return JsonResponse({"error": "Ya has respondido a este formulario", "client_behaviour": "suggest_go_back"}, status=403)
         except e.ForbiddenAssignmentSubmit:
             return JsonResponse({"error": "La tarea ya está entregada o la fecha de entrega se ha pasado"}, status=403)
         except e.ForbiddenExceededLoginAttempts:
@@ -114,8 +116,8 @@ def can_edit_class(user, classroom):
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
             or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
 
-def can_answer_questionnaire(user, questionnaire):
-    if user.role not in [User.UserRole.STUDENT]:
+def can_see_questionnaire(user, questionnaire):
+    if user.role not in [User.UserRole.STUDENT]: # TODO: Expand to non-students
         return False
     if UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).exists():
         return True

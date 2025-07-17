@@ -54,7 +54,7 @@ const FilesBrowserTabWithUpload = (props) => {
     const canCreateQuestionnaires = roles.includes("teacher");
 
     const onCreateNewQuestionnaire = () => {
-        window.open(`/create-form?fid=${props.parentFolderId ? props.parentFolderId : "none"}`, "_blank");
+        window.open(`/create-form${props.parentFolderId ? `?fid=${props.parentFolderId}` : ""}`, "_blank");
     }
 
     return <>
