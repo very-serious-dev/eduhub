@@ -28,17 +28,25 @@ const AssignmentSubmitDialog = (props) => {
                         :
                         <>
                             <div className="assignmentSubmitDialogDate">{`Fecha de entrega: ✔️ ${beautifullyDisplayDateTime(props.submit.submit_date)}`}</div>
-                            <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
-                            <div>{props.submit.files.length > 0 ?
-                                <div className="assignmentSubmitDialogFiles">
-                                    {props.submit.files.map(f => <SmallAttachmentsListItem attachment={f} />)}
-                                </div>
-                                : <div className="assignmentSubmitDialogSectionContent">No se ha entregado ningún fichero</div>}
-                            </div>
-                            <div className="assignmentSubmitDialogCommentTitle">Comentario:</div>
-                            <div className="assignmentSubmitDialogSectionContent">{props.submit.comment ?? "No se ha añadido ningún comentario"}</div>
+                            {props.submit.questionnaire ?
+                                <>
+                                    <div className="assignmentSubmitDialogFilesTitle">Formulario adjunto:</div>
+                                    <div className="assignmentSubmitDialogFiles">
+                                        <SmallAttachmentsListItem attachment={{ ...props.submit.questionnaire, type: "questionnaire" }} />
+                                    </div>
+                                </>
+                                : <>
+                                    <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
+                                    {props.submit.files.length > 0 ?
+                                        <div className="assignmentSubmitDialogFiles">
+                                            {props.submit.files.map(f => <SmallAttachmentsListItem attachment={f} />)}
+                                        </div>
+                                        : <div className="assignmentSubmitDialogSectionContent">No se ha entregado ningún fichero</div>}
+                                    <div className="assignmentSubmitDialogCommentTitle">Comentario:</div>
+                                    <div className="assignmentSubmitDialogSectionContent">{props.submit.comment ?? "No se ha añadido ningún comentario"}</div>
+                                </>}
                             <div className="assignmentSubmitScoreTitle">Calificación</div>
-                            {props.submit.score !== null && props.submit.score !== undefined ?
+                            {props.submit.score ?
                                 <>
                                     <div className={`assignmentSubmitScore ${props.submit.is_score_published ? accentForeground(theme) : "scoreUnpublished"}`}>{props.submit.score}</div>
                                     {props.submit.is_score_published === false && <div className="unpublishedScoreHint">Esta puntuación no está publicada para el estudiante todavía</div>}

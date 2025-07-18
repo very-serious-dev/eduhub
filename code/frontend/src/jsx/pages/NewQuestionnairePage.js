@@ -7,6 +7,7 @@ import { useSearchParams } from "react-router";
 
 const NewQuestionnairePage = () => {
     const [isLoading, setLoading] = useState(false);
+    // eslint-disable-next-line no-unused-vars
     const [searchParams, setSearchParams] = useSearchParams();
     const channel = useRef();
     const setFeedback = useContext(FeedbackContext);
@@ -34,7 +35,6 @@ const NewQuestionnairePage = () => {
     }, []);
 
     const onSubmitNewQuestionnaire = (title, questions) => {
-        if (questions.length === 0) { alert("Debes añadir al menos 1 pregunta"); return; }
         if (isLoading) { return; }
         setLoading(true);
         let url = "/api/v1/questionnaires";

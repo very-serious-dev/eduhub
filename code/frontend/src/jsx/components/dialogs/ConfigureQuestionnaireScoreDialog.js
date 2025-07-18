@@ -19,7 +19,7 @@ const ConfigureQuestionnaireScoreDialog = (props) => {
         } else {
             penaltyPerIncorrectAnswer = scorePerCorrectAnswer / formIncorrectAmount;
         }
-        props.onScoreConfigured(scorePerCorrectAnswer, penaltyPerIncorrectAnswer);
+        props.onScoreConfigured(scorePerCorrectAnswer.toFixed(3), penaltyPerIncorrectAnswer.toFixed(3));
         props.onDismiss();
     }
 

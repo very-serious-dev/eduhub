@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
-from ..models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder, Questionnaire, PostQuestionnaire
+from ..models import User, Class, UserClass, Unit, Post, Document, PostDocument, AssignmentSubmit, AssignmentSubmitDocument, Folder, Questionnaire, PostQuestionnaire, QuestionnaireSubmit
 from ..util.exceptions import Forbidden, ForbiddenAssignmentSubmit, NotFound
 from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class
 from ..util.serializers import assignment_detail_to_json, document_to_json, user_to_json, questionnaire_to_json
@@ -145,6 +145,11 @@ def get_assignment(request, a_id):
             }
             submit_documents = AssignmentSubmitDocument.objects.filter(submit=s)
             submit["files"] = list(map(lambda sd: document_to_json(sd.document), submit_documents))
+            if s.questionnaire_submit:
+                submit["questionnaire"] = {
+                    "id": s.questionnaire_submit.questionnaire.id,
+                    "title": s.questionnaire_submit.questionnaire.title
+                }
             submits.append(submit)
     else:
         try:
@@ -156,6 +161,11 @@ def get_assignment(request, a_id):
             }
             submit_documents = AssignmentSubmitDocument.objects.filter(submit=s)
             your_submit["files"] = list(map(lambda sd: document_to_json(sd.document), submit_documents))
+            if s.questionnaire_submit:
+                your_submit["questionnaire"] = {
+                    "id": s.questionnaire_submit.questionnaire.id,
+                    "title": s.questionnaire_submit.questionnaire.title
+                }
             if s.is_score_published: # Only send score to students if boolean flag says 'published'
                 your_submit["is_score_published"] = True
                 your_submit["score"] = s.score
@@ -174,6 +184,7 @@ def create_assignment_submit(request, a_id, attachments, comment):
     new_submit = AssignmentSubmit()
     new_submit.author = request.session.user
     new_submit.assignment = assignment
+    new_submit.questionnaire_submit = None
     new_submit.comment = comment
     new_submit.save()
     for a in attachments:

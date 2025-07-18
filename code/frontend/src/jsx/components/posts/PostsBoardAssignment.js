@@ -16,13 +16,17 @@ const PostsBoardAssignment = (props) => {
         navigate(`/assignments/${props.post.id}`)
     }
 
+    const isQuestionnaireAttached = () => {
+        return props.post.attachments.some(a => a.type === 'questionnaire');
+    }
+
     return <div className={`card classDetailEntry pointable ${tertiary(theme)} ${pointableSecondary(theme)}`} onClick={onClick}>
         <PostsBoardEntryTopRightContent post={props.post}
             classUnits={props.classUnits}
             classroomId={props.classroomId}
             showEdit={props.showEdit}
             onPostsChanged={props.onPostsChanged} />
-        <div className="classDetailAssignmentTitle">💼 {props.post.title}</div>
+        <div className="classDetailAssignmentTitle">{isQuestionnaireAttached() ? "📝" : "💼"} {props.post.title}</div>
         <div className="classDetailAssignmentDueDate">Se entrega: {beautifullyDisplayDateTime(props.post.assignment_due_date)}</div>
         <div className="dateAuthorFootNote">
             {footNoteDateAuthor(props.post.publication_date, props.post.author, props.post.modificationDate)}

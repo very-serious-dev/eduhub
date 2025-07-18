@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire, UserQuestionnairePermission
+from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire, UserQuestionnairePermission, Post, ChoicesQuestion, ChoicesQuestionChoice, ChoicesQuestionAnswer
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
@@ -27,6 +27,8 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         except e.ForbiddenAlreadyAnswered:
             return JsonResponse({"error": "Ya has respondido a este formulario", "client_behaviour": "suggest_go_back"}, status=403)
+        except e.ForbiddenQuestionnaireAssignmentIsDue:
+            return JsonResponse({"error": "No puedes responder a este formulario. El plazo de entrega ya ha pasado", "client_behaviour": "suggest_go_back"}, status=403)
         except e.ForbiddenAssignmentSubmit:
             return JsonResponse({"error": "La tarea ya está entregada o la fecha de entrega se ha pasado"}, status=403)
         except e.ForbiddenExceededLoginAttempts:
@@ -127,6 +129,46 @@ def can_see_questionnaire(user, questionnaire):
     if PostQuestionnaire.objects.filter(post__classroom__in=user_classes, questionnaire=questionnaire).exists():
         return True
     return False
+
+def questionnaire_oldest_assignment_due_date(questionnaire, user):
+    user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
+    oldest_due_assignment_post_questionnaire_for_user = PostQuestionnaire.objects.filter(questionnaire=questionnaire,
+                                                            post__classroom__in=user_classes,
+                                                            post__assignment_due_date__isnull=False).order_by('post__assignment_due_date').first()
+    if oldest_due_assignment_post_questionnaire_for_user:
+        return oldest_due_assignment_post_questionnaire_for_user.post.assignment_due_date
+    return None
+
+def questionnaire_assignments(questionnaire, user):
+    user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
+    unedited_assignments_pq_with_questionnaire = PostQuestionnaire.objects.filter(questionnaire=questionnaire,
+                                                      post__classroom__in=user_classes,
+                                                      post__kind=Post.PostKind.ASSIGNMENT)
+    edited_assignments_pq_with_questionnaire = PostQuestionnaire.objects.filter(questionnaire=questionnaire,
+                                                      post__classroom__in=user_classes,
+                                                      post__kind=Post.PostKind.AMENDMENT_EDIT,
+                                                      post__amendment_original_post__kind=Post.PostKind.ASSIGNMENT)
+    unedited_assignments = list(map(lambda pq: pq.post, unedited_assignments_pq_with_questionnaire)) 
+    edited_assignments = list(map(lambda pq: pq.post.amendment_original_post, edited_assignments_pq_with_questionnaire))
+    return unedited_assignments + edited_assignments
+
+def calculate_score(questionnaire_submit):
+    score = None
+    choices_question = ChoicesQuestion.objects.filter(questionnaire=questionnaire_submit.questionnaire)
+    for q in choices_question:
+        if not ChoicesQuestionChoice.objects.filter(question=q, is_correct=True).exists():
+            pass
+        if q.correct_answer_score is not None:
+            if ChoicesQuestionAnswer.objects.filter(submit=questionnaire_submit,
+                                                    answer__question=q,
+                                                    answer__is_correct=True).exists():
+                score = (score or 0) + q.correct_answer_score
+        if q.incorrect_answer_score is not None:
+            if ChoicesQuestionAnswer.objects.filter(submit=questionnaire_submit,
+                                                    answer__question=q,
+                                                    answer__is_correct=False).exists():
+                score = (score or 0) + q.incorrect_answer_score
+    return score
 
 def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
     try:

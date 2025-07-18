@@ -15,14 +15,18 @@ const ClassDetailAssignmentItem = (props) => {
         navigate(`/assignments/${props.assignment.id}`)
     }
 
+    const isQuestionnaireAttached = () => {
+        return props.assignment.attachments.some(a => a.type === 'questionnaire');
+    }
+
     return <div key={props.assignment.id}
-                className={`classDetailSectionSubitem sectionSubitemPaddingTopBottomSmall pointable ${pointableSecondary(theme)}`}
-                onClick={onClick}>
-                    <div className={`classDetailSectionAssignmentDueDateCapsule ${tertiary(theme)}`}>
-                        { beautifullyDisplayDateTime(props.assignment.assignment_due_date) }
-                    </div>
-                    <div>💼 {props.assignment.title}</div>
-            </div>
+        className={`classDetailSectionSubitem sectionSubitemPaddingTopBottomSmall pointable ${pointableSecondary(theme)}`}
+        onClick={onClick}>
+        <div className={`classDetailSectionAssignmentDueDateCapsule ${tertiary(theme)}`}>
+            {beautifullyDisplayDateTime(props.assignment.assignment_due_date)}
+        </div>
+        <div>{isQuestionnaireAttached() ? "📝" : "💼"} {props.assignment.title}</div>
+    </div>
 }
 
 export default ClassDetailAssignmentItem;

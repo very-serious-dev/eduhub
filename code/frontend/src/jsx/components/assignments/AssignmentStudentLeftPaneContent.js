@@ -3,9 +3,11 @@ import SubmitAssignmentDialog from "../dialogs/SubmitAssignmentDialog";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import AssignmentUserStatus from "./AssignmentUserStatus";
 import { accent, pointableSecondary, primary } from "../../../util/Themes";
+import { useNavigate } from "react-router";
 
 const AssignmentStudentLeftPaneContent = (props) => {
     const [showSubmit, setShowSubmit] = useState(false);
+    const navigate = useNavigate();
     const setFeedback = useContext(FeedbackContext);
     const theme = useContext(ThemeContext);
 
@@ -24,12 +26,25 @@ const AssignmentStudentLeftPaneContent = (props) => {
         return now > due;
     }
 
+    const isQuestionnaireAttached = () => {
+        return props.assignmentData.attachments.some(a => a.type === 'questionnaire');
+    }
+
+    const onClickSubmit = () => {
+        if (isQuestionnaireAttached()) {
+            const questionnaire = props.assignmentData.attachments.find(a => a.type === 'questionnaire');
+            navigate(`/forms/${questionnaire.id}`);
+        } else {
+            setShowSubmit(true);
+        }
+    }
+
     return <>
         {showSubmit && <SubmitAssignmentDialog assignmentId={props.assignmentData.id}
             onDismiss={() => { setShowSubmit(false); }}
             onSubmitCreated={onSubmitCreated} />}
         <div className="assignmentDetailLeftPaneTitle">
-            💼 Tu trabajo
+            {isQuestionnaireAttached ? "📝 Tus respuestas" : "💼 Tu trabajo"}
         </div>
         <div className={`classDetailSectionUnderline ${accent(theme)}`} />
         {props.assignmentData.your_submit !== null
@@ -47,7 +62,7 @@ const AssignmentStudentLeftPaneContent = (props) => {
                 {isAssignmentPast()
                     ? <p>😔 <i>Ya ha pasado el plazo de entrega</i></p>
                     : <div className={`card submitAssignmentButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-                        onClick={() => { setShowSubmit(true); }}>➕ Subir entrega</div>}
+                        onClick={onClickSubmit}>➕ {isQuestionnaireAttached() ? "Responder formulario" : "Subir entrega"}</div>}
             </>}
     </>
 }

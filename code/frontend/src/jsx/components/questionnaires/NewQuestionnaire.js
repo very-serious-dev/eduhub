@@ -148,13 +148,26 @@ const NewQuestionnaire = (props) => {
         }))
     }
 
+    const onSubmit = (event) => {
+        event.preventDefault();
+        if (formQuestions.length === 0) {
+            alert("Debes añadir al menos 1 pregunta");
+            return;
+        }
+        if (formQuestions.some(q => q.type === "choices" && q.choices.length === 0)) {
+            alert("Todas las preguntas tipo test deben tener al menos 1 respuesta");
+            return;
+        }
+        props.onSubmitNewQuestionnaire(formTitle, formQuestions);
+    }
+
     return <>
         {showConfigureScores &&
             <ConfigureQuestionnaireScoreDialog questions={formQuestions}
                 onScoreConfigured={onScoreConfigured}
                 onDismiss={() => { setShowConfigureScores(false) }} />}
         <div>
-            <form>
+            <form onSubmit={onSubmit}>
                 <div className="formInputContainer">
                     <input className={`formInput ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}
@@ -181,8 +194,7 @@ const NewQuestionnaire = (props) => {
                             onChangeCorrectAnswerScore={onChangeCorrectAnswerScore}
                             onChangeIncorrectAnswerScore={onChangeIncorrectAnswerScore}
                             onConfigureScores={onConfigureScoresClicked} />
-                    }
-                    if (q.type === "text") {
+                    } else if (q.type === "text") {
                         return <NewQuestionnaireTextQuestion question={q}
                             questionIndex={idx}
                             setQuestionTitle={setQuestionTitle}
@@ -191,6 +203,8 @@ const NewQuestionnaire = (props) => {
                             onMoveUp={onMoveQuestionUp}
                             onMoveDown={onMoveQuestionDown}
                             onDelete={onDeleteQuestion} />
+                    } else {
+                        return <div>Tipo de pregunta no conocido</div>
                     }
                 })}
                 <div className="questionnaireNewQuestionButtonContainer">
@@ -203,7 +217,7 @@ const NewQuestionnaire = (props) => {
                     </button>
                 </div>
                 <div className="formInputContainer">
-                    <button onClick={e => { e.preventDefault(); props.onSubmitNewQuestionnaire(formTitle, formQuestions); }} className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}>{props.submitText}</button>
+                    <button className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`}>{props.submitText}</button>
                 </div>
             </form>
         </div>

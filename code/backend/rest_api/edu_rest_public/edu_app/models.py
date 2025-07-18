@@ -161,6 +161,7 @@ class AssignmentSubmit(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     assignment = models.ForeignKey(Post, on_delete=models.CASCADE)
     comment = models.CharField(max_length=1000, null=True)
+    questionnaire_submit = models.ForeignKey("QuestionnaireSubmit", on_delete=models.CASCADE, null=True)
     submit_date = models.DateTimeField(auto_now_add=True)
     score = models.FloatField(null=True)
     is_score_published = models.BooleanField(default=False)

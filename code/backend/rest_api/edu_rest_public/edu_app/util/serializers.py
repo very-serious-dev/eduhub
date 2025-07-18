@@ -195,11 +195,12 @@ def choices_question_to_json(title, choices, number):
         "type": "choices"
     }
 
-def questionnaire_detail_to_json(id, title, questions, theme):
+def questionnaire_detail_to_json(id, title, questions, due_date, theme):
     return {
         "id": id,
         "title": title,
         "questions": questions,
+        "due_date": due_date,
         "theme": theme
     }
     

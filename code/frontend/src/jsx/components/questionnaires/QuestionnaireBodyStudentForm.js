@@ -7,10 +7,11 @@ import ChoicesQuestion from "./ChoicesQuestion";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 import LoadingHUD from "../common/LoadingHUD";
 import { EduAPIFetch } from "../../../client/APIFetch";
+import { beautifullyDisplayDateTime } from "../../../util/Formatter";
 
 const QuestionnaireBodyStudentForm = (props) => {
     const [answers, setAnswers] = useState(new Array(props.questionnaireData.questions.length).fill(""));
-    const [areYouSureExit, setAreYouSureExit] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, ARE_YOU_SURE_EXIT, ARE_YOU_SURE_SUBMIT
     const [isLoading, setLoading] = useState(false);
     const navigate = useNavigate();
     const theme = useContext(ThemeContext);
@@ -67,32 +68,38 @@ const QuestionnaireBodyStudentForm = (props) => {
     }
 
     return <>
-        {areYouSureExit && <AreYouSureDialog onActionConfirmed={onClose}
-            onDismiss={() => { setAreYouSureExit(false); }}
+        {popupShown === "ARE_YOU_SURE_EXIT" && <AreYouSureDialog onActionConfirmed={onClose}
+            onDismiss={() => { setPopupShown("NONE"); }}
             dialogMode="DELETE"
             warningMessage="¿Deseas salir y perder tus respuestas?" />}
+        {popupShown === "ARE_YOU_SURE_SUBMIT" && <AreYouSureDialog onActionConfirmed={onSubmit}
+            onDismiss={() => { setPopupShown("NONE"); }}
+            dialogMode="SUBMIT"
+            warningMessage="¿Deseas subir tus respuestas? Tu entrega es definitiva y no se puede modificar" />}
         <div>
             <div className="classDetailHeaderTopIcons">
-                <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setAreYouSureExit(true) }}>✖️</div>
+                <div className={`classDetailHeaderIcon pointable ${pointableSecondary(theme)}`} onClick={() => { setPopupShown("ARE_YOU_SURE_EXIT") }}>✖️</div>
             </div>
             <div className="questionnairePageContainer">
                 <div className="questionnaireDetailTitleHeader">
                     <div className="questionnaireDetailTitle">{props.questionnaireData.title}</div>
+                    {props.questionnaireData.due_date && <div className="assignmentDetailDueDate">Se entrega: {beautifullyDisplayDateTime(props.questionnaireData.due_date)}</div>}
                     <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                 </div>
-                <form onSubmit={onSubmit}>
+                <form onSubmit={(e) => { e.preventDefault(); setPopupShown("ARE_YOU_SURE_SUBMIT"); }}>
                     {sortedQuestions().map((question, qIdx) => {
                         if (question.type === "text") {
                             return <TextQuestion question={question}
                                 questionIndex={qIdx}
                                 answer={answers[qIdx]}
                                 setAnswer={onAnswerChanged} />
-                        }
-                        if (question.type === "choices") {
+                        } else if (question.type === "choices") {
                             return <ChoicesQuestion question={question}
                                 questionIndex={qIdx}
                                 answer={answers[qIdx]}
                                 setAnswer={onAnswerChanged} />
+                        } else {
+                            return <div>Tipo de pregunta no conocido</div>
                         }
                     })}
                     {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
