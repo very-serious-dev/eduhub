@@ -89,6 +89,9 @@ def get_questions(request, q_id):
     return JsonResponse(questionnaire_detail_to_json(questionnaire.id, questionnaire.title, text_questions_json + choices_questions_json, due_date, theme), status=200)
 
 def get_results(request, q_id):
+    questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)
+    if not can_see_questionnaire(request.session.user, questionnaire):
+        raise Forbidden
     return JsonResponse({"error": "Unimplemented"}, status=500)
 
 def create_submit(request, q_id, answers):
@@ -135,3 +138,13 @@ def create_submit(request, q_id, answers):
             new_assignment_submit.score = calculate_score(new_questionnaire_submit)
             new_assignment_submit.save()
     return JsonResponse({"success": True}, status=201)
+
+def get_submit(request, q_id, username):
+    questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)
+    if not can_see_questionnaire(request.session.user, questionnaire):
+        raise Forbidden
+    if request.session.user.role == User.UserRole.STUDENT and request.session.username != username:
+        raise Forbidden
+    submit = get_from_db(QuestionnaireSubmit, questionnaire=questionnaire, author__username=username)
+    return JsonResponse({"error": "Unimplemented"}, status=500)
+    

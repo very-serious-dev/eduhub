@@ -1,7 +1,7 @@
 import json, re
 from django.http import JsonResponse
 from . import exceptions as e
-from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire, UserQuestionnairePermission, Post, ChoicesQuestion, ChoicesQuestionChoice, ChoicesQuestionAnswer
+from ..models import User, Folder, UserClass, AnnouncementDocument, PostDocument, AnnouncementQuestionnaire, PostQuestionnaire, UserQuestionnairePermission, Post, ChoicesQuestion, ChoicesQuestionChoice, ChoicesQuestionAnswer, Class
 
 def maybe_unhappy(endpoint_function):
     def wrapped(*args, **kwargs):
@@ -119,15 +119,21 @@ def can_edit_class(user, classroom):
             or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
 
 def can_see_questionnaire(user, questionnaire):
-    if user.role not in [User.UserRole.STUDENT]: # TODO: Expand to non-students
-        return False
-    if UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).exists():
+    if user.role in [User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]:
         return True
-    if AnnouncementQuestionnaire.objects.filter(announcement__group=user.student_group, questionnaire=questionnaire).exists():
-        return True
-    user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
-    if PostQuestionnaire.objects.filter(post__classroom__in=user_classes, questionnaire=questionnaire).exists():
-        return True
+    elif user.role in [User.UserRole.TEACHER, User.UserRole.STUDENT]:
+        if UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).exists():
+            return True
+        user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
+        if PostQuestionnaire.objects.filter(post__classroom__in=user_classes, questionnaire=questionnaire).exists():
+            return True
+        if user.role == User.UserRole.STUDENT and AnnouncementQuestionnaire.objects.filter(announcement__group=user.student_group, questionnaire=questionnaire).exists():
+            return True
+        if user.role == User.UserRole.TEACHER:
+            for classroom_id in user_classes:
+                classroom_group = Class.objects.get(id=classroom_id).group
+                if AnnouncementQuestionnaire.objects.filter(questionnaire=questionnaire, announcement__group=classroom_group).exists():
+                    return True
     return False
 
 def questionnaire_oldest_assignment_due_date(questionnaire, user):

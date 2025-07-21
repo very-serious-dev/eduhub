@@ -433,3 +433,11 @@ def questionnaires_create_submit(request, q_id):
         return questionnaires.create_submit(request, q_id, answers)
     else:
         raise Unsupported
+
+@maybe_unhappy
+def questionnaires_get_submit(request, q_id, username):
+    if request.method == "GET":
+        require_valid_session(request=request)
+        return questionnaires.get_submit(request, q_id, username)
+    else:
+        raise Unsupported

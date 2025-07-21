@@ -146,10 +146,7 @@ def get_assignment(request, a_id):
             submit_documents = AssignmentSubmitDocument.objects.filter(submit=s)
             submit["files"] = list(map(lambda sd: document_to_json(sd.document), submit_documents))
             if s.questionnaire_submit:
-                submit["questionnaire"] = {
-                    "id": s.questionnaire_submit.questionnaire.id,
-                    "title": s.questionnaire_submit.questionnaire.title
-                }
+                submit["answered_questionnaire_id"] = s.questionnaire_submit.questionnaire.id
             submits.append(submit)
     else:
         try:
@@ -162,10 +159,7 @@ def get_assignment(request, a_id):
             submit_documents = AssignmentSubmitDocument.objects.filter(submit=s)
             your_submit["files"] = list(map(lambda sd: document_to_json(sd.document), submit_documents))
             if s.questionnaire_submit:
-                your_submit["questionnaire"] = {
-                    "id": s.questionnaire_submit.questionnaire.id,
-                    "title": s.questionnaire_submit.questionnaire.title
-                }
+                submit["answered_questionnaire_id"] = s.questionnaire_submit.questionnaire.id
             if s.is_score_published: # Only send score to students if boolean flag says 'published'
                 your_submit["is_score_published"] = True
                 your_submit["score"] = s.score

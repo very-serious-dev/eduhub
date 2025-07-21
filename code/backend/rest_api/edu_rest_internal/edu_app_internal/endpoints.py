@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument, EduAppQuestionnaire
+from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument, EduAppQuestionnaire, EduAppClass
 from .internal_secret import INTERNAL_SECRET
 
 def verify_session(request): # See docs/auth_flow.txt for further information
@@ -157,12 +157,15 @@ def document_permissions(request):
         elif EduAppUserdocumentpermission.objects.filter(document=document, user=user).exists():
             return JsonResponse({"success": True}, status=200)
         else:
-            if is_teacher(user.role):
-                if EduAppAnnouncementdocument.objects.filter(document=document).exists():
-                    return JsonResponse({"success": True}, status=200) # All teachers can, potentially, see all group announcements
+            if is_teacher(user.role): see all group announcements
                 for asd in EduAppAssignmentsubmitdocument.objects.filter(document=document):
                     assignment_class = asd.submit.assignment.classroom
                     if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
+                        return JsonResponse({"success": True}, status=200)
+                user_classes = EduAppUserclass.objects.filter(user=user).values_list('classroom_id', flat=True)
+                for classroom_id in user_classes:
+                    classroom_group = EduAppClass.objects.get(id=classroom_id).group
+                    if EduAppAnnouncementdocument.objects.filter(document=document, announcement__group=classroom_group).exists():
                         return JsonResponse({"success": True}, status=200)
             for ad in EduAppAnnouncementdocument.objects.filter(document=document):
                 annoucement_group = ad.announcement.group
