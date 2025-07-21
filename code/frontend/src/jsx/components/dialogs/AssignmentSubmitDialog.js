@@ -17,7 +17,9 @@ const AssignmentSubmitDialog = (props) => {
             onSuccess={props.onScoreChanged}
             onDismiss={() => { setPopupShown("NONE"); }} />
         : popupShown === "VIEW_ANSWERS" ?
-            <QuestionnaireAnswersDialog onDismiss={() => { setPopupShown("NONE") }} />
+            <QuestionnaireAnswersDialog questionnaireId={props.submit.answered_questionnaire_id}
+                username={props.author.username}
+                onDismiss={() => { setPopupShown("NONE") }} />
             : <div className="popupOverlayBackground" onClick={props.onDismiss}>
                 <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                     <div className="card dialogBackground overflowScrollableDialog">

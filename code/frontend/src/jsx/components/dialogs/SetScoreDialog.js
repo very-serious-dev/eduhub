@@ -65,7 +65,7 @@ const SetScoreDialog = (props) => {
                         <input type="number" value={formScore}
                             min={0}
                             max={10}
-                            step={.01}
+                            step={.001}
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormScore(e.target.value) }}
                             onFocus={e => { e.target.placeholder = "7.5"; }}

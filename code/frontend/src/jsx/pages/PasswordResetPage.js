@@ -46,11 +46,12 @@ const PasswordResetPage = () => {
             })
             .catch(error => {
                 setLoading(false);
-                setFeedback({ type: "error", message: error.error ?? "Se ha producido un error"});
+                setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
             })
     }
 
     return <div className="loginMain">
+        <p>Tu contraseña ha caducado 🔑</p>
         <div className="loginContainer card">
             <form onSubmit={onSubmit}>
                 <div className="formInputContainer">

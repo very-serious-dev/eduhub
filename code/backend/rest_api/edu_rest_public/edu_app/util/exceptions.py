@@ -31,6 +31,9 @@ class ForbiddenAlreadyAnswered(Exception):
 class ForbiddenQuestionnaireAssignmentIsDue(Exception):
     pass
 
+class ForbiddenQuestionnaireAssignmentIsNotDue(Exception):
+    pass
+
 class ForbiddenAssignmentSubmit(Exception):
     pass
 

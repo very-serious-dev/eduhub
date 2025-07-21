@@ -180,20 +180,27 @@ def assignment_detail_to_json(original_assignment, newest_edit, attachments, is_
         response["your_submit"] = your_submit
     return response
 
-def text_question_to_json(title, number):
+def text_question_to_json(question):
     return {
-        "title": title,
-        "number": number,
+        "id": question.id,
+        "title": question.title,
+        "number": question.number,
         "type": "text"
     }
 
-def choices_question_to_json(title, choices, number):
-    return {
-        "title": title,
+def choices_question_to_json(question, choices, correct_choice):
+    json = {
+        "id": question.id,
+        "title": question.title,
         "choices": choices,
-        "number": number,
+        "number": question.number,
         "type": "choices"
     }
+    if correct_choice:
+        json["correct_choice_id"] = correct_choice.id
+        json["correct_answer_score"] = question.correct_answer_score
+        json["incorrect_answer_score"] = question.incorrect_answer_score
+    return json
 
 def questionnaire_detail_to_json(id, title, questions, due_date, theme):
     return {

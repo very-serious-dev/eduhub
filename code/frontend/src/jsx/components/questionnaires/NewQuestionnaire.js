@@ -167,7 +167,7 @@ const NewQuestionnaire = (props) => {
                 onScoreConfigured={onScoreConfigured}
                 onDismiss={() => { setShowConfigureScores(false) }} />}
         <div>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={onSubmit} className="fullScreenFormWithBottomMargin">
                 <div className="formInputContainer">
                     <input className={`formInput ${primary(theme)}`} type="text" value={formTitle}
                         onChange={e => { setFormTitle(e.target.value) }}

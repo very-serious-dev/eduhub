@@ -1886,6 +1886,28 @@ body {
   margin-bottom: 40px;
 }
 
+.questionnaireAnswersDialogCenteredError {
+  margin-top: 40px;
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.answerContainer {
+  margin: 6px;
+  padding-bottom: 4px;
+}
+
+.answerQuestionTitle {
+  font-size: 0.875em;
+  margin-bottom: 4px;
+}
+
+.answerQuestionAnswer {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: 4px;
+}
+
 /**
  * Global user feedback bubble
  */
@@ -2065,6 +2087,10 @@ body {
 
 .veryBigText {
   height: 327px;
+}
+
+.fullScreenFormWithBottomMargin {
+  margin-bottom: 20px;
 }
 
 .formFiles {

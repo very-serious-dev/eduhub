@@ -157,7 +157,7 @@ def document_permissions(request):
         elif EduAppUserdocumentpermission.objects.filter(document=document, user=user).exists():
             return JsonResponse({"success": True}, status=200)
         else:
-            if is_teacher(user.role): see all group announcements
+            if is_teacher(user.role):
                 for asd in EduAppAssignmentsubmitdocument.objects.filter(document=document):
                     assignment_class = asd.submit.assignment.classroom
                     if EduAppUserclass.objects.filter(classroom=assignment_class, user=user).exists():
