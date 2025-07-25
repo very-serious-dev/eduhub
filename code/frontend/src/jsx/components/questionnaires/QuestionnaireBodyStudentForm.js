@@ -17,18 +17,6 @@ const QuestionnaireBodyStudentForm = (props) => {
     const theme = useContext(ThemeContext);
     const setFeedback = useContext(FeedbackContext);
 
-    const onBeforeUnload = (e) => {
-        e.preventDefault();
-        e.returnValue = "";
-    };
-
-    useEffect(() => {
-        window.addEventListener('beforeunload', onBeforeUnload);
-        return () => {
-            window.removeEventListener('beforeunload', onBeforeUnload);
-        };
-    }, []);
-
     const onClose = () => {
         navigate(-1);
     }
@@ -48,7 +36,6 @@ const QuestionnaireBodyStudentForm = (props) => {
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    window.removeEventListener('beforeunload', onBeforeUnload);
                     setFeedback({ type: "success", message: "Entregado con éxito" });
                     navigate(-1);
                 } else {

@@ -28,18 +28,6 @@ const NewQuestionnairePage = () => {
         return () => { channel.current.close() }
     }, []);
 
-    const onBeforeUnload = (e) => {
-        e.preventDefault();
-        e.returnValue = "";
-    };
-
-    useEffect(() => {
-        window.addEventListener('beforeunload', onBeforeUnload);
-        return () => {
-            window.removeEventListener('beforeunload', onBeforeUnload);
-        };
-    }, []);
-
     useEffect(() => {
         if (searchParams.get("qid")) {
             setLoading(true);
@@ -50,8 +38,8 @@ const NewQuestionnairePage = () => {
                 })
                 .catch(error => {
                     setLoading(false);
-                    //setRequestFailed(true);
-                    //setRequestError(error);
+                    setRequestFailed(true);
+                    setRequestError(error);
                 })
         }
     }, [])
@@ -74,7 +62,6 @@ const NewQuestionnairePage = () => {
                 setLoadingSubmit(false);
                 if (json.success === true) {
                     channel.current.postMessage(json.result);
-                    window.removeEventListener('beforeunload', onBeforeUnload);
                     window.close();
                 } else {
                     setFeedback({ type: "error", message: "Se ha producido un error" });
