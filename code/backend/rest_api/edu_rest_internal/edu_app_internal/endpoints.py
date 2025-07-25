@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from django.http import JsonResponse
-from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument, EduAppQuestionnaire, EduAppClass
+from .models import EduAppUsersession, EduAppUser, EduAppDocument, EduAppFolder, EduAppPostdocument, EduAppUserclass, EduAppAssignmentsubmitdocument, EduAppUserdocumentpermission, EduAppAnnouncementdocument, EduAppQuestionnaire, EduAppClass, EduAppUserfolderpermission
 from .internal_secret import INTERNAL_SECRET
 
 def verify_session(request): # See docs/auth_flow.txt for further information
@@ -68,6 +68,7 @@ def create_or_delete_documents(request):
             if json_parent_folder_id is not None:
                 try:
                     parent_folder = EduAppFolder.objects.get(author=user, id=json_parent_folder_id)
+                    folder_granted_users = list(map(lambda ufp: ufp.user, EduAppUserfolderpermission.objects.filter(folder=parent_folder, user__archived=False)))
                 except EduAppFolder.DoesNotExist:
                     return JsonResponse({"error": "La carpeta que has indicado no existe"}, status=404)
             for d in json_documents:
@@ -80,6 +81,12 @@ def create_or_delete_documents(request):
                 document.folder = parent_folder
                 document.created_at = datetime.today()
                 document.save()
+                # Also grant access to users who were allowed in the folder
+                for u in folder_granted_users:
+                    udp = EduAppUserdocumentpermission()
+                    udp.user = u
+                    udp.document = document
+                    udp.save()
         return JsonResponse({"success": True})
     elif request.method == "DELETE":
         try:

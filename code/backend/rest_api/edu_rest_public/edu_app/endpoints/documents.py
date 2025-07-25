@@ -41,6 +41,13 @@ def create_folder(request, name, parent_folder_id):
     new_folder.name = name
     new_folder.parent_folder = parent_folder
     new_folder.save()
+    # Also grant access to users who were allowed in the destination folder
+    parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
+    for u in parent_folder_granted_users:
+        ufp = UserFolderPermission()
+        ufp.user = u
+        ufp.folder = new_folder
+        ufp.save()
     return JsonResponse({"success": True,
                          "result": {
                              "operation": "folder_added",

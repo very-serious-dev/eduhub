@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.utils import timezone
 from .posts import folder_name_for_classroom, POSTS_DOCUMENTS_ROOT_FOLDER_NAME
-from ..models import Class, Folder, Questionnaire, TextQuestion, ChoicesQuestion, ChoicesQuestionChoice, PostQuestionnaire, AnnouncementQuestionnaire, QuestionnaireSubmit, TextQuestionAnswer, ChoicesQuestionAnswer, UserClass, AssignmentSubmit, User
+from ..models import Class, Folder, Questionnaire, TextQuestion, ChoicesQuestion, ChoicesQuestionChoice, PostQuestionnaire, AnnouncementQuestionnaire, QuestionnaireSubmit, TextQuestionAnswer, ChoicesQuestionAnswer, UserClass, AssignmentSubmit, User, UserFolderPermission, UserQuestionnairePermission
 from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_folder, can_see_class, questionnaire_oldest_assignment_due_date, questionnaire_assignments, calculate_score
 from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue, ForbiddenEditHasAnswers
 from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme
@@ -23,6 +23,14 @@ def create_questionnaire(request, title, questions, classroom_id, folder_id):
     new_questionnaire.folder = folder
     new_questionnaire.save()
     __save_questions_in_db(questions, new_questionnaire)
+    if folder:
+        # Also grant access to users who were allowed in the folder
+        folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
+        for u in folder_granted_users:
+            uqp = UserQuestionnairePermission()
+            uqp.user = u
+            uqp.questionnaire = new_questionnaire
+            uqp.save()
     return JsonResponse({"success": True,
                          "result": {
                             "operation": "questionnaire_added",
