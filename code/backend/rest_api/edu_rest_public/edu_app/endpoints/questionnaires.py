@@ -4,7 +4,7 @@ from .posts import folder_name_for_classroom, POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 from ..models import Class, Folder, Questionnaire, TextQuestion, ChoicesQuestion, ChoicesQuestionChoice, PostQuestionnaire, AnnouncementQuestionnaire, QuestionnaireSubmit, TextQuestionAnswer, ChoicesQuestionAnswer, UserClass, AssignmentSubmit, User, UserFolderPermission, UserQuestionnairePermission
 from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_folder, can_see_class, questionnaire_oldest_assignment_due_date, questionnaire_assignments, calculate_score
 from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue, ForbiddenEditHasAnswers
-from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme
+from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme, user_to_json
 
 def create_questionnaire(request, title, questions, classroom_id, folder_id):
     if classroom_id:
@@ -85,11 +85,17 @@ def get_questions(request, q_id):
     theme = __get_theme_for_questionnaire(questionnaire)
     return JsonResponse(questionnaire_detail_to_json(questionnaire.id, questionnaire.title, questions, due_date, theme), status=200)
 
-def get_results(request, q_id):
+def get_submits(request, q_id):
     questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)
     if not can_see_questionnaire(request.session.user, questionnaire):
         raise Forbidden
-    return JsonResponse({"error": "Unimplemented"}, status=500)
+    text_questions_json, choices_questions_json = __get_questionnaire_questions_json(questionnaire, True)
+    submits = []
+    for submit in QuestionnaireSubmit.objects.filter(questionnaire=questionnaire, author__archived=False):
+        text_answers_json, choices_answers_json = __get_questionnaire_submit_answers_json(submit)
+        submits.append({"author": user_to_json(submit.author),
+                        "answers": text_answers_json + choices_answers_json})
+    return JsonResponse({"submits": submits, "questions": text_questions_json + choices_questions_json, "title": questionnaire.title}, status=200)
 
 def create_submit(request, q_id, answers):
     questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)
@@ -147,12 +153,11 @@ def get_submit(request, q_id, username):
         if questionnaire_due_date and timezone.now() < questionnaire_due_date:
             raise ForbiddenQuestionnaireAssignmentIsNotDue
     submit = get_from_db(QuestionnaireSubmit, questionnaire=questionnaire, author__username=username)
+
     text_questions_json, choices_questions_json = __get_questionnaire_questions_json(questionnaire, True)
     questions = text_questions_json + choices_questions_json
-    text_answers = TextQuestionAnswer.objects.filter(submit=submit)
-    text_answers_json = list(map(lambda tqa: {"answer": tqa.answer, "question_id": tqa.question_id, "type": "text"}, text_answers))
-    choices_answers = ChoicesQuestionAnswer.objects.filter(submit=submit)
-    choices_answers_json = list(map(lambda cqa: {"answer_id": cqa.answer_id, "question_id": cqa.answer.question_id, "type": "choices"}, choices_answers))
+
+    text_answers_json, choices_answers_json = __get_questionnaire_submit_answers_json(submit)
     answers = text_answers_json + choices_answers_json
     return JsonResponse({"answers": answers, "questions": questions}, status=200)
 
@@ -195,6 +200,13 @@ def __get_questionnaire_questions_json(questionnaire, show_correct_answers):
             choices_question_json = choices_question_to_json(cq, choices_array, None)
         choices_questions_json.append(choices_question_json)
     return text_questions_json, choices_questions_json
+
+def __get_questionnaire_submit_answers_json(submit):
+    text_answers = TextQuestionAnswer.objects.filter(submit=submit)
+    text_answers_json = list(map(lambda tqa: {"answer": tqa.answer, "question_id": tqa.question_id, "type": "text"}, text_answers))
+    choices_answers = ChoicesQuestionAnswer.objects.filter(submit=submit)
+    choices_answers_json = list(map(lambda cqa: {"answer_id": cqa.answer_id, "question_id": cqa.answer.question_id, "type": "choices"}, choices_answers))
+    return text_answers_json, choices_answers_json
 
 def __get_theme_for_questionnaire(questionnaire):
     # Theme will be BLUE (default) unless the questionnaire is attached only to one classroom, in such case it inherits its theme

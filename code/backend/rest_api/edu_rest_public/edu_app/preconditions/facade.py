@@ -422,16 +422,11 @@ def questionnaires_get_or_edit_questions(request, q_id):
         raise Unsupported
 
 @maybe_unhappy
-def questionnaires_get_results(request, q_id):
+def questionnaires_get_or_create_submit(request, q_id):
     if request.method == "GET":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        return questionnaires.get_results(request, q_id)
-    else:
-        raise Unsupported
-
-@maybe_unhappy
-def questionnaires_create_submit(request, q_id):
-    if request.method == "POST":
+        return questionnaires.get_submits(request, q_id)
+    elif request.method == "POST":
         require_role([User.UserRole.STUDENT], request=request)
         answers = expect_body_with('answers', request=request)
         return questionnaires.create_submit(request, q_id, answers)

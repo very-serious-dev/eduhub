@@ -23,7 +23,7 @@ const QuestionnairePage = () => {
     useEffect(() => {
         let url;
         if (roles.includes("teacher")) {
-            url = `/api/v1/questionnaires/${params.formId}/results`;
+            url = `/api/v1/questionnaires/${params.formId}/submits`;
         } else {
             url = `/api/v1/questionnaires/${params.formId}/questions`;
         }
@@ -42,10 +42,10 @@ const QuestionnairePage = () => {
     return isLoading ?
         <LoadingHUDPage />
         : isRequestFailed ?
-            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} showGoBack={requestError?.client_behaviour === "suggest_go_back"}/>
+            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} showGoBack={requestError?.client_behaviour === "suggest_go_back"} />
             : <ThemeContext.Provider value={questionnaireData?.theme}>
                 {roles.includes("teacher") ?
-                    <QuestionnaireBodyTeacherOverview />
+                    <QuestionnaireBodyTeacherOverview questionnaireData={questionnaireData} />
                     : <QuestionnaireBodyStudentForm questionnaireData={questionnaireData} />}
             </ThemeContext.Provider>
 }

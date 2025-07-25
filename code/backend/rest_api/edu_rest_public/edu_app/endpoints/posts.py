@@ -132,7 +132,7 @@ def get_assignment(request, a_id):
     submits = []
     your_submit = None
     if is_teacher:
-        user_class_students = UserClass.objects.filter(classroom=assignment.classroom, user__role=User.UserRole.STUDENT).order_by("user__surname")
+        user_class_students = UserClass.objects.filter(classroom=assignment.classroom, user__role=User.UserRole.STUDENT, user__archived=False).order_by("user__surname")
         class_students = list(map(lambda uc: uc.user, user_class_students))
         submits = []
         for s in AssignmentSubmit.objects.filter(assignment=assignment):
