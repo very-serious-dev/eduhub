@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import FilePicker from "../common/FilePicker";
 import LoadingHUD from "../common/LoadingHUD";
 import { DocuAPIFetch } from "../../../client/APIFetch";
@@ -6,20 +6,28 @@ import CreateFolderDialog from "../dialogs/CreateFolderDialog";
 import OptionsDialog from "../dialogs/OptionsDialog";
 import { GetSessionUserRoles } from "../../../client/ClientCache";
 import { questionnaireCreationListener } from "../../../util/QuestionnaireCreationListener";
+import { FeedbackContext } from "../../main/GlobalContainer";
 
 const FilesBrowserTabWithUpload = (props) => {
     const [filesToUpload, setFilesToUpload] = useState([]);
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_FOLDER_OR_QUESTIONNAIRE, CREATE_FOLDER
     const [isUploading, setUploading] = useState(false);
+    const setFeedback = useContext(FeedbackContext);
     const roles = GetSessionUserRoles();
 
     useEffect(questionnaireCreationListener(
         () => false,
-        (newQuestionnaireOperation) => {
-            if (newQuestionnaireOperation.questionnaire.folder_id === props.parentFolderId) {
-                setPopupShown("NONE");
-                newQuestionnaireOperation.questionnaire["type"] = "questionnaire";
-                props.onCreateSuccess(newQuestionnaireOperation);
+        (response) => {
+            if (response.operation === "questionnaire_added") {
+                if (response.questionnaire.folder_id === props.parentFolderId) {
+                    setPopupShown("NONE");
+                    response.questionnaire["type"] = "questionnaire";
+                    props.onCreateEditSuccess(response);
+                }
+            } else if (response.operation === "questionnaire_edited") {
+                setFeedback({ type: "success", message: "Formulario editado con éxito" })
+                    response.questionnaire["type"] = "questionnaire";
+                    props.onCreateEditSuccess(response);
             }
         }
     ), []);
@@ -37,7 +45,7 @@ const FilesBrowserTabWithUpload = (props) => {
         DocuAPIFetch("POST", "/api/v1/documents", body)
             .then(json => {
                 if (json.success === true) {
-                    props.onCreateSuccess(json.result);
+                    props.onCreateEditSuccess(json.result);
                 } else {
                     props.onCreateFail("Se ha producido un error");
                 }
@@ -62,7 +70,7 @@ const FilesBrowserTabWithUpload = (props) => {
             <CreateFolderDialog
                 parentFolderId={props.parentFolderId}
                 onDismiss={() => { setPopupShown("NONE"); }}
-                onSuccess={props.onCreateSuccess}
+                onSuccess={props.onCreateEditSuccess}
                 onFail={props.onCreateFail} />}
         {popupShown === "CREATE_FOLDER_OR_QUESTIONNAIRE" &&
             <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}

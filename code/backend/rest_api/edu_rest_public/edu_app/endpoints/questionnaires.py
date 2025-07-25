@@ -3,7 +3,7 @@ from django.utils import timezone
 from .posts import folder_name_for_classroom, POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 from ..models import Class, Folder, Questionnaire, TextQuestion, ChoicesQuestion, ChoicesQuestionChoice, PostQuestionnaire, AnnouncementQuestionnaire, QuestionnaireSubmit, TextQuestionAnswer, ChoicesQuestionAnswer, UserClass, AssignmentSubmit, User
 from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_folder, can_see_class, questionnaire_oldest_assignment_due_date, questionnaire_assignments, calculate_score
-from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue
+from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue, ForbiddenEditHasAnswers
 from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme
 
 def create_questionnaire(request, title, questions, classroom_id, folder_id):
@@ -22,28 +22,7 @@ def create_questionnaire(request, title, questions, classroom_id, folder_id):
     new_questionnaire.author = request.session.user
     new_questionnaire.folder = folder
     new_questionnaire.save()
-    for qIndex, q in enumerate(questions):
-        if q["type"] == "text":
-            new_text_question = TextQuestion()
-            new_text_question.number = qIndex + 1
-            new_text_question.title = q["title"]
-            new_text_question.questionnaire = new_questionnaire
-            new_text_question.save()
-        if q["type"] == "choices":
-            new_choices_question = ChoicesQuestion()
-            new_choices_question.number = qIndex + 1
-            new_choices_question.title = q["title"]
-            new_choices_question.correct_answer_score = q.get("correct_answer_score")
-            new_choices_question.incorrect_answer_score = q.get("incorrect_answer_score")
-            new_choices_question.questionnaire = new_questionnaire
-            new_choices_question.save()
-            for cIndex, c in enumerate(q['choices']):
-                new_choice = ChoicesQuestionChoice()
-                new_choice.content = c["content"]
-                new_choice.number = cIndex + 1
-                new_choice.is_correct = c["is_correct"]
-                new_choice.question = new_choices_question
-                new_choice.save()
+    __save_questions_in_db(questions, new_questionnaire)
     return JsonResponse({"success": True,
                          "result": {
                             "operation": "questionnaire_added",
@@ -60,26 +39,42 @@ def delete_questionnaire(request, q_id):
                              "removed_questionnaire_id": questionnaire.id
                          }}, status=200)
 
+def edit_questions(request, q_id, title, questions):
+    questionnaire = get_from_db(Questionnaire, id=q_id, author=request.session.user)
+    if QuestionnaireSubmit.objects.filter(questionnaire=questionnaire).exists():
+        raise ForbiddenEditHasAnswers
+    questionnaire.title = title
+    questionnaire.save()
+    TextQuestion.objects.filter(questionnaire=questionnaire).delete()
+    ChoicesQuestion.objects.filter(questionnaire=questionnaire).delete()
+    __save_questions_in_db(questions, questionnaire)
+    return JsonResponse({"success": True,
+                         "result": {
+                            "operation": "questionnaire_edited",
+                            "questionnaire": questionnaire_to_json(questionnaire)
+                        }}, status=201)
+
 def get_questions(request, q_id):
     questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)
     if not can_see_questionnaire(request.session.user, questionnaire):
         raise Forbidden
-    if QuestionnaireSubmit.objects.filter(author=request.session.user, questionnaire=questionnaire).exists():
-        raise ForbiddenAlreadyAnswered
-    questionnaire_due_date = questionnaire_oldest_assignment_due_date(questionnaire, request.session.user)
-    if questionnaire_due_date and timezone.now() > questionnaire_due_date:
-        raise ForbiddenQuestionnaireAssignmentIsDue
-    text_questions_json, choices_questions_json = __get_questionnaire_questions_json(questionnaire, False)
+    if request.session.user.role == User.UserRole.STUDENT:
+        is_teacher = False
+        # Student wants to answer questionnaire
+        if QuestionnaireSubmit.objects.filter(author=request.session.user, questionnaire=questionnaire).exists():
+            raise ForbiddenAlreadyAnswered
+        questionnaire_due_date = questionnaire_oldest_assignment_due_date(questionnaire, request.session.user)
+        if questionnaire_due_date and timezone.now() > questionnaire_due_date:
+            raise ForbiddenQuestionnaireAssignmentIsDue
+    elif request.session.user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_SYSADMIN]:
+        is_teacher = True
+        # Teacher wants to edit questionnaire
+        if QuestionnaireSubmit.objects.filter(questionnaire=questionnaire).exists():
+            raise ForbiddenEditHasAnswers
+    text_questions_json, choices_questions_json = __get_questionnaire_questions_json(questionnaire, show_correct_answers=is_teacher)
     questions = text_questions_json + choices_questions_json
     due_date = questionnaire_oldest_assignment_due_date(questionnaire, request.session.user)
-    # Theme will be BLUE (default) unless the questionnaire is attached only to one classroom, in such case it inherits its theme
-    theme = Class.ClassTheme.BLUE
-    if not AnnouncementQuestionnaire.objects.filter(questionnaire=questionnaire).exists():
-        distinct_classrooms = set()
-        for pq in PostQuestionnaire.objects.filter(questionnaire=questionnaire).select_related("post"):
-            distinct_classrooms.add(pq.post.classroom_id)
-        if len(distinct_classrooms) == 1:
-            theme = class_theme(Class.objects.get(id=list(distinct_classrooms)[0]))
+    theme = __get_theme_for_questionnaire(questionnaire)
     return JsonResponse(questionnaire_detail_to_json(questionnaire.id, questionnaire.title, questions, due_date, theme), status=200)
 
 def get_results(request, q_id):
@@ -153,6 +148,30 @@ def get_submit(request, q_id, username):
     answers = text_answers_json + choices_answers_json
     return JsonResponse({"answers": answers, "questions": questions}, status=200)
 
+def __save_questions_in_db(questions, questionnaire):
+    for qIndex, q in enumerate(questions):
+        if q["type"] == "text":
+            new_text_question = TextQuestion()
+            new_text_question.number = qIndex + 1
+            new_text_question.title = q["title"]
+            new_text_question.questionnaire = questionnaire
+            new_text_question.save()
+        if q["type"] == "choices":
+            new_choices_question = ChoicesQuestion()
+            new_choices_question.number = qIndex + 1
+            new_choices_question.title = q["title"]
+            new_choices_question.correct_answer_score = q.get("correct_answer_score")
+            new_choices_question.incorrect_answer_score = q.get("incorrect_answer_score")
+            new_choices_question.questionnaire = questionnaire
+            new_choices_question.save()
+            for cIndex, c in enumerate(q['choices']):
+                new_choice = ChoicesQuestionChoice()
+                new_choice.content = c["content"]
+                new_choice.number = cIndex + 1
+                new_choice.is_correct = c["is_correct"]
+                new_choice.question = new_choices_question
+                new_choice.save()
+
 def __get_questionnaire_questions_json(questionnaire, show_correct_answers):
     text_questions = TextQuestion.objects.filter(questionnaire=questionnaire)
     text_questions_json = list(map(lambda tq: text_question_to_json(tq), text_questions))
@@ -168,3 +187,14 @@ def __get_questionnaire_questions_json(questionnaire, show_correct_answers):
             choices_question_json = choices_question_to_json(cq, choices_array, None)
         choices_questions_json.append(choices_question_json)
     return text_questions_json, choices_questions_json
+
+def __get_theme_for_questionnaire(questionnaire):
+    # Theme will be BLUE (default) unless the questionnaire is attached only to one classroom, in such case it inherits its theme
+    theme = Class.ClassTheme.BLUE
+    if not AnnouncementQuestionnaire.objects.filter(questionnaire=questionnaire).exists():
+        distinct_classrooms = set()
+        for pq in PostQuestionnaire.objects.filter(questionnaire=questionnaire).select_related("post"):
+            distinct_classrooms.add(pq.post.classroom_id)
+        if len(distinct_classrooms) == 1:
+            theme = class_theme(Class.objects.get(id=list(distinct_classrooms)[0]))
+    return theme

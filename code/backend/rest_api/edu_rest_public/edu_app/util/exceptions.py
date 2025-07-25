@@ -28,16 +28,19 @@ class Forbidden(Exception):
 class ForbiddenAlreadyAnswered(Exception):
     pass
 
+class ForbiddenAssignmentSubmit(Exception):
+    pass
+
+class ForbiddenEditHasAnswers(Exception):
+    pass
+
+class ForbiddenExceededLoginAttempts(Exception):
+    pass
+
 class ForbiddenQuestionnaireAssignmentIsDue(Exception):
     pass
 
 class ForbiddenQuestionnaireAssignmentIsNotDue(Exception):
-    pass
-
-class ForbiddenAssignmentSubmit(Exception):
-    pass
-
-class ForbiddenExceededLoginAttempts(Exception):
     pass
 
 class NotFound(Exception):
@@ -46,19 +49,19 @@ class NotFound(Exception):
 class Unsupported(Exception):
     pass
 
-class ConflictUserAlreadyExists(Exception):
+class ConflictFolderAlreadyExists(Exception):
     pass
 
 class ConflictGroupAlreadyExists(Exception):
     pass
 
+class ConflictQuotaExceeded(Exception):
+    pass
+
 class ConflictUnitAlreadyExists(Exception):
     pass
 
-class ConflictFolderAlreadyExists(Exception):
-    pass
-
-class ConflictQuotaExceeded(Exception):
+class ConflictUserAlreadyExists(Exception):
     pass
 
 class InternalError(Exception):

@@ -29,6 +29,8 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Ya has respondido a este formulario", "client_behaviour": "suggest_go_back"}, status=403)
         except e.ForbiddenAssignmentSubmit:
             return JsonResponse({"error": "La tarea ya está entregada o la fecha de entrega se ha pasado"}, status=403)
+        except e.ForbiddenEditHasAnswers:
+            return JsonResponse({"error": "Este formulario no se puede editar. Ya contiene respuestas", "client_behaviour": "suggest_go_back"}, status=403)
         except e.ForbiddenExceededLoginAttempts:
             return JsonResponse({"error": "La cuenta está bloqueada debido a actividad sospechosa"}, status=403)
         except e.ForbiddenQuestionnaireAssignmentIsDue:

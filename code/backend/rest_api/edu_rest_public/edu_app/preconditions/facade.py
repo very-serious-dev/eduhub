@@ -410,10 +410,14 @@ def questionnaires_create(request):
         raise Unsupported
 
 @maybe_unhappy
-def questionnaires_get_questions(request, q_id):
+def questionnaires_get_or_edit_questions(request, q_id):
     if request.method == "GET":
         require_valid_session(request=request)
         return questionnaires.get_questions(request, q_id)
+    elif request.method == "PUT":
+        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        title, questions = expect_body_with('title', 'questions', request=request)
+        return questionnaires.edit_questions(request, q_id, title, questions)
     else:
         raise Unsupported
 

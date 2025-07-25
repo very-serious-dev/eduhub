@@ -92,7 +92,7 @@ const FilesBrowser = (props) => {
                     view: <FilesBrowserTabWithUpload
                         elements={newTabElements}
                         parentFolderId={levelBeingWalkedParentFolderId}
-                        onCreateSuccess={props.onCreateMoveDeleteSuccess}
+                        onCreateEditSuccess={props.onCreateMoveDeleteSuccess}
                         onCreateFail={props.onCreateMoveDeleteFail} />
                 });
             } else {

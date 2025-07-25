@@ -6,8 +6,8 @@ import NewQuestionnaireTextQuestion from "./NewQuestionnaireTextQuestion";
 import ConfigureQuestionnaireScoreDialog from "../dialogs/ConfigureQuestionnaireScoreDialog";
 
 const NewQuestionnaire = (props) => {
-    const [formTitle, setFormTitle] = useState("");
-    const [formQuestions, setFormQuestions] = useState([]);
+    const [formTitle, setFormTitle] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.title : "");
+    const [formQuestions, setFormQuestions] = useState(props.questionnaireBeingEdited ? [...props.questionnaireBeingEdited.questions] : []);
     const [showConfigureScores, setShowConfigureScores] = useState(false);
     const theme = useContext(ThemeContext);
 

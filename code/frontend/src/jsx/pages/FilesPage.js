@@ -40,6 +40,9 @@ const FilesPage = () => {
         if (result.operation === "questionnaire_added") {
             setMyFiles(old => { return { ...old, questionnaires: old.questionnaires.concat(result.questionnaire) } });
         }
+        if (result.operation === "questionnaire_edited") {
+            setMyFiles(old => { return { ...old, questionnaires: old.questionnaires.map(q => result.questionnaire.id === q.id ? result.questionnaire : q)} });
+        }
         if (result.operation === "folder_changed") {
             setMyFiles(old => {
                 const newFolders = old.folders.map(f => { if (f.id === result.folder.id) return result.folder; else return f });

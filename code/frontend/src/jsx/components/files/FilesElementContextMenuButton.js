@@ -35,6 +35,12 @@ const FilesElementContextMenuButton = (props) => {
         }
     }
 
+    const onEditQuestionnaire = () => {
+        setPopupShown("NONE");
+        // After edition, the success event will be handled in the FilesBrowserTabWithUpload (questionnaireCreationListener)
+        window.open(`/create-form?qid=${props.questionnaire.id}`, "_blank");
+    }
+
     const deleteQuestionnaireFromEduRest = () => {
         EduAPIFetch("DELETE", `/api/v1/questionnaires/${props.questionnaire.id}`)
             .then(json => {
@@ -85,6 +91,7 @@ const FilesElementContextMenuButton = (props) => {
             <div className="contextMenu dialogBackground" onClick={e => { e.stopPropagation(); }}>
                 <div className="contextMenuItem pointable" onClick={() => { setPopupShown("SHARE") }}>🖐️ Compartir</div>
                 <div className="contextMenuItem pointable" onClick={() => { setPopupShown("MOVE") }}>➡️ Mover</div>
+                {(!isProtected() && props.questionnaire) && <div className="contextMenuItem pointable" onClick={onEditQuestionnaire}>🖊️ Editar</div>}
                 {!isProtected() && <div className="contextMenuItem pointable" onClick={() => { setPopupShown("DELETE") }}>❌ Eliminar</div>}
             </div></>
         }

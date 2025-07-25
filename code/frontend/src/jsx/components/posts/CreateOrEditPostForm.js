@@ -19,21 +19,23 @@ const CreateOrEditPostForm = (props) => {
     const [attachments, setAttachments] = useState(props.postBeingEdited ? props.postBeingEdited.attachments : []);
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
-console.log(props)
+
     useEffect(() => {
         setFormAssignmentLocalDueDate(postBeingEditedDueDateLocalTime() ?? TODAY_23_59);
     }, []);
 
     useEffect(questionnaireCreationListener(
         () => { return !props.showCreateQuestionnaire },
-        (newQuestionnaireOperation) => {
-            const newQuestionnaire = { ...newQuestionnaireOperation.questionnaire, type: "questionnaire" };
-            const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
-            if (errorMessage !== null) {
-                alert(errorMessage);
-                return;
+        (response) => {
+            if (response.operation === "questionnaire_added") {
+                const newQuestionnaire = { ...response.questionnaire, type: "questionnaire" };
+                const errorMessage = assertValidAttachmentsErrorMessage([newQuestionnaire], attachments);
+                if (errorMessage !== null) {
+                    alert(errorMessage);
+                    return;
+                }
+                setAttachments(old => [...old, newQuestionnaire]);
             }
-            setAttachments(old => [...old, newQuestionnaire]);
         }
     ), []);
 
