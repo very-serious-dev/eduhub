@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import LoadingHUD from "../common/LoadingHUD";
 import { EduAPIFetch } from "../../../client/APIFetch";
-import Answer from "../questionnaires/Answer";
+import SingleSubmitAnswer from "../questionnaires/SingleSubmitAnswer";
 
 const QuestionnaireAnswersDialog = (props) => {
     const [answersData, setAnswersData] = useState([]);
@@ -20,7 +20,7 @@ const QuestionnaireAnswersDialog = (props) => {
                 setLoading(false);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, []);
+    }, [props.questionnaireId, props.username]);
 
     return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
@@ -28,7 +28,7 @@ const QuestionnaireAnswersDialog = (props) => {
                 <div className="dialogTitle">Respuestas</div>
                 {answersData.questions?.toSorted((a, b) => a.number - b.number).map(question => {
                     const answer = answersData.answers.find(answer => answer.question_id === question.id);
-                    return <Answer question={question} answer={answer} />
+                    return <SingleSubmitAnswer question={question} answer={answer} />
                 })}
                 {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 {requestErrorMessage && <div className="questionnaireAnswersDialogCenteredError">{`${requestErrorMessage} 😔`}</div>}

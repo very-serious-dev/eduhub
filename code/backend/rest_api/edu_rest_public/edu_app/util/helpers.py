@@ -26,15 +26,15 @@ def maybe_unhappy(endpoint_function):
         except e.Forbidden:
             return JsonResponse({"error": "No tienes permisos suficientes"}, status=403)
         except e.ForbiddenAlreadyAnswered:
-            return JsonResponse({"error": "Ya has respondido a este formulario", "client_behaviour": "suggest_go_back"}, status=403)
+            return JsonResponse({"error": "Ya has respondido a este formulario", "suggested_action": "go_back"}, status=403)
         except e.ForbiddenAssignmentSubmit:
             return JsonResponse({"error": "La tarea ya está entregada o la fecha de entrega se ha pasado"}, status=403)
         except e.ForbiddenEditHasAnswers:
-            return JsonResponse({"error": "Este formulario no se puede editar. Ya contiene respuestas", "client_behaviour": "suggest_go_back"}, status=403)
+            return JsonResponse({"error": "Este formulario no se puede editar. Ya contiene respuestas", "suggested_action": "close_window"}, status=403)
         except e.ForbiddenExceededLoginAttempts:
             return JsonResponse({"error": "La cuenta está bloqueada debido a actividad sospechosa"}, status=403)
         except e.ForbiddenQuestionnaireAssignmentIsDue:
-            return JsonResponse({"error": "No puedes responder a este formulario. El plazo de entrega ya ha pasado", "client_behaviour": "suggest_go_back"}, status=403)
+            return JsonResponse({"error": "No puedes responder a este formulario. El plazo de entrega ya ha pasado", "suggested_action": "go_back"}, status=403)
         except e.ForbiddenQuestionnaireAssignmentIsNotDue:
             return JsonResponse({"error": "¡Lo sentimos! No puedes ver tus respuestas porque el plazo de entrega de la tarea aún no ha pasado"}, status=403)
         except e.NotFound:

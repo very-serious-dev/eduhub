@@ -1711,6 +1711,15 @@ body {
   text-align: center;
 }
 
+.errorPageButton {
+  border: none;
+  padding: 8px;
+}
+
+.errorPageButton:hover {
+  cursor: pointer;
+}
+
 /**
  * Questionnaires
  */
@@ -1906,6 +1915,54 @@ body {
   margin-top: 4px;
   margin-bottom: 4px;
   margin-left: 4px;
+}
+
+.allSubmitsAnswerContainer {
+  padding: 4px;
+  margin-top: 4px;
+  background-color: var(--color-subtle-grey);
+}
+
+.allSubmitsAnswerAuthorContainer {
+  text-align: right;
+}
+
+.allSubmitsAnswerAuthorFullName {
+  display: inline-block;
+  font-size: 0.875em
+}
+
+.allSubmitsAnswerAuthorUsername {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.75em;
+}
+
+.allSubmitsChoicesQuestionChartContainer {
+  padding-top: 16px;
+  margin-left: 16px;
+}
+
+.choicesQuestionChartChoiceContainer {
+  margin-bottom: 8px;
+}
+
+.choicesQuestionChartChoicePlotContainer {
+  display: flex;
+  align-items: center;
+}
+
+.choicesQuestionChartChoicePlot {
+  height: 35px;
+}
+
+.choicesQuestionChartChoiceNTimesChosen {
+  margin-left: 8px;
+  font-size: 1.125em;
+}
+
+.choicesQuestionChartChoiceContent {
+  font-size: 0.75em;
 }
 
 /**

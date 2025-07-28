@@ -2,6 +2,8 @@ import { useContext } from "react";
 import { accent, pointableSecondary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import { useNavigate } from "react-router";
+import QuestionnaireTextQuestionAnswers from "./QuestionnaireTextQuestionAnswers";
+import QuestionnaireChoicesQuestionAnswers from "./QuestionnaireChoicesQuestionAnswers";
 
 const QuestionnaireBodyTeacherOverview = (props) => {
     const navigate = useNavigate();
@@ -23,9 +25,22 @@ const QuestionnaireBodyTeacherOverview = (props) => {
                 <div className={`classDetailSectionUnderline ${accent(theme)}`} />
             </div>
         </div>
-        {sortedQuestions().map(q => {
-            // TODO: show questions and answers from students
-            return <div></div>
+        {sortedQuestions().map(question => {
+            const allAnswersForQuestion = props.questionnaireData.submits.reduce((acumAnswers, submit) => {
+                const singleAnswer = submit.answers.find(answer => answer.question_id === question.id);
+                if (singleAnswer) {
+                    return [...acumAnswers, { ...singleAnswer, author: submit.author }];
+                }
+                return acumAnswers;
+            }, []);
+
+            if (question.type === "text") {
+                return <QuestionnaireTextQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
+            } else if (question.type === "choices") {
+                return <QuestionnaireChoicesQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
+            } else {
+                return <div>Tipo de pregunta no conocido</div>
+            }
         })}
     </div>
 }

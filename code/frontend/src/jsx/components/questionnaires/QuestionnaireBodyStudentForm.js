@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { FeedbackContext, ThemeContext } from "../../main/GlobalContainer";
 import { accent, pointableSecondary, primary } from "../../../util/Themes";
 import { useNavigate } from "react-router";
-import TextQuestion from "./TextQuestion";
-import ChoicesQuestion from "./ChoicesQuestion";
+import QuestionnaireTextQuestion from "./QuestionnaireTextQuestion";
+import QuestionnaireChoicesQuestion from "./QuestionnaireChoicesQuestion";
 import AreYouSureDialog from "../dialogs/AreYouSureDialog";
 import LoadingHUD from "../common/LoadingHUD";
 import { EduAPIFetch } from "../../../client/APIFetch";
@@ -76,12 +76,12 @@ const QuestionnaireBodyStudentForm = (props) => {
                 <form onSubmit={(e) => { e.preventDefault(); setPopupShown("ARE_YOU_SURE_SUBMIT"); }}>
                     {sortedQuestions().map((question, qIdx) => {
                         if (question.type === "text") {
-                            return <TextQuestion question={question}
+                            return <QuestionnaireTextQuestion question={question}
                                 questionIndex={qIdx}
                                 answer={answers[qIdx]}
                                 setAnswer={onAnswerChanged} />
                         } else if (question.type === "choices") {
-                            return <ChoicesQuestion question={question}
+                            return <QuestionnaireChoicesQuestion question={question}
                                 questionIndex={qIdx}
                                 answer={answers[qIdx]}
                                 setAnswer={onAnswerChanged} />

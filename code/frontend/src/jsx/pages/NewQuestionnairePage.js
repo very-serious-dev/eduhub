@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import NewQuestionnaire from "../components/questionnaires/NewQuestionnaire";
+import NewQuestionnaireBody from "../components/questionnaires/NewQuestionnaireBody";
 import LoadingHUD from "../components/common/LoadingHUD";
 import { FeedbackContext } from "../main/GlobalContainer";
 import { EduAPIFetch } from "../../client/APIFetch";
@@ -20,13 +20,13 @@ const NewQuestionnairePage = () => {
 
     useEffect(() => {
         document.title = "Nuevo formulario";
-    }, []);
+    }, [searchParams]);
 
     useEffect(() => {
         channel.current = new BroadcastChannel("new_questionnaire");
 
         return () => { channel.current.close() }
-    }, []);
+    }, [searchParams]);
 
     useEffect(() => {
         if (searchParams.get("qid")) {
@@ -42,7 +42,7 @@ const NewQuestionnairePage = () => {
                     setRequestError(error);
                 })
         }
-    }, [])
+    }, [searchParams])
 
     const onSubmitNewQuestionnaire = (title, questions) => {
         if (isLoadingSubmit) { return; }
@@ -76,9 +76,9 @@ const NewQuestionnairePage = () => {
     return isLoading ?
         <LoadingHUDPage />
         : isRequestFailed ?
-            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} showGoBack={requestError?.client_behaviour === "suggest_go_back"} />
+            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} suggestedAction={requestError?.suggested_action} />
             : <div className="questionnairePageContainer">
-                <NewQuestionnaire onSubmitNewQuestionnaire={onSubmitNewQuestionnaire}
+                <NewQuestionnaireBody onSubmitNewQuestionnaire={onSubmitNewQuestionnaire}
                     questionnaireBeingEdited={questionnaireBeingEdited}
                     submitText={searchParams.get("cid") ? "Guardar y adjuntar" : "Guardar"} />
                 {isLoadingSubmit && <div className="loadingHUDCentered"><LoadingHUD /></div>}

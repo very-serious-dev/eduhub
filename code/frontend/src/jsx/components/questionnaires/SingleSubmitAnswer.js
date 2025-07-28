@@ -1,4 +1,4 @@
-const Answer = (props) => {
+const SingleSubmitAnswer = (props) => {
 
     const appropriateChoiceExtraInfo = (choiceId) => {
         if (!props.question.correct_choice_id) { return; }
@@ -34,4 +34,4 @@ const Answer = (props) => {
     </div>
 }
 
-export default Answer;
+export default SingleSubmitAnswer;

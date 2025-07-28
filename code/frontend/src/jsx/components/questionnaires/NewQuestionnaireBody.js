@@ -5,7 +5,7 @@ import NewQuestionnaireChoicesQuestion from "./NewQuestionnaireChoicesQuestion";
 import NewQuestionnaireTextQuestion from "./NewQuestionnaireTextQuestion";
 import ConfigureQuestionnaireScoreDialog from "../dialogs/ConfigureQuestionnaireScoreDialog";
 
-const NewQuestionnaire = (props) => {
+const NewQuestionnaireBody = (props) => {
     const [formTitle, setFormTitle] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.title : "");
     const [formQuestions, setFormQuestions] = useState(props.questionnaireBeingEdited ? [...props.questionnaireBeingEdited.questions] : []);
     const [showConfigureScores, setShowConfigureScores] = useState(false);
@@ -224,4 +224,4 @@ const NewQuestionnaire = (props) => {
     </>
 }
 
-export default NewQuestionnaire;
+export default NewQuestionnaireBody;

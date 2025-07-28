@@ -2,7 +2,7 @@ import { useContext } from "react"
 import { ThemeContext } from "../../main/GlobalContainer"
 import { pointableSecondary, primary, tertiary } from "../../../util/Themes";
 
-const ChoicesQuestion = (props) => {
+const QuestionnaireChoicesQuestion = (props) => {
     const theme = useContext(ThemeContext);
 
     const choices = props.question.choices;
@@ -10,7 +10,7 @@ const ChoicesQuestion = (props) => {
 
     return <div className="card questionnaireQuestionContainer" key={`question${props.questionIndex + 1}`}>
         <div className="questionnaireQuestionTopRightContainer">
-            <div className={`questionnaireQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.questionIndex + 1}</div>
+            <div className={`questionnaireQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.question.number}</div>
         </div>
         <div>{props.question.title}</div>
         {choices.map(choice => {
@@ -29,4 +29,4 @@ const ChoicesQuestion = (props) => {
     </div>
 }
 
-export default ChoicesQuestion;
+export default QuestionnaireChoicesQuestion;

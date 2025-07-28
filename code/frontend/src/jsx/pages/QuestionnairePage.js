@@ -37,12 +37,12 @@ const QuestionnairePage = () => {
                 setRequestFailed(true);
                 setRequestError(error);
             });
-    }, []);
+    }, [params.formId, roles]);
 
     return isLoading ?
         <LoadingHUDPage />
         : isRequestFailed ?
-            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} showGoBack={requestError?.client_behaviour === "suggest_go_back"} />
+            <ErrorPage errorMessage={requestError?.error ?? "Se ha producido un error"} suggestedAction={requestError?.suggested_action} />
             : <ThemeContext.Provider value={questionnaireData?.theme}>
                 {roles.includes("teacher") ?
                     <QuestionnaireBodyTeacherOverview questionnaireData={questionnaireData} />

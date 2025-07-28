@@ -2,12 +2,12 @@ import { useContext } from "react"
 import { ThemeContext } from "../../main/GlobalContainer"
 import { accent, tertiary } from "../../../util/Themes";
 
-const TextQuestion = (props) => {
+const QuestionnaireTextQuestion = (props) => {
     const theme = useContext(ThemeContext);
 
-    return <div className="card questionnaireQuestionContainer">
+    return <div className="card questionnaireQuestionContainer" key={`question${props.questionIndex + 1}`}>
         <div className="questionnaireQuestionTopRightContainer">
-            <div className={`questionnaireQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.questionIndex + 1}</div>
+            <div className={`questionnaireQuestionTopRightQuestionNumber ${tertiary(theme)}`}>Pregunta {props.question.number}</div>
         </div>
         <div>{props.question.title}</div>
         <div className="formInputContainer">
@@ -23,4 +23,4 @@ const TextQuestion = (props) => {
     </div>
 }
 
-export default TextQuestion;
+export default QuestionnaireTextQuestion;
