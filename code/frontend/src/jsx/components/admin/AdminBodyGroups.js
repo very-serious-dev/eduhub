@@ -7,7 +7,7 @@ import AnnouncementsDialog from "../dialogs/AnnouncementsDialog";
 
 const AdminBodyGroups = (props) => {
     const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_GROUP, OPTIONS, ANNOUNCEMENTS
-    const [groupTagForPopup, setGroupTagForPopup] = useState();
+    const [groupIdForPopup, setGroupIdForPopup] = useState();
     const setFeedback = useContext(FeedbackContext);
 
     const onGroupAdded = (errorMessage) => {
@@ -19,8 +19,8 @@ const AdminBodyGroups = (props) => {
         }
     }
 
-    const onGroupClicked = (groupTag) => {
-        setGroupTagForPopup(groupTag);
+    const onGroupClicked = (groupId) => {
+        setGroupIdForPopup(groupId);
         setPopupShown("OPTIONS");
     }
 
@@ -38,14 +38,14 @@ const AdminBodyGroups = (props) => {
                 }
             ]} />}
         {popupShown === "ANNOUNCEMENTS" &&
-            <AnnouncementsDialog groupTag={groupTagForPopup}
+            <AnnouncementsDialog groupId={groupIdForPopup}
                 onDismiss={() => { setPopupShown("NONE"); }} />}
         <div className="adminSubpanelList">
-            {props.groups.map(g => {
-                return <GenericCard cardId={g.tag}
-                    preTitle={g.tag}
-                    title={g.name}
-                    footer={`Tutor: ${g.tutor.name} ${g.tutor.surname}`}
+            {props.groups.map(group => {
+                return <GenericCard cardId={group.id}
+                    preTitle={`${group.tag} (${group.year})`}
+                    title={group.name}
+                    footer={`Tutor: ${group.tutor.name} ${group.tutor.surname}`}
                     onClickWithId={onGroupClicked} />
             })}
         </div>

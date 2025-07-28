@@ -22,7 +22,7 @@ def get_admin_home(request):
                          "classesCount": classes_count,
                          "groups": groups_array_to_json(groups)})
 
-def create_user(request, username, name, surname, password, student_group, is_teacher):
+def create_user(request, username, name, surname, password, student_group_id, is_teacher):
     if User.objects.filter(username=username).exists():
         raise ConflictUserAlreadyExists
     if is_teacher != True and student_group is None:
@@ -37,7 +37,7 @@ def create_user(request, username, name, surname, password, student_group, is_te
     new_user.max_documents =           STUDENT_MAX_DOCUMENTS if is_teacher != True else TEACHER_MAX_DOCUMENTS
     new_user.max_documents_size = STUDENT_MAX_DOCUMENTS_SIZE if is_teacher != True else TEACHER_MAX_DOCUMENTS_SIZE
     if is_teacher != True:
-        new_user.student_group = get_from_db(Group, tag=student_group)
+        new_user.student_group = get_from_db(Group, id=student_group_id)
     new_user.save()
     return JsonResponse({"success": True}, status=201)
 

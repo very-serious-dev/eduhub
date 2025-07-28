@@ -72,7 +72,7 @@ const CreateOrEditAnnouncementForm = (props) => {
             url = `/api/v1/announcements/${props.announcementBeingEdited.id}`;
         } else {
             method = "POST";
-            url = `/api/v1/groups/${props.groupTag}/announcements`;
+            url = `/api/v1/groups/${props.groupId}/announcements`;
         }
         EduAPIFetch(method, url, body)
             .then(json => {

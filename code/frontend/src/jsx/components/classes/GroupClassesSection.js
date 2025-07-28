@@ -15,14 +15,14 @@ const GroupClassesSection = (props) => {
     }
 
     const onClickAnnouncements = () => {
-        setShowAnnouncementsDialog(true); 
-        SetLastKnownGroupAnnouncementTimestamp(props.groupTag, new Date(props.latestUpdate).getTime())
+        setShowAnnouncementsDialog(true);
+        SetLastKnownGroupAnnouncementTimestamp(props.group.id, new Date(props.group.latestUpdate).getTime())
     }
 
     const groupSmallRedDotIfNeeded = () => {
         if (props.latestUpdate !== "never") {
-            const latestKnownUpdateTimestamp = GetLastKnownGroupAnnouncementTimestamp(props.groupTag)
-            const latestRealUpdateTimestamp = new Date(props.latestUpdate).getTime()
+            const latestKnownUpdateTimestamp = GetLastKnownGroupAnnouncementTimestamp(props.group.id)
+            const latestRealUpdateTimestamp = new Date(props.group.latestUpdate).getTime()
             if (latestKnownUpdateTimestamp < latestRealUpdateTimestamp) {
                 return <div className="announcementsSmallRedDot" />
             }
@@ -42,10 +42,9 @@ const GroupClassesSection = (props) => {
 
     return <>
         {showAnnouncementsDialog &&
-            <AnnouncementsDialog groupTag={props.groupTag}
-                onDismiss={() => { setShowAnnouncementsDialog(false); }} />}
+            <AnnouncementsDialog groupId={props.group.id} onDismiss={() => { setShowAnnouncementsDialog(false); }} />}
         <div className="classesSectionContainer">
-            <div className="classesSectionTitle">{props.groupTag}</div>
+            <div className="classesSectionTitle">{props.group.name}</div>
             <div className="classesSectionAnnouncementsButton pointable"
                 onClick={onClickAnnouncements}>
                 📢 Tablón de anuncios
@@ -58,7 +57,7 @@ const GroupClassesSection = (props) => {
                         <GenericCard backgroundHoverImage={backgroundImageSrc(c.theme)}
                             cardId={c.id}
                             title={c.name}
-                            footer={c.group}
+                            footer={`${props.group.tag} (${props.group.year})`}
                             onClickWithId={onClickClass} />
                         {classSmallRedDotIfNeeded(c)}
                     </div>

@@ -28,7 +28,7 @@ const ClassesBody = (props) => {
             })
             .catch(error => {
                 setLoadingAllGroups(false);
-                setFeedback({ type: "error", message: "Ha habido un error cargando los grupos" })
+                setFeedback({ type: "error", message: error.error ?? "Ha habido un error cargando los grupos" })
             })
     }
 
@@ -38,8 +38,8 @@ const ClassesBody = (props) => {
             groups={allGroups}
             automaticallyAddTeacher={true} />}
         {props.groups.map(g => {
-            const classes = props.classes.filter(c => c.group === g.tag)
-            return <GroupClassesSection groupTag={g.tag} latestUpdate={g.latest_update} classes={classes} />
+            const classes = props.classes.filter(c => c.group_id === g.id)
+            return <GroupClassesSection group={g} classes={classes} />
         })}
         {roles.includes("teacher") && <div className="card floatingCardAddNew pointable" onClick={onClickAddClass}>{isLoadingAllGroups ? "Cargando..." : "➕ Añadir clase"}</div>}
     </div>

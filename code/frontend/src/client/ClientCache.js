@@ -20,13 +20,13 @@ const SetCachedPosts = (classId, posts) => {
     localStorage.setItem(POSTS_CACHE_PREFIX + classId, JSON.stringify(posts));
 }
 
-const GetLastKnownGroupAnnouncementTimestamp = (groupTag) => {
-    const timestamp = localStorage.getItem(GROUP_UPDATE_CACHE_PREFIX + groupTag);
+const GetLastKnownGroupAnnouncementTimestamp = (groupId) => {
+    const timestamp = localStorage.getItem(GROUP_UPDATE_CACHE_PREFIX + groupId);
     return timestamp ?? 0;
 }
 
-const SetLastKnownGroupAnnouncementTimestamp = (groupTag, timestamp) => {
-    localStorage.setItem(GROUP_UPDATE_CACHE_PREFIX + groupTag, timestamp);
+const SetLastKnownGroupAnnouncementTimestamp = (groupId, timestamp) => {
+    localStorage.setItem(GROUP_UPDATE_CACHE_PREFIX + groupId, timestamp);
 }
 
 const RemoveClientCache = () => {

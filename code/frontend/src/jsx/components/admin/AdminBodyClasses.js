@@ -100,7 +100,7 @@ const AdminBodyClasses = (props) => {
                         return <GenericCard cardId={c.id}
                             preTitle={""}
                             title={c.name}
-                            footer={c.group}
+                            footer={`${c.group_tag} (${c.group_year})`}
                             onClickWithId={onClassClicked} />
                     })}
                 </div>

@@ -36,7 +36,7 @@ const EditAnnouncementDialog = (props) => {
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <CreateOrEditAnnouncementForm
-                        groupTag={null}
+                        groupId={null}
                         announcementBeingEdited={props.announcement}
                         submitText="Publicar modificación"
                         showDeleteButton={true}

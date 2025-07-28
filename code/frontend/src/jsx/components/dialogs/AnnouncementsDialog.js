@@ -17,7 +17,7 @@ const AnnouncementsDialog = (props) => {
 
     useEffect(() => {
         setLoading(true);
-        EduAPIFetch("GET", `/api/v1/groups/${props.groupTag}/announcements`)
+        EduAPIFetch("GET", `/api/v1/groups/${props.groupId}/announcements`)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
@@ -31,7 +31,7 @@ const AnnouncementsDialog = (props) => {
                 setLoading(false);
                 setFeedback({ type: "error", message: error.error ?? "Se ha producido un error" });
             })
-    }, [refreshKey, props.groupTag, setFeedback]);
+    }, [refreshKey, props.groupId, setFeedback]);
 
     const onEditAnnouncement = (announcement) => {
         setShowCreateOrEdit(true);
@@ -40,7 +40,7 @@ const AnnouncementsDialog = (props) => {
 
     return showCreateOrEdit ?
         announcementBeingEdited === undefined ?
-            <CreateAnnouncementDialog groupTag={props.groupTag}
+            <CreateAnnouncementDialog groupId={props.groupId}
                 onDismiss={() => { setShowCreateOrEdit(false) }}
                 onFinished={() => { setRefreshKey(x => x + 1) }} />
             : <EditAnnouncementDialog announcement={announcementBeingEdited}
@@ -49,7 +49,7 @@ const AnnouncementsDialog = (props) => {
             : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground overflowScrollableDialog">
-                    <div className="dialogTitle">Tablón de anuncios de {props.groupTag}</div>
+                    <div className="dialogTitle">Tablón de anuncios</div>
                     <div className="announcementsHeaderIcon">📢</div>
                     {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                     {/* If you put a time.sleep(5) in the backend, then, after removing an announcement, you can interact with it while

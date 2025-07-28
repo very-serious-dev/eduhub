@@ -32,8 +32,10 @@ def document_to_json(document):
 
 def group_to_json(group):
     return {
+        "id": group.id,
         "tag": group.tag,
         "name": group.name,
+        "year": group.year,
         "tutor": user_to_json(group.tutor)
     }
 
@@ -41,7 +43,8 @@ def class_to_json(classroom):
     return {
         "id": classroom.id,
         "name": classroom.name,
-        "group": classroom.group_id,
+        "group_tag": classroom.group.tag,
+        "group_year": classroom.group.year,
         "theme": class_theme(classroom)
     }
 

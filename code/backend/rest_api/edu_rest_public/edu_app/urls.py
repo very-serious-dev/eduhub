@@ -12,7 +12,7 @@ urlpatterns = [
     path("sessions",                            facade.users_login_logout),
     path("passwords",                           facade.users_reset_password),
     path("groups",                              facade.groups_get_all),
-    path("groups/<group_tag>/announcements",    facade.groups_create_get_announcements),
+    path("groups/<int:g_id>/announcements",     facade.groups_create_get_announcements),
     path("announcements/<int:a_id>",            facade.groups_edit_delete_announcement),
     path("classes",                             facade.classes_create_get_my_classes),
     path("classes/<int:c_id>",                  facade.classes_get_edit_delete_class),

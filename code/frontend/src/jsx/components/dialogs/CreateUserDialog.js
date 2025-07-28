@@ -15,7 +15,7 @@ const CreateUserDialog = (props) => {
     const [formSurname, setFormSurname] = useState("");
     const [formPassword, setFormPassword] = useState("");
     const [formIsTeacher, setFormIsTeacher] = useState(undefined);
-    const [formStudentGroup, setFormStudentGroup] = useState(initialStudentGroupValue());
+    const [formStudentGroupId, setFormStudentGroupId] = useState(initialStudentGroupValue());
     const [isLoading, setLoading] = useState(false);
     const [usernameDidGainFocusOnce, setUsernameDidGainFocusOnce] = useState(false);
     const theme = useContext(ThemeContext);
@@ -31,8 +31,8 @@ const CreateUserDialog = (props) => {
         }
         if (formIsTeacher) {
             body.is_teacher = true;
-        } else if (formStudentGroup !== undefined) {
-            body.student_group = formStudentGroup;
+        } else {
+            body.student_group_id = formStudentGroupId;
         }
         EduAPIFetch("POST", "/api/v1/admin/users", body)
             .then(json => {
@@ -145,19 +145,19 @@ const CreateUserDialog = (props) => {
                     </div>
                     <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formIsTeacher === undefined || formIsTeacher === true ? " formInputSelectHidden" : "")}>
                         <select name="studentGroup"
-                            value={formStudentGroup}
+                            value={formStudentGroupId}
                             className={`formInputSelect ${primary(theme)}`}
-                            onChange={e => { setFormStudentGroup(e.target.value); }}>
+                            onChange={e => { setFormStudentGroupId(e.target.value); }}>
                             {props.groups.length > 0 ?
                                 props.groups.map(g => {
-                                    return <option value={g.tag}>{g.tag}</option>
+                                    return <option value={g.id}>{g.tag} ({g.year})</option>
                                 }) :
                                 <option value={NOT_VALID}>-- No existen grupos. ¡Crea uno! --</option>
                             }
                         </select>
                     </div>
                     <div className="formInputContainer">
-                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroup === NOT_VALID && formIsTeacher === false} />
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroupId === NOT_VALID && formIsTeacher === false} />
                     </div>
                     {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>

@@ -28,12 +28,12 @@ def admin_home(request):
 def admin_create_user(request):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        username, name, surname, password, student_group, is_teacher = expect_body_with('username', 'name', 'surname', 'password', optional=['student_group', 'is_teacher'], request=request)
+        username, name, surname, password, student_group_id, is_teacher = expect_body_with('username', 'name', 'surname', 'password', optional=['student_group_id', 'is_teacher'], request=request)
         validate_username(username)
         validate_password(password)
         if '"' in name or '"' in surname or ',' in name or ',' in surname:
             raise BadRequest
-        return admin.create_user(request, username, name, surname, password, student_group, is_teacher)
+        return admin.create_user(request, username, name, surname, password, student_group_id, is_teacher)
     else:
         raise Unsupported
 
@@ -118,14 +118,14 @@ def groups_get_all(request):
         raise Unsupported
 
 @maybe_unhappy
-def groups_create_get_announcements(request, group_tag):
+def groups_create_get_announcements(request, g_id):
     if request.method == "GET":
         require_valid_session(request=request)
-        return groups.get_announcements(request, group_tag)
+        return groups.get_announcements(request, g_id)
     elif request.method == "POST":
         require_valid_session(request=request)
         title, content, attachments = expect_body_with('title', 'content', 'attachments', request=request)
-        return groups.create_announcement(request, group_tag, title, content, attachments)
+        return groups.create_announcement(request, g_id, title, content, attachments)
     else:
         raise Unsupported
 

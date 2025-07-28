@@ -10,8 +10,8 @@ def all(request):
     groups = Group.objects.filter(archived=False)
     return JsonResponse({"groups": groups_array_to_json(groups)})
 
-def get_announcements(request, group_tag):
-    group = get_from_db(Group, tag=group_tag, archived=False)
+def get_announcements(request, g_id):
+    group = get_from_db(Group, id=g_id, archived=False)
     can_see = request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, \
                       User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER] \
                       or (request.session.user.role == User.UserRole.STUDENT and request.session.user.student_group == group)
@@ -23,8 +23,8 @@ def get_announcements(request, group_tag):
                          "announcements": announcements_array_to_json(announcements),
                          "can_create_announcements": can_create})
 
-def create_announcement(request, group_tag, title, content, attachments):
-    group = get_from_db(Group, tag=group_tag, archived=False)
+def create_announcement(request, g_id, title, content, attachments):
+    group = get_from_db(Group, id=g_id, archived=False)
     can_create = __has_permission_to_manage_announcements(request.session.user, group)
     if not can_create:
         raise Forbidden

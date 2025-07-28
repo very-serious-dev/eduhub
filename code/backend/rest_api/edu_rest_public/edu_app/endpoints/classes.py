@@ -16,14 +16,17 @@ def get_my_classes(request):
         classes_json.append({
             "id": c.id,
             "name": c.name,
-            "group": c.group_id,
+            "group_id": c.group_id,
             "theme": class_theme(c),
             "latest_update": __get_latest_class_update(c)
         })
-        distinct_groups[c.group.tag] = c.group
+        distinct_groups[c.group.id] = c.group
     for g in distinct_groups.values():
         groups_json.append({
+            "id": g.id,
             "tag": g.tag,
+            "name": g.name,
+            "year": g.year,
             "latest_update": __get_latest_announcements_update(g)
         })
     return JsonResponse({"classes": classes_json, "groups": groups_json})

@@ -6,7 +6,7 @@ const CreateAnnouncementDialog = (props) => {
         <div className="popup widePopup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
                 <CreateOrEditAnnouncementForm
-                    groupTag={props.groupTag}
+                    groupId={props.groupId}
                     announcementBeingEdited={null}
                     submitText="Publicar"
                     showDeleteButton={false}
