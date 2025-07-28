@@ -76,10 +76,14 @@ class UserQuestionnairePermission(models.Model):
 #
 
 class Group(models.Model):
-    tag = models.CharField(max_length=10, primary_key=True)
+    tag = models.CharField(max_length=10)
     name = models.CharField(max_length=50)
     tutor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     year = models.CharField(max_length=10)
+    archived = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together = ('tag', 'year',)
 
 class Class(models.Model):
 

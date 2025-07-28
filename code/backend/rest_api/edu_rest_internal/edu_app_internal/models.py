@@ -21,10 +21,10 @@ from django.db import models
 class EduAppAnnouncement(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=3000)
-    modification_date = models.DateTimeField(blank=True, null=True)
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    group = models.ForeignKey('EduAppGroup', models.DO_NOTHING)
     publication_date = models.DateTimeField()
+    modification_date = models.DateTimeField(blank=True, null=True)
+    group = models.ForeignKey('EduAppGroup', models.DO_NOTHING)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -51,11 +51,12 @@ class EduAppAnnouncementquestionnaire(models.Model):
 
 class EduAppAssignmentsubmit(models.Model):
     comment = models.CharField(max_length=1000, blank=True, null=True)
-    assignment = models.ForeignKey('EduAppPost', models.DO_NOTHING)
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    is_score_published = models.BooleanField()
-    score = models.FloatField(blank=True, null=True)
     submit_date = models.DateTimeField()
+    score = models.FloatField(blank=True, null=True)
+    is_score_published = models.BooleanField()
+    assignment = models.ForeignKey('EduAppPost', models.DO_NOTHING)
+    questionnaire_submit = models.ForeignKey('EduAppQuestionnairesubmit', models.DO_NOTHING, blank=True, null=True)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -94,9 +95,9 @@ class EduAppChoicesquestionanswer(models.Model):
 
 class EduAppChoicesquestionchoice(models.Model):
     content = models.CharField(max_length=500)
+    number = models.IntegerField()
     is_correct = models.BooleanField()
     question = models.ForeignKey(EduAppChoicesquestion, models.DO_NOTHING)
-    number = models.IntegerField()
 
     class Meta:
         managed = False
@@ -105,10 +106,10 @@ class EduAppChoicesquestionchoice(models.Model):
 
 class EduAppClass(models.Model):
     name = models.CharField(max_length=50)
+    evaluation_criteria = models.CharField(max_length=3000, blank=True, null=True)
     theme = models.IntegerField()
     archived = models.BooleanField()
     group = models.ForeignKey('EduAppGroup', models.DO_NOTHING)
-    evaluation_criteria = models.CharField(max_length=3000, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -120,9 +121,9 @@ class EduAppDocument(models.Model):
     name = models.CharField(max_length=150)
     size = models.IntegerField()
     mime_type = models.CharField(max_length=50)
+    created_at = models.DateTimeField()
     folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    created_at = models.DateTimeField()
 
     class Meta:
         managed = False
@@ -142,8 +143,8 @@ class EduAppFailedloginattempt(models.Model):
 
 class EduAppFolder(models.Model):
     name = models.CharField(max_length=50)
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     created_at = models.DateTimeField()
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     parent_folder = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -152,14 +153,16 @@ class EduAppFolder(models.Model):
 
 
 class EduAppGroup(models.Model):
-    tag = models.CharField(primary_key=True, max_length=10)
+    tag = models.CharField(max_length=10)
     name = models.CharField(max_length=50)
     year = models.CharField(max_length=10)
+    archived = models.BooleanField()
     tutor = models.ForeignKey('EduAppUser', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'edu_app_group'
+        unique_together = (('tag', 'year'),)
 
 
 class EduAppPost(models.Model):
@@ -167,10 +170,10 @@ class EduAppPost(models.Model):
     content = models.CharField(max_length=3000)
     kind = models.IntegerField()
     publication_date = models.DateTimeField()
+    assignment_due_date = models.DateTimeField(blank=True, null=True)
     classroom = models.ForeignKey(EduAppClass, models.DO_NOTHING)
     unit = models.ForeignKey('EduAppUnit', models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    assignment_due_date = models.DateTimeField(blank=True, null=True)
     amendment_original_post = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -200,8 +203,8 @@ class EduAppQuestionnaire(models.Model):
     title = models.CharField(max_length=100)
     archived = models.BooleanField()
     created_at = models.DateTimeField()
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     folder = models.ForeignKey(EduAppFolder, models.DO_NOTHING, blank=True, null=True)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -211,7 +214,7 @@ class EduAppQuestionnaire(models.Model):
 class EduAppQuestionnairesubmit(models.Model):
     created_at = models.DateTimeField()
     questionnaire = models.ForeignKey(EduAppQuestionnaire, models.DO_NOTHING)
-    user = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:
         managed = False
@@ -256,10 +259,10 @@ class EduAppUser(models.Model):
     max_folders = models.IntegerField()
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
-    student_group = models.ForeignKey(EduAppGroup, models.DO_NOTHING, blank=True, null=True)
-    archived = models.BooleanField()
-    password_reset_token = models.CharField(unique=True, max_length=30, blank=True, null=True)
     last_password_change = models.DateTimeField(blank=True, null=True)
+    password_reset_token = models.CharField(unique=True, max_length=30, blank=True, null=True)
+    archived = models.BooleanField()
+    student_group = models.ForeignKey(EduAppGroup, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -306,8 +309,8 @@ class EduAppUsersession(models.Model):
     token = models.CharField(unique=True, max_length=30)
     one_time_token = models.CharField(unique=True, max_length=30)
     one_time_token_already_used = models.BooleanField()
-    user = models.ForeignKey(EduAppUser, models.DO_NOTHING)
     created_at = models.DateTimeField()
+    user = models.ForeignKey(EduAppUser, models.DO_NOTHING)
 
     class Meta:
         managed = False

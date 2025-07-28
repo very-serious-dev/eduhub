@@ -7,11 +7,11 @@ from ..util.serializers import groups_array_to_json, announcements_array_to_json
 from .posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
 def all(request):
-    groups = Group.objects.all()
+    groups = Group.objects.filter(archived=False)
     return JsonResponse({"groups": groups_array_to_json(groups)})
 
 def get_announcements(request, group_tag):
-    group = get_from_db(Group, tag=group_tag)
+    group = get_from_db(Group, tag=group_tag, archived=False)
     can_see = request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, \
                       User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER] \
                       or (request.session.user.role == User.UserRole.STUDENT and request.session.user.student_group == group)
@@ -24,7 +24,7 @@ def get_announcements(request, group_tag):
                          "can_create_announcements": can_create})
 
 def create_announcement(request, group_tag, title, content, attachments):
-    group = get_from_db(Group, tag=group_tag)
+    group = get_from_db(Group, tag=group_tag, archived=False)
     can_create = __has_permission_to_manage_announcements(request.session.user, group)
     if not can_create:
         raise Forbidden
@@ -111,6 +111,8 @@ def __folder_name_for_group(group):
     return group.tag
 
 def __has_permission_to_manage_announcements(user, group):
+    if group.archived:
+        return False
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
            or (user.role == User.UserRole.TEACHER and group.tutor == user)
 
