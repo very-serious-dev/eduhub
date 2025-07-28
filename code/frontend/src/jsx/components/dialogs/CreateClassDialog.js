@@ -50,7 +50,7 @@ const CreateClassDialog = (props) => {
                         <input type="text" value={formName}
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Literatura universal"; }}
+                            onFocus={e => { e.target.placeholder = "Gestión de la documentación jurídica y empresarial"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             maxLength={50}
                             required />

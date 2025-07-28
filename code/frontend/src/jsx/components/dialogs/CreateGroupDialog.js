@@ -13,6 +13,7 @@ const CreateGroupDialog = (props) => {
     const [availableTeachers, setAvailableTeachers] = useState([]);
     const [isLoadingSubmit, setLoadingSubmit] = useState(false);
     const [isLoadingTeachers, setLoadingTeachers] = useState(false);
+    const [yearDidGainFocusOnce, setYearDidGainFocusOnce] = useState(false);
     const theme = useContext(ThemeContext);
 
     useEffect(() => {
@@ -60,6 +61,23 @@ const CreateGroupDialog = (props) => {
             })
     }
 
+    const academicYear = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const JULY = 6;
+        if (date.getMonth() < JULY) {
+            return `${`${year - 1}`.slice(2)}-${`${year}`.slice(2)}`;
+        } else {
+            return `${`${year}`.slice(2)}-${`${year + 1}`.slice(2)}`;
+        };
+    }
+
+    const onYearDidGainFocus = () => {
+        if (yearDidGainFocusOnce) { return; }
+        setYearDidGainFocusOnce(true);
+        setFormYear(academicYear());
+    }
+
     return <div className="popupOverlayBackground" onClick={props.onDismiss}>
         <div className="popup" onClick={e => { e.stopPropagation(); }}>
             <div className="card dialogBackground">
@@ -69,7 +87,7 @@ const CreateGroupDialog = (props) => {
                         <input type="text" value={formName}
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormName(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "Bachillerato 1º"; }}
+                            onFocus={e => { e.target.placeholder = "Administración y Finanzas 1º"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             maxLength={50}
                             required />
@@ -80,7 +98,7 @@ const CreateGroupDialog = (props) => {
                         <input type="text" value={formTag}
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormTag(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "BACH1"; }}
+                            onFocus={e => { e.target.placeholder = "ADF1"; }}
                             onBlur={e => { e.target.placeholder = ""; }}
                             maxLength={10}
                             required />
@@ -91,8 +109,7 @@ const CreateGroupDialog = (props) => {
                         <input type="text" value={formYear}
                             className={`formInput ${primary(theme)}`}
                             onChange={e => { setFormYear(e.target.value) }}
-                            onFocus={e => { e.target.placeholder = "24-25"; }}
-                            onBlur={e => { e.target.placeholder = ""; }}
+                            onFocus={onYearDidGainFocus}
                             maxLength={10}
                             required />
                         <div className={`underline ${accent(theme)}`} />

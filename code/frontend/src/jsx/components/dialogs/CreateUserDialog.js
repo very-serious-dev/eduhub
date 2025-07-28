@@ -59,11 +59,12 @@ const CreateUserDialog = (props) => {
 
     const academicYearSuffix = () => {
         const date = new Date();
+        const year = date.getFullYear();
         const JULY = 6;
         if (date.getMonth() < JULY) {
-            return `${date.getFullYear() - 1}`.slice(2);
+            return `${year - 1}`.slice(2);
         } else {
-            return `${date.getFullYear()}`.slice(2);
+            return `${year}`.slice(2);
         };
     }
 
