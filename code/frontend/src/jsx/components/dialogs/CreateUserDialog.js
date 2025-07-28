@@ -57,19 +57,34 @@ const CreateUserDialog = (props) => {
             })
     }
 
+    const academicYearSuffix = () => {
+        const date = new Date();
+        const JULY = 6;
+        if (date.getMonth() < JULY) {
+            return `${date.getFullYear() - 1}`.slice(2);
+        } else {
+            return `${date.getFullYear()}`.slice(2);
+        };
+    }
+
     const onUsernameDidGainFocus = () => {
         if (usernameDidGainFocusOnce) { return; }
         setUsernameDidGainFocusOnce(true);
-        let suggestedUsername = formName.toLowerCase()
-        if (formSurname.length > 0) {
-            suggestedUsername += "." + formSurname.split(" ")[0].toLowerCase();
+        let suggestedUsername = "";
+        if (formName.length > 0) {
+            suggestedUsername += formName[0].toLowerCase();
         }
-        suggestedUsername = suggestedUsername.replaceAll(" ", "");
-        suggestedUsername = suggestedUsername.replaceAll('á', 'a')
-        suggestedUsername = suggestedUsername.replaceAll('é', 'e')
-        suggestedUsername = suggestedUsername.replaceAll('í', 'i')
-        suggestedUsername = suggestedUsername.replaceAll('ó', 'o')
-        suggestedUsername = suggestedUsername.replaceAll('ú', 'u')
+        if (formSurname.length > 0) {
+            const splittedSurname = formSurname.split(" ");
+            const firstSurname = splittedSurname[0].toLowerCase();
+            // https://stackoverflow.com/a/37511463
+            suggestedUsername += firstSurname.normalize("NFD").replace(/\p{Diacritic}/gu, "");
+            if (splittedSurname.length > 1) {
+                const lastSurname = splittedSurname[splittedSurname.length - 1].toLocaleLowerCase();
+                suggestedUsername += lastSurname[0];
+            }
+        }
+        suggestedUsername += academicYearSuffix();
         setFormUsername(suggestedUsername);
     }
 
