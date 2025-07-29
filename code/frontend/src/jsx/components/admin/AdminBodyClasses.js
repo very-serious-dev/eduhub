@@ -76,13 +76,13 @@ const AdminBodyClasses = (props) => {
             {popupShown === "MENU_PARTICIPANTS_OR_EDIT" && <OptionsDialog onDismiss={() => { setPopupShown("NONE") }}
                 options={[
                     {
-                        label: "⚙️ Editar",
-                        onClick: () => { setPopupShown("EDIT_CLASS") },
-                    },
-                    {
                         label: "🎓 Participantes",
                         onClick: () => { setPopupShown("PARTICIPANTS") },
                     },
+                    {
+                        label: "⚙️ Editar",
+                        onClick: () => { setPopupShown("EDIT_CLASS") },
+                    }
                 ]} />}
             {popupShown === "EDIT_CLASS" &&
                 <EditClassDialog name={classForPopup.name}

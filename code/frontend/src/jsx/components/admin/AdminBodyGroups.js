@@ -4,9 +4,10 @@ import CreateGroupDialog from "../dialogs/CreateGroupDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import OptionsDialog from "../dialogs/OptionsDialog";
 import AnnouncementsDialog from "../dialogs/AnnouncementsDialog";
+import ArchiveGroupDialog from "../dialogs/ArchiveGroupDialog";
 
 const AdminBodyGroups = (props) => {
-    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_GROUP, OPTIONS, ANNOUNCEMENTS
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CREATE_GROUP, OPTIONS, ANNOUNCEMENTS, OPTIONS_END_COURSE, ARCHIVE_GROUP
     const [groupIdForPopup, setGroupIdForPopup] = useState();
     const setFeedback = useContext(FeedbackContext);
 
@@ -24,6 +25,10 @@ const AdminBodyGroups = (props) => {
         setPopupShown("OPTIONS");
     }
 
+    const groupForPopup = () => {
+        return props.groups.find(g => g.id === groupIdForPopup);
+    }
+
     return <div>
         <div>
             <div className="adminAddButtonHeader pointable card" onClick={() => { setPopupShown("CREATE_GROUP") }}>➕ Añadir nuevo grupo</div>
@@ -35,11 +40,25 @@ const AdminBodyGroups = (props) => {
                 {
                     label: "📢 Ver tablón de anuncios",
                     onClick: () => { setPopupShown("ANNOUNCEMENTS"); }
+                },
+                {
+                    label: "⚙️ Finalizar curso académico",
+                    onClick: () => { setPopupShown("OPTIONS_END_COURSE") },
+                }
+            ]} />}
+        {popupShown === "OPTIONS_END_COURSE" && <OptionsDialog onDismiss={() => { setPopupShown("OPTIONS") }}
+            options={[
+                {
+                    label: "📦 Archivar grupo, clases vinculadas y gestionar usuarios",
+                    onClick: () => { setPopupShown("ARCHIVE_GROUP") },
                 }
             ]} />}
         {popupShown === "ANNOUNCEMENTS" &&
-            <AnnouncementsDialog groupId={groupIdForPopup}
-                onDismiss={() => { setPopupShown("NONE"); }} />}
+            <AnnouncementsDialog groupId={groupIdForPopup} onDismiss={() => { setPopupShown("NONE"); }} />}
+        {popupShown === "ARCHIVE_GROUP" &&
+            <ArchiveGroupDialog group={groupForPopup()}
+                allGroups={props.groups}
+                onDismiss={() => { setPopupShown("OPTIONS_END_COURSE") }} />}
         <div className="adminSubpanelList">
             {props.groups.map(group => {
                 return <GenericCard cardId={group.id}
