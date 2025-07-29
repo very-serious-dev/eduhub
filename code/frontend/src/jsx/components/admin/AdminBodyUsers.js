@@ -38,7 +38,6 @@ const AdminBodyUsers = (props) => {
         }
     }
 
-
     const onUserEdited = (errorMessage) => {
         if (errorMessage === undefined) {
             setFeedback({ type: "success", message: "Usuario modificado con éxito" });
@@ -82,6 +81,7 @@ const AdminBodyUsers = (props) => {
                 ]} />}
             {popupShown === "EDIT_USER" &&
                 <EditUserDialog user={userForPopup}
+                    groups={props.groups}
                     onUserEdited={onUserEdited}
                     onUserDeleted={onUserDeleted}
                     onDismiss={() => { setPopupShown("NONE") }} />}

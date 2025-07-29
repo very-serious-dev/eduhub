@@ -41,13 +41,13 @@ def admin_create_user(request):
 def admin_edit_delete_user(request, username):
     if request.method == "PUT":
         require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        json_username, name, surname, password = expect_body_with('username', 'name', 'surname', optional=['password'], request=request)
+        json_username, name, surname, password, student_group_id = expect_body_with('username', 'name', 'surname', optional=['password', 'student_group_id'], request=request)
         validate_username(username)
         if password is not None:
             validate_password(password)
         if '"' in name or '"' in surname or ',' in name or ',' in surname:
             raise BadRequest
-        return admin.edit_user(request, username, json_username, name, surname, password)
+        return admin.edit_user(request, username, json_username, name, surname, password, student_group_id)
     elif request.method == "DELETE":
         return admin.delete_user(request, username)
     else:

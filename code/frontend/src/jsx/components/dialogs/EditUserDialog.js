@@ -6,10 +6,16 @@ import { accent, accentFormLabel, pointableSecondary, primary } from "../../../u
 import { ThemeContext } from "../../main/GlobalContainer";
 
 const EditUserDialog = (props) => {
+    const initialStudentGroupValue = () => {
+        console.log(props.user.roles);
+        if (!props.user.roles.includes("student")) { return; }
+        return props.user.student_group_id
+    }
     const [formName, setFormName] = useState("");
     const [formSurname, setFormSurname] = useState("");
     const [formUsername, setFormUsername] = useState("");
     const [formPassword, setFormPassword] = useState("");
+    const [formStudentGroupId, setFormStudentGroupId] = useState(initialStudentGroupValue());
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const theme = useContext(ThemeContext);
@@ -31,6 +37,9 @@ const EditUserDialog = (props) => {
         }
         if (formPassword.length > 0) {
             body["password"] = formPassword;
+        }
+        if (formStudentGroupId) {
+            body["student_group_id"] = formStudentGroupId;
         }
         EduAPIFetch("PUT", `/api/v1/admin/users/${props.user.username}`, body)
             .then(json => {
@@ -124,6 +133,29 @@ const EditUserDialog = (props) => {
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Contraseña</label>
                         </div>
+                        <br/>
+                        {props.user.roles.includes("teacher") &&
+                            <div className="formInputRadio">
+                                <input type="radio" disabled={true} checked={true} />
+                                <label htmlFor="">DOCENTE</label>
+                            </div>}
+                        {props.user.roles.includes("student") &&
+                            <>
+                                <div className="formInputRadio">
+                                    <input type="radio" disabled={true} checked={true} />
+                                    <label htmlFor="">ESTUDIANTE</label>
+                                </div>
+                                <div className="formInputSelectContainer selectWithTopMargin addUserSelect">
+                                    <select name="studentGroup"
+                                        value={formStudentGroupId}
+                                        className={`formInputSelect ${primary(theme)}`}
+                                        onChange={e => { setFormStudentGroupId(e.target.value); }}>
+                                        {props.groups.map(g => {
+                                            return <option value={g.id}>{g.tag} ({g.year})</option>
+                                        })}
+                                    </select>
+                                </div>
+                            </>}
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Modificar usuario" />
                         </div>

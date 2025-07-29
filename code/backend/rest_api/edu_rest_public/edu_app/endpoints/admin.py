@@ -25,7 +25,7 @@ def get_admin_home(request):
 def create_user(request, username, name, surname, password, student_group_id, is_teacher):
     if User.objects.filter(username=username).exists():
         raise ConflictUserAlreadyExists
-    if is_teacher != True and student_group is None:
+    if is_teacher != True and student_group_id is None:
         raise BadRequest
     new_user = User()
     new_user.username = username
@@ -41,11 +41,16 @@ def create_user(request, username, name, surname, password, student_group_id, is
     new_user.save()
     return JsonResponse({"success": True}, status=201)
 
-def edit_user(request, path_username, json_username, name, surname, password):
+def edit_user(request, path_username, json_username, name, surname, password, student_group_id):
     if path_username != json_username:
         if User.objects.filter(username=json_username).exists():
             raise ConflictUserAlreadyExists
     user = get_from_db(User, username=path_username, archived=False)
+    if student_group_id:
+        if user.role != User.UserRole.STUDENT:
+            raise BadRequest
+        else:
+            user.student_group = get_from_db(Group, id=student_group_id, archived=False)
     user.username = json_username
     user.name = name
     user.surname = surname

@@ -55,8 +55,9 @@ def user_to_json(user):
         "surname": user.surname,
         "roles": roles_array(user)
     }
-    if user.student_group is not None:
-        json_user["student_group"] = user.student_group_id
+    if user.student_group:
+        json_user["student_group_id"] = user.student_group_id
+        json_user["student_group_tag"] = user.student_group.tag
     return json_user
 
 def folder_to_json(folder):

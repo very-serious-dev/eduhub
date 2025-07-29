@@ -7,7 +7,7 @@ import { ThemeContext } from "../../main/GlobalContainer";
 const CreateUserDialog = (props) => {
     const NOT_VALID = "NOT_VALID";
     const initialStudentGroupValue = () => {
-        if (props.groups.length > 0) { return props.groups[0].tag; }
+        if (props.groups.length > 0) { return props.groups[0].id; }
         return NOT_VALID;
     }
     const [formUsername, setFormUsername] = useState("");
