@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { EduAPIFetch } from "../../../client/APIFetch";
 import LoadingHUD from "../common/LoadingHUD";
 import FilesBrowser from "../files/FilesBrowser";
-import { getFolderNamesForFolderIdsPath, getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
+import { getFolderNamesForFolderIdsPath, getSelfAndSubTreeIds, getSelfAndSubTreeIdsForQueryParam } from "../../../util/FilesBrowserContainerUtil";
 import MyFilesFirstTabContent from "../files/MyFilesFirstTabContent";
 import { pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
@@ -12,26 +12,31 @@ const MoveFileDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
-    const appropriateContainerFolderId = () => {
+    const nullableTargetFolderId = () => {
         return selectedFolderIdsPath.length > 0 ? selectedFolderIdsPath.slice(-1)[0] : null;
     }
 
     const onSubmitMoveElement = (event) => {
         event.preventDefault();
+        if (!isFolderMoveLegal()) {
+            props.onDismiss();
+            props.onFail("No puedes mover una carpeta dentro de sí misma");
+            return;
+        }
         setLoading(true);
         let url;
         let body = {}
         if (props.document) {
             url = `/api/v1/documents/${props.document.identifier}`;
-            body["folder_id"] = appropriateContainerFolderId();
+            body["folder_id"] = nullableTargetFolderId();
         } else if (props.questionnaire) {
             url = `/api/v1/questionnaires/${props.questionnaire.id}`
-            body["folder_id"] = appropriateContainerFolderId();
+            body["folder_id"] = nullableTargetFolderId();
         } else if (props.folder) {
             // Subtree identifiers are used by the backend to easily grant permissions to users already belonging into the destination folder
             url = `/api/v1/folders/${props.folder.id}${getSelfAndSubTreeIdsForQueryParam(props.folder)}`;
-            body["parent_folder_id"] = appropriateContainerFolderId();
-        } 
+            body["parent_folder_id"] = nullableTargetFolderId();
+        }
         EduAPIFetch("PUT", url, body)
             .then(json => {
                 setLoading(false);
@@ -48,6 +53,17 @@ const MoveFileDialog = (props) => {
                 props.onFail(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
+    }
+
+    const isFolderMoveLegal = () => {
+        if (props.folder) {
+            const targetFolderId = nullableTargetFolderId();
+            if (targetFolderId) {
+                const subtreeBeingMoved = getSelfAndSubTreeIds(props.folder);
+                return !subtreeBeingMoved.folder_ids.some(fid => fid === targetFolderId);
+            }
+        }
+        return true;
     }
 
     const firstTabView = () => {

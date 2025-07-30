@@ -22,7 +22,7 @@ class User(models.Model):
     surname = models.CharField(max_length=50)
     encrypted_password = models.CharField(max_length=120)
     role = models.IntegerField(choices=UserRole)
-    student_group = models.ForeignKey("Group", on_delete=models.SET_NULL, null=True, default=None)
+    student_group = models.ForeignKey("Group", on_delete=models.PROTECT, null=True, default=None)
     max_folders = models.IntegerField()
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
@@ -47,7 +47,7 @@ class UserSession(models.Model):
 class Folder(models.Model):
     name = models.CharField(max_length=50)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent_folder = models.ForeignKey("Folder", on_delete=models.CASCADE, null=True)
+    parent_folder = models.ForeignKey("Folder", on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class Document(models.Model):
@@ -56,7 +56,7 @@ class Document(models.Model):
     size = models.IntegerField() # in bytes; safe max value is 2147483647 (=2048 MB)
     mime_type = models.CharField(max_length=50)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
+    folder = models.ForeignKey(Folder, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class UserDocumentPermission(models.Model):
@@ -78,7 +78,7 @@ class UserQuestionnairePermission(models.Model):
 class Group(models.Model):
     tag = models.CharField(max_length=10)
     name = models.CharField(max_length=50)
-    tutor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    tutor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     year = models.CharField(max_length=10)
     archived = models.BooleanField(default=False)
     
@@ -100,7 +100,7 @@ class Class(models.Model):
     name = models.CharField(max_length=50)
     evaluation_criteria = models.CharField(max_length=3000, null=True)
     theme = models.IntegerField(choices=ClassTheme)
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.PROTECT)
     archived = models.BooleanField(default=False)
 
 class UserClass(models.Model):
@@ -119,7 +119,7 @@ class Announcement(models.Model):
     title = models.CharField(max_length=100)
     content = models.CharField(max_length=3000)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     publication_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(default=None, null=True)
     
@@ -147,7 +147,7 @@ class Post(models.Model):
     content = models.CharField(max_length=3000)
     kind = models.IntegerField(choices=PostKind)
     classroom = models.ForeignKey(Class, on_delete=models.CASCADE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     publication_date = models.DateTimeField(auto_now_add=True)
     unit = models.ForeignKey(Unit, on_delete=models.SET_NULL, null=True)
     assignment_due_date = models.DateTimeField(null=True)
@@ -180,9 +180,9 @@ class AssignmentSubmitDocument(models.Model):
 
 class Questionnaire(models.Model):
     title = models.CharField(max_length=100)
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     archived = models.BooleanField(default=False)
-    folder = models.ForeignKey(Folder, on_delete=models.CASCADE, null=True)
+    folder = models.ForeignKey(Folder, on_delete=models.PROTECT, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class TextQuestion(models.Model):
@@ -226,3 +226,7 @@ class FailedLoginAttempt(models.Model):
     datetime = models.DateTimeField(auto_now_add=True)
     client_ip = models.CharField(max_length=128, null=True)
     client_user_agent = models.CharField(max_length=200, null=True)
+
+# --
+#
+# (*) Can't really be NULL, unless user is manually removed from database

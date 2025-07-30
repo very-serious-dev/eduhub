@@ -65,7 +65,7 @@ def create_or_delete_documents(request):
         # Proceed
         if not json_skip_saving_files:
             parent_folder = None
-            if json_parent_folder_id is not None:
+            if json_parent_folder_id:
                 try:
                     parent_folder = EduAppFolder.objects.get(author=user, id=json_parent_folder_id)
                     folder_granted_users = list(map(lambda ufp: ufp.user, EduAppUserfolderpermission.objects.filter(folder=parent_folder, user__archived=False)))
@@ -95,46 +95,27 @@ def create_or_delete_documents(request):
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
         json_internal_secret = body_json.get("internal_secret")
         json_document_ids = body_json.get("document_ids")
-        json_folder_ids = body_json.get("folder_ids")
-        json_questionnaire_ids = body_json.get("questionnaire_ids")
+        json_ancestor_folder_id = body_json.get("ancestor_folder_id")
         json_user_id = body_json.get("user_id")
-        if json_internal_secret is None or json_document_ids is None or json_folder_ids is None or json_user_id is None or json_questionnaire_ids is None:
+        if json_internal_secret is None or json_document_ids is None or json_user_id is None:
             return JsonResponse({"error": "Error"}, status=400)
         if json_internal_secret != INTERNAL_SECRET:
             return JsonResponse({"error": "Error"}, status=400)
         try:
-            user = EduAppUser.objects.get(id=json_user_id)
+            user = EduAppUser.objects.get(id=json_user_id, archived=False)
         except EduAppUser.DoesNotExist:
             return JsonResponse({"error": "Error"}, status=400)
-        deleted_document_ids = []
-        deleted_folder_ids = []
-        deleted_questionnaire_ids = []
-        for did in json_document_ids:
-            try:
+        if json_ancestor_folder_id:
+            folder = EduAppFolder.objects.get(id=json_ancestor_folder_id, author=user)
+            folder.delete() # Deleting the folder will CASCADE deletion to all subfolders, documents, questionnaires
+        else:
+            # If there's no ancestor folder, it means that the user deleted
+            # a single document from its context menu
+            assert(len(json_document_ids) == 1)
+            for did in json_document_ids:
                 document = EduAppDocument.objects.get(identifier=did, author=user)
                 document.delete()
-                deleted_document_ids.append(did)
-            except EduAppDocument.DoesNotExist:
-                pass
-        for fid in json_folder_ids:
-            try:
-                folder = EduAppFolder.objects.get(id=fid, author=user)
-                folder.delete()
-                deleted_folder_ids.append(fid)
-            except EduAppFolder.DoesNotExist:
-                pass
-        for qid in json_questionnaire_ids:
-            try:
-                questionnaire = EduAppQuestionnaire.objects.get(id=qid, author=user)
-                questionnaire.archived = True
-                questionnaire.save()
-                deleted_questionnaire_ids.append(qid)
-            except EduAppQuestionnaire.DoesNotExist:
-                pass
-        return JsonResponse({"success": True,
-                             "deleted_folder_ids": deleted_folder_ids, 
-                             "deleted_document_ids": deleted_document_ids,
-                             "deleted_questionnaire_ids": deleted_questionnaire_ids })
+        return JsonResponse({"success": True}, status=200)
     else:
         return JsonResponse({"error": "Unsupported"}, status=405)
 

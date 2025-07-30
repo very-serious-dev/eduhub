@@ -30,12 +30,10 @@ const FilesBody = (props) => {
                 setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
             }
         } else if (moveOrDeleteResult.operation === "files_deleted") {
-            let folderLevel = Number.MAX_VALUE
-            moveOrDeleteResult.removed_folders_ids.forEach(oneFolderIdThatWasRemoved => {
-                folderLevel = Math.min(folderLevel, currentFolderIdsPath.indexOf(oneFolderIdThatWasRemoved))
-            });
-            if (folderLevel !== Number.MAX_VALUE) {
-                setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevel));
+            const deletedFolderId = moveOrDeleteResult.ancestor_folder_id
+            const folderLevelToFallback = currentFolderIdsPath.indexOf(deletedFolderId)
+            if (folderLevelToFallback !== -1) {
+                setCurrentFolderIdsPath(currentFolderIdsPath.slice(0, folderLevelToFallback));
             }
         }
     }

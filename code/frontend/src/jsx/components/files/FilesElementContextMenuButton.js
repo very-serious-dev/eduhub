@@ -62,9 +62,10 @@ const FilesElementContextMenuButton = (props) => {
     const deleteDocumentOrMaybeUnemptyFolderFromDocuRest = () => {
         let body;
         if (props.document) {
-            body = { document_ids: props.document.identifier, folder_ids: [], questionnaire_ids: [] }
+            body = { document_ids: [ props.document.identifier ], ancestor_folder_id: null }
         } else if (props.folder) {
-            body = getSelfAndSubTreeIds(props.folder);
+            const selfAndSubtreeIds = getSelfAndSubTreeIds(props.folder);
+            body = { document_ids: selfAndSubtreeIds.document_ids, ancestor_folder_id: props.folder.id }
         }
         DocuAPIFetch("DELETE", `/api/v1/documents`, body)
             .then(json => {

@@ -12,8 +12,20 @@
 #
 #     python manage.py inspectdb
 #
-# Thanks!
-##
+# * Bear in mind that the following manual modifications have been needed so far:
+#
+#   1) EduAppDocument.folder, EduAppQuestionnaire.folder and EduAppFolder.parent_folder
+#      foreign keys MUST HAVE on_delete=models.CASCADE, so that when deleting a folder
+#      the subtree deletion is cascaded. That's expected behaviour.
+#      
+#   2) Also, EduAppQuestionnaire are soft-deleted (archived=True) so in 
+#      apps.py > EduAppInternalConfig we register a handler for pre_delete signal.
+#      In that handler a copy of any EduAppQuestionnaire to be cascade-deleted is
+#      generated and soft-deleted; then the real cascade-deletion takes place.
+#      --
+#      I considered this to be a good solution, because overriding .delete() wouldn't
+#      work (delete() isn't called when cascade-deleting an item) and creating a
+#      custom on_delete callback felt like duck typing too hard.
 
 from django.db import models
 
@@ -122,7 +134,7 @@ class EduAppDocument(models.Model):
     size = models.IntegerField()
     mime_type = models.CharField(max_length=50)
     created_at = models.DateTimeField()
-    folder = models.ForeignKey('EduAppFolder', models.DO_NOTHING, blank=True, null=True)
+    folder = models.ForeignKey('EduAppFolder', models.CASCADE, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
 
     class Meta:
@@ -145,7 +157,7 @@ class EduAppFolder(models.Model):
     name = models.CharField(max_length=50)
     created_at = models.DateTimeField()
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-    parent_folder = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
+    parent_folder = models.ForeignKey('self', models.CASCADE, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -203,9 +215,9 @@ class EduAppQuestionnaire(models.Model):
     title = models.CharField(max_length=100)
     archived = models.BooleanField()
     created_at = models.DateTimeField()
-    folder = models.ForeignKey(EduAppFolder, models.DO_NOTHING, blank=True, null=True)
     author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
-
+    folder = models.ForeignKey(EduAppFolder, models.CASCADE, blank=True, null=True)
+    
     class Meta:
         managed = False
         db_table = 'edu_app_questionnaire'

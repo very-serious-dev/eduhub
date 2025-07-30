@@ -11,6 +11,7 @@ const FilesPage = () => {
     const [isRequestFailed, setRequestFailed] = useState(false);
     const [requestErrorMessage, setRequestErrorMessage] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [fullRefreshKey, setFullRefreshKey] = useState(0);
 
     useEffect(() => {
         document.title = "Mis archivos";
@@ -28,7 +29,7 @@ const FilesPage = () => {
                 setRequestFailed(true);
                 setRequestErrorMessage(error.error ?? "Se ha producido un error");
             })
-    }, []);
+    }, [fullRefreshKey]);
 
     const onMyFilesChanged = (result) => {
         if (result.operation === "folder_added") {
@@ -41,7 +42,7 @@ const FilesPage = () => {
             setMyFiles(old => { return { ...old, questionnaires: old.questionnaires.concat(result.questionnaire) } });
         }
         if (result.operation === "questionnaire_edited") {
-            setMyFiles(old => { return { ...old, questionnaires: old.questionnaires.map(q => result.questionnaire.id === q.id ? result.questionnaire : q)} });
+            setMyFiles(old => { return { ...old, questionnaires: old.questionnaires.map(q => result.questionnaire.id === q.id ? result.questionnaire : q) } });
         }
         if (result.operation === "folder_changed") {
             setMyFiles(old => {
@@ -79,13 +80,15 @@ const FilesPage = () => {
                 return { ...old, questionnaires: newQuestionnaires }
             });
         }
-        if (result.operation === "files_deleted") {
+        if (result.operation === "document_deleted") {
             setMyFiles(old => {
-                const newFolders = old.folders.filter(f => !result.removed_folders_ids.includes(f.id));
-                const newDocuments = old.documents.filter(d => !result.removed_documents_ids.includes(d.identifier));
-                const newQuestionnaires = old.questionnaires.filter(q => !result.removed_questionnaires_ids.includes(q.id));
-                return { documents: newDocuments, folders: newFolders, questionnaires: newQuestionnaires }
+                const newDocuments = old.documents.filter(d => result.removed_document_identifier !== d.identifier);
+                return { ...old, documents: newDocuments }
             });
+        }
+        if (result.operation === "files_deleted") {
+            // When deleting a folder, backend will CASCADE deletions so we need a full refresh
+            setFullRefreshKey(x => x + 1);
         }
     }
 
