@@ -82,12 +82,13 @@ def create_or_delete_documents(request):
                 document.created_at = datetime.today()
                 document.save()
                 # Also grant access to users who were allowed in the folder
-                for u in folder_granted_users:
-                    udp = EduAppUserdocumentpermission()
-                    udp.user = u
-                    udp.document = document
-                    udp.save()
-        return JsonResponse({"success": True})
+                if parent_folder:
+                    for u in folder_granted_users:
+                        udp = EduAppUserdocumentpermission()
+                        udp.user = u
+                        udp.document = document
+                        udp.save()
+        return JsonResponse({"success": True}, status=200)
     elif request.method == "DELETE":
         try:
             body_json = json.loads(request.body)

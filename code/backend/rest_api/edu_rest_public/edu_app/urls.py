@@ -7,6 +7,7 @@ urlpatterns = [
     path("admin/users/<username>",              facade.admin_edit_delete_user),
     path("admin/teachers",                      facade.admin_get_teachers),
     path("admin/groups",                        facade.admin_create_group),
+    path("admin/groups/<int:g_id>",             facade.admin_archive_group_and_resources),
     path("admin/classes",                       facade.admin_get_classes),
     path("users",                               facade.users_search),
     path("sessions",                            facade.users_login_logout),

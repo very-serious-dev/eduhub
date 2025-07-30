@@ -17,7 +17,7 @@ def get_admin_home(request):
     users_count = User.objects.filter(archived=False).count()
     classes_count = Class.objects.filter(archived=False).count()
     serialized_groups = []
-    groups = Group.objects.all()
+    groups = Group.objects.filter(archived=False)
     return JsonResponse({"usersCount": users_count,
                          "classesCount": classes_count,
                          "groups": groups_array_to_json(groups)})
@@ -37,7 +37,7 @@ def create_user(request, username, name, surname, password, student_group_id, is
     new_user.max_documents =           STUDENT_MAX_DOCUMENTS if is_teacher != True else TEACHER_MAX_DOCUMENTS
     new_user.max_documents_size = STUDENT_MAX_DOCUMENTS_SIZE if is_teacher != True else TEACHER_MAX_DOCUMENTS_SIZE
     if is_teacher != True:
-        new_user.student_group = get_from_db(Group, id=student_group_id)
+        new_user.student_group = get_from_db(Group, id=student_group_id, archived=False)
     new_user.save()
     return JsonResponse({"success": True}, status=201)
 
@@ -80,6 +80,19 @@ def create_group(request, tag, name, year, tutor_username):
     new_group.tutor = get_from_db(User, username=tutor_username, archived=False)
     new_group.save()
     return JsonResponse({"success": True}, status=201)
+
+def archive_group(request, g_id, new_group_id_for_students):
+    group = get_from_db(Group, id=g_id, archived=False)
+    group_users = User.objects.filter(role=User.UserRole.STUDENT, student_group=group, archived=False)
+    if new_group_id_for_students:
+        new_group = get_from_db(Group, id=new_group_id_for_students, archived=False)
+        group_users.update(student_group=new_group)
+    else:
+        group_users.update(archived=True)
+    Class.objects.filter(group=group).update(archived=True)
+    group.archived = True
+    group.save()
+    return JsonResponse({"success": True}, status=200)
 
 def get_all_classes(request):
     classes = Class.objects.filter(archived=False)

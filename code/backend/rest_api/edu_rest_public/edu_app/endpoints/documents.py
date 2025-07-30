@@ -42,12 +42,13 @@ def create_folder(request, name, parent_folder_id):
     new_folder.parent_folder = parent_folder
     new_folder.save()
     # Also grant access to users who were allowed in the destination folder
-    parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
-    for u in parent_folder_granted_users:
-        ufp = UserFolderPermission()
-        ufp.user = u
-        ufp.folder = new_folder
-        ufp.save()
+    if parent_folder:
+        parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
+        for u in parent_folder_granted_users:
+            ufp = UserFolderPermission()
+            ufp.user = u
+            ufp.folder = new_folder
+            ufp.save()
     return JsonResponse({"success": True,
                          "result": {
                              "operation": "folder_added",
@@ -60,12 +61,13 @@ def move_document(request, d_id, folder_id):
     document.folder = folder
     document.save()
     # Also grant access to users who were allowed in the destination folder
-    folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
-    for u in folder_granted_users:
-        udp = UserDocumentPermission()
-        udp.user = u
-        udp.document = document
-        udp.save()
+    if folder:
+        folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
+        for u in folder_granted_users:
+            udp = UserDocumentPermission()
+            udp.user = u
+            udp.document = document
+            udp.save()
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "document_changed",
@@ -79,12 +81,13 @@ def move_questionnaire(request, q_id, folder_id):
     questionnaire.folder = folder
     questionnaire.save()
     # Also grant access to users who were allowed in the destination folder
-    folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
-    for u in folder_granted_users:
-        uqp = UserQuestionnairePermission()
-        uqp.user = u
-        uqp.questionnaire = questionnaire
-        uqp.save()
+    if folder:
+        folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=folder, user__archived=False)))
+        for u in folder_granted_users:
+            uqp = UserQuestionnairePermission()
+            uqp.user = u
+            uqp.questionnaire = questionnaire
+            uqp.save()
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "questionnaire_changed",
@@ -98,38 +101,39 @@ def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_doc
     folder.parent_folder = parent_folder
     folder.save()
     # Also grant access (to all subtree) to users who were allowed in the destination folder
-    parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
-    for u in parent_folder_granted_users:
-        for folder_id in subtree_folder_ids:
-            try:
-                folder = Folder.objects.get(id=folder_id, author=request.session.user)
-                if not UserFolderPermission.objects.filter(user=u, folder=folder).exists():
-                    new_ufp = UserFolderPermission()
-                    new_ufp.user = u
-                    new_ufp.folder = folder
-                    new_ufp.save()
-            except Document.DoesNotExist:
-                pass
-        for document_id in subtree_document_ids:
-            try:
-                document = Document.objects.get(identifier=document_id, author=request.session.user)
-                if not UserDocumentPermission.objects.filter(user=u, document=document).exists():
-                    new_udp = UserDocumentPermission()
-                    new_udp.user = u
-                    new_udp.document = document
-                    new_udp.save()
-            except Document.DoesNotExist:
-                pass
-        for questionnaire_id in subtree_questionnaire_ids:
-            try:
-                questionnaire = Questionnaire.objects.get(id=questionnaire_id, author=request.session.user)
-                if not UserQuestionnairePermission.objects.filter(user=u, questionnaire=questionnaire).exists():
-                    new_uqp = UserQuestionnairePermission()
-                    new_uqp.user = u
-                    new_uqp.questionnaire = questionnaire
-                    new_uqp.save()
-            except Questionnaire.DoesNotExist:
-                pass
+    if parent_folder:
+        parent_folder_granted_users = list(map(lambda ufp: ufp.user, UserFolderPermission.objects.filter(folder=parent_folder, user__archived=False)))
+        for u in parent_folder_granted_users:
+            for folder_id in subtree_folder_ids:
+                try:
+                    folder = Folder.objects.get(id=folder_id, author=request.session.user)
+                    if not UserFolderPermission.objects.filter(user=u, folder=folder).exists():
+                        new_ufp = UserFolderPermission()
+                        new_ufp.user = u
+                        new_ufp.folder = folder
+                        new_ufp.save()
+                except Document.DoesNotExist:
+                    pass
+            for document_id in subtree_document_ids:
+                try:
+                    document = Document.objects.get(identifier=document_id, author=request.session.user)
+                    if not UserDocumentPermission.objects.filter(user=u, document=document).exists():
+                        new_udp = UserDocumentPermission()
+                        new_udp.user = u
+                        new_udp.document = document
+                        new_udp.save()
+                except Document.DoesNotExist:
+                    pass
+            for questionnaire_id in subtree_questionnaire_ids:
+                try:
+                    questionnaire = Questionnaire.objects.get(id=questionnaire_id, author=request.session.user)
+                    if not UserQuestionnairePermission.objects.filter(user=u, questionnaire=questionnaire).exists():
+                        new_uqp = UserQuestionnairePermission()
+                        new_uqp.user = u
+                        new_uqp.questionnaire = questionnaire
+                        new_uqp.save()
+                except Questionnaire.DoesNotExist:
+                    pass
     return JsonResponse({"success": True,
                             "result": {
                                 "operation": "folder_changed",

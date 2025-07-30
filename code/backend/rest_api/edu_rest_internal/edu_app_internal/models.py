@@ -12,14 +12,14 @@
 #
 #     python manage.py inspectdb
 #
-# * Bear in mind that the following manual modifications have been needed so far:
+# * Bear in mind that the following manual modifications have been needed so far in here:
 #
 #   1) EduAppDocument.folder, EduAppQuestionnaire.folder and EduAppFolder.parent_folder
 #      foreign keys MUST HAVE on_delete=models.CASCADE, so that when deleting a folder
 #      the subtree deletion is cascaded. That's expected behaviour.
 #      
 #   2) Also, EduAppQuestionnaire are soft-deleted (archived=True) so in 
-#      apps.py > EduAppInternalConfig we register a handler for pre_delete signal.
+#      apps.py > EduAppInternalConfig I registered a handler for pre_delete signal.
 #      In that handler a copy of any EduAppQuestionnaire to be cascade-deleted is
 #      generated and soft-deleted; then the real cascade-deletion takes place.
 #      --

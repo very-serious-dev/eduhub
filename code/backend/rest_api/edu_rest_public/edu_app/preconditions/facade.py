@@ -73,6 +73,15 @@ def admin_create_group(request):
         raise Unsupported
 
 @maybe_unhappy
+def admin_archive_group_and_resources(request, g_id):
+    if request.method == "POST":
+        require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        new_group_id_for_students = expect_body_with(optional=['new_group_id_for_students'], request=request)
+        return admin.archive_group(request, g_id, new_group_id_for_students)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
 def admin_get_classes(request):
     if request.method == "GET":
         require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
