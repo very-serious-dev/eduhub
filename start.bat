@@ -1,9 +1,9 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo TODO: Should say something about logo_main.png and generate internal_secret.py when building
 echo 1) Start development servers on local machine
 echo 2) Build web applications for deployment
+echo 3) Exit
 echo ---
 set /p OPTION="What do you want? "
 
@@ -29,20 +29,26 @@ if [%OPTION%] == [1] (
       echo For further information about the intented 3-servers architecture, see doc\deployment.md
       echo ---
       echo Now I'm going to ask you some questions and I will generate a build.config file
-      set /p EDU_NAME="What is your main server name (React)? "
+      set /p EDU_NAME="What is your React frontend server name (e.g.: www.myapp-eduplatform.org)? "
       echo EDU_NAME=!EDU_NAME!> build.config
-      set /p API_NAME="What your REST API public server name? "
+      set /p API_NAME="What your Django public REST API server name? (e.g.: www.myappbackend-eduplatform.org) "
       echo API_NAME=!API_NAME!>> build.config
-      set /p API_INTERNAL_NAME="What is your internal REST API (private interface) name or IP? (add any port if needed, e.g. 192.168.0.5:1234) "
+      set /p API_INTERNAL_NAME="That same machine must have configured an internal REST API (private interface). What's its name or IP? (add any port if needed, e.g. 192.168.0.5:1234) "
       echo API_INTERNAL_NAME=!API_INTERNAL_NAME!>> build.config
-      set /p DOCU_NAME="What is your storage server name? "
+      set /p DOCU_NAME="What is your Django storage server name (e.g.: www.myappdocuments-eduplatform.org)? "
       echo DOCU_NAME=!DOCU_NAME!>> build.config
       echo Your storage server needs to communicate with your REST API server.
-      echo If you have installed a self-signed certificate into the REST API server
-      echo internal interface, then you must have safely copied the public key into
-      echo the storage server.
+      echo If you have installed a self-signed certificate into the REST API server internal interface, then you must have safely copied the public key into the storage server.
       set /p API_INTERNAL_CERT_PATH_IN_DOCU="Where's the path to the self-signed certificate containing the public key? (e.g. /etc/ssl/certs/internal.crt, you can also specify None) "
       echo API_INTERNAL_CERT_PATH_IN_DOCU=!API_INTERNAL_CERT_PATH_IN_DOCU!>> build.config
+      echo Ok, we're almost there.
+      echo Now, randomly smash your keyboard to generate a string as long as you can. 
+      echo It will be a secret pre-shared key between the storage server and the internal facade of the REST API. This is an additional security layer on top of having properly configured your servers in a limited access DMZ.
+      set /p INTERNAL_SECRET="Please, type a random secret key: "
+      echo INTERNAL_SECRET=!INTERNAL_SECRET!>> build.config
+      echo Great! We're done.
+      echo Before I proceed, please, note that you can add a logo_main.png file inside code\frontend\public\ folder and it will be displayed in the Login page and the Main screen. The recommended size is 300x65 
+      pause
     ) else (
       set MUST_COPY_DBS=0
       echo [INFO] Using previously generated build.config...
@@ -52,6 +58,7 @@ if [%OPTION%] == [1] (
         if [%%a] == [API_INTERNAL_NAME] (set API_INTERNAL_NAME=%%b)
         if [%%a] == [DOCU_NAME] (set DOCU_NAME=%%b)
         if [%%a] == [API_INTERNAL_CERT_PATH_IN_DOCU] (set API_INTERNAL_CERT_PATH_IN_DOCU=%%b)
+        if [%%a] == [INTERNAL_SECRET] (set INTERNAL_SECRET=%%b)
       )
     )
     for /f "tokens=1 delims=:" %%a in ("!API_INTERNAL_NAME!") do (set API_INTERNAL_NAME_WITHOUT_PORT=%%a)
@@ -87,6 +94,8 @@ if [%OPTION%] == [1] (
     )) > edu_int_settings.py.temp
     move /y edu_int_settings.py.temp rest_api\edu_rest_internal\edu_rest_internal\settings.py > nul
 
+    echo INTERNAL_SECRET="!INTERNAL_SECRET!" > rest_api\edu_rest_internal\edu_app_internal\internal_secret.py
+
     echo [OK] REST API source files modified
 
     if [!MUST_COPY_DBS!] == [0] (
@@ -116,10 +125,12 @@ if [%OPTION%] == [1] (
       set "line=%%a"
       set "line=!line:*:=!"
       if defined line (
-        if "!line!" == "ORIGIN_SERVER='http://localhost:3000'" ( echo ORIGIN_SERVER='https://!EDU_NAME!' ) else ( if "!line!" == "EDU_REST_INTERNAL_CERTIFICATE=None" ( echo EDU_REST_INTERNAL_CERTIFICATE='!API_INTERNAL_CERT_PATH_IN_DOCU!' ) else ( if "!line!" == "EDU_REST_INTERNAL_BASE_URL='http://localhost:8002'" ( echo EDU_REST_INTERNAL_BASE_URL='!API_INTERNAL_NAME!' ) else ( echo !line! )
-      ))) else echo:
+        if "!line!" == "ORIGIN_SERVER='http://localhost:3000'" ( echo ORIGIN_SERVER='https://!EDU_NAME!' ) else ( if "!line!" == "EDU_REST_INTERNAL_CERTIFICATE=None" ( echo EDU_REST_INTERNAL_CERTIFICATE='!API_INTERNAL_CERT_PATH_IN_DOCU!' ) else ( if "!line!" == "EDU_REST_INTERNAL_BASE_URL='http://localhost:8002'" ( echo EDU_REST_INTERNAL_BASE_URL='!API_INTERNAL_NAME!' ) else ( echo !line! )))
+      ) else echo.
     )) > docu_constants.py.temp
     move /y docu_constants.py.temp storage_api\docu_rest\docu_rest_app\constants.py > nul
+
+    echo INTERNAL_SECRET="!INTERNAL_SECRET!" > storage_api\docu_rest\docu_rest_app\internal_secret.py
 
     echo [OK] Storage server source files modified
 
@@ -171,7 +182,7 @@ if [%OPTION%] == [1] (
     echo [OK] All finished
     echo [INFO] You now have three zipped files under the build/ folder
     echo - [frontend.tar] React app. It should be uploaded and deployed to your main server
-    echo - [backend_rest.tar] Django REST API (both the public and the internal). It should be uploaded and deployed to your REST API server
+    echo - [backend_rest.tar] Django REST API (both the public and the internal^). It should be uploaded and deployed to your REST API server
     echo - [backend_storage.tar] Django storage server. It should be uploaded and deployed to another server too
     echo [INFO] For further information on how to do this, see doc\deployment.md
     echo [INFO] The two database/db.sqlite3 files have only been included into your backend_rest.tar and
@@ -181,9 +192,8 @@ if [%OPTION%] == [1] (
     endlocal
     pause
   ) else (
-    echo Invalid option. Exiting...
-    pause
-    exit -1
+    echo Exiting...
+    exit
   )
 )
 
