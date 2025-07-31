@@ -6,6 +6,7 @@ def duplicate_questionnaire_as_soft_deleted(sender, instance, **kwargs):
 
     soft_deleted_questionnaire = models.EduAppQuestionnaire()
     soft_deleted_questionnaire.title = instance.title
+    soft_deleted_questionnaire.mode = instance.mode
     soft_deleted_questionnaire.author_id = instance.author_id
     soft_deleted_questionnaire.created_at = instance.created_at
     soft_deleted_questionnaire.folder = None

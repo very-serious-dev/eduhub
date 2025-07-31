@@ -6,6 +6,9 @@ from ..util.exceptions import Forbidden, ForbiddenAssignmentSubmit, NotFound
 from ..util.helpers import get_from_db, get_or_create_folder, can_edit_class, can_see_class
 from ..util.serializers import assignment_detail_to_json, document_to_json, user_to_json, questionnaire_to_json
 
+def folder_name_for_year(group):
+    return group.year
+
 def folder_name_for_classroom(classroom):
     return classroom.group.tag + " - " + classroom.name
 
@@ -35,7 +38,8 @@ def create_post(request, c_id, title, content, post_type, attachments, unit_id, 
                 document = Document.objects.get(identifier=a["identifier"])
             except Document.DoesNotExist:
                 root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                folder = get_or_create_folder(folder_name_for_classroom(classroom), request.session.user, root_folder)
+                subroot_folder = get_or_create_folder(folder_name_for_year(classroom.group), request.session.user, root_folder)
+                folder = get_or_create_folder(folder_name_for_classroom(classroom), request.session.user, subroot_folder)
                 document = Document()
                 document.identifier = a["identifier"]
                 document.name = a["name"]
@@ -91,7 +95,8 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
                     document = Document.objects.get(identifier=a["identifier"])
                 except Document.DoesNotExist:
                     root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                    folder = get_or_create_folder(folder_name_for_classroom(post.classroom), request.session.user, root_folder)
+                    subroot_folder = get_or_create_folder(folder_name_for_year(post.classroom.group), request.session.user, root_folder)
+                    folder = get_or_create_folder(folder_name_for_classroom(post.classroom), request.session.user, subroot_folder)
                     document = Document()
                     document.identifier = a["identifier"]
                     document.name = a["name"]

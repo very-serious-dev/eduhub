@@ -10,8 +10,7 @@ TOKEN_SIZE=30
 class User(models.Model):
     
     class UserRole(models.IntegerChoices):
-        # Maintainability note:
-        # EduREST internal API contains a is_teacher function in endpoints.py
+        # There is a is_teacher() function in EduREST internal API > endpoints.py
         STUDENT = 0
         TEACHER = 1
         TEACHER_SYSADMIN = 2
@@ -184,6 +183,8 @@ class Questionnaire(models.Model):
         REGULAR = 0
         SECRET_ANSWERS = 1
 
+    # Modifying Questionnaire attributes would require adapting the
+    # cascade soft-deletion strategy in EduREST internal API > apps.py
     mode = models.IntegerField(choices=QuestionnaireMode)
     title = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
