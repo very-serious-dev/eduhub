@@ -1,7 +1,5 @@
 from django.db import models
-
-# TODO: Gather all config parameters in a single file
-TOKEN_SIZE=30
+from . import constants
 
 ##
 # USERS
@@ -26,16 +24,16 @@ class User(models.Model):
     max_documents = models.IntegerField()
     max_documents_size = models.IntegerField()
     last_password_change = models.DateTimeField(null=True)
-    password_reset_token = models.CharField(max_length=TOKEN_SIZE, unique=True, null=True)
+    password_reset_token = models.CharField(max_length=constants.RESET_PASSWORD_TOKEN_SIZE, unique=True, null=True)
     archived = models.BooleanField(default=False)
 
 class UserSession(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     # Sent to client after successful login via HttpOnly Set-Cookie
-    token = models.CharField(unique=True, max_length=TOKEN_SIZE)
+    token = models.CharField(unique=True, max_length=constants.SESSION_TOKEN_SIZE)
     # Sent to client after successful login via response body (JSON)
     # See docs/auth_flow.txt for further information
-    one_time_token = models.CharField(unique=True, max_length=TOKEN_SIZE)
+    one_time_token = models.CharField(unique=True, max_length=constants.ONE_TIME_TOKEN_SIZE)
     one_time_token_already_used = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 

@@ -1,17 +1,11 @@
 import bcrypt
 from django.http import JsonResponse
 from django.db.models import Q
+from .. import constants
 from ..models import User, Group, Class, UserClass, UserSession
 from ..util.serializers import groups_array_to_json, classes_array_to_json, users_array_to_json
 from ..util.exceptions import BadRequest, ConflictUserAlreadyExists, ConflictGroupAlreadyExists
 from ..util.helpers import get_from_db
-
-TEACHER_MAX_FOLDERS = 500
-TEACHER_MAX_DOCUMENTS = 2000
-TEACHER_MAX_DOCUMENTS_SIZE = 5 * 1024 * 1024 * 1024 # 5Gb
-STUDENT_MAX_FOLDERS = 50
-STUDENT_MAX_DOCUMENTS = 200
-STUDENT_MAX_DOCUMENTS_SIZE = 1 * 1024 * 1024 * 512 # 500Mb
 
 def get_admin_home(request):
     users_count = User.objects.filter(archived=False).count()
@@ -33,9 +27,9 @@ def create_user(request, username, name, surname, password, student_group_id, is
     new_user.surname = surname
     new_user.encrypted_password = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
     new_user.role =                    User.UserRole.STUDENT if is_teacher != True else User.UserRole.TEACHER
-    new_user.max_folders =               STUDENT_MAX_FOLDERS if is_teacher != True else TEACHER_MAX_FOLDERS
-    new_user.max_documents =           STUDENT_MAX_DOCUMENTS if is_teacher != True else TEACHER_MAX_DOCUMENTS
-    new_user.max_documents_size = STUDENT_MAX_DOCUMENTS_SIZE if is_teacher != True else TEACHER_MAX_DOCUMENTS_SIZE
+    new_user.max_folders =               constants.STUDENT_MAX_FOLDERS if is_teacher != True else constants.TEACHER_MAX_FOLDERS
+    new_user.max_documents =           constants.STUDENT_MAX_DOCUMENTS if is_teacher != True else constants.TEACHER_MAX_DOCUMENTS
+    new_user.max_documents_size = constants.STUDENT_MAX_DOCUMENTS_SIZE if is_teacher != True else constants.TEACHER_MAX_DOCUMENTS_SIZE
     if is_teacher != True:
         new_user.student_group = get_from_db(Group, id=student_group_id, archived=False)
     new_user.save()

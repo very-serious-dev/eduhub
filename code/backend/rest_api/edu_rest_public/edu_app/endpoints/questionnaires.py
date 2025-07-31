@@ -1,8 +1,8 @@
 from django.http import JsonResponse
 from django.utils import timezone
-from .posts import folder_name_for_classroom, folder_name_for_year, POSTS_DOCUMENTS_ROOT_FOLDER_NAME
+from .. import constants
 from ..models import Class, Folder, Questionnaire, TextQuestion, ChoicesQuestion, ChoicesQuestionChoice, PostQuestionnaire, AnnouncementQuestionnaire, QuestionnaireSubmit, TextQuestionAnswer, ChoicesQuestionAnswer, UserClass, AssignmentSubmit, User, UserFolderPermission, UserQuestionnairePermission
-from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_folder, can_see_class, questionnaire_oldest_assignment_due_date, questionnaire_assignments, calculate_score
+from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_folder, can_see_class, questionnaire_oldest_assignment_due_date, questionnaire_assignments, calculate_score, folder_name_for_year, folder_name_for_classroom
 from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue, ForbiddenEditHasAnswers
 from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme, user_to_json
 
@@ -11,8 +11,8 @@ def create_questionnaire(request, title, questions, mode, classroom_id, folder_i
         classroom = get_from_db(Class, id=classroom_id, archived=False)
         if not can_see_class(request.session.user, classroom):
             raise Forbidden
-        root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-        subroot_folder = get_or_create_folder(folder_name_for_year(classroom.group), request.session.user, root_folder)
+        root_folder = get_or_create_folder(constants.POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+        subroot_folder = get_or_create_folder(folder_name_for_year(classroom.group.year), request.session.user, root_folder)
         folder = get_or_create_folder(folder_name_for_classroom(classroom), request.session.user, subroot_folder)     
     elif folder_id:
         folder = get_from_db(Folder, id=folder_id, author=request.session.user)

@@ -199,3 +199,12 @@ def get_or_create_folder(name, author, parent_folder=None):
         folder.parent_folder = parent_folder
         folder.save()
     return folder
+
+def folder_name_for_year(year):
+    return year
+
+def folder_name_for_group_announcements(group):
+    return group.tag + " (Anuncios)"
+
+def folder_name_for_classroom(classroom):
+    return classroom.group.tag + " - " + classroom.name

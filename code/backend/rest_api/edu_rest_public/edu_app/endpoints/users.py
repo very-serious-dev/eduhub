@@ -2,14 +2,11 @@ import bcrypt, json, secrets, datetime
 from django.http import JsonResponse
 from django.db.models import Q
 from django.utils import timezone
-from ..preconditions.middleware_auth import AUTH_COOKIE_KEY
-from ..models import User, UserSession, FailedLoginAttempt, TOKEN_SIZE
+from .. import constants
+from ..models import User, UserSession, FailedLoginAttempt
 from ..util.serializers import roles_array, users_array_to_json
 from ..util.helpers import get_from_db
 from ..util.exceptions import ForbiddenExceededLoginAttempts, NotFound, UnauthorizedIncorrectPassword
-
-MAX_FAILED_LOGINS_IN_24_HOURS = 10
-PASSWORD_DAYS_TO_EXPIRE = 5#120
 
 def search(request, q):
     users = User.objects.filter(archived=False)
@@ -19,7 +16,7 @@ def search(request, q):
 
 def login(request, username, password):
     yesterday = timezone.now() - datetime.timedelta(days=1)
-    if FailedLoginAttempt.objects.filter(username=username, datetime__gte=yesterday).count() > MAX_FAILED_LOGINS_IN_24_HOURS:
+    if FailedLoginAttempt.objects.filter(username=username, datetime__gte=yesterday).count() > constants.MAX_FAILED_LOGINS_IN_24_HOURS:
         raise ForbiddenExceededLoginAttempts
     try:
         user = User.objects.get(username=username, archived=False)
@@ -32,17 +29,17 @@ def login(request, username, password):
         raise NotFound
     if bcrypt.checkpw(password.encode('utf8'), user.encrypted_password.encode('utf8')):
         # Password is correct. Has the password expired, though?
-        must_reset_password = user.last_password_change is None or timezone.now() > (user.last_password_change + datetime.timedelta(days=PASSWORD_DAYS_TO_EXPIRE))
+        must_reset_password = user.last_password_change is None or timezone.now() > (user.last_password_change + datetime.timedelta(days=constants.PASSWORD_DAYS_TO_EXPIRE))
         if must_reset_password:
-            password_reset_token = secrets.token_hex(TOKEN_SIZE) #NICE-TO-HAVE: Make this token expire after a short time (5 min)
+            password_reset_token = secrets.token_hex(constants.RESET_PASSWORD_TOKEN_SIZE) #NICE-TO-HAVE: Make this token expire after a short time (5 min)
             user.password_reset_token = password_reset_token
             user.save()
             return JsonResponse({"success": False,
                                  "reason": "Por favor, establece una nueva contraseña" if user.last_password_change is None else "Tu contraseña está caducada",
                                  "password_reset_token": password_reset_token})
         else:
-            random_token = secrets.token_hex(TOKEN_SIZE)
-            random_one_time_token = secrets.token_hex(TOKEN_SIZE)
+            random_token = secrets.token_hex(constants.SESSION_TOKEN_SIZE)
+            random_one_time_token = secrets.token_hex(constants.ONE_TIME_TOKEN_SIZE)
             session = UserSession()
             session.user = user
             session.token = random_token
@@ -59,7 +56,7 @@ def login(request, username, password):
                                             "bytes": user.max_documents_size
                                         }
                                     }}, status=201)
-            response.set_cookie(key=AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
+            response.set_cookie(key=constants.AUTH_COOKIE_KEY, value=random_token, path="/", samesite="Strict", httponly=True) # TO-DO: Should be secure=True too when using HTTPS
             return response
     else:
         fla = FailedLoginAttempt()

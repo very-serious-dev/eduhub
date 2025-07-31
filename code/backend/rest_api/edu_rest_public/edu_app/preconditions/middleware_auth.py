@@ -1,9 +1,6 @@
-from ..models import UserSession
 import datetime
-
-
-AUTH_COOKIE_KEY = "EduSessionToken"
-SESSION_LIFETIME_DAYS = 7
+from ..models import UserSession
+from .. import constants
 
 class AuthMiddleware:
     def __init__(self, get_response):
@@ -29,7 +26,7 @@ class AuthMiddleware:
             # (Code is also in docu_rest, it has been copy-pasted)
             cookie_key_value = cookie.strip().split("=")
             if len(cookie_key_value) == 2:
-                if cookie_key_value[0] == AUTH_COOKIE_KEY:
+                if cookie_key_value[0] == constants.AUTH_COOKIE_KEY:
                     session_token = cookie_key_value[1]
         if session_token is None:
             return None
@@ -39,7 +36,5 @@ class AuthMiddleware:
             return None
     
     def __is_valid_session(self, user_session):
-        # TODO: 1 hour sessions, for development purposes
-        return datetime.datetime.now().timestamp() < (user_session.created_at + datetime.timedelta(hours=1)).timestamp()
-        #return datetime.datetime.now().timestamp() < (user_session.created_at + datetime.timedelta(days=SESSION_LIFETIME_DAYS)).timestamp()
+        return datetime.datetime.now().timestamp() < (user_session.created_at + datetime.timedelta(days=constants.SESSION_LIFETIME_DAYS)).timestamp()
         

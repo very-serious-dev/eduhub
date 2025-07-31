@@ -1,6 +1,5 @@
 from django.http import HttpResponse
-
-ORIGIN_SERVER='http://localhost:3000'
+from .. import constants
 
 class CORSMiddleware:
     def __init__(self, get_response):
@@ -16,6 +15,6 @@ class CORSMiddleware:
         else:
             response = self.get_response(request)
 
-        response["Access-Control-Allow-Origin"] = ORIGIN_SERVER
+        response["Access-Control-Allow-Origin"] = constants.ORIGIN_SERVER
         response["Access-Control-Allow-Credentials"] = "true"
         return response

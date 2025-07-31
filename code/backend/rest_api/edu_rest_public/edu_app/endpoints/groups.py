@@ -1,10 +1,10 @@
 from django.http import JsonResponse
 from django.utils import timezone
+from .. import constants
 from ..models import User, Group, Announcement, Folder, AnnouncementDocument, Document, Questionnaire, AnnouncementQuestionnaire
 from ..util.exceptions import Forbidden, InternalError
-from ..util.helpers import get_from_db, get_or_create_folder
+from ..util.helpers import get_from_db, get_or_create_folder, folder_name_for_year, folder_name_for_group_announcements
 from ..util.serializers import groups_array_to_json, announcements_array_to_json
-from .posts import POSTS_DOCUMENTS_ROOT_FOLDER_NAME
 
 def all(request):
     groups = Group.objects.filter(archived=False)
@@ -39,8 +39,9 @@ def create_announcement(request, g_id, title, content, attachments):
             try:
                 document = Document.objects.get(identifier=a["identifier"])
             except Document.DoesNotExist:
-                root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                folder = get_or_create_folder(__folder_name_for_group(group), request.session.user, root_folder)
+                root_folder = get_or_create_folder(constants.POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+                subroot_folder = get_or_create_folder(folder_name_for_year(group.year), request.session.user, root_folder)
+                folder = get_or_create_folder(folder_name_for_group_announcements(group), request.session.user, subroot_folder)
                 document = Document()
                 document.identifier = a["identifier"]
                 document.name = a["name"]
@@ -76,8 +77,9 @@ def edit_announcement(request, a_id, title, content, attachments):
             try:
                 document = Document.objects.get(identifier=a["identifier"])
             except Document.DoesNotExist:
-                root_folder = get_or_create_folder(POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
-                folder = get_or_create_folder(__folder_name_for_group(announcement.group), request.session.user, root_folder)
+                root_folder = get_or_create_folder(constants.POSTS_DOCUMENTS_ROOT_FOLDER_NAME, request.session.user)
+                subroot_folder = get_or_create_folder(folder_name_for_year(announcement.group), request.session.user, root_folder)
+                folder = get_or_create_folder(folder_name_for_group_announcements(announcement.group), request.session.user, subroot_folder)
                 document = Document()
                 document.identifier = a["identifier"]
                 document.name = a["name"]
@@ -106,9 +108,6 @@ def delete_announcement(request, a_id):
     __delete_announcement_documents_and_unprotect_unused_documents(announcement)
     announcement.delete()
     return JsonResponse({"success": True}, status=201)
-        
-def __folder_name_for_group(group):
-    return group.tag
 
 def __has_permission_to_manage_announcements(user, group):
     if group.archived:
