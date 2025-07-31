@@ -157,8 +157,8 @@ def classes_create_get_my_classes(request):
         return classes.get_my_classes(request)
     elif request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        name, group_tag, automatically_add_teacher = expect_body_with('name', 'group', optional=['automatically_add_teacher'], request=request)
-        return classes.create_class(request, name, group_tag, automatically_add_teacher)
+        name, group_id, automatically_add_teacher = expect_body_with('name', 'group_id', optional=['automatically_add_teacher'], request=request)
+        return classes.create_class(request, name, group_id, automatically_add_teacher)
     else:
         raise Unsupported
 

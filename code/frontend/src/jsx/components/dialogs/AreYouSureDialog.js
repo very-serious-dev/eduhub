@@ -8,20 +8,20 @@ const AreYouSureDialog = (props) => {
 
     const yesOptionCss = () => {
         let css = `card areYouSureOption pointable ${primary(theme)} ${pointableSecondary(theme)}`;
-        if (props.dialogMode == "DELETE") {
+        if ((props.dialogMode === "DELETE") || (props.dialogMode === "CONTINUE")) {
             css += " areYouSureOptionDestructive";
-        } else if (props.dialogMode == "SUBMIT") {
+        } else if (props.dialogMode === "SUBMIT") {
             css += " areYouSureOptionDangerouslyConstructive";
         }
         return css;
     }
 
     const yesOptionText = () => {
-        return (props.dialogMode == "SUBMIT") ? "⬆️ Entregar" : "❌ Eliminar";
+        return (props.dialogMode == "SUBMIT") ? "⬆️ Entregar" : (props.dialogMode === "DELETE") ? "❌ Eliminar" : "📦 Continuar";
     }
 
     const noOptionText = () => {
-        return (props.dialogMode == "SUBMIT") ? "Volver" : "No";
+        return (props.dialogMode == "DELETE") ? "No" : "Volver";
     }
 
     return <div className="popupOverlayBackground" onClick={e => { e.stopPropagation(); props.onDismiss() }}>

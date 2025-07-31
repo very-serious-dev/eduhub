@@ -7,7 +7,7 @@ import { ThemeContext } from "../../main/GlobalContainer";
 const CreateClassDialog = (props) => {
     const NOT_VALID = "NOT_VALID";
     const initialGroupValue = () => {
-        if (props.groups.length > 0) { return props.groups[0].tag; }
+        if (props.groups.length > 0) { return props.groups[0].id; }
         return NOT_VALID;
     }
     const [formName, setFormName] = useState("");
@@ -20,7 +20,7 @@ const CreateClassDialog = (props) => {
         setLoading(true);
         let body = {
             name: formName,
-            group: formGroup,
+            group_id: formGroup,
             automatically_add_teacher: props.automaticallyAddTeacher === true
         }
         EduAPIFetch("POST", "/api/v1/classes", body)
@@ -64,7 +64,7 @@ const CreateClassDialog = (props) => {
                             onChange={e => { setFormGroup(e.target.value); }} >
                             {props.groups.length > 0 ?
                                 props.groups.map(g => {
-                                    return <option value={g.tag}>{g.tag}</option>
+                                    return <option value={g.id}>{g.tag} ({g.year})</option>
                                 }) :
                                 <option value={NOT_VALID}>-- No existen grupos. ¡Crea uno! --</option>
                             }

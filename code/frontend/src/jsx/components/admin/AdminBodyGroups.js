@@ -16,7 +16,17 @@ const AdminBodyGroups = (props) => {
             setFeedback({ type: "success", message: "Nuevo grupo creado con éxito" });
             props.onShouldRefresh();
         } else {
-            setFeedback({ type: "success", message: errorMessage });
+            setFeedback({ type: "error", message: errorMessage });
+        }
+    }
+
+    const onGroupArchived = (errorMessage) => {
+        if (errorMessage === undefined) {
+            setFeedback({ type: "success", message: "Grupo archivado con éxito" });
+            setPopupShown("NONE");
+            props.onShouldRefresh();
+        } else {
+            setFeedback({ type: "error", message: errorMessage });
         }
     }
 
@@ -58,6 +68,7 @@ const AdminBodyGroups = (props) => {
         {popupShown === "ARCHIVE_GROUP" &&
             <ArchiveGroupDialog group={groupForPopup()}
                 allGroups={props.groups}
+                onGroupArchived={onGroupArchived}
                 onDismiss={() => { setPopupShown("OPTIONS_END_COURSE") }} />}
         <div className="adminSubpanelList">
             {props.groups.map(group => {

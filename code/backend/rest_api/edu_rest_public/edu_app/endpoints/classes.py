@@ -31,8 +31,8 @@ def get_my_classes(request):
         })
     return JsonResponse({"classes": classes_json, "groups": groups_json})
 
-def create_class(request, name, group_tag, automatically_add_teacher):
-    group = get_from_db(Group, tag=group_tag)
+def create_class(request, name, group_id, automatically_add_teacher):
+    group = get_from_db(Group, id=group_id, archived=False)
     new_class = Class()
     new_class.name = name
     new_class.evaluation_criteria = None
