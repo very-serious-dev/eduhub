@@ -44,7 +44,7 @@ const NewQuestionnairePage = () => {
         }
     }, [searchParams])
 
-    const onSubmitNewQuestionnaire = (title, questions) => {
+    const onSubmitNewQuestionnaire = (title, mode, questions) => {
         if (isLoadingSubmit) { return; }
         setLoadingSubmit(true);
         let method = "POST";
@@ -57,7 +57,7 @@ const NewQuestionnairePage = () => {
             url += `/${questionnaireBeingEdited.id}/questions`
             method = "PUT";
         }
-        EduAPIFetch(method, url, { title: title, questions: questions })
+        EduAPIFetch(method, url, { title: title, mode: mode, questions: questions })
             .then(json => {
                 setLoadingSubmit(false);
                 if (json.success === true) {

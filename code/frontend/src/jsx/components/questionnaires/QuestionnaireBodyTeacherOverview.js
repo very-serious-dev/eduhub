@@ -23,25 +23,25 @@ const QuestionnaireBodyTeacherOverview = (props) => {
             <div className="questionnaireDetailTitleHeader">
                 <div className="questionnaireDetailTitle">{props.questionnaireData.title}</div>
                 <div className={`classDetailSectionUnderline ${accent(theme)}`} />
+                {sortedQuestions().map(question => {
+                    const allAnswersForQuestion = props.questionnaireData.submits.reduce((acumAnswers, submit) => {
+                        const singleAnswer = submit.answers.find(answer => answer.question_id === question.id);
+                        if (singleAnswer) {
+                            return [...acumAnswers, { ...singleAnswer, author: submit.author }];
+                        }
+                        return acumAnswers;
+                    }, []);
+
+                    if (question.type === "text") {
+                        return <QuestionnaireTextQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
+                    } else if (question.type === "choices") {
+                        return <QuestionnaireChoicesQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
+                    } else {
+                        return <div>Tipo de pregunta no conocido</div>
+                    }
+                })}
             </div>
         </div>
-        {sortedQuestions().map(question => {
-            const allAnswersForQuestion = props.questionnaireData.submits.reduce((acumAnswers, submit) => {
-                const singleAnswer = submit.answers.find(answer => answer.question_id === question.id);
-                if (singleAnswer) {
-                    return [...acumAnswers, { ...singleAnswer, author: submit.author }];
-                }
-                return acumAnswers;
-            }, []);
-
-            if (question.type === "text") {
-                return <QuestionnaireTextQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
-            } else if (question.type === "choices") {
-                return <QuestionnaireChoicesQuestionAnswers question={question} allAnswers={allAnswersForQuestion} />
-            } else {
-                return <div>Tipo de pregunta no conocido</div>
-            }
-        })}
     </div>
 }
 

@@ -37,7 +37,7 @@ const QuestionnairePage = () => {
                 setRequestFailed(true);
                 setRequestError(error);
             });
-    }, [params.formId, roles]);
+    }, [params.formId]);
 
     return isLoading ?
         <LoadingHUDPage />

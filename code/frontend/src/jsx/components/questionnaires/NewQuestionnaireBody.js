@@ -7,6 +7,7 @@ import ConfigureQuestionnaireScoreDialog from "../dialogs/ConfigureQuestionnaire
 
 const NewQuestionnaireBody = (props) => {
     const [formTitle, setFormTitle] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.title : "");
+    const [formMode, setFormMode] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.mode : "regular");
     const [formQuestions, setFormQuestions] = useState(props.questionnaireBeingEdited ? [...props.questionnaireBeingEdited.questions] : []);
     const [showConfigureScores, setShowConfigureScores] = useState(false);
     const theme = useContext(ThemeContext);
@@ -158,7 +159,11 @@ const NewQuestionnaireBody = (props) => {
             alert("Todas las preguntas tipo test deben tener al menos 1 respuesta");
             return;
         }
-        props.onSubmitNewQuestionnaire(formTitle, formQuestions);
+        props.onSubmitNewQuestionnaire(formTitle, formMode, formQuestions);
+    }
+
+    const formModeHint = () => {
+        return formMode === "secret_answers" ? "🔒 Los estudiantes no verán las respuestas que teclean en pantalla, como si escribieran una contraseña. Escoge esta opción si este formulario debe realizarse en el aula como un examen" : "Los estudiantes responden de forma convencional, y pueden ver sus respuestas en pantalla a medida que contestan";
     }
 
     return <>
@@ -177,6 +182,16 @@ const NewQuestionnaireBody = (props) => {
                     <div className={`underline ${accent(theme)}`} />
                     <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Título del formulario</label>
                 </div>
+                <div className={"formInputSelectContainer selectWithTopMargin addUserSelect"}>
+                    <select name="questionnaireMode"
+                        value={formMode}
+                        className={`formInputSelect ${primary(theme)}`}
+                        onChange={e => { setFormMode(e.target.value); }}>
+                        <option value="regular">Normal</option>
+                        <option value="secret_answers">Respuesta oculta</option>
+                    </select>
+                </div>
+                <div className="questionnaireModeHint">{formModeHint()}</div>
                 {formQuestions.map((q, idx) => {
                     if (q.type === "choices") {
                         return <NewQuestionnaireChoicesQuestion question={q}

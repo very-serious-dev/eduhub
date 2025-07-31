@@ -1737,6 +1737,14 @@ body {
   }
 }
 
+.questionnaireModeHint {
+  margin-left: 37px;
+  margin-top: 10px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  font-size: 0.875em;
+}
+
 .questionnaireNewQuestionButtonContainer {
   display: flex;
   flex-direction: row;
@@ -1970,7 +1978,7 @@ body {
  */
 
 .globalUserFeedback {
-  opacity: 1;
+  opacity: 0;
   position: fixed;
   bottom: 30px;
   right: 50px;
@@ -1978,7 +1986,7 @@ body {
   text-align: start;
   padding: 12px;
   border-radius: 0px;
-  animation: globalUserFeedback 3s infinite;
+  animation: globalUserFeedback 3s;
   animation-iteration-count: 1;
 }
 
@@ -2096,6 +2104,10 @@ body {
   padding: 6px;
   border-radius: 5px;
   width: 100%;
+}
+
+.formInputSecretText {
+  -webkit-text-security: disc;
 }
 
 .formInputSubmit {

@@ -183,7 +183,7 @@ def __save_questions_in_db(questions, questionnaire):
                 new_choice = ChoicesQuestionChoice()
                 new_choice.content = c["content"]
                 new_choice.number = cIndex + 1
-                new_choice.is_correct = c["is_correct"]
+                new_choice.is_correct = c.get("is_correct", False)
                 new_choice.question = new_choices_question
                 new_choice.save()
 

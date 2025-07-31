@@ -31,7 +31,8 @@ const QuestionnaireChoicesQuestionAnswersChart = (props) => {
     return <div className="allSubmitsChoicesQuestionChartContainer">
         {choicesWithPlotData.map((choiceData, idx) => {
             const maxWidthInViewportPerc = 50;
-            const choicePlotWidth = Math.trunc((choiceData.numberOfTimesChosen / mostChosenChoiceTimes) * maxWidthInViewportPerc);
+            const minWidthInViewportPerc = 0.5;
+            const choicePlotWidth = minWidthInViewportPerc + (Math.trunc((choiceData.numberOfTimesChosen / mostChosenChoiceTimes) * maxWidthInViewportPerc));
 
             return <div className="choicesQuestionChartChoiceContainer" key={`choice${idx}`}>
                 <div className="choicesQuestionChartChoicePlotContainer">

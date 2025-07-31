@@ -213,7 +213,7 @@ def questionnaire_detail_to_json(questionnaire, questions, due_date, theme):
     return {
         "id": questionnaire.id,
         "title": questionnaire.title,
-        "mode": questionnaire_mode(questionnaire.mode),
+        "mode": questionnaire_mode(questionnaire),
         "questions": questions,
         "due_date": due_date,
         "theme": theme
