@@ -13,7 +13,7 @@ const AboutPage = () => {
             <li>Crea y edita grupos, clases y usuarios</li>
             <li>Permite a tus profesores gestionar sus clases: Participantes, publicaciones, tareas, entregas, calificaciones...</li>
             <li>Espacio de almacenamiento: Gestiona tus archivos y compártelos</li>
-            <li>Mensajería interna entre usuarios</li>
+            <li>Formularios autoevaluables</li>
         </ul>
         <p>Si encuentras algún problema o quieres sugerir mejoras, no dudes en contactar con la administración de tu organización.</p>
         <p>¡Estamos deseando mejorar! ♥️</p>
