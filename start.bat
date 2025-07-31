@@ -16,11 +16,10 @@ if [%OPTION%] == [1] (
   if [%OPTION%] == [2] (
     if not exist code\frontend\src\client\Servers.js ( echo I couldn't find Servers.js... Aborting... && pause && exit -1 )
     if not exist code\backend\rest_api\edu_rest_public\edu_rest_public\settings.py ( echo I couldn't find edu_rest_public\settings.py... Aborting... && pause && exit -1 )
-    if not exist code\backend\rest_api\edu_rest_public\edu_app\middleware_cors.py ( echo I couldn't find edu_app\middleware_cors.py... Aborting... && pause && exit -1 )
+    if not exist code\backend\rest_api\edu_rest_public\edu_app\constants.py ( echo I couldn't find edu_app\constants.py... Aborting... && pause && exit -1 )
     if not exist code\backend\rest_api\edu_rest_internal\edu_rest_internal\settings.py ( echo I couldn't find edu_rest_internal\settings.py... Aborting... && pause && exit -1 )
     if not exist code\backend\storage_api\docu_rest\docu_rest\settings.py ( echo I couldn't find docu_rest\settings.py... Aborting... && pause && exit -1 )
-    if not exist code\backend\storage_api\docu_rest\docu_rest_app\middleware_cors.py ( echo I couldn't find docu_rest_app\middleware_cors.py... Aborting... && pause && exit -1 )
-    if not exist code\backend\storage_api\docu_rest\docu_rest_app\endpoints.py ( echo I couldn't find docu_rest_app\endpoints.py... Aborting... && pause && exit -1 )
+    if not exist code\backend\storage_api\docu_rest\docu_rest_app\constants.py ( echo I couldn't find docu_rest_app\constants.py... Aborting... && pause && exit -1 )
 
     echo [OK] Source files that need to be modified during build exist. Moving on...
 
@@ -70,14 +69,14 @@ if [%OPTION%] == [1] (
     )) > edu_settings.py.temp
     move /y edu_settings.py.temp rest_api\edu_rest_public\edu_rest_public\settings.py > nul
 
-    (for /f "tokens=*" %%a in ('type rest_api\edu_rest_public\edu_app\middleware_cors.py ^| findstr /n "^"') do (
+    (for /f "tokens=*" %%a in ('type rest_api\edu_rest_public\edu_app\constants.py ^| findstr /n "^"') do (
       set "line=%%a"
       set "line=!line:*:=!"
       if defined line (
         if "!line!" == "ORIGIN_SERVER='http://localhost:3000'" ( echo ORIGIN_SERVER='https://!EDU_NAME!' ) else ( echo !line! )
       ) else echo:
-    )) > edu_cors.py.temp
-    move /y edu_cors.py.temp rest_api\edu_rest_public\edu_app\middleware_cors.py > nul
+    )) > edu_constants.py.temp
+    move /y edu_constants.py.temp rest_api\edu_rest_public\edu_app\constants.py > nul
 
     (for /f "tokens=*" %%a in ('type rest_api\edu_rest_internal\edu_rest_internal\settings.py ^| findstr /n "^"') do (
       set "line=%%a"
@@ -113,23 +112,14 @@ if [%OPTION%] == [1] (
     )) > docu_settings.py.temp
     move /y docu_settings.py.temp storage_api\docu_rest\docu_rest\settings.py > nul
 
-    (for /f "tokens=*" %%a in ('type storage_api\docu_rest\docu_rest_app\middleware_cors.py ^| findstr /n "^"') do (
+    (for /f "tokens=*" %%a in ('type storage_api\docu_rest\docu_rest_app\constants.py ^| findstr /n "^"') do (
       set "line=%%a"
       set "line=!line:*:=!"
       if defined line (
-        if "!line!" == "ORIGIN_SERVER='http://localhost:3000'" ( echo ORIGIN_SERVER='https://!EDU_NAME!' ) else ( echo !line! )
-      ) else echo:
-    )) > docu_cors.py.temp
-    move /y docu_cors.py.temp storage_api\docu_rest\docu_rest_app\middleware_cors.py > nul
-
-    (for /f "tokens=*" %%a in ('type storage_api\docu_rest\docu_rest_app\endpoints.py ^| findstr /n "^"') do (
-      set "line=%%a"
-      set "line=!line:*:=!"
-      if defined line (
-        if "!line!" == "EDU_REST_INTERNAL_CERTIFICATE=None" ( echo EDU_REST_INTERNAL_CERTIFICATE='!API_INTERNAL_CERT_PATH_IN_DOCU!' ) else ( echo !line! )
-      ) else echo:
-    )) > docu_endpoints.py.temp
-    move /y docu_endpoints.py.temp storage_api\docu_rest\docu_rest_app\endpoints.py > nul
+        if "!line!" == "ORIGIN_SERVER='http://localhost:3000'" ( echo ORIGIN_SERVER='https://!EDU_NAME!' ) else ( if "!line!" == "EDU_REST_INTERNAL_CERTIFICATE=None" ( echo EDU_REST_INTERNAL_CERTIFICATE='!API_INTERNAL_CERT_PATH_IN_DOCU!' ) else ( if "!line!" == "EDU_REST_INTERNAL_BASE_URL='http://localhost:8002'" ( echo EDU_REST_INTERNAL_BASE_URL='!API_INTERNAL_NAME!' ) else ( echo !line! )
+      ))) else echo:
+    )) > docu_constants.py.temp
+    move /y docu_constants.py.temp storage_api\docu_rest\docu_rest_app\constants.py > nul
 
     echo [OK] Storage server source files modified
 
@@ -181,7 +171,7 @@ if [%OPTION%] == [1] (
     echo [OK] All finished
     echo [INFO] You now have three zipped files under the build/ folder
     echo - [frontend.tar] React app. It should be uploaded and deployed to your main server
-    echo - [backend_rest.tar] Django REST API (both the public and the internal^). It should be uploaded and deployed to your REST API server
+    echo - [backend_rest.tar] Django REST API (both the public and the internal). It should be uploaded and deployed to your REST API server
     echo - [backend_storage.tar] Django storage server. It should be uploaded and deployed to another server too
     echo [INFO] For further information on how to do this, see doc\deployment.md
     echo [INFO] The two database/db.sqlite3 files have only been included into your backend_rest.tar and

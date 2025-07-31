@@ -1,6 +1,5 @@
 from django.http import HttpResponse
-
-ORIGIN_SERVER='http://localhost:3000'
+from .constants import ORIGIN_SERVER
 
 class CORSMiddleware:
     def __init__(self, get_response):

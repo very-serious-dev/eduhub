@@ -6,15 +6,13 @@ from django.http import JsonResponse, HttpResponse
 from .middleware_auth import AUTH_COOKIE_KEY
 from .models import UserSession, Document
 from .internal_secret import INTERNAL_SECRET
+from .constants import EDU_REST_INTERNAL_BASE_URL, EDU_REST_INTERNAL_CERTIFICATE
 
 # Force IPv4 on requests library to improve connection speed
 # https://stackoverflow.com/a/46972341
 def allowed_gai_family_override():
     return socket.AF_INET
 urllib3_cn.allowed_gai_family = allowed_gai_family_override
-
-EDU_REST_INTERNAL_BASE_URL='http://localhost:8002'
-EDU_REST_INTERNAL_CERTIFICATE=None
 
 VERIFY_SESSION_ENDPOINT            = "/internal/v1/sessions"
 CREATE_DELETE_DOCUMENTS_ENDPOINT   = "/internal/v1/documents"
