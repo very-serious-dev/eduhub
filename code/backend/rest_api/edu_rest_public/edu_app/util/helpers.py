@@ -104,6 +104,9 @@ def validate_year(year):
     if not(re.match("^[0-9-]+$", year)) or len(year) < 1:
         raise e.BadRequestInvalidYear
 
+def validate_questionnaire_mode(mode):
+    return mode in ["regular", "secret_answers"]
+
 def parse_usernames_list(usernames):
     non_trimmed_usernames = usernames.split(",")
     trimmed_usernames = list(map(lambda x: x.strip(), non_trimmed_usernames))

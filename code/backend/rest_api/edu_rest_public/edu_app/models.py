@@ -179,6 +179,12 @@ class AssignmentSubmitDocument(models.Model):
 #
 
 class Questionnaire(models.Model):
+
+    class QuestionnaireMode(models.IntegerChoices):
+        REGULAR = 0
+        SECRET_ANSWERS = 1
+
+    mode = models.IntegerField(choices=QuestionnaireMode)
     title = models.CharField(max_length=100)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     archived = models.BooleanField(default=False)

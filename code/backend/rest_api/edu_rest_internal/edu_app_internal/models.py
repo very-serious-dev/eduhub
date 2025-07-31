@@ -36,7 +36,7 @@ class EduAppAnnouncement(models.Model):
     publication_date = models.DateTimeField()
     modification_date = models.DateTimeField(blank=True, null=True)
     group = models.ForeignKey('EduAppGroup', models.DO_NOTHING)
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -185,7 +185,7 @@ class EduAppPost(models.Model):
     assignment_due_date = models.DateTimeField(blank=True, null=True)
     classroom = models.ForeignKey(EduAppClass, models.DO_NOTHING)
     unit = models.ForeignKey('EduAppUnit', models.DO_NOTHING, blank=True, null=True)
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING, blank=True, null=True)
     amendment_original_post = models.ForeignKey('self', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
@@ -215,9 +215,10 @@ class EduAppQuestionnaire(models.Model):
     title = models.CharField(max_length=100)
     archived = models.BooleanField()
     created_at = models.DateTimeField()
-    author = models.ForeignKey('EduAppUser', models.DO_NOTHING)
     folder = models.ForeignKey(EduAppFolder, models.CASCADE, blank=True, null=True)
-    
+    author = models.ForeignKey('EduAppUser', models.DO_NOTHING, blank=True, null=True)
+    mode = models.IntegerField()
+
     class Meta:
         managed = False
         db_table = 'edu_app_questionnaire'

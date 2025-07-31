@@ -1,4 +1,4 @@
-from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire
+from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire, Questionnaire
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -18,6 +18,9 @@ JSON_BROWN = "brown"
 JSON_RED = "red"
 JSON_ORANGE = "orange"
 JSON_YELLOW = "yellow"
+
+JSON_QUESTIONNAIRE_REGULAR = "regular"
+JSON_QUESTIONNAIRE_SECRET_ANSWERS = "secret_answers"
 
 def document_to_json(document):
     return {
@@ -206,10 +209,11 @@ def choices_question_to_json(question, choices, correct_choice):
         json["incorrect_answer_score"] = question.incorrect_answer_score
     return json
 
-def questionnaire_detail_to_json(id, title, questions, due_date, theme):
+def questionnaire_detail_to_json(questionnaire, questions, due_date, theme):
     return {
-        "id": id,
-        "title": title,
+        "id": questionnaire.id,
+        "title": questionnaire.title,
+        "mode": questionnaire_mode(questionnaire.mode),
         "questions": questions,
         "due_date": due_date,
         "theme": theme
@@ -256,3 +260,9 @@ def class_theme(c):
         return JSON_ORANGE
     if c.theme == Class.ClassTheme.YELLOW:
         return JSON_YELLOW
+
+def questionnaire_mode(q):
+    if q.mode == Questionnaire.QuestionnaireMode.REGULAR:
+        return JSON_QUESTIONNAIRE_REGULAR
+    if q.mode == Questionnaire.QuestionnaireMode.SECRET_ANSWERS:
+        return JSON_QUESTIONNAIRE_SECRET_ANSWERS

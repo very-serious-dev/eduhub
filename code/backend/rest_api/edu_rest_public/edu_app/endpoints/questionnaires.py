@@ -6,7 +6,7 @@ from ..util.helpers import get_from_db, can_see_questionnaire, get_or_create_fol
 from ..util.exceptions import Forbidden, ForbiddenAlreadyAnswered, ForbiddenQuestionnaireAssignmentIsDue, ForbiddenQuestionnaireAssignmentIsNotDue, ForbiddenEditHasAnswers
 from ..util.serializers import questionnaire_to_json, text_question_to_json, choices_question_to_json, questionnaire_detail_to_json, class_theme, user_to_json
 
-def create_questionnaire(request, title, questions, classroom_id, folder_id):
+def create_questionnaire(request, title, questions, mode, classroom_id, folder_id):
     if classroom_id:
         classroom = get_from_db(Class, id=classroom_id, archived=False)
         if not can_see_class(request.session.user, classroom):
@@ -21,6 +21,7 @@ def create_questionnaire(request, title, questions, classroom_id, folder_id):
     new_questionnaire.title = title
     new_questionnaire.author = request.session.user
     new_questionnaire.folder = folder
+    new_questionnaire.mode = Questionnaire.QuestionnaireMode.SECRET_ANSWERS if mode == 'secret_answers' else Questionnaire.QuestionnaireMode.REGULAR
     new_questionnaire.save()
     __save_questions_in_db(questions, new_questionnaire)
     if folder:
@@ -47,11 +48,12 @@ def delete_questionnaire(request, q_id):
                              "removed_questionnaire_id": questionnaire.id
                          }}, status=200)
 
-def edit_questions(request, q_id, title, questions):
+def edit_questions(request, q_id, title, questions, mode):
     questionnaire = get_from_db(Questionnaire, id=q_id, author=request.session.user)
     if QuestionnaireSubmit.objects.filter(questionnaire=questionnaire).exists():
         raise ForbiddenEditHasAnswers
     questionnaire.title = title
+    questionnaire.mode = Questionnaire.QuestionnaireMode.SECRET_ANSWERS if mode == 'secret_answers' else Questionnaire.QuestionnaireMode.REGULAR
     questionnaire.save()
     TextQuestion.objects.filter(questionnaire=questionnaire).delete()
     ChoicesQuestion.objects.filter(questionnaire=questionnaire).delete()
@@ -83,7 +85,7 @@ def get_questions(request, q_id):
     questions = text_questions_json + choices_questions_json
     due_date = questionnaire_oldest_assignment_due_date(questionnaire, request.session.user)
     theme = __get_theme_for_questionnaire(questionnaire)
-    return JsonResponse(questionnaire_detail_to_json(questionnaire.id, questionnaire.title, questions, due_date, theme), status=200)
+    return JsonResponse(questionnaire_detail_to_json(questionnaire, questions, due_date, theme), status=200)
 
 def get_submits(request, q_id):
     questionnaire = get_from_db(Questionnaire, id=q_id, archived=False)

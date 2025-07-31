@@ -1,7 +1,7 @@
 from django.http import QueryDict
 from ..endpoints import admin, users, groups, classes, posts, documents, questionnaires
 from ..models import User
-from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, parse_usernames_list
+from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, validate_questionnaire_mode, parse_usernames_list
 from ..util.exceptions import Unsupported, BadRequest, BadRequestIllegalMove
 
 """
@@ -410,11 +410,13 @@ def documents_get_questionnaire_users(request, q_id):
 def questionnaires_create(request):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        title, questions = expect_body_with('title', 'questions', request=request)
+        title, questions, mode = expect_body_with('title', 'questions', 'mode', request=request)
+        if not validate_questionnaire_mode(mode):
+            raise BadRequest
         url_query = QueryDict(request.META.get("QUERY_STRING", ""))
         url_classroom_id = url_query.get("classroomId")
         url_folder_id = url_query.get("folderId")
-        return questionnaires.create_questionnaire(request, title, questions, url_classroom_id, url_folder_id)
+        return questionnaires.create_questionnaire(request, title, questions, mode, url_classroom_id, url_folder_id)
     else:
         raise Unsupported
 
@@ -425,8 +427,10 @@ def questionnaires_get_or_edit_questions(request, q_id):
         return questionnaires.get_questions(request, q_id)
     elif request.method == "PUT":
         require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        title, questions = expect_body_with('title', 'questions', request=request)
-        return questionnaires.edit_questions(request, q_id, title, questions)
+        title, questions, mode = expect_body_with('title', 'questions', 'mode', request=request)
+        if not validate_questionnaire_mode(mode):
+            raise BadRequest
+        return questionnaires.edit_questions(request, q_id, title, questions, mode)
     else:
         raise Unsupported
 
