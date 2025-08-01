@@ -15,7 +15,7 @@ const QuestionnaireTextQuestion = (props) => {
                 type="text"
                 value={props.answer}
                 onChange={e => { props.setAnswer(props.questionIndex, e.target.value) }}
-                maxLength={50}
+                maxLength={500}
                 placeholder="Escribe aquí tu respuesta"
                 required />
             <div className={`underline ${accent(theme)}`} />
