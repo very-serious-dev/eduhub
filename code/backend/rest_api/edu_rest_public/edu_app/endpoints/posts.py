@@ -166,15 +166,18 @@ def get_assignment(request, a_id):
 
 def create_assignment_submit(request, a_id, attachments, comment):
     assignment = get_from_db(Post, id=a_id, kind=Post.PostKind.ASSIGNMENT)
+    newest_amendment = Post.objects.filter(amendment_original_post=assignment).order_by("-id").first()
+    if newest_amendment and newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
+        raise NotFound
     if not can_see_class(request.session.user, assignment.classroom):
         raise Forbidden
     if AssignmentSubmit.objects.filter(author=request.session.user, assignment=assignment).exists():
         raise ForbiddenAssignmentSubmit
-    if timezone.now() > assignment.assignment_due_date:
+    if timezone.now() > (newest_amendment or assignment).assignment_due_date:
         raise ForbiddenAssignmentSubmit
     new_submit = AssignmentSubmit()
     new_submit.author = request.session.user
-    new_submit.assignment = assignment
+    new_submit.assignment = assignment # Submits are always linked to original Post; not any subsequent edits
     new_submit.questionnaire_submit = None
     new_submit.comment = comment
     new_submit.save()
