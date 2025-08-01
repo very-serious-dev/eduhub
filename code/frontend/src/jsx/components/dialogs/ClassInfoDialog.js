@@ -15,7 +15,7 @@ const ClassInfoDialog = (props) => {
             <div className="card dialogBackground">
                 <div className="dialogTitle">{props.name}</div>
                 <div className="classInfoDialogContent"><b>Grupo:</b></div>
-                <div className="classInfoDialogContent">{props.group}</div>
+                <div className="classInfoDialogContent">{props.groupTag}</div>
                 <div className="classInfoDialogContent"><b>Criterios de evaluación:</b></div>
                 <div className="classInfoDialogContent">{content()}</div>
             </div>

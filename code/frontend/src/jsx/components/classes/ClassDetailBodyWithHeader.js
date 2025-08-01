@@ -61,7 +61,7 @@ const ClassDetailBodyWithHeader = (props) => {
                 classId={props.classData.id} />}
         {popupShown === "CLASS_INFO" &&
             <ClassInfoDialog name={props.classData.name}
-                group={props.classData.group}
+                groupTag={props.classData.group_tag}
                 evaluationCriteria={props.classData.evaluation_criteria}
                 onDismiss={() => { setPopupShown("NONE") }} />}
         <div className="classDetailHeader" style={{ height: headerHeight() }}>

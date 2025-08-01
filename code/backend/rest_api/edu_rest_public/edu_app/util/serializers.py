@@ -156,7 +156,7 @@ def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
         "id": classroom.id,
         "name": classroom.name,
         "evaluation_criteria": classroom.evaluation_criteria,
-        "group": classroom.group_id,
+        "group_tag": classroom.group.tag,
         "theme": class_theme(classroom),
         "should_show_teacher_options": is_class_editable_by_user,
         "posts": posts,
