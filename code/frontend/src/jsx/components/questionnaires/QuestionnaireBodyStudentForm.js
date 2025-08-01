@@ -73,7 +73,7 @@ const QuestionnaireBodyStudentForm = (props) => {
                     {props.questionnaireData.due_date && <div className="assignmentDetailDueDate">Se entrega: {beautifullyDisplayDateTime(props.questionnaireData.due_date)}</div>}
                     <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                 </div>
-                {props.questionnaireData.mode === "secret_answers" && <div className="questionnaireModeHint">🔒 Respuesta oculta: No verás tus respuestas a medida que las tecleas. En las preguntas tipo <i>test</i>, escribe parcialmente la opción que desees en el recuadro de texto.</div>}
+                {props.questionnaireData.mode === "secret_answers" && <div className="questionnaireModeHint">👁️ Respuesta oculta: No verás tus respuestas a medida que las tecleas. En las preguntas tipo <i>test</i>, escribe parcialmente la opción que desees en el recuadro de texto.</div>}
                 <form onSubmit={(e) => { e.preventDefault(); setPopupShown("ARE_YOU_SURE_SUBMIT"); }}>
                     {sortedQuestions().map((question, qIdx) => {
                         if (question.type === "text") {

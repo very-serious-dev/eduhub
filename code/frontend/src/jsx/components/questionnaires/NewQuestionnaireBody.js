@@ -163,7 +163,7 @@ const NewQuestionnaireBody = (props) => {
     }
 
     const formModeHint = () => {
-        return formMode === "secret_answers" ? "🔒 Los estudiantes no verán las respuestas que teclean en pantalla, como si escribieran una contraseña. Escoge esta opción si este formulario debe realizarse en el aula como un examen" : "Los estudiantes responden de forma convencional, y pueden ver sus respuestas en pantalla a medida que contestan";
+        return formMode === "secret_answers" ? "👁️ Los estudiantes no verán las respuestas que teclean en pantalla, como si escribieran una contraseña. Escoge esta opción si este formulario debe realizarse en el aula como un examen" : "Los estudiantes responden de forma convencional, y pueden ver sus respuestas en pantalla a medida que contestan";
     }
 
     return <>

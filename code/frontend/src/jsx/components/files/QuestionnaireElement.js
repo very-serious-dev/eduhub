@@ -26,7 +26,7 @@ const QuestionnaireElement = (props) => {
             <img className="myFilesElementIcon" src={iconImgSrc(props.questionnaire)}></img>
             <div className="myFilesElementName">{props.questionnaire.title}</div>
         </div>
-        {props.questionnaire.is_protected && <div className="myFilesElementSpecialText">🚫 Protegido</div>}
+        {props.questionnaire.is_protected && <div className="myFilesElementSpecialText">🔒 Protegido</div>}
         <div className="myFilesElementSize">📝 Formulario</div>
         <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.questionnaire.created_at, props.showAuthor ? `👤 ${props.questionnaire.author}` : null)}`}</div>
     </div>

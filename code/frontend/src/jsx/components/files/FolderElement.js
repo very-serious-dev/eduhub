@@ -21,7 +21,7 @@ const FolderElement = (props) => {
             <img className="myFilesElementIcon" src="/small/icon_folder.png"></img>
             <div className="myFilesElementName">{props.folder.name}</div>
         </div>
-        {props.folder.isProtected && <div className="myFilesElementSpecialText">🚫 Contiene documentos protegidos</div>}
+        {props.folder.isProtected && <div className="myFilesElementSpecialText">🔒 Contiene documentos protegidos</div>}
         <div className="myFilesElementAuthorDate">{`${footNoteDateAuthor(props.folder.created_at, props.showAuthor ? `👤 ${props.folder.author}` : null)}`}</div>
     </div>
 }
