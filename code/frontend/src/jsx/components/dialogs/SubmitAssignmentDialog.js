@@ -95,7 +95,7 @@ const SubmitAssignmentDialog = (props) => {
             <div className="popup widePopup popupAllowOverflowY" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
                     <div className="dialogTitle">Entregar tarea</div>
-                    <form onSubmit={(event) => { event.preventDefault(); setShowAreYouSure(false) }}>
+                    <form onSubmit={(event) => { event.preventDefault(); setShowAreYouSure(true) }}>
                         <TextAreaWithLimit value={formComment} setValue={setFormComment} maxLength={1000} small={true} allowEmptyContent={true} />
                         <FilePicker attachments={files} setAttachments={setFiles} showChooseFromMyUnit={true} />
                         <div className="formInputContainer">
