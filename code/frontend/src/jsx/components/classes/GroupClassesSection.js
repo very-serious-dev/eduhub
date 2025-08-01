@@ -16,13 +16,13 @@ const GroupClassesSection = (props) => {
 
     const onClickAnnouncements = () => {
         setShowAnnouncementsDialog(true);
-        SetLastKnownGroupAnnouncementTimestamp(props.group.id, new Date(props.group.latestUpdate).getTime())
+        SetLastKnownGroupAnnouncementTimestamp(props.group.id, new Date(props.group.latest_update).getTime())
     }
 
     const groupSmallRedDotIfNeeded = () => {
-        if (props.latestUpdate !== "never") {
+        if (props.group.latest_update !== "never") {
             const latestKnownUpdateTimestamp = GetLastKnownGroupAnnouncementTimestamp(props.group.id)
-            const latestRealUpdateTimestamp = new Date(props.group.latestUpdate).getTime()
+            const latestRealUpdateTimestamp = new Date(props.group.latest_update).getTime()
             if (latestKnownUpdateTimestamp < latestRealUpdateTimestamp) {
                 return <div className="announcementsSmallRedDot" />
             }
