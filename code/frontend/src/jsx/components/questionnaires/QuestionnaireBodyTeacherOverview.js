@@ -25,7 +25,7 @@ const QuestionnaireBodyTeacherOverview = (props) => {
                 <div className={`classDetailSectionUnderline ${accent(theme)}`} />
                 {sortedQuestions().map(question => {
                     const allAnswersForQuestion = props.questionnaireData.submits.reduce((acumAnswers, submit) => {
-                        const singleAnswer = submit.answers.find(answer => answer.question_id === question.id);
+                        const singleAnswer = submit.answers.find(answer => (answer.type === question.type) && (answer.question_id === question.id));
                         if (singleAnswer) {
                             return [...acumAnswers, { ...singleAnswer, author: submit.author }];
                         }

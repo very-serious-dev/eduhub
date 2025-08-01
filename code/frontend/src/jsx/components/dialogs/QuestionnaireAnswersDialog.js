@@ -27,7 +27,7 @@ const QuestionnaireAnswersDialog = (props) => {
             <div className="card dialogBackground overflowScrollableDialog">
                 <div className="dialogTitle">Respuestas</div>
                 {answersData.questions?.toSorted((a, b) => a.number - b.number).map(question => {
-                    const answer = answersData.answers.find(answer => answer.question_id === question.id);
+                    const answer = answersData.answers.find(answer => (answer.type === question.type) && (answer.question_id === question.id));
                     return <SingleSubmitAnswer question={question} answer={answer} />
                 })}
                 {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
