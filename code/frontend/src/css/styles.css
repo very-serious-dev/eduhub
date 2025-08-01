@@ -1,10 +1,10 @@
 :root {
   --color-background: #fbfbfb;
-  --theme-blue-primary: #bdece6;
-  --theme-blue-secondary: #bccef8;
-  --theme-blue-tertiary: #838bff;
-  --theme-blue-accent: #0029a5;
-  --theme-darkblue-primary: #77b3c2;
+  --theme-blue-primary: #b4d8ed;
+  --theme-blue-secondary: #a5bef7;
+  --theme-blue-tertiary: #67c2db;
+  --theme-blue-accent: #0639d0;
+  --theme-darkblue-primary: #4997f1;
   --theme-darkblue-secondary: #88aafa;
   --theme-darkblue-tertiary: #4662fd;
   --theme-darkblue-accent: #00185f;
@@ -17,14 +17,14 @@
   --theme-purple-tertiary: #a07df1;
   --theme-purple-accent: #4d1ca8;
   --theme-brown-primary: #d6b8aa;
-  --theme-brown-secondary: #ad958b;
-  --theme-brown-tertiary: #9ed0f8;
+  --theme-brown-secondary: #b8a196;
+  --theme-brown-tertiary: #ae8f69;
   --theme-brown-accent: #5a2900;
-  --theme-red-primary: #f3c1c1;
-  --theme-red-secondary: #f5a6b7;
-  --theme-red-tertiary: #da7ca0;
+  --theme-red-primary: #f8b3b3;
+  --theme-red-secondary: #e799aa;
+  --theme-red-tertiary: #dd749c;
   --theme-red-accent: #c70000;
-  --theme-orange-primary: #f1c49e;
+  --theme-orange-primary: #f5b683;
   --theme-orange-secondary: #e6a570;
   --theme-orange-tertiary: #fc9768;
   --theme-orange-accent: #d66000;
