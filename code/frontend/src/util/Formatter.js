@@ -62,27 +62,32 @@ const beautifullyDisplayDateTime = (date) => {
 }
 
 const formatPseudoMarkdown = (wholeText) => {
-    const FormatType = { BOLD: "b", ITALIC: "i" , HYPERLINK: "h"}
+    const FormatType = { BOLD: "b", ITALIC: "i", HYPERLINK: "h" }
 
     const formatText = (string, regex, formatType) => {
         let result = [];
+
         let remainingString = string;
         for (let match of string.matchAll(regex)) {
-            const splitString = remainingString.split(match[0]);
-            result.push(splitString[0]);
-            if (formatType === FormatType.BOLD) {
-                result.push(<b>{match[1]}</b>);
+            if (remainingString && remainingString.length > 0) {
+                const splitString = remainingString.split(match[0]);
+                result.push(splitString[0]);
+                if (formatType === FormatType.BOLD) {
+                    result.push(<b>{match[1]}</b>);
+                }
+                if (formatType === FormatType.ITALIC) {
+                    result.push(<i>{match[1]}</i>);
+                }
+                if (formatType === FormatType.HYPERLINK) {
+                    const linkWithPrefix = match[0].startsWith('http') ? match[0] : 'https://' + match[0];
+                    result.push(<a href={linkWithPrefix} target="_blank" rel="noreferrer">{match[0]}</a>) // Security note: https://mathiasbynens.github.io/rel-noopener
+                }
+                remainingString = splitString[1];
             }
-            if (formatType === FormatType.ITALIC) {
-                result.push(<i>{match[1]}</i>);
-            }
-            if (formatType === FormatType.HYPERLINK) {
-                const linkWithPrefix = match[0].startsWith('http') ? match[0] : 'https://' + match[0];
-                result.push(<a href={linkWithPrefix} target="_blank" rel="noreferrer">{match[0]}</a>) // Security note: https://mathiasbynens.github.io/rel-noopener
-            }
-            remainingString = splitString[1];
         }
-        result.push(remainingString);
+        if (remainingString && remainingString.length > 0) {
+            result.push(remainingString);
+        }
         return result;
     }
 
@@ -109,10 +114,10 @@ const formatPseudoMarkdown = (wholeText) => {
             return formatTextArray(lineArray, /(?:http[s]?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*)/g, FormatType.HYPERLINK);
         }).map(lineArray => {
             // Bold: ["You _are_ *great*"] -> ["You _are_ ", <b>great</b>]
-            return formatTextArray(lineArray, /\*(.*?)\*/g, FormatType.BOLD);
+            return formatTextArray(lineArray, /\*(?!\*)(.+)\*(?!\*)/g, FormatType.BOLD);
         }).map(lineArray => {
             // Italic: ["You _are_ ", <b>great</b>] -> ["You ", <i>are</i>, " ", <b>great</b>]
-            return formatTextArray(lineArray, /_(.*?)_/g, FormatType.ITALIC);
+            return formatTextArray(lineArray, /_(?!_)(.+)_(?!_)/g, FormatType.ITALIC);
         })
 
     const linesWithBRsAndULs = []
