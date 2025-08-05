@@ -30,7 +30,7 @@ const GroupClassesSection = (props) => {
     }
 
     const classSmallRedDotIfNeeded = (classroom) => {
-        if (classroom.latestUpdate !== "never") {
+        if (classroom.latest_update !== "never") {
             const cachedPosts = GetCachedPosts(classroom.id)
             const latestKnownUpdateTimestamp = cachedPosts.length > 0 ? new Date(cachedPosts[0].publication_date).getTime() : 0;
             const latestRealUpdateTimestamp = new Date(classroom.latest_update).getTime()
