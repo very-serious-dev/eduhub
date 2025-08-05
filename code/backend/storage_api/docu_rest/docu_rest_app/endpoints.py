@@ -87,8 +87,7 @@ def create_or_delete_documents(request):
             document.mime_type = f["mime_type"]
             document.size = len(decoded_file)
             document.author_uid = request.session.user_id
-            document.save()
-            unsaved_files.append(document)
+            unsaved_files.append(document) # Don't store to DB yet, quota check might fail
             edu_json_request_files.append({ "identifier": document.identifier,
                                             "name": document.name,
                                             "size": document.size,
@@ -107,26 +106,26 @@ def create_or_delete_documents(request):
             return JsonResponse({"error": edu_rest_response.json().get("error", "Ha habido un error")}, status=409)
         elif edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error subiendo ficheros"}, status=502)
-        # EduREST internal request was 200 OK
-
-        response_documents_created = []
-        for ud in unsaved_files:
-            ud.save()
-            created_document = {
-                "identifier": ud.identifier,
-                "name": ud.name,
-                "size": ud.size,
-                "is_protected": False,
-                "mime_type": ud.mime_type,
-                "created_at": ud.created_at,
-                "folder_id": json_parent_folder_id # might be None
-            }
-            response_documents_created.append(created_document)
-        return JsonResponse({"success": True,
-                             "result": {
-                                 "operation": "documents_added",
-                                 "documents": response_documents_created
-                             }}, status=201)
+        else:
+            # EduREST internal request was 200 OK
+            response_documents_created = []
+            for ud in unsaved_files:
+                ud.save()
+                created_document = {
+                    "identifier": ud.identifier,
+                    "name": ud.name,
+                    "size": ud.size,
+                    "is_protected": False,
+                    "mime_type": ud.mime_type,
+                    "created_at": ud.created_at,
+                    "folder_id": json_parent_folder_id # might be None
+                }
+                response_documents_created.append(created_document)
+            return JsonResponse({"success": True,
+                                "result": {
+                                    "operation": "documents_added",
+                                    "documents": response_documents_created
+                                }}, status=201)
                                  
     elif request.method == "DELETE":
         if request.session is None:
