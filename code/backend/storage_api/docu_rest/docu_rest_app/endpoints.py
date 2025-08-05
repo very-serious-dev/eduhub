@@ -1,5 +1,6 @@
 import base64, json, requests, secrets, socket
 import requests.packages.urllib3.util.connection as urllib3_cn
+from django.core.exceptions import RequestDataTooBig
 from django.db.models import Q
 from django.db.models import Sum
 from django.http import JsonResponse, HttpResponse
@@ -61,6 +62,8 @@ def create_or_delete_documents(request):
             body_json = json.loads(request.body)
         except json.decoder.JSONDecodeError:
             return JsonResponse({"error": "Cuerpo de la petición incorrecto"}, status=400)
+        except RequestDataTooBig:
+            return JsonResponse({"error": "Fichero demasiado grande"}, status=400)
         json_filetree_info = body_json.get("filetree_info")
         json_files = body_json.get("files")
         if json_files is None or json_filetree_info is None:

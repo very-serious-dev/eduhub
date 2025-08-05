@@ -94,7 +94,7 @@ const FilePicker = (props) => {
         }
 
         setReadingFiles(true);
-        let errorMessage = assertValidAttachmentsErrorMessage(newFiles, props.attachments);
+        let errorMessage = assertValidFilesErrorMessage(newFiles, props.attachments);
         if (errorMessage !== null) {
             alert(errorMessage);
             setReadingFiles(false);

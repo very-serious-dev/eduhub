@@ -31,3 +31,4 @@ const assertValidAttachmentsErrorMessage = (newAttachments, alreadyAddedAttachme
 }
 
 export { assertValidAttachmentsErrorMessage }
+export { assertValidFilesErrorMessage }
