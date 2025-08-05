@@ -32,60 +32,42 @@ const findAllChildrenAndRecursivelyInsertInto = (folder, remainingFoldersMutable
     }
 }
 
-/**
- * Returns an array containing all the folders with a new synthetic attribute 'children'
- * where [only] documents/questionnaires that belong to a folder are.
- * - Orphan documents/questionnaires (e.g.: at root level) aren't taken into account
- * - Folders are still not put inside the 'children' attribute (the tree isn't fully built)
- */
-const flatFoldersWithDocumentsInside = (documentsFoldersQuestionnaires) => {
+const buildTree = (documentsFoldersQuestionnaires) => {
+    const rootDocuments = [];
+    const rootQuestionnaires = [];
+    const rootFolders = [];
+    const nonRootFolders = [];
     const allFoldersById = {}
     documentsFoldersQuestionnaires.folders.forEach(f => {
         allFoldersById[f.id] = { ...f, children: [], type: "folder", isProtected: false };
     });
     documentsFoldersQuestionnaires.documents.forEach(d => {
-        // d.folder_id is null if the document doesn't belong to a folder (e.g.: is at root level)
-        // allFoldersById[d.folder_id] is undefined if the folder containing the document isn't found
-        // I'm not sure whether this could ever happen, but I'm leaving that here as that might happen
-        // after deletion errors, I believe
-        if ((d.folder_id !== null) && (allFoldersById[d.folder_id] !== undefined)) {
+        // d.folder_id is null if the document doesn't belong to a folder (is at root level)
+        // allFoldersById[d.folder_id] is undefined if the folder containing the document isn't found (document shared with me, but not its parent folder)
+        if ((d.folder_id === null) || (allFoldersById[d.folder_id] === undefined)) {
+            rootDocuments.push({ ...d, type: "document" });
+        } else {
             allFoldersById[d.folder_id].children.push({ ...d, type: "document" });
         }
     });
     documentsFoldersQuestionnaires.questionnaires.forEach(q => {
-        if ((q.folder_id !== null) && (allFoldersById[q.folder_id] !== undefined)) {
+        if ((q.folder_id === null) || (allFoldersById[q.folder_id] === undefined)) {
+            rootQuestionnaires.push({ ...q, type: "questionnaire" });
+        } else {
             allFoldersById[q.folder_id].children.push({ ...q, type: "questionnaire" });
         }
     });
-    return Object.values(allFoldersById);
-}
-
-const buildTree = (documentsFoldersQuestionnaires) => {
-    const allFolders = flatFoldersWithDocumentsInside(documentsFoldersQuestionnaires);
-    const tree = [];
-    const remainingNonRootFolders = []
-    for (const folder of allFolders) {
-        if (folder.parent_folder_id) {
-            remainingNonRootFolders.push(folder);
+    Object.values(allFoldersById).forEach(f => {
+        if ((f.parent_folder_id === null) || (allFoldersById[f.parent_folder_id] === undefined)) {
+            rootFolders.push(f);
         } else {
-            tree.push(folder);
+            nonRootFolders.push(f);
         }
+    })
+    for (const rootFolder of rootFolders) {
+        findAllChildrenAndRecursivelyInsertInto(rootFolder, nonRootFolders);
     }
-    for (const rootFolder of tree) {
-        findAllChildrenAndRecursivelyInsertInto(rootFolder, remainingNonRootFolders);
-    }
-    // As a final step, add the root-level documents/questionnaires that have noot been taken into
-    // consideration yet (see `flatFoldersWithDocumentsInside`)
-    documentsFoldersQuestionnaires.documents.forEach(d => {
-        if (d.folder_id === null) {
-            tree.push({ ...d, type: "document" })
-        }
-    });
-    documentsFoldersQuestionnaires.questionnaires.forEach(q => {
-        if (q.folder_id === null) {
-            tree.push({ ...q, type: "questionnaire" })
-        }
-    });
+    const tree = [...rootDocuments, ...rootQuestionnaires, ...rootFolders];
     generateProtectedFolderAttribute(tree);
     return tree;
 }
