@@ -96,7 +96,7 @@ const MoveFileDialog = (props) => {
                             type="text"
                             value={`/${targetFolderPath.join('/')}${targetFolderPath.length > 0 ? '/' : ''}`} disabled={true} />
                     </div>
-                    <div className="hint">Al mover un{props.folder ? "a carpeta" : " documento"}, todos los usuarios con acceso a la carpeta de destino obtendrán permisos también. Si más tarde quieres eliminar sus permisos de acceso, deberás hacerlo explícitamente.</div>
+                    <div className="hint">Si mueves un{props.folder ? "a carpeta" : " documento"} a una carpeta compartida, todos los usuarios con acceso a la carpeta de destino obtendrán acceso también. Si sacas un{props.folder ? "a carpeta" : " documento"} de una carpeta compartida, se mantendrán los permisos de lectura. Debes eliminarlos explicitamente si así lo deseas.</div>
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={`Mover a ${targetFolderPath.length > 0 ? `"${targetFolderPath.slice(-1)[0]}/"` : 'la raíz de Tu unidad'}`} />
                     </div>
