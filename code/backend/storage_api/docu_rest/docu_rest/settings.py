@@ -28,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-DATA_UPLOAD_MAX_MEMORY_SIZE = 50 * 1024 * 1024 # 50 Mb
+DATA_UPLOAD_MAX_MEMORY_SIZE = 62.5 * 1024 * 1024 # 62.5 Mb (50 Mb base64 encoded)
 
 # Application definition
 

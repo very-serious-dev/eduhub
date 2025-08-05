@@ -104,7 +104,7 @@ def create_or_delete_documents(request):
         edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code == 409:
             # Forward 409 errors to React client (disk quota exceeded)
-            return JsonResponse({"error": json.loads(edu_rest_response.body)["error"]}, status=409)
+            return JsonResponse({"error": edu_rest_response.json().get("error", "Ha habido un error")}, status=409)
         elif edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error subiendo ficheros"}, status=502)
         # EduREST internal request was 200 OK
