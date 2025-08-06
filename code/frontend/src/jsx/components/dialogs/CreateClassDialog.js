@@ -70,7 +70,7 @@ const CreateClassDialog = (props) => {
                             }
                         </select>
                     </div>
-                    <p className="createClassParticipantsHint"><i>Todos los estudiantes que están registrados en el grupo {formGroup} serán añadidos automáticamente a la nueva clase{formName.length > 0 ? ` ${formName}`: ""}.</i></p>
+                    <p className="createClassParticipantsHint"><i>Todos los estudiantes que están registrados en el grupo serán añadidos automáticamente a la nueva clase{formName.length > 0 ? ` ${formName}`: ""}.</i></p>
                     <p className="createClassParticipantsHint"><i>Puedes ajustar los participantes de{formName.length > 0 ? ` ${formName}`: ""} después.</i></p>
                     <div className="formInputContainer">
                         <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formGroup === NOT_VALID} />
