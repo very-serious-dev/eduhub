@@ -58,7 +58,7 @@ const LoginPage = () => {
     }
 
     return <div className="loginMain">
-        <img src="/logo_main.png" className="loginLogo" alt="Logo" />
+        <img src="/logo_main.png" className="loginLogo" alt="📘🌴🏖️ EduPlaya" />
         <div className="loginContainer card">
             <form onSubmit={onSubmitLogin}>
                 <div className="formInputContainer">

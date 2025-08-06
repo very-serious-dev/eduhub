@@ -42,7 +42,7 @@ const MainHeader = (props) => {
     }
 
     return <div className="mainPageHeaderContainer">
-        <img className="mainPageHeaderLogo" src="/logo_main.png" />
+        <img className="mainPageHeaderLogo" src="/logo_main.png" alt="📘🌴🏖️ EduPlaya" />
         {isLoadingLogout ? <p>Cerrando sesión...</p>
             : <div className="mainPageHeaderButtons">
                 <AnimatedButton onClick={() => { navigate("/"); }} text="📚 Clases" />

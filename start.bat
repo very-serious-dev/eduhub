@@ -1,6 +1,31 @@
 @echo off
 setlocal enabledelayedexpansion
 
+if not exist "code\backend\rest_api\database\db.sqlite3" (
+  echo It seems that it's your first time running the EduPlaya. Welcome.
+  echo I will create the SQLite backend databases and perform npm install in the frontend folder
+  echo Then I will exit and you can try again - let's begin
+  pause
+  cd code\backend\rest_api\edu_rest_public
+  python manage.py migrate
+  cd ..\..
+  copy create_admin.sql rest_api\database
+  sqlite3.exe rest_api/database/db.sqlite3 ".read create_admin.sql"
+  del rest_api\database\create_admin.sql
+  cd ..\..
+  cd code\backend\storage_api\docu_rest
+  python manage.py migrate
+  cd ..\..\..\..
+  cd code\frontend
+  npm install
+  cd ..\..
+  echo -------------------
+  echo All done! Your environment is setup. Now I will exit.
+  echo Execute start.bat again if you wish to run a development environment or build for production :-D
+  pause
+  exit
+)
+
 echo 1) Start development servers on local machine
 echo 2) Build web applications for deployment
 echo 3) Exit
