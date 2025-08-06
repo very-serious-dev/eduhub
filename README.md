@@ -45,7 +45,7 @@ C:\Users\You\eduplaya>start.bat
 What do you want? 1
 ```
 
-Se desplegarán varias ventanas para cada servidor que interviene en EduPlaya. Lee [doc/deployment.md](doc/deployment.md) para más información.
+Se desplegarán varias ventanas para cada servidor de EduPlaya. Lee [doc/deployment.md](doc/deployment.md) para más información.
 
 ¡Ya puedes probar EduPlaya!
 
@@ -53,6 +53,10 @@ Se desplegarán varias ventanas para cada servidor que interviene en EduPlaya. L
 
 - [React](https://react.dev/)
 - [Django](https://www.djangoproject.com/)
+
+### ¿Mobile-friendly?
+
+**¡Sí!** :smiley:
 
 ### Idiomas soportados
 

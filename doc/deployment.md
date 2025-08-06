@@ -4,7 +4,7 @@ There are 4 web applications to be built and deployed in 3 physically distinct s
 
 * `code/backend/storage_api`: Simple Django project that will save and serve users' documents.
 * `code/backend/rest_api/edu_rest_public`: Django REST API that process all of the important user requests (get my classes, create assignment, move folder, etc.)
-* `code/backend/rest_api/edu_rest_internal`: Simple Django project to be run in the same machine as the `edu_rest_public`. It will read its database. This API acts as an internal facade consumed by `storage_api` to _asses user quota_, _check files permissions_ and _complete login flow_. You can read more in (auth_flow.md)[auth_flow.md) and (documents_flows.md)[documents_flows.md].
+* `code/backend/rest_api/edu_rest_internal`: Simple Django project to be run in the same machine as the `edu_rest_public`. It will read its database. This API acts as an internal facade consumed by `storage_api` to _asses user quota_, _check files permissions_ and _complete login flow_. You can read more in [auth_flow.md](auth_flow.md) and [documents_flows.md](documents_flows.md).
 * `code/frontend`: React application that will consume both `edu_rest_public` and `storage_api`.
 
 Visually:
@@ -15,7 +15,7 @@ With that in mind, you will find in here non-comprehensive guidelines on how to 
 
 1. Get 3 physical machines and install an appropriate operating system on them, like [Ubuntu Server](https://ubuntu.com/download/server)
 
-2. Connect them to your router and assign static IPs to their interfaces, like the ones shown in the picture. Note that the `rest_api` server doesn't need to have an extra physical interface for the internal API. It's good enough if that is just served on a different port - meaning that in the drawing, the _green line_ would actually go through the router
+2. Connect them to your router and assign static IPs to their interfaces, like the ones shown in the picture. Note that the `rest_api` server doesn't need to have an extra physical interface for the internal API. It's good enough if that is just served on a different port - meaning that in the drawing, the _green line_ would actually pass through the router
 
 3. Install `apache2` on each machine
 
@@ -33,9 +33,9 @@ With that in mind, you will find in here non-comprehensive guidelines on how to 
 
 7. Don't forget to generate SSL certificates and configure the firewall for all three public interfaces!
 
-8. The communication between your `storage_api` and your `edu_rest_internal` can't be spied on given that you have your router and DMZ properly configured, but still we support an additional security layer with a self-signed certificate. You can (1) generate a self-signed certificate in `edu_rest_internal`, (2) configure it to use it, (3) safely copy the certificate with the public key to the `storage_api` machine's hard drive and (4) specify (during build time) where such public key is located inside `storage_api` and can therefore be used for the internal requests.
+8. The communication between your `storage_api` and your `edu_rest_internal` can't be spied on given that your router and DMZ are properly configured, but still we support an additional security layer with a self-signed certificate. You can (1) generate a self-signed certificate in `edu_rest_internal`, (2) configure its Apache site to use it, (3) safely copy the certificate with the public key to the `storage_api` machine and (4) specify (during _build_ time) where such public key is located inside `storage_api` and can therefore be used for the internal requests. We'll talk about _building_ now.
 
-9. Now it's probably the time for you to _build_ the 4 web applications. In your development machine you can `start.bat` and select `2`. You will be prompted a few questions like the IPs or domain names where your servers are accessible.
+9. Time to _build_ the 4 web applications! In your development machine you can `start.bat` and select `2`. You will be prompted a few questions like the IPs or domain names where your servers are accessible.
 
 10. When the EduPlaya build process is finished, you can copy the result to each machine and unzip the built apps in the location you have specified in the Apache sites config files for each machine. Well done!
 
