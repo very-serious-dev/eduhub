@@ -7,7 +7,7 @@ const AboutPage = () => {
     }, []);
 
     return <div className="aboutPageContainer">
-        <h1>Esto es 📘 EduPlatform</h1>
+        <h1>Esto es 📘🌴🏖️ EduPlaya</h1>
         <p>Plataforma educativa de código abierto de filosofía minimalista:</p>
         <ul>
             <li>Crea y edita grupos, clases y usuarios</li>
