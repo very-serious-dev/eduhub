@@ -47,7 +47,7 @@ def create_class(request, name, group_id, automatically_add_teacher):
     # Automatically add to the new class all users belonging to the corresponding group
     user_class_objects = []
     for u in User.objects.filter(student_group=group):
-        user_class_objects.append(UserClass(user=student, classroom=new_class))
+        user_class_objects.append(UserClass(user=u, classroom=new_class))
         UserClass.objects.bulk_create(user_class_objects)
     return JsonResponse({"success": True}, status=201)
 
