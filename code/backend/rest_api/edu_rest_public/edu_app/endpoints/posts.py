@@ -110,12 +110,15 @@ def amend_post(request, p_id, title, content, post_type, attachments, unit_id, a
     return JsonResponse({"success": True}, status=201) 
     
 def get_assignment(request, a_id):
-    assignment = get_from_db(Post, id=a_id, kind=Post.PostKind.ASSIGNMENT)
+    try:
+        assignment = Post.objects.select_related('classroom', 'author', 'unit').get(id=a_id, kind=Post.PostKind.ASSIGNMENT)
+    except Post.DoesNotExist:
+        raise NotFound
     newest_amendment = Post.objects.filter(amendment_original_post=assignment).order_by("-id").first()
     if newest_amendment and newest_amendment.kind == Post.PostKind.AMENDMENT_DELETE:
         raise NotFound
-    post_documents = PostDocument.objects.filter(post=newest_amendment or assignment)
-    files = list(map(lambda pd: document_to_json(pd.document), post_documents))
+    post_documents = PostDocument.objects.filter(post=newest_amendment or assignment).select_related('document', 'document__author')
+    files = [document_to_json(pd.document) for pd in post_documents]
     post_questionnaires = PostQuestionnaire.objects.filter(post=newest_amendment or assignment)
     questionnaires = list(map(lambda pq: questionnaire_to_json(pq.questionnaire), post_questionnaires))
     for f in files:

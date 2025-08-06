@@ -7,7 +7,7 @@ from ..util.helpers import get_from_db, can_see_class, can_edit_class
 from ..util.serializers import groups_array_to_json, users_array_to_json, class_detail_to_json, class_theme, document_to_json, post_kind, questionnaire_to_json
 
 def get_my_classes(request):
-    user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False)
+    user_classes = UserClass.objects.filter(user=request.session.user, classroom__archived=False).select_related('classroom', 'classroom__group')
     classes = list(map(lambda uc: uc.classroom, user_classes))
     distinct_groups = {}
     classes_json = []
@@ -45,23 +45,24 @@ def create_class(request, name, group_id, automatically_add_teacher):
         new_user_class_teacher.classroom = new_class
         new_user_class_teacher.save()
     # Automatically add to the new class all users belonging to the corresponding group
+    user_class_objects = []
     for u in User.objects.filter(student_group=group):
-        new_user_class_student = UserClass()
-        new_user_class_student.user = u
-        new_user_class_student.classroom = new_class
-        new_user_class_student.save()
+        user_class_objects.append(UserClass(user=student, classroom=new_class))
+        UserClass.objects.bulk_create(user_class_objects)
     return JsonResponse({"success": True}, status=201)
 
 def get_class(request, c_id, only_newer_than_post_with_id):
     classroom = get_from_db(Class, id=c_id)
     if not can_see_class(request.session.user, classroom):
         raise Forbidden
-    units = []
-    for u in Unit.objects.filter(classroom=classroom).order_by("name"):
-        units.append({"id": u.id, "name": u.name})
+    units = list(Unit.objects.filter(classroom=classroom).order_by("name").values('id', 'name'))
     posts_query = Post.objects.filter(classroom=classroom)
     if only_newer_than_post_with_id is not None:
         posts_query = posts_query.filter(id__gt=only_newer_than_post_with_id)
+    posts_query = posts_query.prefetch_related(
+        'postdocument_set__document',
+        'postquestionnaire_set__questionnaire',
+        'author')
     posts = []
     for p in posts_query:
         post_documents = PostDocument.objects.filter(post=p)

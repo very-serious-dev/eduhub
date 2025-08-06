@@ -11,7 +11,7 @@ def get_admin_home(request):
     users_count = User.objects.filter(archived=False).count()
     classes_count = Class.objects.filter(archived=False).count()
     serialized_groups = []
-    groups = Group.objects.filter(archived=False)
+    groups = Group.objects.filter(archived=False).select_related('tutor')
     return JsonResponse({"usersCount": users_count,
                          "classesCount": classes_count,
                          "groups": groups_array_to_json(groups)})

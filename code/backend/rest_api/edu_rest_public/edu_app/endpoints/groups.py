@@ -15,10 +15,10 @@ def get_announcements(request, g_id):
     can_see = request.session.user.role in [User.UserRole.TEACHER_SYSADMIN, \
                       User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER] \
                       or (request.session.user.role == User.UserRole.STUDENT and request.session.user.student_group == group)
-    can_create = __has_permission_to_manage_announcements(request.session.user, group)
     if not can_see:
         raise Forbidden
-    announcements = Announcement.objects.filter(group=group).order_by("-publication_date")
+    can_create = __has_permission_to_manage_announcements(request.session.user, group)
+    announcements = Announcement.objects.filter(group=group).prefetch_related('announcementdocument_set__document', 'announcementquestionnaire_set__questionnaire').order_by("-publication_date")
     return JsonResponse({"success": True,
                          "announcements": announcements_array_to_json(announcements),
                          "can_create_announcements": can_create})
@@ -105,7 +105,6 @@ def delete_announcement(request, a_id):
     can_delete = __has_permission_to_manage_announcements(request.session.user, announcement.group)
     if not can_delete:
         raise Forbidden
-    __delete_announcement_documents_and_unprotect_unused_documents(announcement)
     announcement.delete()
     return JsonResponse({"success": True}, status=201)
 
