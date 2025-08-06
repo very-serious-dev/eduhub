@@ -11,7 +11,7 @@ Plataforma educativa de código abierto de filosofía minimalista:
 
 ### Una imagen vale más que mil palabras...
 
-# TO-DO (screenshots)
+![](doc/preview.png)
 
 ### ¿Cómo probar `EduPlaya`?
 
