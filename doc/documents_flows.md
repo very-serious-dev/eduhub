@@ -1,7 +1,5 @@
 # Explanation of every flow that involves more than just communication between
-# the HTTP client (React) and the EduREST Public API
-
-* Auth flow (see doc/auth_flow.txt)
+# the HTTP client (React) and the main backend (Django's EduREST Public API)
 
 * Upload document(s) from My Files page:
   1. React sends HTTP POST to DocuREST with files information and the parent folder id
@@ -11,11 +9,11 @@
   4. DocuREST answers React with the info of the uploaded documents
 
 * Delete document(s) from My Files page:
-  1. React sends HTTP DELETE to DocuREST indicating folder_ids and document_ids to delete
-     (folders aren't something actually stored inside DocuREST, but we let it manage
-     that so that React doesn't need to talk to EduREST public)
-  2. DocuREST asks EduREST internal to remove the documents and/or folders on behalf of
-     the user
+  1. React sends HTTP DELETE to DocuREST indicating either (a) a single document_id to delete
+     or (b) a single folder_id and all of the children/grandchildren/etc. document_ids
+     (Note that folders aren't something actually stored inside DocuREST)
+  2. DocuREST asks EduREST internal to remove the (a) single document or (b) the single folder
+     and then CASCADE the deletions, on behalf of the user
   3. DocuREST removes the documents from its database
   4. React receives DocuREST answer with info about deleted elements
 
@@ -39,6 +37,8 @@
 
 * [As a student] Create assignment submit
   Very similar to previous one
+
+* Loging in (auth flow explained in depth in doc/auth_flow.txt)
 
 #                                                                  Backend 
 #
@@ -65,22 +65,3 @@
 # |                                                      |
 # | This webpage is loaded from a <Server C> (React app) |
 # |______________________________________________________|
-#
-# 1. POST /api/v1/sessions
-#    JSON body: username and password
-#
-# 2. 201
-#    Set-Cookie (HttpOnly) session token for EduREST
-#    JSON response: one_time_token
-#
-# 3. POST /api/v1/sessions
-#    JSON body: one_time_token
-#
-#    4. POST /internal/v1/sessions
-#       JSON body: one_time_token and internal secret
-#
-#    5. 200
-#       JSON response: user_id
-#
-# 6. 201
-#    Set-Cookie (HttpOnly) session token for DocuREST
