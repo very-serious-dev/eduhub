@@ -102,7 +102,7 @@ def edit_class(request, c_id, name, evaluation_criteria):
 
 def delete_class(request, c_id):
     classroom = get_from_db(Class, id=c_id)
-    if not __can_edit_class(request.session.user, classroom):
+    if not can_edit_class(request.session.user, classroom):
         raise Forbidden
     classroom.archived = True
     classroom.save()
