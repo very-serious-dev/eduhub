@@ -19,7 +19,7 @@ Para hacer una prueba rápida necesitarás:
 
 * [NodeJS](https://nodejs.org/en/download)
 * [Python](https://www.python.org/downloads/) y [Django](https://docs.djangoproject.com/en/5.2/topics/install/) `(pip install django)`
-* _bcrypt_ `(pip install bcrypt)` y _secrets_ `(pip install secrets)`
+* Librerías `requests`, `bcrypt` y `secrets` (puedes instalarlas con `pip install`)
 * Preferentemente, entorno Windows (el _script_ de arranque es `start.bat`)
 
 Con todo ello, _clona_ (`git clone`) este repositorio y ejecuta `start.bat`:

@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-if not exist "code\backend\rest_api\database\db.sqlite3" (
+if not exist code\backend\rest_api\database\db.sqlite3 (
   echo It seems that it's your first time running EduPlaya. Welcome.
   echo I will create the SQLite backend databases and perform npm install in the frontend folder
   echo Then I will exit and you can try again - let's begin
