@@ -4,12 +4,13 @@ import { accent, accentFormLabel, pointablePrimary, pointableSecondary, primary,
 import NewQuestionnaireChoicesQuestion from "./NewQuestionnaireChoicesQuestion";
 import NewQuestionnaireTextQuestion from "./NewQuestionnaireTextQuestion";
 import ConfigureQuestionnaireScoreDialog from "../dialogs/ConfigureQuestionnaireScoreDialog";
+import AddManyTextQuestionsDialog from "../dialogs/AddManyTextQuestionsDialog";
 
 const NewQuestionnaireBody = (props) => {
     const [formTitle, setFormTitle] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.title : "");
     const [formMode, setFormMode] = useState(props.questionnaireBeingEdited ? props.questionnaireBeingEdited.mode : "regular");
     const [formQuestions, setFormQuestions] = useState(props.questionnaireBeingEdited ? [...props.questionnaireBeingEdited.questions] : []);
-    const [showConfigureScores, setShowConfigureScores] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, CONFIGURE_SCORES, ADD_MANY_TEST_QUESTIONS
     const theme = useContext(ThemeContext);
 
     const onAddChoicesQuestion = () => {
@@ -27,6 +28,10 @@ const NewQuestionnaireBody = (props) => {
             type: "text",
             title: ""
         }))
+    }
+
+    const onAddManyChoicesQuestions = () => {
+        setPopupShown("ADD_MANY_TEXT_QUESTIONS")
     }
 
     const setQuestionTitle = (questionIndex, newTitle) => {
@@ -131,7 +136,7 @@ const NewQuestionnaireBody = (props) => {
     }
 
     const onConfigureScoresClicked = () => {
-        setShowConfigureScores(true);
+        setPopupShown("CONFIGURE_SCORES");
     }
 
     const onScoreConfigured = (scorePerCorrectAnswer, penaltyPerIncorrectAnswer) => {
@@ -166,11 +171,55 @@ const NewQuestionnaireBody = (props) => {
         return formMode === "secret_answers" ? "👁️ Los estudiantes no verán las respuestas que teclean en pantalla, como si escribieran una contraseña. Escoge esta opción si este formulario debe realizarse en el aula como un examen" : "Los estudiantes responden de forma convencional, y pueden ver sus respuestas en pantalla a medida que contestan";
     }
 
+    const onAddManyTestQuestionsFromPlaintext = (text) => {
+        const newQuestions = []
+        const lines = text.split('\n');
+        let currentQuestion = {
+            type: "choices",
+            title: "",
+            choices: [],
+            correct_answer_score: 1,
+            incorrect_answer_score: 0
+        }
+        for (let line of lines) {
+            const trimmedLine = line.trim();
+            if (trimmedLine.length === 0) { // White line. Add the question and start over
+                newQuestions.push({ ...currentQuestion });
+                currentQuestion = {
+                    type: "choices",
+                    title: "",
+                    choices: [],
+                    correct_answer_score: 1,
+                    incorrect_answer_score: 0
+                }
+            } else {
+                if (trimmedLine.startsWith("a)") || trimmedLine.startsWith("b)") || trimmedLine.startsWith("c)") || trimmedLine.startsWith("d)") || trimmedLine.startsWith("e)") || trimmedLine.startsWith("f)") || trimmedLine.startsWith("g)") || trimmedLine.startsWith("h)")) {
+                    if (trimmedLine.endsWith("(Correcta)") || trimmedLine.endsWith("(Correct)")) {
+                        const trimmedLineWithoutSuffix = trimmedLine.replace("(Correcta)", "").replace("(Correct)", "");
+                        currentQuestion.choices.push({ content: trimmedLineWithoutSuffix.slice(2).trim(), is_correct: true })
+                    } else {
+                        currentQuestion.choices.push({ content: trimmedLine.slice(2).trim(), is_correct: false })
+                    }
+                } else {
+                    currentQuestion.title = trimmedLine;
+                }
+            }
+        }
+        if (currentQuestion.title.length > 0) {
+            // The plaintext didn't finish in a newline, so here let's add the last question
+            newQuestions.push(currentQuestion);
+        }
+        setFormQuestions(old => old.concat(newQuestions));
+    }
+
     return <>
-        {showConfigureScores &&
+        {popupShown === "CONFIGURE_SCORES" &&
             <ConfigureQuestionnaireScoreDialog questions={formQuestions}
                 onScoreConfigured={onScoreConfigured}
-                onDismiss={() => { setShowConfigureScores(false) }} />}
+                onDismiss={() => { setPopupShown("NONE") }} />}
+        {popupShown === "ADD_MANY_TEXT_QUESTIONS" &&
+            <AddManyTextQuestionsDialog onPlainTextSubmit={onAddManyTestQuestionsFromPlaintext}
+                onDismiss={() => { setPopupShown("NONE") }} />}
         <div>
             <form onSubmit={onSubmit} className="fullScreenFormWithBottomMargin">
                 <div className="formInputContainer">
@@ -223,12 +272,15 @@ const NewQuestionnaireBody = (props) => {
                     }
                 })}
                 <div className="questionnaireNewQuestionButtonContainer">
+                    <button onClick={e => { e.preventDefault(); onAddTextQuestion(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
+                        ➕🖊️ Añadir pregunta de texto
+                    </button>
                     <button onClick={e => { e.preventDefault(); onAddChoicesQuestion(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
                         ➕☑️ Añadir pregunta tipo <i>test</i><br />
                         <span className="questionnaireNewQuestionSubtext">Puede ser autoevaluable</span>
                     </button>
-                    <button onClick={e => { e.preventDefault(); onAddTextQuestion(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
-                        ➕🖊️ Añadir pregunta de texto
+                    <button onClick={e => { e.preventDefault(); onAddManyChoicesQuestions(); }} className={`questionnaireNewQuestionButton pointable ${secondary(theme)} ${pointablePrimary(theme)}`}>
+                        ➕🧠 Añadir varias preguntas <i>test</i>
                     </button>
                 </div>
                 <div className="formInputContainer">
