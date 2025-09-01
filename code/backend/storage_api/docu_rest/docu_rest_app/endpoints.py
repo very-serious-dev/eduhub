@@ -29,7 +29,7 @@ def login_logout(request):
         if json_one_time_token is None:
             return JsonResponse({"error": "Falta one_time_token en el cuerpo de la petición"}, status=400)
         verify_identity_request_body = { "internal_secret": INTERNAL_SECRET, "one_time_token": json_one_time_token }
-        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
+        edu_rest_response = requests.post("https://" + EDU_REST_INTERNAL_BASE_URL + VERIFY_SESSION_ENDPOINT, json=verify_identity_request_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error verificando identidad"}, status=502)
         try:
