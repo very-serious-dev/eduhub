@@ -1,4 +1,4 @@
-## 📘🌴🏖️ EduPlaya
+## 📘️ EduHub
 
 Plataforma educativa de código abierto de filosofía minimalista:
 
@@ -7,13 +7,13 @@ Plataforma educativa de código abierto de filosofía minimalista:
 - Espacio de almacenamiento: Gestiona tus archivos y compártelos
 - Formularios autoevaluables
 
-`EduPlaya` es una sencilla y robusta alternativa a _Google Classroom, Drive y Forms_, que te permite alojar los datos en tus propios servidores. ¡Deja de tener pesadillas sobre protección de datos!
+`EduHub` es una sencilla y robusta alternativa a _Google Classroom, Drive y Forms_, que te permite alojar los datos en tus propios servidores. ¡Deja de tener pesadillas sobre protección de datos!
 
 ### Una imagen vale más que mil palabras...
 
 ![](doc/preview.png)
 
-### ¿Cómo probar `EduPlaya`?
+### ¿Cómo probar `EduHub`?
 
 Para hacer una prueba rápida necesitarás:
 
@@ -25,7 +25,7 @@ Para hacer una prueba rápida necesitarás:
 Con todo ello, _clona_ (`git clone`) este repositorio y ejecuta `start.bat`:
 
 ```
-C:\Users\You\eduplaya>start.bat
+C:\Users\You\eduhub>start.bat
 It seems that it's your first time running the EduPlaya. Welcome.
 I will create the SQLite backend databases and perform npm install in the frontend folder
 Then I will exit and you can try again - let's begin
@@ -37,7 +37,7 @@ El _script_ se encargará de hacer las configuraciones iniciales y generar un us
 Lanza otra vez el _script_ y escoge `1`:
 
 ```
-C:\Users\You\eduplaya>start.bat
+C:\Users\You\eduhub>start.bat
 1) Start development servers on local machine
 2) Build web applications for deployment
 3) Exit
@@ -45,9 +45,7 @@ C:\Users\You\eduplaya>start.bat
 What do you want? 1
 ```
 
-Se desplegarán varias ventanas para cada servidor de EduPlaya. Lee [doc/deployment.md](doc/deployment.md) para más información.
-
-¡Ya puedes probar EduPlaya!
+Se desplegarán varias ventanas para cada servidor de EduHub. Lee [doc/deployment.md](doc/deployment.md) para más información.
 
 ### Tecnologías
 
