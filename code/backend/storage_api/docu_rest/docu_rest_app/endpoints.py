@@ -100,7 +100,7 @@ def create_or_delete_documents(request):
                                 # is only needed to check quota usage
                                "skip_saving_files": not json_must_internally_register_in_edu_rest,
                                "documents": edu_json_request_files }
-        edu_rest_response = requests.post(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
+        edu_rest_response = requests.post('https://' + EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code == 409:
             # Forward 409 errors to React client (disk quota exceeded)
             return JsonResponse({"error": edu_rest_response.json().get("error", "Ha habido un error")}, status=409)
@@ -143,7 +143,7 @@ def create_or_delete_documents(request):
                                "document_ids": json_document_ids,
                                "ancestor_folder_id": json_ancestor_folder_id }
 
-        edu_rest_response = requests.delete(EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
+        edu_rest_response = requests.delete('https://' + EDU_REST_INTERNAL_BASE_URL + CREATE_DELETE_DOCUMENTS_ENDPOINT, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error eliminando ficheros"}, status=502)
         edu_rest_response_body = edu_rest_response.json()
@@ -176,7 +176,7 @@ def get_document(request, identifier):
             return JsonResponse({"error": "Ese documento no existe"}, status=404)
         edu_rest_json_body = { "internal_secret": INTERNAL_SECRET,
                                "user_id": request.session.user_id }
-        edu_rest_response = requests.get(EDU_REST_INTERNAL_BASE_URL + DOCUMENTS_PERMISSIONS_ENDPOINT + "?identifier=" + identifier, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
+        edu_rest_response = requests.get('https://' + EDU_REST_INTERNAL_BASE_URL + DOCUMENTS_PERMISSIONS_ENDPOINT + "?identifier=" + identifier, json=edu_rest_json_body, verify=EDU_REST_INTERNAL_CERTIFICATE)
         
         if edu_rest_response.status_code == 403:
             return JsonResponse({"error": "No tienes permisos para acceder a ese fichero"}, status=403)
