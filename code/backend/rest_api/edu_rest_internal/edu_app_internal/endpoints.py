@@ -157,8 +157,8 @@ def document_permissions(request):
                     if EduAppAnnouncementdocument.objects.filter(document=document, announcement__group=classroom_group).exists():
                         return JsonResponse({"success": True}, status=200)
             for ad in EduAppAnnouncementdocument.objects.filter(document=document):
-                annoucement_group = ad.announcement.group
-                if user.student_group == annoncement.group:
+                announcement_group = ad.announcement.group
+                if user.student_group == announcement_group:
                     return JsonResponse({"success": True}, status=200)
             for pd in EduAppPostdocument.objects.filter(document=document):
                 # Posts can be amended, but when we do that, the old EduAppPostdocument
