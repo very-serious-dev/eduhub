@@ -100,7 +100,7 @@ const FilesBrowser = (props) => {
             }
             if (levelBeingWalkedSelectedFolderId !== undefined) {
                 level += 1;
-                levelBeingWalked = levelBeingWalked.find(e => e.id === levelBeingWalkedSelectedFolderId).children
+                levelBeingWalked = levelBeingWalked.filter(e => e.type === 'folder').find(e => e.id === levelBeingWalkedSelectedFolderId).children
                 levelBeingWalkedParentFolderId = levelBeingWalkedSelectedFolderId
             }
         } while (levelBeingWalkedSelectedFolderId !== undefined);
