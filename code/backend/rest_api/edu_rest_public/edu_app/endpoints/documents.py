@@ -88,12 +88,12 @@ def move_questionnaire(request, q_id, folder_id):
                 permissions_to_create.append(UserQuestionnairePermission(user_id=user_id, questionnaire=questionnaire))
         if permissions_to_create:
             UserQuestionnairePermission.objects.bulk_create(permissions_to_create)
-        return JsonResponse({"success": True,
-                            "result": {
-                                "operation": "questionnaire_changed",
-                                "keep_old_is_protected": True,
-                                "questionnaire": questionnaire_to_json(questionnaire)
-                            }}, status=200)
+    return JsonResponse({"success": True,
+                        "result": {
+                            "operation": "questionnaire_changed",
+                            "keep_old_is_protected": True,
+                            "questionnaire": questionnaire_to_json(questionnaire)
+                        }}, status=200)
 
 def move_folder(request, f_id, parent_folder_id, subtree_folder_ids, subtree_document_ids, subtree_questionnaire_ids):
     folder = get_from_db(Folder, id=f_id, author=request.session.user)
