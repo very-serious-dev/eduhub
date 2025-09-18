@@ -58,7 +58,7 @@ if [%OPTION%] == [1] (
       echo EDU_NAME=!EDU_NAME!> build.config
       set /p API_NAME="What your Django public REST API server name? (e.g.: www.myappbackend-eduplatform.org) "
       echo API_NAME=!API_NAME!>> build.config
-      set /p API_INTERNAL_NAME="That same machine must have configured an internal REST API (private interface). What's its name or IP? (add any port if needed, e.g. 192.168.0.5:1234) "
+      set /p API_INTERNAL_NAME="That same machine must have configured an internal REST API (private interface). What's its name or IP (with protocol prefix)? Add any port if needed too, e.g. https://192.168.0.5:1234) "
       echo API_INTERNAL_NAME=!API_INTERNAL_NAME!>> build.config
       set /p DOCU_NAME="What is your Django storage server name (e.g.: www.myappdocuments-eduplatform.org)? "
       echo DOCU_NAME=!DOCU_NAME!>> build.config
