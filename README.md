@@ -26,7 +26,7 @@ Con todo ello, _clona_ (`git clone`) este repositorio y ejecuta `start.bat`:
 
 ```
 C:\Users\You\eduhub>start.bat
-It seems that it's your first time running the EduPlaya. Welcome.
+It seems that it's your first time running the EduHub. Welcome.
 I will create the SQLite backend databases and perform npm install in the frontend folder
 Then I will exit and you can try again - let's begin
 Presione una tecla para continuar . . .

@@ -1,4 +1,4 @@
-`EduPlaya` intended deployment strategy consists on manually installing different web applications onto 3 servers. The idea is that this is sufficient for most use cases and can adapt quite well to a reasonably high number of users.
+`EduHub` intended deployment strategy consists on manually installing different web applications onto 3 servers. The idea is that this is sufficient for most use cases and can adapt quite well to a reasonably high number of users.
 
 There are 4 web applications to be built and deployed in 3 physically distinct servers, which are:
 
@@ -11,7 +11,7 @@ Visually:
 
 ![](three_servers_architecture.png)
 
-With that in mind, you will find in here non-comprehensive guidelines on how to deploy EduPlaya.
+With that in mind, you will find in here non-comprehensive guidelines on how to deploy EduHub.
 
 1. Get 3 physical machines and install an appropriate operating system on them, like [Ubuntu Server](https://ubuntu.com/download/server)
 
@@ -37,7 +37,7 @@ With that in mind, you will find in here non-comprehensive guidelines on how to 
 
 9. Time to _build_ the 4 web applications! In your development machine you can `start.bat` and select `2`. You will be prompted a few questions like the IPs or domain names where your servers are accessible.
 
-10. When the EduPlaya build process is finished, you can copy the result to each machine and unzip the built apps in the location you have specified in the Apache sites config files for each machine. Well done!
+10. When the EduHub build process is finished, you can copy the result to each machine and unzip the built apps in the location you have specified in the Apache sites config files for each machine. Well done!
 
 11. A very nice extra step is to properly configure the Linux permissions for the _database_ files (and containing folder) in both `storage_api` and `rest_api`. For example, if you have your server files under `/var/www/edu_rest/` for the `rest_api`, you should:
 
