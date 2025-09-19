@@ -46,7 +46,7 @@ const AssignmentSubmitDialog = (props) => {
                                         <div className="assignmentSubmitDialogFilesTitle">Documentos entregados:</div>
                                         {props.submit.files.length > 0 ?
                                             <div className="assignmentSubmitDialogFiles">
-                                                {props.submit.files.map(f => <SmallAttachmentsListItem attachment={f} />)}
+                                                {props.submit.files.map(f => <SmallAttachmentsListItem attachment={{...f, type: 'document'}} />)}
                                             </div>
                                             : <div className="assignmentSubmitDialogSectionContent">No se ha entregado ningún fichero</div>}
                                         <div className="assignmentSubmitDialogCommentTitle">Comentario:</div>
