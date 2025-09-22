@@ -292,7 +292,7 @@ class EduAppUserclass(models.Model):
 
 
 class EduAppUserdocumentpermission(models.Model):
-    document = models.ForeignKey(EduAppDocument, models.DO_NOTHING)
+    document = models.ForeignKey(EduAppDocument, models.CASCADE)
     user = models.ForeignKey(EduAppUser, models.DO_NOTHING)
 
     class Meta:
@@ -301,7 +301,7 @@ class EduAppUserdocumentpermission(models.Model):
 
 
 class EduAppUserfolderpermission(models.Model):
-    folder = models.ForeignKey(EduAppFolder, models.DO_NOTHING)
+    folder = models.ForeignKey(EduAppFolder, models.CASCADE)
     user = models.ForeignKey(EduAppUser, models.DO_NOTHING)
 
     class Meta:
