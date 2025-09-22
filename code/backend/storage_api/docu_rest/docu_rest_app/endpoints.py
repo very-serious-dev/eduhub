@@ -147,10 +147,11 @@ def create_or_delete_documents(request):
         if edu_rest_response.status_code != 200:
             return JsonResponse({"error": "Error eliminando ficheros"}, status=502)
         edu_rest_response_body = edu_rest_response.json()
-        query = Q()
-        for identifier in json_document_ids:
-            query |= Q(identifier=identifier)
-        Document.objects.filter(author_uid=request.session.user_id).filter(query).delete()
+        if len(json_document_ids) > 0:
+            query = Q()
+            for identifier in json_document_ids:
+                query |= Q(identifier=identifier)
+            Document.objects.filter(author_uid=request.session.user_id).filter(query).delete()
         if json_ancestor_folder_id is None and len(json_document_ids) == 1:
             result = {
                 "operation": "document_deleted",
