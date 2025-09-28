@@ -3,19 +3,21 @@ import { ThemeContext } from "../../main/GlobalContainer"
 import { pointableSecondary, primary, tertiary } from "../../../util/Themes";
 
 const QuestionnaireChoicesQuestion = (props) => {
-    const [showSecretAnswerHint, setShowSecretAnswerHint] = useState(false);
     const [secretAnswerText, setSecretAnswerText] = useState("");
     const theme = useContext(ThemeContext);
 
     const onSecretAnswerTextChanged = (e) => {
-        const choicesThatMatch = props.question.choices.filter(choice => choice.content.toLowerCase().includes(e.target.value.toLowerCase()));
-        if (choicesThatMatch.length === 1) {
-            props.setAnswer(props.questionIndex, `${choicesThatMatch[0].number}`);
-            setSecretAnswerText("");
-        } else {
-            props.setAnswer(props.questionIndex, "");
-            setSecretAnswerText(e.target.value);
+        setSecretAnswerText(e.target.value);
+        if (e.target.value.length !== 1) { return; }
+        const chosenOption = e.target.value.toLowerCase();
+        const chosenOptionNumber = "abcdefghijklmnopqrstuvwxyz".indexOf(chosenOption) + 1;
+        if ((chosenOptionNumber > 0) && (chosenOptionNumber <= props.question.choices.length)) { 
+            props.setAnswer(props.questionIndex, `${chosenOptionNumber}`);
         }
+    }
+
+    const letterForNumber = (number) => {
+        return "abcdefghijklmnopqrstuvwxyz"[number - 1];
     }
 
     const choices = props.question.choices;
@@ -32,28 +34,23 @@ const QuestionnaireChoicesQuestion = (props) => {
                     onChange={e => { props.setAnswer(props.questionIndex, e.target.value) }}
                     checked={!props.isSecret && (choice.number.toString() === props.answer)}
                     disabled={props.isSecret} />
-                <label htmlFor="">{choice.content}</label>
+                <label htmlFor=""><b>{letterForNumber(choice.number)})</b> {choice.content}</label>
             </div>
         })}
         {props.isSecret && props.answer !== "" && <div className="hint">👍🏻 Respuesta escogida</div>}
         <button className={`choicesQuestionClearButton pointable ${primary(theme)} ${pointableSecondary(theme)}`}
-            onClick={e => { e.preventDefault(); props.setAnswer(props.questionIndex, "") }}
+            onClick={e => { e.preventDefault(); props.setAnswer(props.questionIndex, ""); setSecretAnswerText(""); }}
             disabled={props.answer === ""}>
             Borrar
         </button>
-        {props.isSecret && <>
-            <div className="formInputContainer">
+        {props.isSecret && <div className="formInputContainer">
                 <input className="formInput formInputSecretText"
                     type="text"
                     value={secretAnswerText}
                     onChange={onSecretAnswerTextChanged}
-                    onFocus={e => { setShowSecretAnswerHint(true); }}
-                    onBlur={e => { setShowSecretAnswerHint(false); }}
-                    placeholder="Escribe aquí el texto de la opción que quieres escoger" />
+                    placeholder="Escribe aquí la letra (a, b, c,...) de la opción que quieres escoger" />
                 
-            </div>
-            {showSecretAnswerHint && props.answer === "" && <div className="hint">No necesitas escribir <i>toda</i> la respuesta. Basta con que teclees un trozo de la respuesta lo suficientemente grande para que la diferencie del resto de opciones</div>}
-        </>}
+            </div>}
     </div>
 }
 
