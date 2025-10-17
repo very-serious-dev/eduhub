@@ -53,7 +53,7 @@ const AssignmentSubmitDialog = (props) => {
                                         <div className="assignmentSubmitDialogSectionContent">{props.submit.comment ?? "No se ha añadido ningún comentario"}</div>
                                     </>}
                                 <div className="assignmentSubmitScoreTitle">Calificación</div>
-                                {props.submit.score ?
+                                {(props.submit.score !== undefined && props.submit.score !== null) ?
                                     <>
                                         <div className={`assignmentSubmitScore ${props.submit.is_score_published ? accentForeground(theme) : "scoreUnpublished"}`}>{props.submit.score}</div>
                                         {props.submit.is_score_published === false && <div className="unpublishedScoreHint">Esta puntuación no está publicada para el estudiante todavía</div>}

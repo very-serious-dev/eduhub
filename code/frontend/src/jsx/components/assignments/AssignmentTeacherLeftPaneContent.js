@@ -22,7 +22,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
 
     const numberUnscoredSubmits = () => {
         return props.assignmentData.submits.reduce((acc, submit) => {
-            if (submit.score) {
+            if (submit.score !== undefined && submit.score !== null) {
                 return acc;
             }
             return acc + 1;
@@ -31,7 +31,7 @@ const AssignmentTeacherLeftPaneContent = (props) => {
 
     const numberUnpublishedScores = () => {
         return props.assignmentData.submits.reduce((acc, submit) => {
-            if (submit.score && submit.is_score_published === false) {
+            if (submit.score !== undefined && submit.score !== null && submit.is_score_published === false) {
                 return acc + 1;
             }
             return acc;

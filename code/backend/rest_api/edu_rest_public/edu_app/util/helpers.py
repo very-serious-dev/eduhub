@@ -181,7 +181,7 @@ def calculate_score(questionnaire_submit):
                                                     answer__question=q,
                                                     answer__is_correct=False).exists():
                 score = (score or 0) - q.incorrect_answer_score
-    return score
+    return round(score, 2)
 
 def get_from_db(model, *args, **kwargs): # Quite the same as get_object_or_404
     try:

@@ -17,7 +17,7 @@ const AssignmentUserStatus = (props) => {
         <div className={`assignmentCell pointable ${pointableSecondary(theme)}`} onClick={() => { setShowSubmitDialog(true); }}>
             <div className="assignmentCellHeader">
                 <div className="assignmentCellHeaderSurnameAndName">{`${props.author.surname}, ${props.author.name}`}</div>
-                {(props.submit && props.submit.score) &&
+                {(props.submit && props.submit.score !== undefined && props.submit.score !== null) && /* Careful: props.submit.score might be 0 */
                   <div className="assignmentCellHeaderScoreContainer">
                     {props.submit.is_score_published === false && <div className="assignmentCellHeaderScoreUnpublishedHint">Sin<br/>publicar</div>}
                     <div className={`assignmentCellHeaderScore ${props.submit.is_score_published === false ? "scoreUnpublished" : accentForeground(theme)}`}>{props.submit.score}</div>
