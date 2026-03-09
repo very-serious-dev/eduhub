@@ -127,7 +127,10 @@ def get_assignment(request, a_id):
         q["type"] = "questionnaire"
     attachments = files + questionnaires
     class_units = Unit.objects.filter(classroom=assignment.classroom).order_by("name")
-    is_teacher = request.session.user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]
+    is_teacher = request.session.user.role in [User.UserRole.TEACHER,
+                                               User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                                               User.UserRole.TEACHER_LEADER,
+                                               User.UserRole.TEACHER_SYSADMIN]
     class_students = []
     submits = []
     your_submit = None

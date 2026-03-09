@@ -117,18 +117,19 @@ def parse_usernames_list(usernames):
     return result
 
 def can_see_class(user, classroom):
+    is_non_admin_user = user.role in [User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR]
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
-            or (user.role in [User.UserRole.STUDENT, User.UserRole.TEACHER] \
-                and UserClass.objects.filter(user=user, classroom=classroom).exists())
+            or (is_non_admin_user and UserClass.objects.filter(user=user, classroom=classroom).exists())
 
 def can_edit_class(user, classroom):
+    is_non_admin_teacher = user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR]
     return user.role in [User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER] \
-            or (user.role == User.UserRole.TEACHER and UserClass.objects.filter(user=user, classroom=classroom).exists())
+            or (is_non_admin_teacher and UserClass.objects.filter(user=user, classroom=classroom).exists())
 
 def can_see_questionnaire(user, questionnaire):
     if user.role in [User.UserRole.TEACHER_LEADER, User.UserRole.TEACHER_SYSADMIN]:
         return True
-    elif user.role in [User.UserRole.TEACHER, User.UserRole.STUDENT]:
+    elif user.role in [User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR]:
         if UserQuestionnairePermission.objects.filter(user=user, questionnaire=questionnaire).exists():
             return True
         user_classes = UserClass.objects.filter(user=user).values_list('classroom_id', flat=True)
@@ -136,7 +137,7 @@ def can_see_questionnaire(user, questionnaire):
             return True
         if user.role == User.UserRole.STUDENT and AnnouncementQuestionnaire.objects.filter(announcement__group=user.student_group, questionnaire=questionnaire).exists():
             return True
-        if user.role == User.UserRole.TEACHER:
+        if user.role in [User.UserRole.TEACHER, User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR]:
             for classroom_id in user_classes:
                 classroom_group = Class.objects.get(id=classroom_id).group
                 if AnnouncementQuestionnaire.objects.filter(questionnaire=questionnaire, announcement__group=classroom_group).exists():

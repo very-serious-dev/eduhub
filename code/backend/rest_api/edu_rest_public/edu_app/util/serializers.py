@@ -2,6 +2,7 @@ from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuesti
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
+JSON_TRAINEESHIP_COORDINATOR = "traineeship_coordinator"
 JSON_SYSADMIN = "sysadmin"
 JSON_LEADER = "school_leader"
 
@@ -225,6 +226,9 @@ def roles_array(user):
         roles.append(JSON_STUDENT)
     if user.role == User.UserRole.TEACHER:
         roles.append(JSON_TEACHER)
+    if user.role == User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR:
+        roles.append(JSON_TEACHER)
+        roles.append(JSON_TRAINEESHIP_COORDINATOR)
     if user.role == User.UserRole.TEACHER_LEADER:
         roles.append(JSON_TEACHER)
         roles.append(JSON_LEADER)

@@ -172,4 +172,4 @@ def document_permissions(request):
 
 def is_teacher(role):
     # To figure this out, go check EduREST public API models.py User.UserRole
-    return role == 1 or role == 2 or role == 3
+    return role == 1 or role == 2 or role == 3 or role == 4

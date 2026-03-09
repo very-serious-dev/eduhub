@@ -13,6 +13,7 @@ class User(models.Model):
         TEACHER = 1
         TEACHER_SYSADMIN = 2
         TEACHER_LEADER = 3
+        TEACHER_TRAINEESHIP_COORDINATOR = 4
 
     username = models.CharField(unique=True, max_length=50)
     name = models.CharField(max_length=50)

@@ -92,7 +92,10 @@ def admin_get_classes(request):
 @maybe_unhappy
 def users_search(request):
     if request.method == "GET":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         q = request.GET.get("search")
         return users.search(request, q)
     else:
@@ -156,7 +159,10 @@ def classes_create_get_my_classes(request):
         require_valid_session(request=request)
         return classes.get_my_classes(request)
     elif request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         name, group_id, automatically_add_teacher = expect_body_with('name', 'group_id', optional=['automatically_add_teacher'], request=request)
         return classes.create_class(request, name, group_id, automatically_add_teacher)
     else:
@@ -184,7 +190,10 @@ def classes_get_add_participants(request, c_id):
         require_valid_session(request=request)
         return classes.get_participants(request, c_id)
     elif request.method == "PUT":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         username = expect_body_with('usernames', request=request)
         usernames_list = parse_usernames_list(username)
         return classes.add_participants(request, c_id, usernames_list)
@@ -194,7 +203,10 @@ def classes_get_add_participants(request, c_id):
 @maybe_unhappy
 def classes_delete_participant(request, c_id, username):
     if request.method == "DELETE":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return classes.delete_participant(request, c_id, username)
     else:
         raise Unsupported
@@ -202,7 +214,10 @@ def classes_delete_participant(request, c_id, username):
 @maybe_unhappy
 def classes_create_unit(request, c_id):
     if request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         name = expect_body_with('name', request=request)
         return classes.create_unit(request, c_id, name)
     else:
@@ -211,11 +226,17 @@ def classes_create_unit(request, c_id):
 @maybe_unhappy
 def classes_edit_delete_unit(request, u_id):
     if request.method == "PUT":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         name = expect_body_with('name', request=request)
         return classes.edit_unit(request, u_id, name)
     elif request.method == "DELETE":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return classes.delete_unit(request, u_id)
     else:
         raise Unsupported
@@ -223,7 +244,10 @@ def classes_edit_delete_unit(request, u_id):
 @maybe_unhappy
 def classes_download_scores(request, c_id):
     if request.method == "GET":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return classes.download_scores(request, c_id)
     else:
         raise Unsupported
@@ -231,7 +255,10 @@ def classes_download_scores(request, c_id):
 @maybe_unhappy
 def posts_create(request, c_id):
     if request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         title, content, post_type, attachments, unit_id, assignment_due_date = expect_body_with('title', 'content', 'post_type', 'attachments', optional=['unit_id', 'assignment_due_date'], request=request)
         if '"' in title or ',' in title:
             raise BadRequest
@@ -244,7 +271,10 @@ def posts_create(request, c_id):
 @maybe_unhappy
 def posts_amend(request, p_id):
     if request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         post_type, title, content, attachments, unit_id, assignment_due_date = expect_body_with('post_type', optional=['title', 'content', 'attachments', 'unit_id', 'assignment_due_date'], request=request)
         if title and ('"' in title or ',' in title):
             raise BadRequest
@@ -276,11 +306,17 @@ def posts_create_assignment_submit(request, a_id):
 @maybe_unhappy
 def posts_create_delete_score(request, a_id, username):
     if request.method == "PUT":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         score, should_publish = expect_body_with('score', optional=['is_published'], request=request)
         return posts.score_submit(request, a_id, username, score, should_publish)
     elif request.method == "DELETE":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return posts.delete_score(request, a_id, username)
     else:
         raise Unsupported
@@ -288,7 +324,10 @@ def posts_create_delete_score(request, a_id, username):
 @maybe_unhappy
 def posts_publish_all_scores(request, a_id):
     if request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return posts.publish_all_scores(request, a_id)
     else:
         raise Unsupported
@@ -389,11 +428,17 @@ def documents_get_folder_users(request, f_id):
 @maybe_unhappy
 def documents_move_or_delete_questionnaire(request, q_id):
     if request.method == "PUT":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         folder_id = expect_body_with(optional=['folder_id'], request=request)
         return documents.move_questionnaire(request, q_id, folder_id)
     elif request.method == "DELETE":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return questionnaires.delete_questionnaire(request, q_id)
     else:
         raise Unsupported
@@ -409,7 +454,10 @@ def documents_get_questionnaire_users(request, q_id):
 @maybe_unhappy
 def questionnaires_create(request):
     if request.method == "POST":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         title, questions, mode = expect_body_with('title', 'questions', 'mode', request=request)
         if not validate_questionnaire_mode(mode):
             raise BadRequest
@@ -426,7 +474,10 @@ def questionnaires_get_or_edit_questions(request, q_id):
         require_valid_session(request=request)
         return questionnaires.get_questions(request, q_id)
     elif request.method == "PUT":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         title, questions, mode = expect_body_with('title', 'questions', 'mode', request=request)
         if not validate_questionnaire_mode(mode):
             raise BadRequest
@@ -437,7 +488,10 @@ def questionnaires_get_or_edit_questions(request, q_id):
 @maybe_unhappy
 def questionnaires_get_or_create_submit(request, q_id):
     if request.method == "GET":
-        require_role([User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+        require_role([User.UserRole.TEACHER,
+                      User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
         return questionnaires.get_submits(request, q_id)
     elif request.method == "POST":
         require_role([User.UserRole.STUDENT], request=request)
