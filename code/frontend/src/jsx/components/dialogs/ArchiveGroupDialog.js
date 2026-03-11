@@ -71,7 +71,7 @@ const ArchiveGroupDialog = (props) => {
                                 required />
                             <label htmlFor="">...transferidos a otro grupo nuevo (avanzan de curso)</label>
                         </div>
-                        <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formActionType === undefined || formActionType === "archive" ? " formInputSelectHidden" : "")}>
+                        <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formActionType === undefined || formActionType === "archive" ? " formInputHidden" : "")}>
                             <select name="studentGroup"
                                 value={formTransferGroupId}
                                 className={`formInputSelect ${primary(theme)}`}

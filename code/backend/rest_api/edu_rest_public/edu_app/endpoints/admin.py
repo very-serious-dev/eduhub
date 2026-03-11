@@ -16,21 +16,29 @@ def get_admin_home(request):
                          "classesCount": classes_count,
                          "groups": groups_array_to_json(groups)})
 
-def create_user(request, username, name, surname, password, student_group_id, is_teacher):
+def create_user(request, username, name, surname, password, role, student_group_id):
     if User.objects.filter(username=username).exists():
         raise ConflictUserAlreadyExists
-    if is_teacher != True and student_group_id is None:
+    if role not in ['student', 'teacher', 'teacher_traineeship_coordinator']:
         raise BadRequest
+    if role == 'student' and student_group_id is None:
+        raise BadRequest
+    is_teacher = role in ['teacher', 'teacher_traineeship_coordinator']
     new_user = User()
     new_user.username = username
     new_user.name = name
     new_user.surname = surname
     new_user.encrypted_password = bcrypt.hashpw(password.encode('utf8'), bcrypt.gensalt()).decode('utf8')
-    new_user.role =                    User.UserRole.STUDENT if is_teacher != True else User.UserRole.TEACHER
-    new_user.max_folders =               constants.STUDENT_MAX_FOLDERS if is_teacher != True else constants.TEACHER_MAX_FOLDERS
-    new_user.max_documents =           constants.STUDENT_MAX_DOCUMENTS if is_teacher != True else constants.TEACHER_MAX_DOCUMENTS
-    new_user.max_documents_size = constants.STUDENT_MAX_DOCUMENTS_SIZE if is_teacher != True else constants.TEACHER_MAX_DOCUMENTS_SIZE
-    if is_teacher != True:
+    if role == 'teacher_traineeship_coordinator':
+        new_user.role = User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR
+    elif role == 'teacher':
+        new_user.role = User.UserRole.TEACHER
+    else:
+        new_user.role = User.UserRole.STUDENT
+    new_user.max_folders =               constants.TEACHER_MAX_FOLDERS if is_teacher else constants.STUDENT_MAX_FOLDERS
+    new_user.max_documents =           constants.TEACHER_MAX_DOCUMENTS if is_teacher else constants.STUDENT_MAX_DOCUMENTS
+    new_user.max_documents_size = constants.TEACHER_MAX_DOCUMENTS_SIZE if is_teacher else constants.STUDENT_MAX_DOCUMENTS_SIZE
+    if not is_teacher:
         new_user.student_group = get_from_db(Group, id=student_group_id, archived=False)
     new_user.save()
     return JsonResponse({"success": True}, status=201)

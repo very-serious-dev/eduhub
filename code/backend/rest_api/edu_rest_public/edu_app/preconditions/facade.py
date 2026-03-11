@@ -28,12 +28,12 @@ def admin_home(request):
 def admin_create_user(request):
     if request.method == "POST":
         require_role([User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
-        username, name, surname, password, student_group_id, is_teacher = expect_body_with('username', 'name', 'surname', 'password', optional=['student_group_id', 'is_teacher'], request=request)
+        username, name, surname, password, role, student_group_id = expect_body_with('username', 'name', 'surname', 'password', 'role', optional=['student_group_id'], request=request)
         validate_username(username)
         validate_password(password)
         if '"' in name or '"' in surname or ',' in name or ',' in surname:
             raise BadRequest
-        return admin.create_user(request, username, name, surname, password, student_group_id, is_teacher)
+        return admin.create_user(request, username, name, surname, password, role, student_group_id)
     else:
         raise Unsupported
 

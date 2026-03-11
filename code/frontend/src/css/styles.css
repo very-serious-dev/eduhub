@@ -450,7 +450,7 @@ body {
 }
 
 /**
- * Other pages 
+ * Other pages
  **/
 
 .loadingMain {
@@ -472,7 +472,7 @@ body {
 }
 
 /**
- * Login page 
+ * Login page
  **/
 
 .loginMain {
@@ -560,7 +560,7 @@ body {
 }
 
 /**
- * Classes page 
+ * Classes page
  **/
 
 .classesSectionContainer {
@@ -1608,6 +1608,10 @@ body {
   background-color: #0029a5;
 }
 
+.userCardTagTraineeshipCoordinator {
+  background-color: #008394;
+}
+
 .userCardTagStudent {
   background-color: #009715;
 }
@@ -2310,7 +2314,7 @@ body {
 }
 
 .popupAllowOverflowY {
-  /* Overrides .popup overflow-y scroll, so that 
+  /* Overrides .popup overflow-y scroll, so that
      in SubmitAssignmentDialog the inner file picker
      dialog isn't clipped */
   overflow-y: visible !important;
@@ -2325,7 +2329,7 @@ body {
   margin-left: 10px;
 }
 
-.formInputSelectHidden {
+.formInputHidden {
   display: none;
 }
 

@@ -14,7 +14,7 @@ const CreateUserDialog = (props) => {
     const [formName, setFormName] = useState("");
     const [formSurname, setFormSurname] = useState("");
     const [formPassword, setFormPassword] = useState("");
-    const [formIsTeacher, setFormIsTeacher] = useState(undefined);
+    const [formRole, setFormRole] = useState(undefined);
     const [formStudentGroupId, setFormStudentGroupId] = useState(initialStudentGroupValue());
     const [isLoading, setLoading] = useState(false);
     const [usernameDidGainFocusOnce, setUsernameDidGainFocusOnce] = useState(false);
@@ -27,11 +27,10 @@ const CreateUserDialog = (props) => {
             name: formName,
             surname: formSurname,
             username: formUsername,
-            password: formPassword
+            password: formPassword,
+            role: formRole
         }
-        if (formIsTeacher) {
-            body.is_teacher = true;
-        } else {
+        if (formRole === 'student') {
             body.student_group_id = formStudentGroupId;
         }
         EduAPIFetch("POST", "/api/v1/admin/users", body)
@@ -132,18 +131,23 @@ const CreateUserDialog = (props) => {
                         <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Contraseña</label>
                     </div>
                     <div className="formInputRadio">
-                        <input type="radio" name="rolType" value="isTeacher"
-                            onChange={e => { setFormIsTeacher(e.target.value === "isTeacher"); }}
+                        <input type="radio" name="role" value="teacher"
+                            onChange={e => { setFormRole(e.target.value); }}
                             required />
                         <label htmlFor="">DOCENTE</label>
                     </div>
+                    <div className={"formInputRadio" + (formRole !== 'teacher' && formRole !== 'teacher_traineeship_coordinator' ? " formInputHidden" : "")}>
+                        <input type="checkbox" name="role" value="teacher_traineeship_coordinator"
+                            onChange={e => { setFormRole(e.target.value); }} />
+                        <label htmlFor="">Gestiona empresas de prácticas</label>
+                    </div>
                     <div className="formInputRadio">
-                        <input type="radio" name="rolType" value="isStudent"
-                            onChange={e => { setFormIsTeacher(!(e.target.value === "isStudent")); }}
+                        <input type="radio" name="role" value="student"
+                            onChange={e => { setFormRole(e.target.value); }}
                             required />
                         <label htmlFor="">ESTUDIANTE</label>
                     </div>
-                    <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formIsTeacher === undefined || formIsTeacher === true ? " formInputSelectHidden" : "")}>
+                    <div className={"formInputSelectContainer selectWithTopMargin addUserSelect" + (formRole !== "student" ? " formInputHidden" : "")}>
                         <select name="studentGroup"
                             value={formStudentGroupId}
                             className={`formInputSelect ${primary(theme)}`}
@@ -157,7 +161,7 @@ const CreateUserDialog = (props) => {
                         </select>
                     </div>
                     <div className="formInputContainer">
-                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroupId === NOT_VALID && formIsTeacher === false} />
+                        <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value="Crear" disabled={formStudentGroupId === NOT_VALID && formRole === 'student'} />
                     </div>
                     {isLoading && <div className="loadingHUDCentered"><LoadingHUD /></div>}
                 </form>
