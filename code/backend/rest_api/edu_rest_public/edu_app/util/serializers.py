@@ -104,6 +104,14 @@ def questionnaire_to_json(questionnaire):
         "created_at": questionnaire.created_at
     }
 
+def company_to_json(company):
+    return {
+        "id": company.id,
+        "name": company.name,
+        "overview": company.overview,
+        "address": company.address
+    }
+
 def groups_array_to_json(groups):
     result = []
     for g in groups:
@@ -150,6 +158,12 @@ def questionnaires_array_to_json(questionnaires, annotate_as_protected=None):
         if annotate_as_protected and q.id in annotate_as_protected:
             json["is_protected"] = True
         result.append(json)
+    return result
+
+def companies_array_to_json(companies):
+    result = []
+    for c in companies:
+        result.append(company_to_json(c))
     return result
 
 def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
@@ -219,7 +233,7 @@ def questionnaire_detail_to_json(questionnaire, questions, due_date, theme):
         "due_date": due_date,
         "theme": theme
     }
-    
+
 def roles_array(user):
     roles = []
     if user.role == User.UserRole.STUDENT:

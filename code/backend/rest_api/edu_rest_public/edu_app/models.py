@@ -6,7 +6,7 @@ from . import constants
 #
 
 class User(models.Model):
-    
+
     class UserRole(models.IntegerChoices):
         # There is a is_teacher() function in EduREST internal API > endpoints.py
         STUDENT = 0
@@ -79,7 +79,7 @@ class Group(models.Model):
     tutor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     year = models.CharField(max_length=10)
     archived = models.BooleanField(default=False)
-    
+
     class Meta:
         unique_together = ('tag', 'year',)
 
@@ -120,7 +120,7 @@ class Announcement(models.Model):
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True) # (*)
     publication_date = models.DateTimeField(auto_now_add=True)
     modification_date = models.DateTimeField(default=None, null=True)
-    
+
 class AnnouncementDocument(models.Model):
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
     document = models.ForeignKey(Document, on_delete=models.PROTECT)
@@ -213,7 +213,7 @@ class QuestionnaireSubmit(models.Model):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
 class TextQuestionAnswer(models.Model):
     answer = models.CharField(max_length=500)
     question = models.ForeignKey(TextQuestion, on_delete=models.CASCADE)
@@ -222,6 +222,29 @@ class TextQuestionAnswer(models.Model):
 class ChoicesQuestionAnswer(models.Model):
     answer = models.ForeignKey(ChoicesQuestionChoice, on_delete=models.CASCADE)
     submit = models.ForeignKey(QuestionnaireSubmit, on_delete=models.CASCADE)
+
+##
+# COMPANIES (TRAINEESHIPS)
+#
+
+class Company(models.Model):
+    name = models.CharField(max_length=50)
+    overview = models.CharField(max_length=300)
+    cif = models.CharField(max_length=10, unique=True)
+    address = models.CharField(max_length=200)
+
+class CompanyEvent(models.Model):
+
+    class CompanyEventType(models.IntegerChoices):
+        MEETING = 0
+        VIRTUAL_MEETING = 1
+        ADDED_CONTACT_DETAILS = 2
+        INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD = 3
+        OTHER = 4
+
+    type = models.IntegerField(choices=CompanyEventType)
+    date_time = models.DateTimeField()
+    description = models.CharField(max_length=1000, null=True)
 
 ##
 # SECURITY, STATISTICS,...

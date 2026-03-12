@@ -1,5 +1,5 @@
 from django.http import QueryDict
-from ..endpoints import admin, users, groups, classes, posts, documents, questionnaires
+from ..endpoints import admin, users, groups, classes, posts, documents, questionnaires, companies
 from ..models import User
 from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, validate_questionnaire_mode, parse_usernames_list
 from ..util.exceptions import Unsupported, BadRequest, BadRequestIllegalMove
@@ -505,5 +505,21 @@ def questionnaires_get_submit(request, q_id, username):
     if request.method == "GET":
         require_valid_session(request=request)
         return questionnaires.get_submit(request, q_id, username)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def companies_get_create(request):
+    if request.method == "GET":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        return companies.get_all(request)
+    elif request.method == "POST":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        # TODO
+        return None
     else:
         raise Unsupported
