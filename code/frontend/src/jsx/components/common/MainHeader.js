@@ -42,12 +42,13 @@ const MainHeader = (props) => {
     }
 
     return <div className="mainPageHeaderContainer">
-        <img className="mainPageHeaderLogo" src="/logo_main.png" alt="📘🌴🏖️ EduPlaya" />
+        <img className="mainPageHeaderLogo" src="/logo_main.png" alt="📘 EduHub" />
         {isLoadingLogout ? <p>Cerrando sesión...</p>
             : <div className="mainPageHeaderButtons">
                 <AnimatedButton onClick={() => { navigate("/"); }} text="📚 Clases" />
                 <AnimatedButton onClick={() => { navigate("/files"); }} text="📁 Archivos" />
-                {props.showAdminLink && <AnimatedButton onClick={() => { navigate("/admin"); }} text="⚙️ Panel de administración" hiddenInMobile={true} />}
+                {props.showTraineeshipCentres && <AnimatedButton onClick={() => { navigate("/traineeships"); }} text="💻 Empresas" hiddenInMobile={true} />}
+                {props.showAdminLink && <AnimatedButton onClick={() => { navigate("/admin"); }} text="⚙️ Panel" hiddenInMobile={true} />}
                 <AnimatedButton onClick={onLogout} rightAligned={true} text="🏃 Salir" />
             </div>}
     </div>

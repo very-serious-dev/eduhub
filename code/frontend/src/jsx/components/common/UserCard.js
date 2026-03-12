@@ -14,6 +14,9 @@ const UserCard = (props) => {
         if (props.user.roles.includes("teacher")) {
             tags.push(<div className="userCardTag userCardTagTeacher">DOCENTE</div>)
         }
+        if (props.user.roles.includes("traineeship_coordinator")) {
+            tags.push(<div className="userCardTag userCardTagTraineeshipCoordinator">COORD. FE</div>)
+        }
         if (props.user.roles.includes("school_leader")) {
             tags.push(<div className="userCardTag userCardTagSchoolLeader">DIRECCIÓN</div>)
         }

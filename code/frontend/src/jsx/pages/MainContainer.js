@@ -14,9 +14,10 @@ const MainContainer = (props) => {
     }, [])
 
     return IsLoggedIn() ? <div className="mainPageFlexContainer">
-        <MainHeader showAdminLink={roles.includes("sysadmin") || roles.includes("school_leader")} />
+        <MainHeader showAdminLink={roles.includes("sysadmin") || roles.includes("school_leader")}
+            showTraineeshipCentres={roles.includes("sysadmin") || roles.includes("school_leader") || roles.includes("traineeship_coordinator")} />
         <Outlet />
-    </div>: <></>
+    </div> : <></>
 }
 
 export default MainContainer;
