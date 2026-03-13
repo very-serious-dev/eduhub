@@ -2,10 +2,11 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router";
 import CreateEditDeleteCompanyDialog from "../dialogs/CreateEditDeleteCompanyDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
+import CreateCompanyEventDialog from "../dialogs/CreateCompanyEventDialog";
 
 const CompanyDetailBody = (props) => {
     const navigate = useNavigate();
-    const [showEditPopup, setShowEditPopup] = useState(false);
+    const [popupShown, setPopupShown] = useState("NONE"); // NONE, EDIT_COMPANY, ADD_EVENT
     const setFeedback = useContext(FeedbackContext);
 
     const onOperationDone = (errorMessage) => {
@@ -18,13 +19,18 @@ const CompanyDetailBody = (props) => {
     }
 
     return <>
-        {showEditPopup && <CreateEditDeleteCompanyDialog company={props.companyData.company}
-            onDismiss={() => { setShowEditPopup(false) }}
+        {popupShown == "EDIT_COMPANY" && <CreateEditDeleteCompanyDialog company={props.companyData.company}
+            onDismiss={() => { setPopupShown("NONE") }}
             onOperationDone={onOperationDone} />}
+        {popupShown == "ADD_EVENT" && <CreateCompanyEventDialog companyId={props.companyData.company.id}
+            onDismiss={() => { setPopupShown("NONE") }}
+            onEventCreated={onOperationDone} />}
         <div className="companyDetailMainBody">
             <div className="companyDetailColumn1">
                 <div className="companyDetailColumn1GoBack pointable card" onClick={() => { navigate("/traineeships"); }}>⬅️ Volver a empresas</div>
-                <div className="companyDetailColumn1MenuItem pointable card" onClick={() => { setShowEditPopup(true) }}>⚙️ Editar</div>
+                <div className="companyDetailColumn1MenuItem pointable card" onClick={() => { setPopupShown("ADD_EVENT") }}>➕ Añadir evento</div>
+                <div className="companyDetailColumn1MenuItem pointable card" onClick={() => { setPopupShown("EDIT_COMPANY") }}>⚙️ Editar empresa</div>
+                { /* TO-DO Show contact details of people from the company (events with type contact) */}
 
             </div>
             <div className="companyDetailColumn2">

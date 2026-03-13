@@ -1723,7 +1723,6 @@ body {
   color: var(--theme-blue-accent);
   display: grid;
   place-content: center;
-  font-size: 1.125rem;
 }
 
 .companyDetailColumn1GoBack:hover {
@@ -1731,11 +1730,11 @@ body {
 }
 
 .companyDetailColumn1MenuItem {
-  height: 100px;
+  height: 70px;
   background-color: var(--theme-blue-primary);
   display: grid;
   place-content: center;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .companyDetailColumn1MenuItem:hover {
@@ -1766,11 +1765,10 @@ body {
   margin-top: 5px;
 }
 
-/*
-.adminBodyColumn2Content {
-  min-height: calc(100% - 24px);
-  margin: 12px;
-}*/
+.createCompanyEventFormDate {
+  font-size: 0.875em;
+  margin: 6px;
+}
 
 /**
  * Error page

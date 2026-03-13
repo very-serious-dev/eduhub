@@ -245,8 +245,10 @@ class CompanyEvent(models.Model):
 
     type = models.IntegerField(choices=CompanyEventType)
     date_time = models.DateTimeField()
-    description = models.CharField(max_length=1000, null=True)
+    description = models.CharField(max_length=2000, null=True)
+    participants = models.CharField(max_length=300, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 ##
