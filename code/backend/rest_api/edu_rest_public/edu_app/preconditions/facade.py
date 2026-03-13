@@ -519,7 +519,7 @@ def companies_get_create(request):
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        # TODO
-        return None
+        name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
+        return companies.create(request, name, cif, address, overview)
     else:
         raise Unsupported

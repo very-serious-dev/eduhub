@@ -108,6 +108,7 @@ def company_to_json(company):
     return {
         "id": company.id,
         "name": company.name,
+        "cif": company.cif,
         "overview": company.overview,
         "address": company.address
     }
