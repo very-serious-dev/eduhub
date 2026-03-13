@@ -1,6 +1,6 @@
 from django.http import JsonResponse
-from ..models import Company
-from ..util.serializers import companies_array_to_json, company_to_json
+from ..models import Company, CompanyEvent
+from ..util.serializers import companies_array_to_json, company_to_json, company_events_array_to_json
 from ..util.exceptions import ConflictCompanyAlreadyExists, NotFound
 from ..util.helpers import get_from_db
 
@@ -12,8 +12,9 @@ def get_detail(request, company_id):
     company = get_from_db(Company, id=company_id)
     if company.is_archived:
         raise NotFound
+    events = CompanyEvent.objects.filter(company=company)
     return JsonResponse({"company": company_to_json(company),
-                         "events": []}) # TO-DO
+                         "events": company_events_array_to_json(events)})
 
 def create(request, name, cif, address, overview):
     if Company.objects.filter(cif=cif).exists():

@@ -1,4 +1,4 @@
-from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire, Questionnaire
+from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire, Questionnaire, CompanyEvent
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -22,6 +22,12 @@ JSON_YELLOW = "yellow"
 
 JSON_QUESTIONNAIRE_REGULAR = "regular"
 JSON_QUESTIONNAIRE_SECRET_ANSWERS = "secret_answers"
+
+JSON_COMPANY_EVENT_MEETING = "meeting"
+JSON_COMPANY_EVENT_VIRTUAL_MEETING = "virtual_meeting"
+JSON_COMPANY_EVENT_ADDED_CONTACT_DETAILS = "contact_details"
+JSON_COMPANY_EVENT_INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD = "interested_about_next_traineeship_period"
+JSON_COMPANY_EVENT_OTHER = "other"
 
 def document_to_json(document):
     return {
@@ -113,6 +119,14 @@ def company_to_json(company):
         "address": company.address
     }
 
+def company_event_to_json(event):
+    return {
+        "id": event.id,
+        "description": event.description,
+        "type": event_type(e),
+        "date_time": event.date_time
+    }
+
 def groups_array_to_json(groups):
     result = []
     for g in groups:
@@ -165,6 +179,12 @@ def companies_array_to_json(companies):
     result = []
     for c in companies:
         result.append(company_to_json(c))
+    return result
+
+def company_events_array_to_json(events):
+    result = []
+    for e in events:
+        result.append(company_event_to_json(e))
     return result
 
 def class_detail_to_json(classroom, units, posts, is_class_editable_by_user):
@@ -285,3 +305,15 @@ def questionnaire_mode(q):
         return JSON_QUESTIONNAIRE_REGULAR
     if q.mode == Questionnaire.QuestionnaireMode.SECRET_ANSWERS:
         return JSON_QUESTIONNAIRE_SECRET_ANSWERS
+
+def event_type(e):
+    if e.type == CompanyEvent.CompanyEventType.MEETING:
+        return JSON_COMPANY_EVENT_MEETING
+    elif e.type == CompanyEvent.CompanyEventType.VIRTUAL_MEETING:
+        return JSON_COMPANY_EVENT_VIRTUAL_MEETING
+    elif e.type == CompanyEvent.CompanyEventType.ADDED_CONTACT_DETAILS:
+        return JSON_COMPANY_EVENT_ADDED_CONTACT_DETAILS
+    elif e.type == CompanyEvent.CompanyEventType.INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD:
+        return JSON_COMPANY_EVENT_INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD
+    elif e.type == CompanyEvent.CompanyEventType.OTHER:
+        return JSON_COMPANY_EVENT_OTHER

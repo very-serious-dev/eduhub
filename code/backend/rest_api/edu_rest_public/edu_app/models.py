@@ -246,6 +246,8 @@ class CompanyEvent(models.Model):
     type = models.IntegerField(choices=CompanyEventType)
     date_time = models.DateTimeField()
     description = models.CharField(max_length=1000, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 ##
 # SECURITY, STATISTICS,...
