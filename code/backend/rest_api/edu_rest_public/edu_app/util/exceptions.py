@@ -15,7 +15,7 @@ class BadRequestInvalidYear(Exception):
 
 class BadRequestIllegalMove(Exception):
     pass
-    
+
 class Unauthorized(Exception):
     pass
 
@@ -62,6 +62,9 @@ class ConflictUnitAlreadyExists(Exception):
     pass
 
 class ConflictUserAlreadyExists(Exception):
+    pass
+
+class ConflictCompanyAlreadyExists(Exception):
     pass
 
 class InternalError(Exception):

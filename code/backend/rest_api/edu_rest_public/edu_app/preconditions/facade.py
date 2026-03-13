@@ -523,3 +523,13 @@ def companies_get_create(request):
         return companies.create(request, name, cif, address, overview)
     else:
         raise Unsupported
+
+@maybe_unhappy
+def companies_get_detail(request, c_id):
+    if request.method == "GET":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        return companies.get_detail(request, company_id=c_id)
+    else:
+        raise Unsupported

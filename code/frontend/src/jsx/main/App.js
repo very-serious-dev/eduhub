@@ -14,6 +14,7 @@ import PasswordResetPage from "../pages/PasswordResetPage";
 import NewQuestionnairePage from "../pages/NewQuestionnairePage";
 import QuestionnairePage from "../pages/QuestionnairePage";
 import TraineeshipsPage from "../pages/TraineeshipsPage";
+import CompanyDetailPage from "../components/traineeships/CompanyDetailPage";
 
 const App = () => {
 
@@ -24,6 +25,7 @@ const App = () => {
                 <Route path="files" element={<FilesPage/>}></Route>
                 <Route path="admin" element={<AdminPage />}></Route>
                 <Route path="traineeships" element={<TraineeshipsPage />}></Route>
+                <Route path="companies/:companyId" element={<CompanyDetailPage/>}></Route>
             </Route>
             <Route path="login" element={<LoginPage />}></Route>
             <Route path="classes/:classId" element={<ClassDetailPage />}></Route>

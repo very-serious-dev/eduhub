@@ -729,7 +729,8 @@ body {
   opacity: 0.8;
 }
 
-.classDetailHeaderTopIcons { /* reused */
+.classDetailHeaderTopIcons {
+  /* reused */
   position: absolute;
   right: 30px;
   top: 8px;
@@ -884,7 +885,8 @@ body {
   }
 }
 
-.classDetailSectionUnderline { /* reused */
+.classDetailSectionUnderline {
+  /* reused */
   height: 1px;
   width: 90%;
 }
@@ -1692,6 +1694,83 @@ body {
   color: #222222;
   font-size: 11px;
 }
+
+/**
+ * Companies page
+ **/
+
+.companiesList {
+  display: flex;
+  flex-flow: row wrap;
+}
+
+/* Very similar to admin page */
+
+.companyDetailMainBody {
+  display: flex;
+  flex-direction: row;
+}
+
+.companyDetailColumn1 {
+  width: 20%;
+  min-height: 100%;
+  display: flex;
+  flex-flow: column;
+}
+
+.companyDetailColumn1GoBack {
+  height: 50px;
+  color: var(--theme-blue-accent);
+  display: grid;
+  place-content: center;
+  font-size: 1.125rem;
+}
+
+.companyDetailColumn1GoBack:hover {
+  background-color: var(--theme-blue-secondary);
+}
+
+.companyDetailColumn1MenuItem {
+  height: 100px;
+  background-color: var(--theme-blue-primary);
+  display: grid;
+  place-content: center;
+  font-size: 1.375rem;
+}
+
+.companyDetailColumn1MenuItem:hover {
+  background-color: var(--theme-blue-secondary);
+}
+
+.companyDetailColumn2 {
+  width: 80%;
+  min-height: 100%;
+  /*display: flex;
+  flex-direction: column;*/
+}
+
+.companyDetailInfoContainer {
+  text-align: center;
+}
+
+.companyDetailInfoTitle {
+  font-size: 2em;
+  margin-top: 20px;
+}
+
+.companyDetailInfoCif {
+  font-size: 0.875em;
+}
+
+.companyDetailInfoAddress {
+  margin-top: 5px;
+}
+
+/*
+.adminBodyColumn2Content {
+  min-height: calc(100% - 24px);
+  margin: 12px;
+}*/
 
 /**
  * Error page

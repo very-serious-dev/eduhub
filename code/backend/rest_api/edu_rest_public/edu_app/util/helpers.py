@@ -49,6 +49,8 @@ def maybe_unhappy(endpoint_function):
             return JsonResponse({"error": "Ya existe un tema con ese nombre"}, status=409)
         except e.ConflictFolderAlreadyExists:
             return JsonResponse({"error": "Ya existe una carpeta con ese nombre en esa ubicación"}, status=409)
+        except e.ConflictCompanyAlreadyExists:
+            return JsonResponse({"error": "Ya existe una compañía con ese CIF"}, status=409)
         except e.ConflictQuotaExceeded:
             return JsonResponse({"error": "Has excedido tu cuota"}, status=409)
         except e.InternalError:
@@ -162,7 +164,7 @@ def questionnaire_assignments(questionnaire, user):
                                                       post__classroom__in=user_classes,
                                                       post__kind=Post.PostKind.AMENDMENT_EDIT,
                                                       post__amendment_original_post__kind=Post.PostKind.ASSIGNMENT)
-    unedited_assignments = list(map(lambda pq: pq.post, unedited_assignments_pq_with_questionnaire)) 
+    unedited_assignments = list(map(lambda pq: pq.post, unedited_assignments_pq_with_questionnaire))
     edited_assignments = list(map(lambda pq: pq.post.amendment_original_post, edited_assignments_pq_with_questionnaire))
     return unedited_assignments + edited_assignments
 

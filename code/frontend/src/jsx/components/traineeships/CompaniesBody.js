@@ -1,11 +1,13 @@
 import { useState, useContext } from "react";
 import CreateEditDeleteCompanyDialog from "../dialogs/CreateEditDeleteCompanyDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
-
+import GenericCard from "../common/GenericCard";
+import { useNavigate } from "react-router";
 
 const CompaniesBody = (props) => {
     const [showAddCompanyPopup, setShowAddCompanyPopup] = useState(false);
     const setFeedback = useContext(FeedbackContext);
+    const navigate = useNavigate();
 
     const onCompanyAdded = (errorMessage) => {
         if (errorMessage === undefined) {
@@ -15,16 +17,23 @@ const CompaniesBody = (props) => {
             setFeedback({ type: "error", message: errorMessage });
         }
     }
+
+    const onCompanyClicked = (companyId) => {
+        navigate(`/companies/${companyId}`)
+    }
+
     return <div>
         {showAddCompanyPopup && <CreateEditDeleteCompanyDialog onDismiss={() => { setShowAddCompanyPopup(false) }}
-            onOperationDone={onCompanyAdded}/>}
-        {props.companiesData.companies.map(company => (
-            <div key={company.id}>
-                <h2>{company.name}</h2>
-                <p>{company.overview}</p>
-                <p>{company.address}</p>
-            </div>
-        ))}
+            onOperationDone={onCompanyAdded} />}
+        <div className="companiesList">
+            {props.companiesData.companies.map(company => (
+                <GenericCard cardId={company.id}
+                    title={company.name}
+                    preTitle={company.overview}
+                    footer={company.address}
+                    onClickWithId={onCompanyClicked} />
+            ))}
+        </div>
         <div className="card floatingCardAddNew pointable" onClick={() => { setShowAddCompanyPopup(true) }}>➕ Añadir compañía</div>
 
     </div>
