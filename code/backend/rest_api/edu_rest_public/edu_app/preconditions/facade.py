@@ -525,11 +525,22 @@ def companies_get_create(request):
         raise Unsupported
 
 @maybe_unhappy
-def companies_get_detail(request, c_id):
+def companies_get_detail_edit_delete(request, c_id):
     if request.method == "GET":
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
         return companies.get_detail(request, company_id=c_id)
+    elif request.method == "PUT":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
+        return companies.edit(request, company_id=c_id, name=name, cif=cif, address=address, overview=overview)
+    elif request.method == "DELETE":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        return companies.delete(request, company_id=c_id)
     else:
         raise Unsupported

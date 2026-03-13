@@ -5,6 +5,7 @@ import AreYouSureDialog from "./AreYouSureDialog";
 import { accent, accentFormLabel, pointableSecondary, primary } from "../../../util/Themes";
 import { ThemeContext } from "../../main/GlobalContainer";
 import TextAreaWithLimit from "../common/TextAreaWithLimit";
+import { useNavigate } from "react-router";
 
 const CreateEditDeleteCompanyDialog = (props) => {
     const [formName, setFormName] = useState(props.company?.name ?? "");
@@ -14,6 +15,7 @@ const CreateEditDeleteCompanyDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const theme = useContext(ThemeContext);
+    const navigate = useNavigate();
 
     const isEditingCompany = () => { return props.company?.id !== undefined }
 
@@ -62,10 +64,7 @@ const CreateEditDeleteCompanyDialog = (props) => {
                 setLoading(false);
                 if (json.success === true) {
                     props.onOperationDone();
-                    setFormName("");
-                    setFormCif("");
-                    setFormOverview("");
-                    setFormAddress("");
+                    navigate("/traineeships")
                 } else {
                     props.onOperationDone("Se ha producido un error");
                 }
