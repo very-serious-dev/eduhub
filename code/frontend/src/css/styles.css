@@ -1741,6 +1741,16 @@ body {
   background-color: var(--theme-blue-secondary);
 }
 
+.companyDetailColumn1ContactsContainer {
+  margin: 8px;
+}
+
+.companyDetailColumn1ContactsTitle {
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 0.875em;
+}
+
 .companyDetailColumn2 {
   width: 80%;
   min-height: 100%;

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import CreateEditDeleteCompanyDialog from "../dialogs/CreateEditDeleteCompanyDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import CreateCompanyEventDialog from "../dialogs/CreateCompanyEventDialog";
+import ClassDetailDrawerSectionTitle from "../../components/classes/ClassDetailDrawerSectionTitle"
 
 const CompanyDetailBody = (props) => {
     const navigate = useNavigate();
@@ -31,6 +32,10 @@ const CompanyDetailBody = (props) => {
                 <div className="companyDetailColumn1MenuItem pointable card" onClick={() => { setPopupShown("ADD_EVENT") }}>➕ Añadir evento</div>
                 <div className="companyDetailColumn1MenuItem pointable card" onClick={() => { setPopupShown("EDIT_COMPANY") }}>⚙️ Editar empresa</div>
                 { /* TO-DO Show contact details of people from the company (events with type contact) */}
+                <div className="companyDetailColumn1ContactsContainer">
+                    <div className="companyDetailColumn1ContactsTitle">Contactos</div>
+                    {props.companyData.events.filter(e => e.type === 'contact_details').map(e => <p>{e.description}</p>)}
+                </div>
 
             </div>
             <div className="companyDetailColumn2">

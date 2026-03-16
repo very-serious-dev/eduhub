@@ -64,14 +64,14 @@ def create_event(request, company_id, event_type, date_time, participants, detai
     if event_type in ['meeting', 'virtual_meeting']:
         new_event.date_time = date_time
         new_event.participants = participants
-        new_event.detail = detail
+        new_event.description = detail
     elif event_type in ['interested_about_next_traineeship_period']:
         new_event.date_time = date_time
     elif event_type in ['added_contact_details']:
-        new_event.detail = detail
+        new_event.description = detail
     elif event_type in ['other']:
         new_event.date_time = date_time
-        new_event.detail = detail
+        new_event.description = detail
     new_event.save()
     return JsonResponse({"success": True}, status=201)
 
