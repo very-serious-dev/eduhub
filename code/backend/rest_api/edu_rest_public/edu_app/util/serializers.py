@@ -124,7 +124,9 @@ def company_event_to_json(event):
         "id": event.id,
         "description": event.description,
         "type": event_type(event),
-        "date_time": event.date_time
+        "date_time": event.date_time,
+        "author": event.author.username,
+        "created_at": event.created_at
     }
 
 def groups_array_to_json(groups):

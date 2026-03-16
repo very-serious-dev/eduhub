@@ -21,7 +21,7 @@ const footNoteDateAuthor = (originalDate, author, modificationDate) => {
     }
 }
 
-const beautifullyDisplayDate = (date) => {
+const beautifullyDisplayDate = (date, includeYear) => {
     const getWeekDayLiteral = (day) => {
         switch (day) {
             case 0: return "Domingo";
@@ -54,11 +54,14 @@ const beautifullyDisplayDate = (date) => {
     }
 
     const dateObject = new Date(date);
+    if (includeYear) {
+        return `${getWeekDayLiteral(dateObject.getDay())}, ${dateObject.getDate()} de ${getMonthLiteral(dateObject.getMonth())} de ${dateObject.getFullYear()}`;
+    }
     return `${getWeekDayLiteral(dateObject.getDay())}, ${dateObject.getDate()} de ${getMonthLiteral(dateObject.getMonth())}`;
 }
 
-const beautifullyDisplayDateTime = (date) => {
-    return `${beautifullyDisplayDate(date)} (${beautifullyDisplayHourFromDate(date)})`
+const beautifullyDisplayDateTime = (date, includeYear) => {
+    return `${beautifullyDisplayDate(date, includeYear)} (${beautifullyDisplayHourFromDate(date)})`
 }
 
 const formatPseudoMarkdown = (wholeText) => {

@@ -1745,7 +1745,7 @@ body {
   margin: 8px;
 }
 
-.companyDetailColumn1ContactsTitle {
+.companyDetailSectionTitle {
   margin-top: 20px;
   font-weight: bold;
   font-size: 0.875em;
@@ -1778,6 +1778,10 @@ body {
 .createCompanyEventFormDate {
   font-size: 0.875em;
   margin: 6px;
+}
+
+.companyDetailEventsContainer {
+  margin: 20px;
 }
 
 /**
