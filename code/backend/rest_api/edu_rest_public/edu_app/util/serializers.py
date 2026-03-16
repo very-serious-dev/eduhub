@@ -123,7 +123,7 @@ def company_event_to_json(event):
     return {
         "id": event.id,
         "description": event.description,
-        "type": event_type(e),
+        "type": event_type(event),
         "date_time": event.date_time
     }
 

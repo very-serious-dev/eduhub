@@ -109,6 +109,9 @@ def validate_year(year):
 def validate_questionnaire_mode(mode):
     return mode in ["regular", "secret_answers"]
 
+def validate_company_event_type(type):
+    return type in ["meeting", "virtual_meeting", "interested_about_next_traineeship_period", "added_contact_details", "other"]
+
 def parse_usernames_list(usernames):
     non_trimmed_usernames = usernames.split(",")
     trimmed_usernames = list(map(lambda x: x.strip(), non_trimmed_usernames))

@@ -29,12 +29,12 @@ const CompaniesBody = (props) => {
             {props.companiesData.companies.map(company => (
                 <GenericCard cardId={company.id}
                     title={company.name}
-                    preTitle={company.overview}
+                    preTitle={company.overview.substring(0, 120)}
                     footer={company.address}
                     onClickWithId={onCompanyClicked} />
             ))}
         </div>
-        <div className="card floatingCardAddNew pointable" onClick={() => { setShowAddCompanyPopup(true) }}>➕ Añadir compañía</div>
+        <div className="card floatingCardAddNew pointable" onClick={() => { setShowAddCompanyPopup(true) }}>➕ Añadir empresa</div>
 
     </div>
 }

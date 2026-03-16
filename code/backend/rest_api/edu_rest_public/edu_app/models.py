@@ -244,7 +244,7 @@ class CompanyEvent(models.Model):
         OTHER = 4
 
     type = models.IntegerField(choices=CompanyEventType)
-    date_time = models.DateTimeField()
+    date_time = models.DateTimeField(null=True)
     description = models.CharField(max_length=2000, null=True)
     participants = models.CharField(max_length=300, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE)

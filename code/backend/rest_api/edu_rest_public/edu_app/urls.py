@@ -42,5 +42,7 @@ urlpatterns = [
     path("questionnaires/<int:q_id>/submits",   facade.questionnaires_get_or_create_submit),
     path("questionnaires/<int:q_id>/submits/<username>", facade.questionnaires_get_submit),
     path("companies",                           facade.companies_get_create),
-    path("companies/<int:c_id>",                facade.companies_get_detail_edit_delete)
+    path("companies/<int:c_id>",                facade.companies_get_detail_edit_delete),
+    path("companies/<int:c_id>/events",         facade.companies_create_event),
+    path("events/<int:e_id>",                   facade.companies_delete_event),
 ]

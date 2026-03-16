@@ -13,30 +13,35 @@ const CreateCompanyEventDialog = (props) => {
     const [isLoading, setLoading] = useState(false);
     const theme = useContext(ThemeContext);
 
-
     const onSubmitAddCompanyEvent = (event) => {
         if (isLoading) { return; }
         event.preventDefault();
         setLoading(true);
         const requestBody = {
-
+            event_type: formEventType,
+            participants: formParticipants,
+            detail: formDetail
+        }
+        if (formEventType !== 'added_contact_details') {
+            const awareDatetime = new Date(formLocalDate)
+            requestBody['date_time'] = awareDatetime.toISOString()
         }
         EduAPIFetch("POST", `/api/v1/companies/${props.companyId}/events`, requestBody)
             .then(json => {
                 setLoading(false);
                 if (json.success === true) {
-                    props.onOperationDone();
+                    props.onEventCreated();
                     setFormLocalDate();
                     setFormParticipants("");
                     setFormDetail("");
                 } else {
-                    props.onOperationDone("Se ha producido un error");
+                    props.onEventCreated("Se ha producido un error");
                 }
                 props.onDismiss();
             })
             .catch(error => {
                 setLoading(false);
-                props.onOperationDone(error.error ?? "Se ha producido un error");
+                props.onEventCreated(error.error ?? "Se ha producido un error");
                 props.onDismiss();
             })
     }
@@ -61,7 +66,7 @@ const CreateCompanyEventDialog = (props) => {
                     </div>
                     <hr></hr>
                     {(formEventType === "meeting" || formEventType === "virtual_meeting" ||
-                        formEventType === "interested_about_next_traineeship_period") &&
+                        formEventType === "interested_about_next_traineeship_period" || formEventType === "other") &&
                         <>
                             <div className="createCompanyEventFormDate">Fecha del evento</div>
                             <div className="formInputContainer">

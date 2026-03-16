@@ -1,7 +1,7 @@
 from django.http import QueryDict
 from ..endpoints import admin, users, groups, classes, posts, documents, questionnaires, companies
 from ..models import User
-from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, validate_questionnaire_mode, parse_usernames_list
+from ..util.helpers import maybe_unhappy, expect_body_with, require_role, require_valid_session, validate_username, validate_password, validate_tag, validate_year, validate_questionnaire_mode, parse_usernames_list, validate_company_event_type
 from ..util.exceptions import Unsupported, BadRequest, BadRequestIllegalMove
 
 """
@@ -514,13 +514,13 @@ def companies_get_create(request):
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        return companies.get_all(request)
+        return companies.get_all_companies(request)
     elif request.method == "POST":
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
         name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
-        return companies.create(request, name, cif, address, overview)
+        return companies.create_company(request, name, cif, address, overview)
     else:
         raise Unsupported
 
@@ -530,17 +530,40 @@ def companies_get_detail_edit_delete(request, c_id):
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        return companies.get_detail(request, company_id=c_id)
+        return companies.get_detail(request, c_id)
     elif request.method == "PUT":
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
         name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
-        return companies.edit(request, company_id=c_id, name=name, cif=cif, address=address, overview=overview)
+        return companies.edit_company(request, c_id, name, cif, address, overview)
     elif request.method == "DELETE":
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        return companies.delete(request, company_id=c_id)
+        return companies.delete_company(request, c_id)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def companies_create_event(request, c_id):
+    if request.method == "POST":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        event_type, date_time, participants, detail = expect_body_with('event_type', optional=['date_time', 'participants', 'detail'], request=request)
+        if not validate_company_event_type(event_type):
+            raise BadRequest
+        return companies.create_event(request, c_id, event_type, date_time, participants, detail)
+    else:
+        raise Unsupported
+
+@maybe_unhappy
+def companies_delete_event(request, e_id):
+    if request.method == "DELETE":
+        require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
+                      User.UserRole.TEACHER_SYSADMIN,
+                      User.UserRole.TEACHER_LEADER], request=request)
+        return companies.delete_event(request, e_id)
     else:
         raise Unsupported
