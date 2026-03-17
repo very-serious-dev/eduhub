@@ -19,6 +19,13 @@ const CompanyDetailBody = (props) => {
         }
     }
 
+    const sortedFilteredEvents = () => {
+        const filteredEvents = props.companyData.events.filter(e => e.type !== 'contact_details')
+        const sortedEvents = [...filteredEvents] // FIXME: Is a copy really necessary?
+        sortedEvents.sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
+        return sortedEvents;
+    }
+
     return <>
         {popupShown == "EDIT_COMPANY" && <CreateEditDeleteCompanyDialog company={props.companyData.company}
             onDismiss={() => { setPopupShown("NONE") }}
@@ -45,9 +52,7 @@ const CompanyDetailBody = (props) => {
                 </div>
 
                 <div className="companyDetailEventsContainer">
-                {props.companyData.events.filter(e => e.type !== 'contact_details').map(e => {
-                    return <CompanyEventCell event={e} onEventDeleted={onOperationDone}/>
-                })}
+                    {sortedFilteredEvents().map(e => <CompanyEventCell event={e} onEventDeleted={onOperationDone} /> )}
                 </div>
             </div>
         </div>
