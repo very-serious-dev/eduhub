@@ -1784,6 +1784,73 @@ body {
   margin: 20px;
 }
 
+.companyEventTypeCellContainer {
+  position: relative;
+}
+
+.companyEventTypeTag {
+  display: inline;
+  font-weight: bolder;
+  font-size: 0.75rem;
+  color: #ffffff;
+  margin-bottom: 12px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  padding-right: 12px;
+  padding-left: 12px;
+  border-radius: 999px;
+  /* https://stackoverflow.com/a/18795153 */
+}
+
+
+.companyEventTypeTagNote {
+  background-color: #00773c;
+}
+
+.companyEventTypeTagMeeting {
+  background-color: #c50a0a;
+}
+
+.companyEventTypeTagVirtualMeeting {
+  background-color: #da5700;
+}
+
+.companyEventCellDatetime {
+  font-size: 1.125em;
+  margin: 10px;
+}
+
+.companyEventCellDescription {
+  margin-top: 10px;
+}
+
+.companyEventCellAuthorCreatedAt {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  color: #333;
+  font-size: 0.6rem;
+  font-weight: lighter;
+}
+
+.companyEventCellInterestedNextPeriod {
+  text-align: center;
+  background-color: #002fca;
+  color: #ffffff;
+  margin: 24px;
+  padding: 12px;
+  border-radius: 999px;
+}
+
+.companyEventCellInterestedNextPeriodTitle {
+  font-weight: bolder;
+  font-size: 1.5rem;
+}
+
+.companyEventCellInterestedNextPeriodDatetime {
+  font-size: 1.125rem;
+}
+
 /**
  * Error page
  **/

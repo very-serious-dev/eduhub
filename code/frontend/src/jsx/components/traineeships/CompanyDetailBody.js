@@ -3,8 +3,8 @@ import { useNavigate } from "react-router";
 import CreateEditDeleteCompanyDialog from "../dialogs/CreateEditDeleteCompanyDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import CreateCompanyEventDialog from "../dialogs/CreateCompanyEventDialog";
-import ClassDetailDrawerSectionTitle from "../../components/classes/ClassDetailDrawerSectionTitle"
 import { footNoteDateAuthor, beautifullyDisplayDateTime } from "../../../util/Formatter";
+import CompanyEventCell from "./CompanyEventCell";
 
 const CompanyDetailBody = (props) => {
     const navigate = useNavigate();
@@ -48,13 +48,7 @@ const CompanyDetailBody = (props) => {
                 <div className="companyDetailEventsContainer">
                     {/* TO-DO: Print this a little bit prettier */}
                 {props.companyData.events.filter(e => e.type !== 'contact_details').map(e => {
-                    return <div>
-                        <div>{e.type}</div>
-                        <div>Descripción: {e.description}</div>
-                        <div>Participantes: {e.participants}</div>
-                        <div>Fecha y hora: {beautifullyDisplayDateTime(e.date_time, true)}</div>
-                        <div>{footNoteDateAuthor(e.created_at, e.author)}</div>
-                        </div>
+                    return <CompanyEventCell event={e}/>
                 })}
                 </div>
             </div>
