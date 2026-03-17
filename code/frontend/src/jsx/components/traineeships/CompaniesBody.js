@@ -22,18 +22,25 @@ const CompaniesBody = (props) => {
         navigate(`/companies/${companyId}`)
     }
 
+    const sortedExtendedCompanies = () => {
+        const sortedCompanies = [...props.companiesData.companies] // FIXME: Is a copy really necessary?
+        sortedCompanies.sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0);
+        return sortedCompanies.map(c => {
+            return { ...c, recentInterest: props.companiesData.interested_in_next_traineeship_period_events.some(e => e.company_id === c.id) }
+        });
+    }
+
     return <div>
         {showAddCompanyPopup && <CreateEditDeleteCompanyDialog onDismiss={() => { setShowAddCompanyPopup(false) }}
             onOperationDone={onCompanyAdded} />}
         <div className="companiesList">
-            {props.companiesData.companies.map(company => {
-                const companyHasSpecialInterest = props.companiesData.interested_in_next_traineeship_period_events.some(e => e.company_id === company.id);
-                return <GenericCard cardId={company.id}
+            {sortedExtendedCompanies().map(company => (
+                <GenericCard cardId={company.id}
                     title={company.name}
                     preTitle={company.overview.substring(0, 120)}
-                    footer={companyHasSpecialInterest ? "⚡ Interés reciente en prácticas" : ""}
+                    footer={company.recentInterest ? "⚡ Interés reciente en prácticas" : ""}
                     onClickWithId={onCompanyClicked} />
-            })}
+            ))}
         </div>
         <div className="card floatingCardAddNew pointable" onClick={() => { setShowAddCompanyPopup(true) }}>➕ Añadir empresa</div>
 
