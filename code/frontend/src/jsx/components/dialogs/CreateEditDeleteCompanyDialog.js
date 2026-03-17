@@ -118,7 +118,7 @@ const CreateEditDeleteCompanyDialog = (props) => {
                                 maxLength={200}
                                 required />
                             <div className={`underline ${accent(theme)}`} />
-                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Nombre</label>
+                            <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Dirección</label>
                         </div>
                         <TextAreaWithLimit value={formOverview} setValue={setFormOverview} maxLength={300} small={true} placeholder={"Descripción de la empresa, tecnologías, datos relevantes,..."}/>
                         <div className="formInputContainer">

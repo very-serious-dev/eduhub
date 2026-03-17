@@ -26,13 +26,14 @@ const CompaniesBody = (props) => {
         {showAddCompanyPopup && <CreateEditDeleteCompanyDialog onDismiss={() => { setShowAddCompanyPopup(false) }}
             onOperationDone={onCompanyAdded} />}
         <div className="companiesList">
-            {props.companiesData.companies.map(company => (
-                <GenericCard cardId={company.id}
+            {props.companiesData.companies.map(company => {
+                const companyHasSpecialInterest = props.companiesData.interested_in_next_traineeship_period_events.some(e => e.company_id === company.id);
+                return <GenericCard cardId={company.id}
                     title={company.name}
                     preTitle={company.overview.substring(0, 120)}
-                    footer={company.address}
+                    footer={companyHasSpecialInterest ? "⚡ Interés reciente en prácticas" : ""}
                     onClickWithId={onCompanyClicked} />
-            ))}
+            })}
         </div>
         <div className="card floatingCardAddNew pointable" onClick={() => { setShowAddCompanyPopup(true) }}>➕ Añadir empresa</div>
 

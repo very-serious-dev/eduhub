@@ -1,4 +1,6 @@
 from django.http import JsonResponse
+from django.db.models import Q
+from datetime import datetime
 from ..models import Company, CompanyEvent
 from ..util.serializers import companies_array_to_json, company_to_json, company_events_array_to_json
 from ..util.exceptions import ConflictCompanyAlreadyExists, NotFound, Forbidden
@@ -6,7 +8,11 @@ from ..util.helpers import get_from_db, validate_company_event_type
 
 def get_all_companies(request):
     companies = Company.objects.filter(is_archived=False)
-    return JsonResponse({"companies": companies_array_to_json(companies)})
+    this_year = datetime.now().year
+    last_year = this_year - 1
+    important_events = CompanyEvent.objects.filter(type=CompanyEvent.CompanyEventType.INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD).filter(Q(date_time__year=this_year) | Q(date_time__year=last_year))
+    return JsonResponse({"companies": companies_array_to_json(companies),
+                         "interested_in_next_traineeship_period_events": company_events_array_to_json(important_events)})
 
 def get_detail(request, company_id):
     company = get_from_db(Company, id=company_id)
