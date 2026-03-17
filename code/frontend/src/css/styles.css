@@ -1826,11 +1826,21 @@ body {
 
 .companyEventCellAuthorCreatedAt {
   position: absolute;
-  right: 4px;
+  right: 12px;
   bottom: 4px;
   color: #333;
   font-size: 0.6rem;
   font-weight: lighter;
+}
+
+.companyEventDeleteButton {
+  position: absolute;
+  top: 1px;
+  right: 10px;
+}
+
+.companyEventDeleteButton:hover {
+  background-color: var(--color-destructive);
 }
 
 .companyEventCellInterestedNextPeriod {

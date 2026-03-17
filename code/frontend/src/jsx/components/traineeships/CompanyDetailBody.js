@@ -3,7 +3,6 @@ import { useNavigate } from "react-router";
 import CreateEditDeleteCompanyDialog from "../dialogs/CreateEditDeleteCompanyDialog";
 import { FeedbackContext } from "../../main/GlobalContainer";
 import CreateCompanyEventDialog from "../dialogs/CreateCompanyEventDialog";
-import { footNoteDateAuthor, beautifullyDisplayDateTime } from "../../../util/Formatter";
 import CompanyEventCell from "./CompanyEventCell";
 
 const CompanyDetailBody = (props) => {
@@ -46,9 +45,8 @@ const CompanyDetailBody = (props) => {
                 </div>
 
                 <div className="companyDetailEventsContainer">
-                    {/* TO-DO: Print this a little bit prettier */}
                 {props.companyData.events.filter(e => e.type !== 'contact_details').map(e => {
-                    return <CompanyEventCell event={e}/>
+                    return <CompanyEventCell event={e} onEventDeleted={onOperationDone}/>
                 })}
                 </div>
             </div>

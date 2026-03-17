@@ -77,7 +77,7 @@ def create_event(request, company_id, event_type, date_time, participants, detai
 
 def delete_event(request, event_id):
     event = get_from_db(CompanyEvent, id=event_id)
-    if event.author != event.session.user:
+    if event.author != request.session.user:
         raise Forbidden
     event.delete()
     return JsonResponse({"success": True}, status=200)
