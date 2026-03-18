@@ -64,7 +64,8 @@ def require_role(roles_list, request):
         raise e.Forbidden
 
 def require_valid_session(request):
-    require_role([User.UserRole.STUDENT, User.UserRole.TEACHER, User.UserRole.TEACHER_SYSADMIN, User.UserRole.TEACHER_LEADER], request=request)
+    if request.session is None:
+        raise e.Unauthorized
 
 def expect_body_with(*args, **kwargs):
     request = kwargs.get('request')
