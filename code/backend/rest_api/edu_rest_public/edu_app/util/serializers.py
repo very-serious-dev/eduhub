@@ -125,6 +125,7 @@ def company_event_to_json(event):
         "description": event.description,
         "type": event_type(event),
         "date_time": event.date_time,
+        "participants": event.participants,
         "author": event.author.username,
         "created_at": event.created_at,
         "company_id": event.company_id
