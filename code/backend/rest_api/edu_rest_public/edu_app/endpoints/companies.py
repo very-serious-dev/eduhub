@@ -22,7 +22,7 @@ def get_detail(request, company_id):
     return JsonResponse({"company": company_to_json(company),
                          "events": company_events_array_to_json(events)})
 
-def create_company(request, name, cif, address, overview):
+def create_company(request, name, cif, address, overview, company_type):
     if Company.objects.filter(cif=cif).exists():
         raise ConflictCompanyAlreadyExists
     new_company = Company()
@@ -30,10 +30,18 @@ def create_company(request, name, cif, address, overview):
     new_company.cif = cif
     new_company.address = address
     new_company.overview = overview
+    if company_type == 'unspecified':
+        new_company.type = Company.CompanyType.UNSPECIFIED
+    elif company_type == 'software':
+        new_company.type = Company.CompanyType.SOFTWARE
+    elif company_type == 'accounting':
+        new_company.type = Company.CompanyType.ACCOUNTING
+    elif company_type == 'both':
+        new_company.type = Company.CompanyType.BOTH
     new_company.save()
     return JsonResponse({"success": True}, status=201)
 
-def edit_company(request, company_id, name, cif, address, overview):
+def edit_company(request, company_id, name, cif, address, overview, company_type):
     company = get_from_db(Company, id=company_id)
     if company.is_archived:
         raise NotFound
@@ -43,6 +51,14 @@ def edit_company(request, company_id, name, cif, address, overview):
     company.cif = cif
     company.address = address
     company.overview = overview
+    if company_type == 'unspecified':
+        new_company.type = Company.CompanyType.UNSPECIFIED
+    elif company_type == 'software':
+        new_company.type = Company.CompanyType.SOFTWARE
+    elif company_type == 'accounting':
+        new_company.type = Company.CompanyType.ACCOUNTING
+    elif company_type == 'both':
+        new_company.type = Company.CompanyType.BOTH
     company.save()
     return JsonResponse({"success": True}, status=200)
 

@@ -228,11 +228,19 @@ class ChoicesQuestionAnswer(models.Model):
 #
 
 class Company(models.Model):
+
+    class CompanyType(models.IntegerChoices):
+        UNSPECIFIED = 0
+        SOFTWARE = 1
+        ACCOUNTING = 2
+        BOTH = 3
+
     name = models.CharField(max_length=50)
     overview = models.CharField(max_length=300)
     cif = models.CharField(max_length=10, unique=True)
     address = models.CharField(max_length=200)
     is_archived = models.BooleanField(default=False)
+    type = models.IntegerField(choices=CompanyType, default=CompanyType.UNSPECIFIED)
 
 class CompanyEvent(models.Model):
 

@@ -519,8 +519,8 @@ def companies_get_create(request):
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
-        return companies.create_company(request, name, cif, address, overview)
+        name, cif, address, overview, type = expect_body_with('name', 'cif', 'address', 'overview', 'type', request=request)
+        return companies.create_company(request, name, cif, address, overview, type)
     else:
         raise Unsupported
 
@@ -535,8 +535,8 @@ def companies_get_detail_edit_delete(request, c_id):
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,
                       User.UserRole.TEACHER_LEADER], request=request)
-        name, cif, address, overview = expect_body_with('name', 'cif', 'address', 'overview', request=request)
-        return companies.edit_company(request, c_id, name, cif, address, overview)
+        name, cif, address, overview, type = expect_body_with('name', 'cif', 'address', 'overview', 'type', request=request)
+        return companies.edit_company(request, c_id, name, cif, address, overview, type)
     elif request.method == "DELETE":
         require_role([User.UserRole.TEACHER_TRAINEESHIP_COORDINATOR,
                       User.UserRole.TEACHER_SYSADMIN,

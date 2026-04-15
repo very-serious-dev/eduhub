@@ -1,4 +1,4 @@
-from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire, Questionnaire, CompanyEvent
+from ..models import Post, User, Class, AnnouncementDocument, AnnouncementQuestionnaire, Questionnaire, CompanyEvent, Company
 
 JSON_STUDENT = "student"
 JSON_TEACHER = "teacher"
@@ -28,6 +28,11 @@ JSON_COMPANY_EVENT_VIRTUAL_MEETING = "virtual_meeting"
 JSON_COMPANY_EVENT_ADDED_CONTACT_DETAILS = "contact_details"
 JSON_COMPANY_EVENT_INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD = "interested_about_next_traineeship_period"
 JSON_COMPANY_EVENT_OTHER = "other"
+
+JSON_COMPANY_TYPE_UNSPECIFIED = "unspecified"
+JSON_COMPANY_TYPE_SOFTWARE = "software"
+JSON_COMPANY_TYPE_ACCOUNTING = "accounting"
+JSON_COMPANY_TYPE_BOTH = "both"
 
 def document_to_json(document):
     return {
@@ -116,7 +121,8 @@ def company_to_json(company):
         "name": company.name,
         "cif": company.cif,
         "overview": company.overview,
-        "address": company.address
+        "address": company.address,
+        "type": company_type(company)
     }
 
 def company_event_to_json(event):
@@ -321,3 +327,13 @@ def event_type(e):
         return JSON_COMPANY_EVENT_INTERESTED_ABOUT_NEXT_TRAINEESHIP_PERIOD
     elif e.type == CompanyEvent.CompanyEventType.OTHER:
         return JSON_COMPANY_EVENT_OTHER
+
+def company_type(c):
+    if c.type == Company.CompanyType.UNSPECIFIED:
+        return JSON_COMPANY_TYPE_UNSPECIFIED
+    elif c.type == Company.CompanyType.SOFTWARE:
+            return JSON_COMPANY_TYPE_SOFTWARE
+    elif c.type == Company.CompanyType.ACCOUNTING:
+        return JSON_COMPANY_TYPE_ACCOUNTING
+    elif c.type == Company.CompanyType.BOTH:
+        return JSON_COMPANY_TYPE_BOTH
