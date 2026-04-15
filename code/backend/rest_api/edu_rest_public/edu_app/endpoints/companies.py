@@ -52,13 +52,13 @@ def edit_company(request, company_id, name, cif, address, overview, company_type
     company.address = address
     company.overview = overview
     if company_type == 'unspecified':
-        new_company.type = Company.CompanyType.UNSPECIFIED
+        company.type = Company.CompanyType.UNSPECIFIED
     elif company_type == 'software':
-        new_company.type = Company.CompanyType.SOFTWARE
+        company.type = Company.CompanyType.SOFTWARE
     elif company_type == 'accounting':
-        new_company.type = Company.CompanyType.ACCOUNTING
+        company.type = Company.CompanyType.ACCOUNTING
     elif company_type == 'both':
-        new_company.type = Company.CompanyType.BOTH
+        company.type = Company.CompanyType.BOTH
     company.save()
     return JsonResponse({"success": True}, status=200)
 
