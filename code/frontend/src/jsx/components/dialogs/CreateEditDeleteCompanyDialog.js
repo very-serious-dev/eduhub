@@ -12,6 +12,7 @@ const CreateEditDeleteCompanyDialog = (props) => {
     const [formCif, setFormCif] = useState(props.company?.cif ?? "");
     const [formOverview, setFormOverview] = useState(props.company?.overview ?? "");
     const [formAddress, setFormAddress] = useState(props.company?.address ?? "");
+    const [formCompanyType, setFormCompanyType] = useState(props.company?.type ?? "unspecified");
     const [isLoading, setLoading] = useState(false);
     const [showAreYouSurePopup, setShowAreYouSurePopup] = useState(false);
     const theme = useContext(ThemeContext);
@@ -31,7 +32,8 @@ const CreateEditDeleteCompanyDialog = (props) => {
             name: formName,
             cif: formCif,
             overview: formOverview,
-            address: formAddress
+            address: formAddress,
+            type: formCompanyType
         }
         EduAPIFetch(httpMethod, url, requestBody)
             .then(json => {
@@ -42,6 +44,7 @@ const CreateEditDeleteCompanyDialog = (props) => {
                     setFormCif("");
                     setFormOverview("");
                     setFormAddress("");
+                    setFormCompanyType("unspecified");
                 } else {
                     props.onOperationDone("Se ha producido un error");
                 }
@@ -78,10 +81,10 @@ const CreateEditDeleteCompanyDialog = (props) => {
     }
 
     return showAreYouSurePopup ? <AreYouSureDialog onActionConfirmed={onDeleteCompany}
-            onDismiss={() => { setShowAreYouSurePopup(false); }}
-            isLoading={isLoading}
-            dialogMode="DELETE"
-            warningMessage={`¿Deseas eliminar la empresa? Será archivada y sólo un administrador podrá restaurarla`} />
+        onDismiss={() => { setShowAreYouSurePopup(false); }}
+        isLoading={isLoading}
+        dialogMode="DELETE"
+        warningMessage={`¿Deseas eliminar la empresa? Será archivada y sólo un administrador podrá restaurarla`} />
         : <div className="popupOverlayBackground" onClick={props.onDismiss}>
             <div className="popup" onClick={e => { e.stopPropagation(); }}>
                 <div className="card dialogBackground">
@@ -120,7 +123,18 @@ const CreateEditDeleteCompanyDialog = (props) => {
                             <div className={`underline ${accent(theme)}`} />
                             <label className={`formLabel ${accentFormLabel(theme)}`} htmlFor="">Dirección</label>
                         </div>
-                        <TextAreaWithLimit value={formOverview} setValue={setFormOverview} maxLength={300} small={true} placeholder={"Descripción de la empresa, tecnologías, datos relevantes,..."}/>
+                        <div className="formInputSelectContainer selectWithTopMargin">
+                            <select name="companyType"
+                                value={formCompanyType}
+                                className={`formInputSelect ${primary(theme)}`}
+                                onChange={e => { setFormCompanyType(e.target.value); }}>
+                                <option value="unspecified">No especificado</option>
+                                <option value="software">DAM/DAW 💻</option>
+                                <option value="accounting">ADF/ASD 📊</option>
+                                <option value="both">DAM/DAW y ADF/ASD 💻📊</option>
+                            </select>
+                        </div>
+                        <TextAreaWithLimit value={formOverview} setValue={setFormOverview} maxLength={300} small={true} placeholder={"Descripción de la empresa, tecnologías, datos relevantes,..."} />
                         <div className="formInputContainer">
                             <input type="submit" className={`formInputSubmit pointable ${primary(theme)} ${pointableSecondary(theme)}`} value={isEditingCompany() ? "Modificar" : "Crear"} />
                         </div>

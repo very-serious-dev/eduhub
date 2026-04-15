@@ -30,6 +30,15 @@ const CompaniesBody = (props) => {
         });
     }
 
+    const footerCompanyTypeText = (type) => {
+        switch (type) {
+            case 'unspecified': return ""
+            case 'software': return " [DAM/DAW 💻]"
+            case 'accounting': return " [ADF/ASD 📊]"
+            case 'both': return " [DAM/DAW ADF/ASD 📊💻]"
+        }
+    }
+
     return <div>
         {showAddCompanyPopup && <CreateEditDeleteCompanyDialog onDismiss={() => { setShowAddCompanyPopup(false) }}
             onOperationDone={onCompanyAdded} />}
@@ -38,7 +47,7 @@ const CompaniesBody = (props) => {
                 <GenericCard cardId={company.id}
                     title={company.name}
                     preTitle={company.overview.substring(0, 120)}
-                    footer={company.recentInterest ? "⚡ Interés reciente en prácticas" : ""}
+                    footer={`${company.recentInterest ? "⚡ Interés en prácticas" : ""}${footerCompanyTypeText(company.type)}` }
                     onClickWithId={onCompanyClicked} />
             ))}
         </div>
